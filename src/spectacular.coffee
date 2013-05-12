@@ -267,7 +267,7 @@ class spectacular.Example
     @ownBeforeHooks = []
     @ownAfterHooks = []
 
-  @getter 'subject', -> @subjectBlock?()
+  @getter 'subject', -> @subjectBlock?.call(this)
 
   pending: ->
     if @promise?.pending
@@ -376,8 +376,10 @@ class spectacular.ExampleGroup extends spectacular.Example
       when 'string'
         if desc.indexOf('.') is 0
           @noSpaceBeforeDescription = true
-          subject = @subject?[desc.replace '.', '']
           @ownSubjectBlock = => subject
+          owner = @subject
+          subject = owner?[desc.replace '.', '']
+          subject = subject.bind(owner) if typeof subject is 'function'
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
           subject = @subjectBlock?()::[desc[1..-1]]
@@ -452,7 +454,8 @@ spectacular.itsReturn = (block) ->
   notInsideIt 'itsReturn'
   parentSubjectBlock = currentExampleGroup.subjectBlock
   spectacular.context 'returned value', ->
-    spectacular.subject 'returnedValue', -> parentSubjectBlock?()()
+    spectacular.subject 'returnedValue', ->
+      parentSubjectBlock?().apply(this, @parameters or [])
 
     spectacular.it block
 
@@ -468,7 +471,8 @@ spectacular.given = (name, block) ->
 
   spectacular.before ->
     Object.defineProperty this, name, {
-      writable: true
+      configurable: true
+      enumerable: true
       get: block
     }
 
@@ -492,6 +496,9 @@ spectacular.xcontext = spectacular.xdescribe
 
 spectacular.withParameters = (args...) ->
   notInsideIt 'withParameters'
+
+  spectacular.given 'parameters', -> args
+
 
 spectacular.should = (matcher, neg=false) ->
   notOutsideIt 'should'
