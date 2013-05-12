@@ -6,6 +6,7 @@ require 'colors'
 
 class Runner
   constructor: (@root, @options) ->
+    @results = []
 
   run: =>
     promise = @globPaths()
@@ -59,12 +60,32 @@ class Runner
   registerResults: (example) ->
     global.currentExample = null
 
-    switch example.state
+    switch example.result.state
       when 'pending' then util.print '*'.yellow
       when 'skipped' then util.print 'x'.magenta
       when 'failure' then util.print 'F'.red
       when 'success' then util.print '.'.green
 
+    @results.push example.result
+
+  hasFailures: -> @results.some (result) -> not result.success
+
   printResults: =>
+    console.log '\n'
+    if @hasFailures()
+      for result in @results
+        if result.state is 'failure'
+          if result.expectations.length > 0
+            for expectation in result.expectations
+              unless expectation.success
+                console.log expectation.description.red
+                console.log expectation.message
+          else
+            console.log result.example.description.red
+            console.log result.example.promise.reason
+      1
+    else
+      console.log "\n\nFinished in ...s"
+      0
 
 module.exports = Runner

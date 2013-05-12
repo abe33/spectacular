@@ -222,6 +222,35 @@ class spectacular.AsyncExamplePromise extends spectacular.Promise
 
   rejectAfter: (@timeout, @message) ->
 
+#### Expectation
+
+class spectacular.Expectation
+  constructor: (@example, @actual, @matcher, @not=false) ->
+    try
+      if @matcher.assert(@actual, if @not then ' not' else '')
+        if @not
+          @success = false
+        else
+          @success = true
+      else
+        if @not
+          @success = true
+        else
+          @success = false
+    catch e
+      @success = false
+
+    @message = @matcher.message
+    @description = "#{@example.description} #{@matcher.description}"
+
+#### ExampleResult
+
+class spectacular.ExampleResult
+  constructor: (@example, @state) ->
+    @expectations = []
+
+  hasFailures: -> @expectations.some (e) -> not e.success
+
 #### Example
 
 class spectacular.Example
@@ -238,27 +267,30 @@ class spectacular.Example
     @noSpaceBeforeDescription = true if @ownDescription is ''
     @ownBeforeHooks = []
     @ownAfterHooks = []
-    @state = 'initialized'
 
   pending: ->
     if @promise?.pending
       @promise.resolve()
-      @state = 'pending'
+      @result.state = 'pending'
 
   skip: ->
     if @promise?.pending
       @promise.reject new Error 'Skipped'
-      @state = 'skipped'
+      @result.state = 'skipped'
 
   resolve: ->
     if @promise?.pending
-      @promise.resolve()
-      @state = 'success'
+      if @result.hasFailures()
+        @promise.reject()
+        @result.state = 'failure'
+      else
+        @promise.resolve()
+        @result.state = 'success'
 
   reject: (reason) ->
     if @promise?.pending
       @promise.reject reason
-      @state = 'failure'
+      @result.state = 'failure'
 
   run: ->
     @promise = new spectacular.Promise()
@@ -329,6 +361,11 @@ rootExampleGroup = new spectacular.ExampleGroup
 currentExampleGroup = rootExampleGroup
 currentExample = null
 
+notInsideIt = (method) ->
+  throw new Error "#{method} called inside a it block" if currentExample?
+notOutsideIt = (method) ->
+  throw new Error "#{method} called outside a it block" unless currentExample?
+
 spectacular.fail = -> throw new Error 'Failed'
 spectacular.pending = -> currentExample.pending()
 spectacular.skip = -> currentExample.skip()
@@ -363,8 +400,20 @@ spectacular.context = spectacular.describe
 spectacular.xcontext = spectacular.xdescribe
 
 spectacular.withParameters = (args...) ->
+spectacular.should = (matcher, neg=false) ->
+  notOutsideIt 'should'
 
-spectacular.should = (matcher) ->
+  currentExample.result.expectations.push(
+    new spectacular.Expectation(
+      currentExample,
+      currentExample.subject,
+      matcher,
+      neg
+    )
+  )
+
+spectacular.shouldnt = (matcher) -> should matcher, true
+
 
 {
   it, xit,
