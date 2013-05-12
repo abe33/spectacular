@@ -7,11 +7,21 @@ require 'colors'
 class Runner
   constructor: (@root, @options) ->
     @results = []
+    @examples = []
+    @stack = []
 
   run: =>
     promise = @globPaths()
+    .then (paths) =>
+      @loadStartedAt = new Date()
+      paths
     .then(@loadSpecs)
+    .then =>
+      @loadEndedAt = new Date()
+      @specsStartedAt = new Date()
     .then(@executeSpecs)
+    .then =>
+      @specsEndedAt = new Date()
     .then(@printResults)
 
   globPaths: =>
@@ -33,7 +43,6 @@ class Runner
     require path.resolve('.', p) for p in paths
 
   executeSpecs: =>
-    @stack = []
     @register example for example in @root.allExamples
     defer = Q.defer()
     @nextExample defer
@@ -66,11 +75,14 @@ class Runner
       when 'failure' then util.print 'F'.red
       when 'success' then util.print '.'.green
 
+    @examples.push example
     @results.push example.result
 
-  hasFailures: -> @results.some (result) -> not result.success
+  hasFailures: ->
+    @results.some (result) -> result.state in ['failure', 'skipped']
 
   printResults: =>
+
     console.log '\n'
     if @hasFailures()
       for result in @results
@@ -78,14 +90,62 @@ class Runner
           if result.expectations.length > 0
             for expectation in result.expectations
               unless expectation.success
-                console.log expectation.description.red
+                console.log "#{' FAIL '.inverse} #{expectation.description}".red
                 console.log expectation.message
+                console.log '\n'
           else
-            console.log result.example.description.red
-            console.log result.example.promise.reason
+            console.log "#{' FAIL '.inverse} #{result.example.description}".red
+            console.log result.example.examplePromise.reason.stack
+            console.log '\n'
+      @printDetails()
       1
     else
-      console.log "\n\nFinished in ...s"
+      @printDetails()
       0
+
+  duration: (start, end) ->
+    duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
+    "#{duration}s".yellow
+
+  printDetails: ->
+    success = @examples.filter((e)-> e.result.state is 'success').length
+    failures = @examples.filter((e)-> e.result.state is 'failure').length
+    skipped = @examples.filter((e)-> e.result.state is 'skipped').length
+    pending = @examples.filter((e)-> e.result.state is 'pending').length
+    assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
+    loadDuration = @duration @loadStartedAt, @loadEndedAt
+    specsDuration = @duration @specsStartedAt, @specsEndedAt
+
+    console.log """
+      Specs loaded in #{loadDuration}
+      Finished in #{specsDuration}
+      #{@formatResults success, failures, skipped, pending, assertions}
+
+      """
+
+  formatResults: (s, f, sk, p, a) ->
+
+    "#{@formatCount s, 'success', 'success', @toggle f, 'green'},
+    #{@formatCount a, 'assertion', 'assertions', @toggle f, 'green'},
+    #{@formatCount f, 'failure', 'failures', @toggle f, 'green', 'red'},
+    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'red'},
+    #{@formatCount p, 'pending', 'pending', @toggle p, 'green', 'yellow'}
+    ".replace /\s+/g, ' '
+
+  formatCount: (value, singular, plural, color) ->
+    s = ("#{value} #{
+      if value is 0
+        plural
+      else if value is 1
+        singular
+      else
+        plural
+    }")
+    s = s[color] if color?
+    s
+
+  toggle: (value, c1, c2) ->
+    if value is 0 then c1 else c2
+
 
 module.exports = Runner
