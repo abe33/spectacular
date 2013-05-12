@@ -423,6 +423,8 @@ class spectacular.ExampleGroup extends spectacular.Example
             if type
               owner = build type, @parameters or []
               owner[desc.replace '::', ''].bind owner
+        else
+          @noSpaceBeforeDescription = true if @parent.description is ''
 
       else
         @noSpaceBeforeDescription = true
