@@ -532,21 +532,6 @@ spectacular.withParameters = (args...) ->
 
   spectacular.given 'parameters', -> args
 
-
-spectacular.should = (matcher, neg=false) ->
-  notOutsideIt 'should'
-
-  currentExample.result.expectations.push(
-    new spectacular.Expectation(
-      currentExample,
-      currentExample.subject,
-      matcher,
-      neg
-    )
-  )
-
-spectacular.shouldnt = (matcher) -> should matcher, true
-
 Object.defineProperty Object.prototype, 'should', {
   writable: true,
   enumerable: false,
@@ -579,17 +564,28 @@ Object.defineProperty Object.prototype, 'shouldnt', {
     )
 }
 
-{
-  it, xit,
-  describe, xdescribe,
-  context, xcontext,
-  before, after,
-  given, subject,
-  its, itsInstance, itsReturn,
-  withParameters,
-  fail, pending, success, skip,
-  should
-} = spectacular
+spectacular.should = (matcher, neg=false) ->
+  notOutsideIt 'should'
+
+  currentExample.result.expectations.push(
+    new spectacular.Expectation(
+      currentExample,
+      currentExample.subject,
+      matcher,
+      neg
+    )
+  )
+
+spectacular.shouldnt = (matcher) ->
+  should matcher, true
+
+
+'it xit describe xdescribe context xcontext
+  before after given subject its itsInstance
+  itsReturn withParameters fail pending success
+  skip should shouldnt
+'.split(/\s+/g).forEach (k) ->
+  global[k] = spectacular[k]
 
 
 
