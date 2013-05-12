@@ -143,8 +143,25 @@ class spectacular.Describable
 
 class spectacular.Promise
   @unit: ->
-    promise = new Promise()
+    promise = new spectacular.Promise
     promise.resolve 0
+    promise
+
+  @all: (promises) ->
+    promise = new spectacular.Promise
+    solved = 0
+    results = []
+
+    promises.forEach (p) ->
+      p
+      .then (value) ->
+        solved++
+        results[promises.indexOf p] = value
+        promise.resolve results if solved is promises.length
+
+      .fail (reason) ->
+        promise.reject reason
+
     promise
 
   constructor: ->
