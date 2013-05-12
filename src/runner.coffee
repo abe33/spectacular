@@ -81,8 +81,17 @@ class Runner
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped']
 
-  printResults: =>
+  printStack: (e) ->
+    console.log "\n\n#{e.stack.replace(/^.*\n/, '').grey}"
 
+  printFailure: (message) ->
+    console.log "#{' FAIL '.inverse} #{message}".red
+
+  printMessage: (message) ->
+    console.log "\n    #{message}"
+
+
+  printResults: =>
     console.log '\n'
     if @hasFailures()
       for result in @results
@@ -90,12 +99,14 @@ class Runner
           if result.expectations.length > 0
             for expectation in result.expectations
               unless expectation.success
-                console.log "#{' FAIL '.inverse} #{expectation.description}".red
-                console.log expectation.message
+                @printFailure expectation.description
+                @printMessage expectation.message
+                @printStack expectation.trace if @options.trace
                 console.log '\n'
           else
-            console.log "#{' FAIL '.inverse} #{result.example.description}".red
-            console.log result.example.examplePromise.reason.stack
+            @printFailure result.example.description
+            @printMessage result.example.examplePromise.reason.message
+            @printStack result.example.examplePromise.reason if @options.trace
             console.log '\n'
       @printDetails()
       1

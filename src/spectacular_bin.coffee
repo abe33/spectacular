@@ -11,6 +11,7 @@ ROOT = path.resolve '.'
 options =
   coffee: false
   verbose: false
+  trace: false
   globs: []
 
 for option in args
@@ -18,7 +19,8 @@ for option in args
     when '--coffee', '-c'
       options.coffee = true
       require 'coffee-script'
-    when '--trace', '-t', '--verbose', '-v' then options.verbose = true
+    when '--trace', '-t' then options.trace = true
+    when '--verbose', '-v' then options.verbose = true
     else options.globs.push option
 
 console.log 'options:', options if options.verbose

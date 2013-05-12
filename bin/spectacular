@@ -20,6 +20,7 @@ _ref = process.argv, node = _ref[0], binPath = _ref[1], args = 3 <= _ref.length 
 options = {
   coffee: false,
   verbose: false,
+  trace: false,
   globs: []
 };
 
@@ -33,6 +34,8 @@ for (_i = 0, _len = args.length; _i < _len; _i++) {
       break;
     case '--trace':
     case '-t':
+      options.trace = true;
+      break;
     case '--verbose':
     case '-v':
       options.verbose = true;
