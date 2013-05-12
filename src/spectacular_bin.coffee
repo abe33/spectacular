@@ -10,7 +10,7 @@ ROOT = path.resolve '.'
 
 options =
   coffee: false
-  verbose: true
+  verbose: false
   globs: []
 
 for option in args
@@ -35,5 +35,5 @@ exists path.resolve(ROOT, 'node_modules/spectacular'), (exist) ->
     spectacular = require path.resolve(SPECTACULAR,
                                        'lib/index')
 
-  spectacular.run(options).then (results) ->
-    console.log 'results:', results
+  spectacular.run(options).then (status) ->
+    process.exit status

@@ -19,7 +19,7 @@ _ref = process.argv, node = _ref[0], binPath = _ref[1], args = 3 <= _ref.length 
 
 options = {
   coffee: false,
-  verbose: true,
+  verbose: false,
   globs: []
 };
 
@@ -54,7 +54,7 @@ exists(path.resolve(ROOT, 'node_modules/spectacular'), function(exist) {
   } else {
     spectacular = require(path.resolve(SPECTACULAR, 'lib/index'));
   }
-  return spectacular.run(options).then(function(results) {
-    return console.log('results:', results);
+  return spectacular.run(options).then(function(status) {
+    return process.exit(status);
   });
 });
