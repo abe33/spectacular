@@ -32,17 +32,20 @@ Function::signature = ->
 Function::getter = (name, block) ->
   Object.defineProperty @prototype, name, {
     get: block
+    configurable: true
     enumerable: true
   }
 Function::setter = (name, block) ->
   Object.defineProperty @prototype, name, {
     set: block
+    configurable: true
     enumerable: true
   }
 Function::accessor = (name, options) ->
   Object.defineProperty @prototype, name, {
     get: options.get
     get: options.set
+    configurable: true
     enumerable: true
   }
 
