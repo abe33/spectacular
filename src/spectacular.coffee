@@ -263,10 +263,11 @@ class spectacular.Example
   )
 
   constructor: (@block, @ownDescription='', @parent) ->
-    @ownSubjectBlock = null
     @noSpaceBeforeDescription = true if @ownDescription is ''
     @ownBeforeHooks = []
     @ownAfterHooks = []
+
+  @getter 'subject', -> @subjectBlock?()
 
   pending: ->
     if @promise?.pending
@@ -293,7 +294,51 @@ class spectacular.Example
       @result.state = 'failure'
 
   run: ->
-    @promise = new spectacular.Promise()
+    @promise = new spectacular.Promise
+    afterPromise = new spectacular.Promise
+
+    @result = new spectacular.ExampleResult this
+    @runBefore => @executeBlock()
+    @promise.then => @runAfter => afterPromise.resolve()
+    @promise.fail (reason) => @runAfter => afterPromise.reject reason
+
+    afterPromise
+
+  runBefore: (callback) ->
+    befores = @beforeHooks
+    next = =>
+      if befores.length is 0
+        callback()
+      else
+        @executeHook befores.shift(), next
+
+    next()
+
+  runAfter: (callback) ->
+    afters = @afterHooks
+    next = =>
+      if afters.length is 0
+        callback()
+      else
+        @executeHook afters.shift(), next
+
+    next()
+
+  executeHook: (hook, next) ->
+    try
+      if @acceptAsync hook
+        async = new spectacular.AsyncExamplePromise
+        async.then => next()
+        async.fail => next()
+        async.run()
+        hook.call(this, async)
+      else
+        hook.call(this)
+        next()
+    catch e
+      next()
+
+  executeBlock: ->
     try
       if @acceptAsync @block
         async = new spectacular.AsyncExamplePromise
@@ -308,9 +353,6 @@ class spectacular.Example
         @resolve()
     catch e
       @reject e
-    @promise
-
-  executeBlock: -> @block.call(this)
 
   toString: -> "[Example(#{@description})]"
 
@@ -328,24 +370,25 @@ class spectacular.ExampleGroup extends spectacular.Example
   @childrenScope 'examples', (e) -> not e.children?
   @descendantsScope 'allExamples', (e) -> not e.children?
 
-  parent: null
-  constructor: (block, desc, parent) ->
+  constructor: (block, desc, @parent) ->
     subject = null
     switch typeof desc
       when 'string'
         if desc.indexOf('.') is 0
           @noSpaceBeforeDescription = true
-          subject = @subjectBlock?()[desc[1..-1]]
+          subject = @subject?[desc.replace '.', '']
+          @ownSubjectBlock = => subject
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
           subject = @subjectBlock?()::[desc[1..-1]]
+          @ownSubjectBlock = => subject
       else
         @noSpaceBeforeDescription = true
         subject = desc
+        @ownSubjectBlock = => subject
         desc = subject?.name or subject?.toString() or ''
 
-    super block, desc, parent
-    @ownSubjectBlock = => subject if subject?
+    super block, desc, @parent
     @children = []
 
   run: ->
@@ -372,7 +415,7 @@ spectacular.skip = -> currentExample.skip()
 spectacular.success = ->
 
 spectacular.it = (msgOrBlock, block) ->
-  throw new Error('nested it declaration') if currentExample?
+  notInsideIt 'it'
 
   [msgOrBlock, block] = ['', msgOrBlock] if typeof msgOrBlock is 'function'
   currentExampleGroup.addChild(
@@ -380,11 +423,58 @@ spectacular.it = (msgOrBlock, block) ->
   )
 
 spectacular.xit = (msgOrBlock, block) ->
+  notInsideIt 'xit'
+
+  if typeof msgOrBlock is 'string'
+    it msgOrBlock, -> pending()
+  else
+    it -> pending()
+
+spectacular.before = (block) ->
+  notInsideIt 'before'
+  currentExampleGroup.ownBeforeHooks.push block
+
+spectacular.after = (block) ->
+  notInsideIt 'after'
+  currentExampleGroup.ownAfterHooks.push block
+
+spectacular.its = (property, block) ->
+  notInsideIt 'its'
+  parentSubjectBlock = currentExampleGroup.subjectBlock
+  spectacular.context "#{property} property", ->
+    spectacular.subject property, -> parentSubjectBlock?()[property]
+    spectacular.it block
 
 spectacular.itsInstance = (block) ->
+  notInsideIt 'itsInstance'
+
 spectacular.itsReturn = (block) ->
+  notInsideIt 'itsReturn'
+  parentSubjectBlock = currentExampleGroup.subjectBlock
+  spectacular.context 'returned value', ->
+    spectacular.subject 'returnedValue', -> parentSubjectBlock?()()
+
+    spectacular.it block
+
+spectacular.subject = (name, block) ->
+  notInsideIt 'subject'
+  [name, block] = [block, name] if typeof name is 'function'
+
+  currentExampleGroup.ownSubjectBlock = block
+  spectacular.given name, block if name?
+
+spectacular.given = (name, block) ->
+  notInsideIt 'given'
+
+  spectacular.before ->
+    Object.defineProperty this, name, {
+      writable: true
+      get: block
+    }
 
 spectacular.describe = (subject, block) ->
+  notInsideIt 'describe'
+
   oldGroup = currentExampleGroup
 
   currentExampleGroup = new spectacular.ExampleGroup block, subject, oldGroup
@@ -395,11 +485,14 @@ spectacular.describe = (subject, block) ->
   currentExampleGroup = oldGroup
 
 spectacular.xdescribe = (subject, block) ->
+  notInsideIt 'xdescribe'
 
 spectacular.context = spectacular.describe
 spectacular.xcontext = spectacular.xdescribe
 
 spectacular.withParameters = (args...) ->
+  notInsideIt 'withParameters'
+
 spectacular.should = (matcher, neg=false) ->
   notOutsideIt 'should'
 
@@ -414,12 +507,45 @@ spectacular.should = (matcher, neg=false) ->
 
 spectacular.shouldnt = (matcher) -> should matcher, true
 
+Object.defineProperty Object.prototype, 'should', {
+  writable: true,
+  enumerable: false,
+  value: (matcher) ->
+    notOutsideIt 'should'
+
+    currentExample.result.expectations.push(
+      new spectacular.Expectation(
+        currentExample,
+        this,
+        matcher,
+        false
+      )
+    )
+}
+
+Object.defineProperty Object.prototype, 'shouldnt', {
+  writable: true,
+  enumerable: false,
+  value: (matcher) ->
+    notOutsideIt 'should'
+
+    currentExample.result.expectations.push(
+      new spectacular.Expectation(
+        currentExample,
+        this,
+        matcher,
+        true
+      )
+    )
+}
 
 {
   it, xit,
   describe, xdescribe,
   context, xcontext,
-  itsInstance, itsReturn,
+  before, after,
+  given, subject,
+  its, itsInstance, itsReturn,
   withParameters,
   fail, pending, success, skip,
   should
