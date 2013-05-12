@@ -1,15 +1,12 @@
 
-spectacular = spectacular or {}
-spectacular.matchers ||= {}
-
-spectacular.matchers.exist =
+exports.exist =
   assert: (actual, notText) ->
     @description = "should#{notText} exist"
     @message = "Expected #{actual}#{notText} to exist"
 
     actual?
 
-spectacular.matchers.be = (state) ->
+exports.be = (state) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{state}"
     @message =
@@ -18,11 +15,22 @@ spectacular.matchers.be = (state) ->
 
     actual[state]
 
-spectacular.matchers.equal = (value) ->
+exports.compare = (actual, value, matcher, noMessage=false) ->
+  if typeof actual is 'object'
+      if Object::toString.call(actual) is '[object Array]'
+        for v,i in actual
+          unless exports.compare v, value[i], true
+            return false
+      else
+        for k,v in actual
+          unless exports.compare v, value[k], true
+            return false
+    else
+      actual is value
+
+exports.equal = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be equal to #{value}"
     @message = "Expected #{actual}#{notText} to be equal to #{value}"
 
-    actual is value
-
-global[k] = v for k,v of spectacular.matchers
+    exports.compare actual, value, this
