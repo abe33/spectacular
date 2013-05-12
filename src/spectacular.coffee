@@ -406,14 +406,18 @@ class spectacular.ExampleGroup extends spectacular.Example
       when 'string'
         if desc.indexOf('.') is 0
           @noSpaceBeforeDescription = true
-          @ownSubjectBlock = => subject
           owner = @subject
           subject = owner?[desc.replace '.', '']
           subject = subject.bind(owner) if typeof subject is 'function'
+          @ownSubjectBlock = => subject
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
-          subject = @subjectBlock?()::[desc[1..-1]]
-          @ownSubjectBlock = => subject
+          type = @subjectBlock?()
+          @ownSubjectBlock = =>
+            if type
+              owner = build type, @parameters or []
+              owner[desc.replace '::', ''].bind owner
+
       else
         @noSpaceBeforeDescription = true
         subject = desc

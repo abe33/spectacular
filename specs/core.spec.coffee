@@ -25,3 +25,6 @@ describe spectacular.Promise, ->
 
       itsReturn -> should exist
       itsReturn -> should be 'fulfilled'
+
+  describe '::isPending', ->
+    itsReturn -> should equal true
