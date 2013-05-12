@@ -273,43 +273,52 @@ class spectacular.Example
   @getter 'subject', -> @subjectBlock?.call(this)
 
   pending: ->
-    if @promise?.pending
-      @promise.resolve()
+    if @examplePromise?.pending
+      @examplePromise.resolve()
       @result.state = 'pending'
 
   skip: ->
-    if @promise?.pending
-      @promise.reject new Error 'Skipped'
+    if @examplePromise?.pending
+      @examplePromise.reject new Error 'Skipped'
       @result.state = 'skipped'
 
   resolve: ->
-    if @promise?.pending
+    if @examplePromise?.pending
       if @result.hasFailures()
-        @promise.reject()
+        @examplePromise.reject()
         @result.state = 'failure'
       else
-        @promise.resolve()
+        @examplePromise.resolve()
         @result.state = 'success'
 
   reject: (reason) ->
-    if @promise?.pending
-      @promise.reject reason
+    if @examplePromise?.pending
+      @examplePromise.reject reason
       @result.state = 'failure'
 
   run: ->
-    @promise = new spectacular.Promise
+    @examplePromise = new spectacular.Promise
     afterPromise = new spectacular.Promise
 
     @result = new spectacular.ExampleResult this
-    @runBefore => @executeBlock()
-    @promise.then => @runAfter => afterPromise.resolve()
-    @promise.fail (reason) => @runAfter => afterPromise.reject reason
+
+    @runBefore (err) =>
+      return @reject err if err?
+      @executeBlock()
+
+    @examplePromise.then => @runAfter (err) =>
+      return afterPromise.reject err if err?
+      afterPromise.resolve()
+    @examplePromise.fail (reason) => @runAfter (err) =>
+      return afterPromise.reject err if err?
+      afterPromise.reject reason
 
     afterPromise
 
   runBefore: (callback) ->
     befores = @beforeHooks
-    next = =>
+    next = (err) =>
+      return callback err if err?
       if befores.length is 0
         callback()
       else
@@ -319,7 +328,8 @@ class spectacular.Example
 
   runAfter: (callback) ->
     afters = @afterHooks
-    next = =>
+    next = (err) =>
+      return callback err if err?
       if afters.length is 0
         callback()
       else
@@ -332,14 +342,14 @@ class spectacular.Example
       if @acceptAsync hook
         async = new spectacular.AsyncExamplePromise
         async.then => next()
-        async.fail => next()
+        async.fail (reason) => next(reason)
         async.run()
         hook.call(this, async)
       else
         hook.call(this)
         next()
     catch e
-      next()
+      next(e)
 
   executeBlock: ->
     try
@@ -465,7 +475,6 @@ spectacular.itsReturn = (block) ->
 spectacular.subject = (name, block) ->
   notInsideIt 'subject'
   [name, block] = [block, name] if typeof name is 'function'
-
   currentExampleGroup.ownSubjectBlock = block
   spectacular.given name, block if name?
 
