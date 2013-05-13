@@ -12,13 +12,19 @@ options =
   coffee: false
   verbose: false
   trace: false
+  matchersRoot: './specs/support/matchers'
+  noMatchers: false
   globs: []
 
-for option in args
+while args.length
+  option = args.shift()
+
   switch option
     when '--coffee', '-c'
       options.coffee = true
       require 'coffee-script'
+    when '--no-matchers' then options.noMatchers = true
+    when '--matchers', '-m' then options.matchersRoot = options.shift()
     when '--trace', '-t' then options.trace = true
     when '--verbose', '-v' then options.verbose = true
     else options.globs.push option
