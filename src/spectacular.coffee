@@ -294,7 +294,7 @@ class spectacular.Example
     @ownBeforeHooks = []
     @ownAfterHooks = []
 
-  @getter 'subject', -> @subjectBlock?.call(this)
+  @getter 'subject', -> @__subject ||= @subjectBlock?.call(this)
 
   pending: ->
     if @examplePromise?.pending

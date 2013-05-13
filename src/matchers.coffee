@@ -15,14 +15,51 @@ exports.exist =
 
     actual?
 
-exports.be = (state) ->
-  assert: (actual, notText) ->
-    @description = "should#{notText} be #{state}"
-    @message =
-      "Expected #{actual}.#{state}#{notText}
-      to be true but was #{actual[state]}".replace /\s+/g, ' '
+findStateMethodOrProperty = (obj, state) ->
+  camelizedVersion = "is#{state.capitalize()}"
+  snakedVersion = "is_#{state}"
 
-    actual[state]
+  if obj[state]?
+    state
+  else if obj[camelizedVersion]?
+    camelizedVersion
+  else if obj[snakedVersion]?
+    snakedVersion
+  else
+    null
+
+exports.be = (value) ->
+  assert: (actual, notText) ->
+    @description = "should#{notText} be #{value}"
+    try
+      switch typeof value
+        when 'string'
+          state = findStateMethodOrProperty actual, value
+
+          if state?
+            @message =
+              "Expected #{actual}.#{state}#{notText}
+               to be true but was #{actual[value]}".replace /\s+/g, ' '
+
+            result = if typeof actual[state] is 'function'
+              actual[state]()
+            else
+              actual[state]
+
+          else
+            @message =
+              "Expected #{actual} to be #{value} but
+               the state can't be found"
+
+            result = false
+
+          result
+        else
+          @message = "Expected #{inspect actual}#{notText} to be #{inspect value}"
+          actual is value
+
+    catch e
+      console.log e
 
 objectDiff = (left, right) ->
   if isCommonJS

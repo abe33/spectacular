@@ -1,11 +1,22 @@
 describe 'be', ->
-  subject ->
-    truthy: true
-    falsy: false
+  context 'when called with a string', ->
+    subject ->
+      truthy: true
+      falsy: false
+      isPending: -> true
+      is_fulfilled: -> true
 
-  it -> should be 'truthy'
-  it -> shouldnt be 'falsy'
-  it -> shouldnt be 'inexistant'
+    it -> should be 'truthy'
+    it -> shouldnt be 'falsy'
+    it -> shouldnt be 'inexistant'
+    it -> should be 'pending'
+    it -> should be 'fulfilled'
+
+  context 'when called with an object', ->
+    subject -> {}
+
+    it -> should be @subject
+    it -> shouldnt be {}
 
 describe 'equal', ->
 
