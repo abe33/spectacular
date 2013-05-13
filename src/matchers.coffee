@@ -28,6 +28,9 @@ findStateMethodOrProperty = (obj, state) ->
   else
     null
 
+squeeze = (s) ->
+  s.replace /\s+/g, ' '
+
 exports.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"
@@ -37,25 +40,30 @@ exports.be = (value) ->
           state = findStateMethodOrProperty actual, value
 
           if state?
-            @message =
+            @message = squeeze(
               "Expected #{actual}.#{state}#{notText}
-               to be true but was #{actual[value]}".replace /\s+/g, ' '
-
+               to be true but was #{actual[value]}"
+            )
             result = if typeof actual[state] is 'function'
               actual[state]()
             else
               actual[state]
 
           else
-            @message =
+            @message = squeeze(
               "Expected #{actual} to be #{value} but
                the state can't be found"
-
+            )
             result = false
 
           result
+        when 'number', 'boolean', 'string'
+          @message = squeeze "Expected #{actual}#{notText} to be #{value}"
+          actual.valueOf() is value
         else
-          @message = "Expected #{inspect actual}#{notText} to be #{inspect value}"
+          @message = squeeze(
+            "Expected #{inspect actual}#{notText} to be #{inspect value}"
+          )
           actual is value
 
     catch e
