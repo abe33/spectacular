@@ -112,6 +112,8 @@ spectacular.HasNestedCollection = (name, options={}) ->
 
   mixin
 
+
+
 spectacular.FollowUpProperty = (property) ->
   capitalizedProperty = property.capitalize()
   privateProperty = "own#{capitalizedProperty}"
@@ -126,6 +128,14 @@ spectacular.MergeUpProperty = (property) ->
     @included: (ctor) ->
       ctor.getter property, ->
         a = @[privateProperty]
+        a = @parent[property].concat a if @parent?
+        a
+
+spectacular.CollectUpProperty = (property, collect) ->
+  class ConcreteCollectUpProperty
+    @included: (ctor) ->
+      ctor.getter property, ->
+        a = collect this
         a = @parent[property].concat a if @parent?
         a
 
@@ -280,7 +290,10 @@ class spectacular.Example
     spectacular.Describable,
     spectacular.FollowUpProperty('subjectBlock'),
     spectacular.MergeUpProperty('beforeHooks'),
-    spectacular.MergeUpProperty('afterHooks')
+    spectacular.MergeUpProperty('afterHooks'),
+    spectacular.CollectUpProperty('dependencies', (e) ->
+      e.options?.dependencies or []
+    )
   )
 
   constructor: (@block, @ownDescription='', @parent) ->
@@ -400,8 +413,13 @@ class spectacular.ExampleGroup extends spectacular.Example
   @childrenScope 'exampleGroups', (e) -> e.children?
   @childrenScope 'examples', (e) -> not e.children?
   @descendantsScope 'allExamples', (e) -> not e.children?
+  @descendantsScope 'identifiedExamples', (e) -> e.options?.id?
+  @getter 'identifiedExamplesMap', ->
+    res = {}
+    res[e.options.id] = e for e in @identifiedExamples
+    res
 
-  constructor: (block, desc, @parent) ->
+  constructor: (block, desc, @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
@@ -512,12 +530,15 @@ spectacular.given = (name, block) ->
       get: block
     }
 
-spectacular.describe = (subject, block) ->
+spectacular.describe = (subject, options, block) ->
+  [options, block] = [block, options] if typeof options is 'function'
   notInsideIt 'describe'
 
   oldGroup = currentExampleGroup
 
-  currentExampleGroup = new spectacular.ExampleGroup block, subject, oldGroup
+  currentExampleGroup = new spectacular.ExampleGroup(
+    block, subject, oldGroup, options
+  )
   oldGroup.addChild currentExampleGroup
 
   currentExampleGroup.executeBlock()
@@ -534,6 +555,10 @@ spectacular.withParameters = (args...) ->
   notInsideIt 'withParameters'
 
   spectacular.given 'parameters', -> args
+
+spectacular.dependsOn = (spec) ->
+  currentExampleGroup.options.dependencies ||= []
+  currentExampleGroup.options.dependencies.push spec
 
 Object.defineProperty Object.prototype, 'should', {
   writable: true,
@@ -586,7 +611,7 @@ spectacular.shouldnt = (matcher) ->
 'it xit describe xdescribe context xcontext
   before after given subject its itsInstance
   itsReturn withParameters fail pending success
-  skip should shouldnt
+  skip should shouldnt dependsOn
 '.split(/\s+/g).forEach (k) ->
   global[k] = spectacular[k]
 

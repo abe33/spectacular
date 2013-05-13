@@ -65,7 +65,18 @@ class Runner
         @nextExample defer
 
   register: (example) =>
-    @stack.push example
+    if example.dependencies.length > 0
+      for dep in example.dependencies
+        spec = @root.identifiedExamplesMap[dep]
+        if spec?
+          if spec.children?
+            @register s for s in spec.allExamples
+          else
+            @register spec
+        else
+          throw new Error "unmet dependencicy #{dep} for spec #{example}"
+    else
+      @stack.push example unless @stack.indexOf(example) isnt -1
 
   registerResults: (example) ->
     global.currentExample = null
@@ -141,7 +152,6 @@ class Runner
       """
 
   formatResults: (s, f, sk, p, a) ->
-
     "#{@formatCount s, 'success', 'success', @toggle f, 'green'},
     #{@formatCount a, 'assertion', 'assertions', @toggle f, 'green'},
     #{@formatCount f, 'failure', 'failures', @toggle f, 'green', 'red'},
