@@ -1,6 +1,12 @@
-deef = require 'deep-diff'
-diff = require 'node-diff'
-util = require 'util'
+isCommonJS = typeof window is "undefined"
+
+if isCommonJS
+  difflet = require('difflet')(indent: 2)
+  diff = require 'node-diff'
+  util = require 'util'
+  inspect = util.inspect
+else
+  exports = window
 
 exports.exist =
   assert: (actual, notText) ->
@@ -18,8 +24,20 @@ exports.be = (state) ->
 
     actual[state]
 
-objectDiff = (left, right) -> 'diff'
-stringDiff = (left, right) -> 'diff'
+objectDiff = (left, right) ->
+  if isCommonJS
+    difflet.compare left, right
+  else
+    ''
+
+stringDiff = (left, right) ->
+  res = diff(left, right)
+  if isCommonJS
+    res = res.replace('<del>', '\x1B[31m')
+             .replace('</del>', '\x1B[39m')
+             .replace('<ins>', '\x1B[32m')
+             .replace('</ins>', '\x1B[39m')
+  res
 
 compare = (actual, value, matcher, noMessage=false) ->
   switch typeof actual
@@ -28,26 +46,26 @@ compare = (actual, value, matcher, noMessage=false) ->
         for v,i in actual
           unless compare v, value[i], matcher, true
             unless noMessage
-              matcher.message = "#{matcher.message}\n\n#{objectDiff v, value[i]}"
+              matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
             return false
         return true
       else
         for k,v of actual
           unless compare v, value[k], matcher, true
             unless noMessage
-              matcher.message = "#{matcher.message}\n\n#{objectDiff v, value[k]}"
+              matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
             return false
         return true
     when 'string'
       unless noMessage
-        matcher.message = "#{matcher.message}\n\n#{stringDiff v, value[i]}"
+        matcher.message = "#{matcher.message}\n\n#{stringDiff actual, value}"
       actual is value
     else
       actual is value
 
 exports.equal = (value) ->
   assert: (actual, notText) ->
-    @description = "should#{notText} be equal to #{util.inspect value}"
-    @message = "Expected #{util.inspect actual}#{notText} to be equal to #{util.inspect value}"
+    @description = "should#{notText} be equal to #{inspect value}"
+    @message = "Expected #{inspect actual}#{notText} to be equal to #{inspect value}"
 
     compare actual, value, this
