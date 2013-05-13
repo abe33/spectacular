@@ -82,6 +82,12 @@ class Runner
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped']
 
+  indent: (string, ind=4) ->
+    s = ''
+    s = "#{s} " for i in [0..ind-1]
+
+    "#{s}#{string.replace /\n/g, "\n#{s}"}"
+
   printStack: (e) ->
     console.log "\n\n#{e.stack.replace(/^.*\n/, '').grey}"
 
@@ -89,8 +95,7 @@ class Runner
     console.log "#{' FAIL '.inverse.bold} #{message}".red
 
   printMessage: (message) ->
-    console.log "\n    #{message}"
-
+    console.log "\n#{@indent message}"
 
   printResults: =>
     console.log '\n'
