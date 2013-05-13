@@ -260,6 +260,8 @@ class spectacular.Expectation
     catch e
       @success = false
       @trace = e
+      @matcher.message = e.message unless @matcher.message?
+      @matcher.description = '' unless @matcher.description?
 
     @message = @matcher.message
     unless @success
