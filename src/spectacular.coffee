@@ -259,6 +259,7 @@ class spectacular.Expectation
           @success = false
     catch e
       @success = false
+      @trace = e
 
     @message = @matcher.message
     unless @success
