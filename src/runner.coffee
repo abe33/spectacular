@@ -43,6 +43,7 @@ class Runner
     require path.resolve('.', p) for p in paths
 
   executeSpecs: =>
+    console.log ''
     @register example for example in @root.allExamples
     defer = Q.defer()
     @nextExample defer
@@ -85,7 +86,7 @@ class Runner
     console.log "\n\n#{e.stack.replace(/^.*\n/, '').grey}"
 
   printFailure: (message) ->
-    console.log "#{' FAIL '.inverse} #{message}".red
+    console.log "#{' FAIL '.inverse.bold} #{message}".red
 
   printMessage: (message) ->
     console.log "\n    #{message}"
