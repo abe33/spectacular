@@ -247,16 +247,8 @@ class spectacular.AsyncExamplePromise extends spectacular.Promise
 class spectacular.Expectation
   constructor: (@example, @actual, @matcher, @not=false) ->
     try
-      if @matcher.assert(@actual, if @not then ' not' else '')
-        if @not
-          @success = false
-        else
-          @success = true
-      else
-        if @not
-          @success = true
-        else
-          @success = false
+      @success = @matcher.assert(@actual, if @not then ' not' else '')
+      @success = not @success if @not
     catch e
       @success = false
       @trace = e
