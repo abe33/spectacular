@@ -25,11 +25,10 @@ describe 'equal', ->
   context 'with objects', ->
     subject ->
       foo: 'bar'
-      baz: 10
+      baz: {foo: 10}
 
-    it -> should equal foo: 'bar', baz: 10
-    it -> should equal foo: 'baz', baz: 6
-    # it -> shouldnt equal foo: 'baz', baz: 6
+    it -> should equal foo: 'bar', baz: {foo: 10}
+    it -> shouldnt equal foo: 'baz', baz: {foo: 6}
 
 describe 'exist', ->
   context 'with something', ->
