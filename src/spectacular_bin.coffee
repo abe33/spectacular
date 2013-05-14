@@ -13,7 +13,9 @@ options =
   verbose: false
   trace: false
   matchersRoot: './specs/support/matchers'
+  helpersRoot: './specs/support/helpers'
   noMatchers: false
+  noHelpers: false
   globs: []
 
 while args.length
@@ -24,7 +26,9 @@ while args.length
       options.coffee = true
       require 'coffee-script'
     when '--no-matchers' then options.noMatchers = true
+    when '--no-helpers' then options.noHelpers = true
     when '--matchers', '-m' then options.matchersRoot = options.shift()
+    when '--helpers' then options.helpersRoot = options.shift()
     when '--trace', '-t' then options.trace = true
     when '--verbose', '-v' then options.verbose = true
     else options.globs.push option

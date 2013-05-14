@@ -7,6 +7,10 @@ path = require 'path'
 walk = require 'walkdir'
 Runner = require './runner'
 
+requireIntoGlobal = (file) ->
+  matchers = require file
+  global[k] = v for k,v of matchers
+
 loadSpectacular = ->
   Q.fcall ->
     [ 'factories', 'extensions', 'mixins',
@@ -16,10 +20,6 @@ loadSpectacular = ->
       src = fs.readFileSync filename
       vm.runInThisContext src, filename
 
-loadMatchersFile = (file) ->
-  matchers = require file
-  global[k] = v for k,v of matchers
-
 loadMatchers = (options) ->
   defer = Q.defer()
 
@@ -27,16 +27,28 @@ loadMatchers = (options) ->
     defer.resolve()
   else
     emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) -> loadMatchersFile path
+    emitter.on 'file', (path, stat) -> requireIntoGlobal path
+    emitter.on 'end', -> defer.resolve()
+
+  defer.promise
+
+loadHelpers = (options) ->
+  defer = Q.defer()
+
+  if options.noHelpers
+    defer.resolve()
+  else
+    emitter = walk options.helpersRoot
+    emitter.on 'file', (path, stat) -> requireIntoGlobal path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
 
 exports.run = (options) ->
   loadSpectacular()
-  .then ->
-    loadMatchersFile './matchers'
-    loadMatchers(options)
+  .then(-> requireIntoGlobal './matchers')
+  .then(loadMatchers options)
+  .then(loadHelpers options)
   .then ->
     new Runner(rootExampleGroup, options).run()
 
