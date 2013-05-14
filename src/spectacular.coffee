@@ -301,7 +301,7 @@ class spectacular.Example
     @ownBeforeHooks = []
     @ownAfterHooks = []
 
-  @getter 'subject', -> @__subject ||= @subjectBlock?.call(this)
+  @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
 
   pending: ->
     if @examplePromise?.pending
@@ -327,7 +327,14 @@ class spectacular.Example
       @examplePromise.reject reason
       @result.state = 'failure'
 
+  createContext: ->
+    context = {}
+    Object.defineProperty context, 'subject', get: => @subject
+    context
+
   run: ->
+    @context = @createContext()
+
     @examplePromise = new spectacular.Promise
     afterPromise = new spectacular.Promise
 
@@ -375,9 +382,9 @@ class spectacular.Example
         async.then => next()
         async.fail (reason) => next(reason)
         async.run()
-        hook.call(this, async)
+        hook.call(@context, async)
       else
-        hook.call(this)
+        hook.call(@context)
         next()
     catch e
       next(e)
@@ -391,9 +398,9 @@ class spectacular.Example
         async.fail (reason) =>
           @reject reason
         async.run()
-        @block.call(this, async)
+        @block.call(@context, async)
       else
-        @block.call(this)
+        @block.call(@context)
         @resolve()
     catch e
       @reject e
