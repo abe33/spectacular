@@ -131,14 +131,6 @@ spectacular.MergeUpProperty = (property) ->
         a = @parent[property].concat a if @parent?
         a
 
-spectacular.CollectUpProperty = (property, collect) ->
-  class ConcreteCollectUpProperty
-    @included: (ctor) ->
-      ctor.getter property, ->
-        a = collect this
-        a = @parent[property].concat a if @parent?
-        a
-
 class spectacular.Describable
   @included: (ctor) ->
     ctor.getter 'description', ->
@@ -292,15 +284,14 @@ class spectacular.Example
     spectacular.FollowUpProperty('subjectBlock'),
     spectacular.MergeUpProperty('beforeHooks'),
     spectacular.MergeUpProperty('afterHooks'),
-    spectacular.CollectUpProperty('dependencies', (e) ->
-      e.options?.dependencies or []
-    )
+    spectacular.MergeUpProperty('dependencies')
   )
 
   constructor: (@block, @ownDescription='', @parent) ->
     @noSpaceBeforeDescription = true if @ownDescription is ''
     @ownBeforeHooks = []
     @ownAfterHooks = []
+    @ownDependencies = []
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
   @getter 'finished', -> @examplePromise?.isResolved()
@@ -575,8 +566,7 @@ spectacular.withParameters = (args...) ->
   spectacular.given 'parameters', -> args
 
 spectacular.dependsOn = (spec) ->
-  currentExampleGroup.options.dependencies ||= []
-  currentExampleGroup.options.dependencies.push spec
+  currentExampleGroup.ownDependencies.push spec
 
 Object.defineProperty Object.prototype, 'should', {
   writable: true,
