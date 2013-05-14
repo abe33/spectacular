@@ -64,19 +64,26 @@ class Runner
         @registerResults nextExample
         @nextExample defer
 
+  handleDependencies: (example) ->
+    deps = []
+    for dep in example.dependencies
+      spec = @root.identifiedExamplesMap[dep]
+      if spec?
+        deps.push spec
+        if spec.children?
+          @register s for s in spec.allExamples
+        else
+          @register spec
+      else
+        throw new Error "unmet dependencicy #{dep} for spec #{example}"
+
+    example.dependenciesMet = -> deps.every (e) -> e.succeed
+
   register: (example) =>
     if example.dependencies.length > 0
-      for dep in example.dependencies
-        spec = @root.identifiedExamplesMap[dep]
-        if spec?
-          if spec.children?
-            @register s for s in spec.allExamples
-          else
-            @register spec
-        else
-          throw new Error "unmet dependencicy #{dep} for spec #{example}"
-    else
-      @stack.push example unless @stack.indexOf(example) isnt -1
+      @handleDependencies example
+
+    @stack.push example unless @stack.indexOf(example) isnt -1
 
   registerResults: (example) ->
     global.currentExample = null
