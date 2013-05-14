@@ -162,7 +162,7 @@ class Runner
     "#{@formatCount s, 'success', 'success', @toggle f, 'green'},
     #{@formatCount a, 'assertion', 'assertions', @toggle f, 'green'},
     #{@formatCount f, 'failure', 'failures', @toggle f, 'green', 'red'},
-    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'red'},
+    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'magenta'},
     #{@formatCount p, 'pending', 'pending', @toggle p, 'green', 'yellow'}
     ".replace /\s+/g, ' '
 
