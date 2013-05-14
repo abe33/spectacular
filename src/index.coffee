@@ -2,10 +2,24 @@
 m = require 'module'
 fs = require 'fs'
 vm = require 'vm'
+Q = require 'q'
 path = require 'path'
 walk = require 'walkdir'
 Runner = require './runner'
 
+loadMatchers = (options) ->
+  defer = Q.defer()
+
+  if options.noMatchers
+    defer.resolve()
+  else
+    emitter = walk options.matchersRoot
+    emitter.on 'file', (path, stat) ->
+      matchers = require path
+      global[k] = v for k,v of matchers
+    emitter.on 'end', -> defer.resolve()
+
+  defer.promise
 
 exports.run = (options) ->
   ['factories', 'spectacular'].forEach (file) ->
@@ -16,11 +30,6 @@ exports.run = (options) ->
   matchers = require './matchers'
   global[k] = v for k,v of matchers
 
-  unless options.noMatchers
-    emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) ->
-      matchers = require path
-      global[k] = v for k,v of matchers
-
-  new Runner(rootExampleGroup, options).run()
+  loadMatchers(options).then ->
+    new Runner(rootExampleGroup, options).run()
 
