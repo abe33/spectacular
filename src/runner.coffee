@@ -1,4 +1,5 @@
 Q = require 'q'
+fs = require 'fs'
 glob = require 'glob'
 path = require 'path'
 util = require 'util'
@@ -144,10 +145,68 @@ class Runner
         when 'success' then util.print '.'.green
 
   printStack: (e) ->
-    console.log "\n\n#{e.stack.replace(/^.*\n/, '').grey}"
+    stactString = e.stack.replace(/^.*\n/, '')
+    stack = stactString.split('\n')
+    @printErrorInFile stack[0] if @options.showSource
+
+    if @options.longTrace
+      res = "\n\n#{stactString}"
+    else
+      res = "\n#{
+        stack[0..5]
+        .concat(
+          "    ...\n\n    use --long-trace option to view the #{
+            stack.length - 6
+          } remaining lines"
+        ).join('\n')
+      }"
+
+    res = res.grey unless @options.noColors
+    console.log res
+
+  printErrorInFile: (line) ->
+    re = /\((.*):(.*):(.*)\)/
+    [match, file, line, column] = re.exec line
+
+    console.log ''
+    console.log @getLines(file, parseInt(line), parseInt(column))
+
+  getLines: (file, line, column) ->
+    fileContent = fs.readFileSync(file).toString()
+
+    if @options.coffee and file.indexOf('.coffee') isnt -1
+      {compile} = require 'coffee-script'
+      fileContent = compile fileContent, bare: true
+
+    fileContent = fileContent.split('\n').map (l,i) =>
+      "    #{@padRight i + 1} | #{l}"
+
+    @insertColumnLine fileContent, line, column
+
+    startLine = Math.max(1, line - 3) - 1
+    endLine = Math.min(fileContent.length, line + 2) - 1
+
+    lines = fileContent[startLine..endLine].join('\n')
+    lines = lines.grey unless @options.noColors
+    lines
+
+  insertColumnLine: (content, line, column) ->
+    if line is content.length
+      content.push line
+    else
+      content.splice line, 0, "         |#{@padRight('^', column-1)}"
+
+  padRight: (string, pad=4) ->
+    string = string.toString()
+    string = " #{string}" while string.length < pad
+    string
 
   printFailure: (message) ->
-    console.log "#{' FAIL '.inverse.bold} #{message}".red
+    badge = ' FAIL '
+    console.log if @options.noColors
+      "#{badge} #{message}"
+    else
+      "#{badge.inverse.bold} #{message}".red
 
   printMessage: (message) ->
     console.log "\n#{@indent message}"
@@ -198,7 +257,7 @@ class Runner
 
   formatDuration: (start, end) ->
     duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
-    "#{duration}s"
+    duration = "#{Math.max 0, duration}s"
     duration = duration.yellow unless @options.noColors
     duration
 

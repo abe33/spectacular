@@ -11,7 +11,10 @@ ROOT = path.resolve '.'
 options =
   coffee: false
   verbose: false
-  trace: false
+  trace: true
+  longTrace: false
+  showSource: true
+  showColors: false
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
   noMatchers: false
@@ -32,6 +35,9 @@ while args.length
     when '--matchers', '-m' then options.matchersRoot = options.shift()
     when '--helpers' then options.helpersRoot = options.shift()
     when '--trace', '-t' then options.trace = true
+    when '--no-trace' then options.trace = false
+    when '--no-source' then options.showSource = false
+    when '--long-trace' then options.longTrace = true
     when '--verbose', '-v' then options.verbose = true
     else options.globs.push option
 
