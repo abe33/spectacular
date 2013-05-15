@@ -1,15 +1,52 @@
 
-describe 'top level', id: 'top', ->
-  describe 'success', ->
+describe 'dependency', id: 'top', ->
+  context 'succeeding', ->
     it -> true.should be true
 
-describe 'failure', id: 'failure', ->
+describe 'dependency failing', id: 'failure', ->
   it -> false.should be true
 
 
-describe 'depends', ->
+describe 'dependent', ->
   dependsOn 'top'
   dependsOn 'failure'
 
-  it 'should pass', ->
+  it 'should be skipped', ->
     true.should be true
+
+virtualEnv('parent depending on child')
+.shouldFailWith ///
+  #{TEST_PATTERN}
+  #{' can\'t depends on ancestor '}
+  #{EXAMPLE_GROUP_PATTERN}
+///, ->
+  describe 'parent', id: 'parent1', ->
+    context 'child', id: 'child1', ->
+      dependsOn 'parent1'
+
+      it -> true.should be true
+
+virtualEnv('child depending on parent')
+.shouldFailWith ///
+  #{TEST_PATTERN}
+  #{' can\'t depends on ancestor '}
+  #{EXAMPLE_GROUP_PATTERN}
+///, ->
+  describe 'parent', id: 'parent2', ->
+    dependsOn 'child2'
+
+    context 'child', id: 'child2', ->
+      it -> true.should be true
+
+virtualEnv('circular depende')
+.shouldFailWith /Maximum call stack size exceeded/, ->
+  describe 'cycle 1', id: 'c1', ->
+    dependsOn 'c2'
+
+    it -> true.should be true
+
+  describe 'cycle 2', id: 'c2', ->
+    dependsOn 'c1'
+
+    it -> true.should be true
+

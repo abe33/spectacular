@@ -2,13 +2,17 @@
 #### Mixins
 
 class spectacular.HasAncestors
-  ancestors: ->
-    ancestors = []
-    parent = @parent
-    while parent
-      ancestors.push parent
-      parent = parent.parent
-    ancestors
+  @included: (ctor) ->
+    ctor.getter 'ancestors', ->
+      ancestors = []
+      parent = @parent
+      while parent
+        ancestors.push parent
+        parent = parent.parent
+      ancestors
+
+    ctor.ancestorsScope = (name, block) ->
+      @getter name, -> @ancestors.filter block
 
 spectacular.HasCollection = (plural, singular) ->
   capitalizedSingular = singular.capitalize()
@@ -61,8 +65,6 @@ spectacular.HasNestedCollection = (name, options={}) ->
         items
 
   mixin
-
-
 
 spectacular.FollowUpProperty = (property) ->
   capitalizedProperty = property.capitalize()

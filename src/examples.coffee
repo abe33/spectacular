@@ -1,5 +1,5 @@
 
-#### Expectation
+## Expectation
 
 class spectacular.Expectation
   constructor: (@example, @actual, @matcher, @not=false) ->
@@ -21,7 +21,7 @@ class spectacular.Expectation
 
     @description = "#{@example.description} #{@matcher.description}"
 
-#### ExampleResult
+## ExampleResult
 
 class spectacular.ExampleResult
   constructor: (@example, @state) ->
@@ -29,17 +29,15 @@ class spectacular.ExampleResult
 
   hasFailures: -> @expectations.some (e) -> not e.success
 
-#### Example
+## Example
 
 class spectacular.Example
-  @include(
-    spectacular.HasAncestors,
-    spectacular.Describable,
-    spectacular.FollowUpProperty('subjectBlock'),
-    spectacular.MergeUpProperty('beforeHooks'),
-    spectacular.MergeUpProperty('afterHooks'),
-    spectacular.MergeUpProperty('dependencies')
-  )
+  @include spectacular.HasAncestors
+  @include spectacular.Describable
+  @include spectacular.FollowUpProperty('subjectBlock')
+  @include spectacular.MergeUpProperty('beforeHooks')
+  @include spectacular.MergeUpProperty('afterHooks')
+  @include spectacular.MergeUpProperty('dependencies')
 
   constructor: (@block, @ownDescription='', @parent) ->
     @noSpaceBeforeDescription = true if @ownDescription is ''
@@ -52,6 +50,7 @@ class spectacular.Example
   @getter 'failed', -> @examplePromise?.isRejected()
   @getter 'succeed', -> @examplePromise?.isFulfilled()
 
+  @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
   pending: ->
     if @examplePromise?.pending
@@ -162,13 +161,11 @@ class spectacular.Example
 
   acceptAsync: (func) -> func.signature().length is 1
 
-#### ExampleGroup
+## ExampleGroup
 
 class spectacular.ExampleGroup extends spectacular.Example
-  @include(
-    spectacular.HasCollection('children', 'child'),
-    spectacular.HasNestedCollection('descendants', through: 'children')
-  )
+  @include spectacular.HasCollection('children', 'child')
+  @include spectacular.HasNestedCollection('descendants', through: 'children')
 
   @childrenScope 'exampleGroups', (e) -> e.children?
   @childrenScope 'examples', (e) -> not e.children?

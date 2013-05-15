@@ -47,5 +47,4 @@ exists path.resolve(ROOT, 'node_modules/spectacular'), (exist) ->
     spectacular = require path.resolve(SPECTACULAR,
                                        'lib/index')
 
-  spectacular.run(options).then (status) ->
-    process.exit status
+  spectacular.run(options).then (status) -> process.exit status

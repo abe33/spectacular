@@ -11,14 +11,17 @@ requireIntoGlobal = (file) ->
   matchers = require file
   global[k] = v for k,v of matchers
 
-loadSpectacular = ->
+loadSpectacular = (options) ->
   Q.fcall ->
     [ 'factories', 'extensions', 'mixins',
-      'promises', 'examples', 'spectacular'
+      'promises', 'examples', #'spectacular',
+      'environment'
     ].forEach (file) ->
       filename = path.resolve __dirname, "#{file}.js"
       src = fs.readFileSync filename
       vm.runInThisContext src, filename
+
+    spectacular.env = new spectacular.Environment Runner, options
 
 loadMatchers = (options) ->
   defer = Q.defer()
@@ -45,10 +48,10 @@ loadHelpers = (options) ->
   defer.promise
 
 exports.run = (options) ->
-  loadSpectacular()
+  loadSpectacular(options)
   .then(-> requireIntoGlobal './matchers')
   .then(loadMatchers options)
   .then(loadHelpers options)
   .then ->
-    new Runner(rootExampleGroup, options).run()
+    spectacular.env.run()
 
