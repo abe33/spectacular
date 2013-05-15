@@ -13,7 +13,10 @@ options =
   verbose: false
   trace: false
   matchersRoot: './specs/support/matchers'
+  helpersRoot: './specs/support/helpers'
   noMatchers: false
+  noHelpers: false
+  noColors: false
   globs: []
 
 while args.length
@@ -24,7 +27,10 @@ while args.length
       options.coffee = true
       require 'coffee-script'
     when '--no-matchers' then options.noMatchers = true
+    when '--no-helpers' then options.noHelpers = true
+    when '--no-colors' then options.noColors = true
     when '--matchers', '-m' then options.matchersRoot = options.shift()
+    when '--helpers' then options.helpersRoot = options.shift()
     when '--trace', '-t' then options.trace = true
     when '--verbose', '-v' then options.verbose = true
     else options.globs.push option
@@ -43,5 +49,4 @@ exists path.resolve(ROOT, 'node_modules/spectacular'), (exist) ->
     spectacular = require path.resolve(SPECTACULAR,
                                        'lib/index')
 
-  spectacular.run(options).then (status) ->
-    process.exit status
+  spectacular.run(options).then (status) -> process.exit status

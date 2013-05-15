@@ -22,7 +22,10 @@ options = {
   verbose: false,
   trace: false,
   matchersRoot: './specs/support/matchers',
+  helpersRoot: './specs/support/helpers',
   noMatchers: false,
+  noHelpers: false,
+  noColors: false,
   globs: []
 };
 
@@ -37,9 +40,18 @@ while (args.length) {
     case '--no-matchers':
       options.noMatchers = true;
       break;
+    case '--no-helpers':
+      options.noHelpers = true;
+      break;
+    case '--no-colors':
+      options.noColors = true;
+      break;
     case '--matchers':
     case '-m':
       options.matchersRoot = options.shift();
+      break;
+    case '--helpers':
+      options.helpersRoot = options.shift();
       break;
     case '--trace':
     case '-t':

@@ -7,6 +7,22 @@ path = require 'path'
 walk = require 'walkdir'
 Runner = require './runner'
 
+requireIntoGlobal = (file) ->
+  matchers = require file
+  global[k] = v for k,v of matchers
+
+loadSpectacular = (options) ->
+  Q.fcall ->
+    [ 'factories', 'extensions', 'mixins',
+      'promises', 'examples', #'spectacular',
+      'environment'
+    ].forEach (file) ->
+      filename = path.resolve __dirname, "#{file}.js"
+      src = fs.readFileSync filename
+      vm.runInThisContext src, filename
+
+    spectacular.env = new spectacular.Environment Runner, options
+
 loadMatchers = (options) ->
   defer = Q.defer()
 
@@ -14,22 +30,28 @@ loadMatchers = (options) ->
     defer.resolve()
   else
     emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) ->
-      matchers = require path
-      global[k] = v for k,v of matchers
+    emitter.on 'file', (path, stat) -> requireIntoGlobal path
+    emitter.on 'end', -> defer.resolve()
+
+  defer.promise
+
+loadHelpers = (options) ->
+  defer = Q.defer()
+
+  if options.noHelpers
+    defer.resolve()
+  else
+    emitter = walk options.helpersRoot
+    emitter.on 'file', (path, stat) -> requireIntoGlobal path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
 
 exports.run = (options) ->
-  ['factories', 'spectacular'].forEach (file) ->
-    filename = path.resolve __dirname, "#{file}.js"
-    src = fs.readFileSync filename
-    vm.runInThisContext src, filename
-
-  matchers = require './matchers'
-  global[k] = v for k,v of matchers
-
-  loadMatchers(options).then ->
-    new Runner(rootExampleGroup, options).run()
+  loadSpectacular(options)
+  .then(-> requireIntoGlobal './matchers')
+  .then(loadMatchers options)
+  .then(loadHelpers options)
+  .then ->
+    spectacular.env.run()
 

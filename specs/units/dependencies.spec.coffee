@@ -8,7 +8,6 @@ virtualEnv('example depending on a failing example')
   describe 'dependency failing', id: 'failure', ->
     it -> false.should be true
 
-
   describe 'dependent', ->
     dependsOn 'top'
     dependsOn 'failure'
@@ -36,3 +35,8 @@ virtualEnv('circular dependencies')
 .runShouldFailWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
+
+  describe 'cycle 2', id: 'c2', ->
+    dependsOn 'c1'
+
+    it -> true.should be true

@@ -5,7 +5,7 @@ util = require 'util'
 require 'colors'
 
 class Runner
-  constructor: (@root, @options) ->
+  constructor: (@root, @options, @env) ->
     @results = []
     @examples = []
     @stack = []
@@ -24,6 +24,8 @@ class Runner
     .then =>
       @specsEndedAt = new Date()
     .then(@printResults)
+    .then =>
+      if @hasFailures() then 1 else 0
 
   globPaths: =>
     Q.all(@glob p for p in @options.globs).then (results) =>
@@ -91,7 +93,6 @@ class Runner
 
   executeSpecs: =>
     console.log ''
-    @register example for example in @root.allExamples
     defer = Q.defer()
     @nextExample defer
     defer.promise
@@ -102,7 +103,7 @@ class Runner
     else
       nextExample = @stack.shift()
 
-      global.currentExample = nextExample
+      @env.currentExample = nextExample
       nextExample.run()
       .then =>
         @registerResults nextExample
@@ -112,16 +113,11 @@ class Runner
         @nextExample defer
 
   registerResults: (example) ->
-    global.currentExample = null
-
-    switch example.result.state
-      when 'pending' then util.print '*'.yellow
-      when 'skipped' then util.print 'x'.magenta
-      when 'failure' then util.print 'F'.red
-      when 'success' then util.print '.'.green
-
+    @env.currentExample = null
+    @printExampleResult example
     @examples.push example
     @results.push example.result
+
 
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped']
@@ -131,6 +127,21 @@ class Runner
     s = "#{s} " for i in [0..ind-1]
 
     "#{s}#{string.replace /\n/g, "\n#{s}"}"
+
+  printExampleResult: (example) ->
+    if @options.noColors
+      switch example.result.state
+        when 'pending' then util.print '*'
+        when 'skipped' then util.print 'x'
+        when 'failure' then util.print 'F'
+        when 'success' then util.print '.'
+
+    else
+      switch example.result.state
+        when 'pending' then util.print '*'.yellow
+        when 'skipped' then util.print 'x'.magenta
+        when 'failure' then util.print 'F'.red
+        when 'success' then util.print '.'.green
 
   printStack: (e) ->
     console.log "\n\n#{e.stack.replace(/^.*\n/, '').grey}"
@@ -158,39 +169,38 @@ class Runner
             @printMessage result.example.examplePromise.reason.message
             @printStack result.example.examplePromise.reason if @options.trace
             console.log '\n'
-      @printDetails()
-      1
-    else
-      @printDetails()
-      0
 
-  duration: (start, end) ->
-    duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
-    "#{duration}s".yellow
+    console.log @formatCounters()
 
-  printDetails: ->
+  formatCounters: ->
     success = @examples.filter((e)-> e.result.state is 'success').length
     failures = @examples.filter((e)-> e.result.state is 'failure').length
     skipped = @examples.filter((e)-> e.result.state is 'skipped').length
     pending = @examples.filter((e)-> e.result.state is 'pending').length
     assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
-    loadDuration = @duration @loadStartedAt, @loadEndedAt
-    specsDuration = @duration @specsStartedAt, @specsEndedAt
+    loadDuration = @formatDuration @loadStartedAt, @loadEndedAt
+    specsDuration = @formatDuration @specsStartedAt, @specsEndedAt
 
-    console.log """
-      Specs loaded in #{loadDuration}
-      Finished in #{specsDuration}
-      #{@formatResults success, failures, skipped, pending, assertions}
+    """
+    Specs loaded in #{loadDuration}
+    Finished in #{specsDuration}
+    #{@formatResults success, failures, skipped, pending, assertions}
 
-      """
+    """
 
   formatResults: (s, f, sk, p, a) ->
     "#{@formatCount s, 'success', 'success', @toggle f, 'green'},
     #{@formatCount a, 'assertion', 'assertions', @toggle f, 'green'},
     #{@formatCount f, 'failure', 'failures', @toggle f, 'green', 'red'},
-    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'red'},
+    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'magenta'},
     #{@formatCount p, 'pending', 'pending', @toggle p, 'green', 'yellow'}
     ".replace /\s+/g, ' '
+
+  formatDuration: (start, end) ->
+    duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
+    "#{duration}s"
+    duration = duration.yellow unless @options.noColors
+    duration
 
   formatCount: (value, singular, plural, color) ->
     s = ("#{value} #{
@@ -201,7 +211,7 @@ class Runner
       else
         plural
     }")
-    s = s[color] if color?
+    s = s[color] if color? and not @options.noColors
     s
 
   toggle: (value, c1, c2) ->

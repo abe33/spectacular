@@ -114,3 +114,10 @@ exports.equal = (value) ->
     @message = "Expected #{inspect actual}#{notText} to be equal to #{inspect value}"
 
     compare actual, value, this
+
+exports.match = (re) ->
+  assert: (actual, notText) ->
+    @description = "should#{notText} match #{re}"
+    @message = "Expected '#{actual}'#{notText} to match #{re}"
+
+    re.test actual
