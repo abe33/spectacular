@@ -46,7 +46,7 @@ class spectacular.Environment
     'it xit describe xdescribe context xcontext
       before after given subject its itsInstance
       itsReturn withParameters fail pending success
-      skip should shouldnt dependsOn'.split(/\s+/g).forEach (k) =>
+      skip should shouldnt dependsOn spyOn the'.split(/\s+/g).forEach (k) =>
       global[k] = ->
         env[k].apply env, arguments
 
@@ -74,6 +74,8 @@ class spectacular.Environment
     @currentExampleGroup.addChild(
       new spectacular.Example block, msgOrBlock, @currentExampleGroup
     )
+
+  the: (msgOrBlock, block) => @it msgOrBlock, block
 
   xit: (msgOrBlock, block) =>
     @notInsideIt 'xit'
@@ -123,7 +125,7 @@ class spectacular.Environment
       Object.defineProperty this, name, {
         configurable: true
         enumerable: true
-        get: block
+        get: => @["__#{name}"] ||= block.call(this)
       }
 
   describe: (subject, options, block) =>
@@ -144,8 +146,8 @@ class spectacular.Environment
   xdescribe: (subject, block) =>
     @notInsideIt 'xdescribe'
 
-  context: Environment::describe
-  xcontext: Environment::xdescribe
+  context: (subject, options, block) => @describe subject, options, block
+  xcontext: => @xdescribe()
 
   withParameters: (args...) =>
     @notInsideIt 'withParameters'
@@ -154,6 +156,25 @@ class spectacular.Environment
 
   dependsOn: (spec) =>
     @currentExampleGroup.ownDependencies.push spec
+
+  spyOn: (obj, method) =>
+    oldMethod = obj[method]
+    spy = (args...) ->
+      spy.argsForCall.push args
+      if spy.mock?
+        spy.mock.apply(obj, args)
+      else
+        oldMethod.apply(obj, args)
+
+    spy.spied = oldMethod
+    spy.argsForCall = []
+    spy.andCallFake = (@mock) ->
+
+    @currentExample.ownAfterHooks.push ->
+      obj[method] = oldMethod
+
+    obj[method] = spy
+    spy
 
   should: (matcher, neg=false) =>
     @notOutsideIt 'should'

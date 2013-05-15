@@ -121,3 +121,25 @@ exports.match = (re) ->
     @message = "Expected '#{actual}'#{notText} to match #{re}"
 
     re.test actual
+
+exports.haveBeenCalled =
+  assert: (actual, notText) ->
+    if typeof actual?.spied is 'function'
+      if @arguments?
+        @description = "should have been called with #{@arguments}"
+        @message = "Expected #{actual.spied}#{notText} to have been called with #{@arguments} but was called with #{actual.argsForCall}"
+
+        actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
+          equal(a).assert(@arguments, '')
+      else
+        @description = "should have been called"
+        @message = "Expected #{actual.spied}#{notText} to have been called"
+        actual.argsForCall.length > 0
+    else
+      @message = "Expected a spy but it was #{actual}"
+      false
+
+  with: (args...) ->
+    @arguments = args
+    this
+

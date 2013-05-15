@@ -56,3 +56,34 @@ describe 'exist', ->
     subject -> false
 
     it -> should exist
+
+describe 'match', ->
+  subject -> 'irrelevant'
+
+  it -> should match /irrelevant/
+  it -> shouldnt match /tnavelerri/
+
+describe 'haveBeenCalled', ->
+  given 'object', -> method: -> 42
+
+  context 'on a spied method', ->
+    before -> spyOn(@object, 'method')
+
+    the -> @object.method.shouldnt haveBeenCalled
+
+    context 'when called', ->
+      before -> @object.method()
+
+      the -> @object.method.should haveBeenCalled
+
+    context 'when called with arguments', ->
+      before -> @object.method 10, 'foo'
+
+      the -> @object.method.shouldnt haveBeenCalled.with 'foo', 10
+      the -> @object.method.should haveBeenCalled.with 10, 'foo'
+
+
+
+
+
+
