@@ -16,6 +16,7 @@ options =
   helpersRoot: './specs/support/helpers'
   noMatchers: false
   noHelpers: false
+  noColors: false
   globs: []
 
 while args.length
@@ -27,6 +28,7 @@ while args.length
       require 'coffee-script'
     when '--no-matchers' then options.noMatchers = true
     when '--no-helpers' then options.noHelpers = true
+    when '--no-colors' then options.noColors = true
     when '--matchers', '-m' then options.matchersRoot = options.shift()
     when '--helpers' then options.helpersRoot = options.shift()
     when '--trace', '-t' then options.trace = true

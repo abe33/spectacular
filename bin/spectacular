@@ -25,6 +25,7 @@ options = {
   helpersRoot: './specs/support/helpers',
   noMatchers: false,
   noHelpers: false,
+  noColors: false,
   globs: []
 };
 
@@ -41,6 +42,9 @@ while (args.length) {
       break;
     case '--no-helpers':
       options.noHelpers = true;
+      break;
+    case '--no-colors':
+      options.noColors = true;
       break;
     case '--matchers':
     case '-m':
