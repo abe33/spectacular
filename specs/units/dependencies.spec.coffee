@@ -16,7 +16,7 @@ virtualEnv('example depending on a failing example')
       true.should be true
 
 virtualEnv('parent depending on child')
-.runShouldFailWith /can't depends on ancestor/, ->
+.shouldStopWith /can't depends on ancestor/, ->
   describe 'parent', id: 'parent1', ->
     context 'child', id: 'child1', ->
       dependsOn 'parent1'
@@ -24,7 +24,7 @@ virtualEnv('parent depending on child')
       it -> true.should be true
 
 virtualEnv('child depending on parent')
-.runShouldFailWith /can't depends on ancestor/, ->
+.shouldStopWith /can't depends on ancestor/, ->
   describe 'parent', id: 'parent2', ->
     dependsOn 'child2'
 
@@ -32,7 +32,7 @@ virtualEnv('child depending on parent')
       it -> true.should be true
 
 virtualEnv('circular dependencies')
-.runShouldFailWith /circular dependencies between/, ->
+.shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
 
@@ -44,7 +44,7 @@ virtualEnv('circular dependencies')
     it -> true.should be true
 
 virtualEnv('deep circular dependencies')
-.runShouldFailWith /circular dependencies between/, ->
+.shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     describe 'child 1', id: 'cc1', ->
       dependsOn 'c2'
@@ -57,7 +57,7 @@ virtualEnv('deep circular dependencies')
     it -> true.should be true
 
 virtualEnv('n+1 circular dependencies')
-.runShouldFailWith /circular dependencies between/, ->
+.shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
 
