@@ -7,7 +7,7 @@ class spectacular.Environment
 
   run: =>
     @decorate()
-    new @Runner(@rootExampleGroup, @options).run()
+    new @Runner(@rootExampleGroup, @options, this).run()
 
   decorate: =>
     env = this
@@ -43,13 +43,11 @@ class spectacular.Environment
         )
     }
 
-
     'it xit describe xdescribe context xcontext
       before after given subject its itsInstance
       itsReturn withParameters fail pending success
       skip should shouldnt dependsOn'.split(/\s+/g).forEach (k) =>
       global[k] = ->
-        console.log "called #{k} with #{arguments}"
         env[k].apply env, arguments
 
 
@@ -154,7 +152,6 @@ class spectacular.Environment
     @currentExampleGroup.ownDependencies.push spec
 
   should: (matcher, neg=false) =>
-    console.log "global should", this
     @notOutsideIt 'should'
 
     @currentExample.result.expectations.push(
@@ -167,6 +164,8 @@ class spectacular.Environment
     )
 
   shouldnt: (matcher) => @should matcher, true
+
+  toString: -> '[spectacular Environment]'
 
 
 

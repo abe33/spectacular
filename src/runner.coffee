@@ -5,7 +5,7 @@ util = require 'util'
 require 'colors'
 
 class Runner
-  constructor: (@root, @options) ->
+  constructor: (@root, @options, @env) ->
     @results = []
     @examples = []
     @stack = []
@@ -84,7 +84,7 @@ class Runner
     else
       nextExample = @stack.shift()
 
-      global.currentExample = nextExample
+      @env.currentExample = nextExample
       nextExample.run()
       .then =>
         @registerResults nextExample
@@ -95,7 +95,7 @@ class Runner
 
 
   registerResults: (example) ->
-    global.currentExample = null
+    @env.currentExample = null
 
     switch example.result.state
       when 'pending' then util.print '*'.yellow
