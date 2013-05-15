@@ -6,10 +6,10 @@ class spectacular.Environment
     @currentExample = null
 
   run: =>
-    @decorate()
+    @load()
     new @Runner(@rootExampleGroup, @options, this).run()
 
-  decorate: =>
+  load: =>
     env = this
     Object.defineProperty Object.prototype, 'should', {
       writable: true,
@@ -50,6 +50,10 @@ class spectacular.Environment
       global[k] = ->
         env[k].apply env, arguments
 
+  clone: ->
+    optionsCopy = {}
+    optionsCopy[k] = v for k,v of @options
+    new spectacular.Environment @Runner, optionsCopy
 
   notInsideIt: (method) =>
     if @currentExample?
