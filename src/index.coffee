@@ -14,8 +14,7 @@ requireIntoGlobal = (file) ->
 loadSpectacular = (options) ->
   Q.fcall ->
     [ 'factories', 'extensions', 'mixins',
-      'promises', 'examples', #'spectacular',
-      'environment'
+      'promises', 'examples', 'environment'
     ].forEach (file) ->
       filename = path.resolve __dirname, "#{file}.js"
       src = fs.readFileSync filename
