@@ -56,7 +56,7 @@ virtualEnv('deep circular dependencies')
 
     it -> true.should be true
 
-virtualEnv('circular dependencies')
+virtualEnv('n+1 circular dependencies')
 .runShouldFailWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
@@ -67,7 +67,6 @@ virtualEnv('circular dependencies')
     dependsOn 'c3'
 
     it -> true.should be true
-
 
   describe 'cycle 3', id: 'c3', ->
     dependsOn 'c1'
