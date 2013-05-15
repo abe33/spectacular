@@ -31,7 +31,6 @@ class Runner
     Q.all(@glob p for p in @options.globs).then (results) =>
       paths = []
       results.forEach (a) -> paths = paths.concat a
-      console.log 'paths:', paths if @options.verbose
       paths
 
   glob: (path) ->
@@ -43,6 +42,8 @@ class Runner
     defer.promise
 
   loadSpecs: (paths) =>
+    console.log "Load specs: #{paths}" if @options.verbose
+    console.log ''
     require path.resolve('.', p) for p in paths
 
   registerSpecs: =>
@@ -92,7 +93,6 @@ class Runner
         @checkCircularity example, dependency if dependency?
 
   executeSpecs: =>
-    console.log ''
     defer = Q.defer()
     @nextExample defer
     defer.promise
