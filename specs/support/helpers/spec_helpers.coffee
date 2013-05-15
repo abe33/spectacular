@@ -42,8 +42,7 @@ exports.virtualEnv = (desc) ->
           async.reject new Error "run failed"
 
       it "status", -> @status.should be 1
-      it "should fail with #{re}", ->
-        re.test(@results).should be true
+      it 'results', -> @results.should match re
 
   runShouldFailWith: (re, block) ->
     describe desc, ->
@@ -66,5 +65,5 @@ exports.virtualEnv = (desc) ->
 
           async.resolve()
 
-      it "run should fail with #{re}", ->
-        re.test(@reason.message).should be true
+      it 'error message', ->
+        @reason.message.should match re
