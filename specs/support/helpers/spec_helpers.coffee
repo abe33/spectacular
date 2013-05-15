@@ -1,5 +1,4 @@
 
-
 createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
@@ -32,7 +31,6 @@ runEnvExpectingInterruption = (env, context, async) ->
     oldEnv.load()
     async.resolve()
 
-
 exports.virtualEnv = (desc) ->
   setupEnv = (context, async, block) ->
 
@@ -63,6 +61,12 @@ exports.virtualEnv = (desc) ->
       it 'error message', ->
         @reason.message.should match re
 
+exports.declaration = (desc) ->
+  shouldFailWith: (re, block) ->
+    try do block catch error
 
+    describe desc, ->
+      context 'the expected error message', ->
+        the -> error.message.should match re
 
 

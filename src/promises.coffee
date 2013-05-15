@@ -67,9 +67,10 @@ class spectacular.Promise
     @notifyHandlers()
     @pending = false
 
-  reject: (@reason) ->
+  reject: (reason) ->
     return unless @pending
 
+    @reason = reason
     @fulfilled = false
     @notifyHandlers()
     @pending = false

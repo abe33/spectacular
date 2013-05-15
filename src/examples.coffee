@@ -13,10 +13,12 @@ class spectacular.Expectation
       @matcher.description = '' unless @matcher.description?
 
     @message = @matcher.message
-    unless @success
+    if not @success and not @trace?
       try
         throw new Error
       catch e
+        stack = e.stack.split('\n')
+        e.stack = stack[3..].join('\n')
         @trace = e
 
     @description = "#{@example.description} #{@matcher.description}"
@@ -75,6 +77,11 @@ class spectacular.Example
     if @examplePromise?.pending
       @examplePromise.reject reason
       @result.state = 'failure'
+
+  stop: (reason) ->
+    if @examplePromise?.pending
+      @examplePromise.reject reason
+      @result.state = 'stopped'
 
   createContext: ->
     context = {}
@@ -155,7 +162,7 @@ class spectacular.Example
         @block.call(@context)
         @resolve()
     catch e
-      @reject e
+      @stop e
 
   toString: -> "[Example(#{@description})]"
 

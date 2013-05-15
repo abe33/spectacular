@@ -140,9 +140,13 @@ class spectacular.Environment
     )
     oldGroup.addChild @currentExampleGroup
 
-    @currentExampleGroup.executeBlock()
+    try
+      @currentExampleGroup.executeBlock()
+    catch error
+    finally
+      @currentExampleGroup = oldGroup
+      throw error if error?
 
-    @currentExampleGroup = oldGroup
 
   xdescribe: (subject, block) =>
     @notInsideIt 'xdescribe'
@@ -169,7 +173,7 @@ class spectacular.Environment
 
     spy.spied = oldMethod
     spy.argsForCall = []
-    spy.andCallFake = (@mock) ->
+    spy.andCallFake = (@mock) -> this
 
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod

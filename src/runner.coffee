@@ -124,7 +124,7 @@ class Runner
 
 
   hasFailures: ->
-    @results.some (result) -> result.state in ['failure', 'skipped']
+    @results.some (result) -> result.state in ['failure', 'skipped', 'stopped']
 
   indent: (string, ind=4) ->
     s = ''
@@ -137,23 +137,23 @@ class Runner
       switch example.result.state
         when 'pending' then util.print '*'
         when 'skipped' then util.print 'x'
-        when 'failure' then util.print 'F'
+        when 'failure', 'stopped' then util.print 'F'
         when 'success' then util.print '.'
 
     else
       switch example.result.state
         when 'pending' then util.print '*'.yellow
         when 'skipped' then util.print 'x'.magenta
-        when 'failure' then util.print 'F'.red
+        when 'failure', 'stopped' then util.print 'F'.red
         when 'success' then util.print '.'.green
 
   printStack: (e) ->
-    stactString = e.stack.replace(/^.*\n/, '')
-    stack = stactString.split('\n')
+    stackString = e.stack.replace(/^[^ ]{4}.*\n/, '')
+    stack = stackString.split('\n')
     @printErrorInFile stack[0] if @options.showSource
 
     if @options.longTrace
-      res = "\n\n#{stactString}"
+      res = "\n\n#{stackString}"
     else
       res = "\n#{
         stack[0..5]
@@ -165,6 +165,7 @@ class Runner
       }"
 
     res = res.grey unless @options.noColors
+    res = "#{res}\n" unless res.substr(-1) is '\n'
     console.log res
 
   printErrorInFile: (line) ->
@@ -197,7 +198,7 @@ class Runner
     if line is content.length
       content.push line
     else
-      content.splice line, 0, "         |#{@padRight('^', column-1)}"
+      content.splice line, 0, "         |#{@padRight('^', column-2)}"
 
   padRight: (string, pad=4) ->
     string = string.toString()
@@ -218,25 +219,30 @@ class Runner
     console.log '\n'
     if @hasFailures()
       for result in @results
-        if result.state is 'failure'
-          if result.expectations.length > 0
-            for expectation in result.expectations
-              unless expectation.success
-                @printFailure expectation.description
-                @printMessage expectation.message
-                @printStack expectation.trace if @options.trace
-                console.log '\n'
-          else
+        switch result.state
+          when 'stopped'
             @printFailure result.example.description
             @printMessage result.example.examplePromise.reason.message
             @printStack result.example.examplePromise.reason if @options.trace
-            console.log '\n'
+          when 'failure'
+            if result.expectations.length > 0
+              for expectation in result.expectations
+                unless expectation.success
+                  @printFailure expectation.description
+                  @printMessage expectation.message
+                  @printStack expectation.trace if @options.trace
+                  console.log '\n'
+            else
+              @printFailure result.example.description
+              @printMessage result.example.examplePromise.reason.message
+              @printStack result.example.examplePromise.reason if @options.trace
+              console.log '\n'
 
     console.log @formatCounters()
 
   formatCounters: ->
     success = @examples.filter((e)-> e.result.state is 'success').length
-    failures = @examples.filter((e)-> e.result.state is 'failure').length
+    failures = @examples.filter((e)-> e.result.state in ['failure', 'stopped']).length
     skipped = @examples.filter((e)-> e.result.state is 'skipped').length
     pending = @examples.filter((e)-> e.result.state is 'pending').length
     assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
