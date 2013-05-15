@@ -4,10 +4,11 @@ class spectacular.Environment
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
+    @runner = new @Runner(@rootExampleGroup, @options, this)
 
   run: =>
     @load()
-    new @Runner(@rootExampleGroup, @options, this).run()
+    @runner.run()
 
   load: =>
     env = this
