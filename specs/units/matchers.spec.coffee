@@ -66,6 +66,8 @@ describe 'match', ->
 describe 'haveBeenCalled', ->
   given 'object', -> method: -> 42
 
+  the -> @object.method.shouldnt haveBeenCalled
+
   context 'on a spied method', ->
     before -> spyOn(@object, 'method')
 
