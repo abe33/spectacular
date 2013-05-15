@@ -19,6 +19,7 @@ class Runner
     .then =>
       @loadEndedAt = new Date()
       @specsStartedAt = new Date()
+    .then(@registerSpecs)
     .then(@executeSpecs)
     .then =>
       @specsEndedAt = new Date()
@@ -42,6 +43,52 @@ class Runner
   loadSpecs: (paths) =>
     require path.resolve('.', p) for p in paths
 
+  registerSpecs: =>
+    @register example for example in @root.allExamples
+
+  register: (example) =>
+    if example.dependencies.length > 0
+      @handleDependencies example
+
+    @stack.push example unless @stack.indexOf(example) isnt -1
+
+  handleDependencies: (example) ->
+    deps = []
+    for dep in example.dependencies
+      dependency = @root.identifiedExamplesMap[dep]
+      if dependency?
+        @checkDependency example, dependency
+        deps.push dependency
+        if dependency.children?
+          @register s for s in dependency.allExamples
+        else
+          @register dependency
+      else
+        throw new Error "unmet dependencicy #{dep} for example #{example}"
+
+    example.dependenciesMet = -> deps.every (e) -> e.succeed
+
+  checkDependency: (example, dependency) ->
+    if dependency in example.ancestors
+      throw new Error "#{example} can't depends on ancestor #{dependency}"
+
+    @checkCircularity example, dependency
+
+  checkCircularity: (example, dependency) ->
+    currentParents = example.identifiedAncestors.map (a) -> a.options.id
+    depParents = dependency.identifiedAncestors.map((a) -> a.options.id).concat(dependency.options.id)
+
+    for id in currentParents
+      if id in depParents
+        throw new Error(
+          "circular dependencies between #{example} and #{dependency}"
+        )
+
+    if dependency.dependencies.length > 0
+      for dep in dependency.dependencies
+        dependency = @root.identifiedExamplesMap[dep]
+        @checkCircularity example, dependency if dependency?
+
   executeSpecs: =>
     console.log ''
     @register example for example in @root.allExamples
@@ -63,27 +110,6 @@ class Runner
       .fail (reason) =>
         @registerResults nextExample
         @nextExample defer
-
-  handleDependencies: (example) ->
-    deps = []
-    for dep in example.dependencies
-      spec = @root.identifiedExamplesMap[dep]
-      if spec?
-        deps.push spec
-        if spec.children?
-          @register s for s in spec.allExamples
-        else
-          @register spec
-      else
-        throw new Error "unmet dependencicy #{dep} for spec #{example}"
-
-    example.dependenciesMet = -> deps.every (e) -> e.succeed
-
-  register: (example) =>
-    if example.dependencies.length > 0
-      @handleDependencies example
-
-    @stack.push example unless @stack.indexOf(example) isnt -1
 
   registerResults: (example) ->
     global.currentExample = null
