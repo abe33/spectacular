@@ -4,6 +4,8 @@ glob = require 'glob'
 path = require 'path'
 util = require 'util'
 require 'colors'
+nextTick = process.setImmediate or process.nextTick or (callback) ->
+  setTimeout callback, 0
 
 class Runner
   constructor: (@root, @options, @env) ->
@@ -99,19 +101,20 @@ class Runner
     defer.promise
 
   nextExample: (defer) =>
-    if @stack.length is 0
-      defer.resolve()
-    else
-      nextExample = @stack.shift()
+    nextTick =>
+      if @stack.length is 0
+        defer.resolve()
+      else
+        nextExample = @stack.shift()
 
-      @env.currentExample = nextExample
-      nextExample.run()
-      .then =>
-        @registerResults nextExample
-        @nextExample defer
-      .fail (reason) =>
-        @registerResults nextExample
-        @nextExample defer
+        @env.currentExample = nextExample
+        nextExample.run()
+        .then =>
+          @registerResults nextExample
+          @nextExample defer
+        .fail (reason) =>
+          @registerResults nextExample
+          @nextExample defer
 
   registerResults: (example) ->
     @env.currentExample = null
