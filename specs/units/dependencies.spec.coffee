@@ -36,7 +36,40 @@ virtualEnv('circular dependencies')
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
 
+    it -> true.should be true
+
   describe 'cycle 2', id: 'c2', ->
+    dependsOn 'c1'
+
+    it -> true.should be true
+
+virtualEnv('deep circular dependencies')
+.runShouldFailWith /circular dependencies between/, ->
+  describe 'cycle 1', id: 'c1', ->
+    describe 'child 1', id: 'cc1', ->
+      dependsOn 'c2'
+
+    it -> true.should be true
+
+  describe 'cycle 2', id: 'c2', ->
+    dependsOn 'cc1'
+
+    it -> true.should be true
+
+virtualEnv('circular dependencies')
+.runShouldFailWith /circular dependencies between/, ->
+  describe 'cycle 1', id: 'c1', ->
+    dependsOn 'c2'
+
+    it -> true.should be true
+
+  describe 'cycle 2', id: 'c2', ->
+    dependsOn 'c3'
+
+    it -> true.should be true
+
+
+  describe 'cycle 3', id: 'c3', ->
     dependsOn 'c1'
 
     it -> true.should be true
