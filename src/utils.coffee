@@ -18,4 +18,4 @@ exports.padLeft = (string, pad=4) ->
   string = "#{string} " while string.length < pad
   string
 
-exports.toggle = (value, c1, c2) -> if value is 0 then c1 else c2
+exports.toggle = (value, c1, c2) -> if value then c2 else c1
