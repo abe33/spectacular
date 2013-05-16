@@ -19,7 +19,7 @@
     "node": "~0.10.0"
   },
   "scripts": {
-    "test": "coffee --compile --bare --output lib/ src/ && echo '#!/usr/bin/env node' > bin/spectacular && cat lib/spectacular_bin.js >> bin/spectacular && chmod +x bin/spectacular && rm lib/spectacular_bin.js && istanbul cover bin/spectacular -- --coffee specs/**/*.coffee"
+    "test": "./run_tests.sh"
   },
   "bin": {
     "spectacular": "./bin/spectacular"
