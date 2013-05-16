@@ -79,20 +79,31 @@ class exports.ResultsFormatter
     console.log @buildResults lstart, lend, sstart, send
 
   buildResults: (lstart, lend, sstart, send) ->
-    res = '\n\n'
-    if @hasFailures()
-      for result in @results
-        switch result.state
-          when 'errored'
-            res += @formatExampleError result.example
-          when 'failure'
-            if result.expectations.length > 0
-              for expectation in result.expectations
-                unless expectation.success
-                  res += @formatExpectationFailure expectation
-            else
-              res += @formatExampleFailure result.example
+    @errorsCounter = 1
+    @failuresCounter = 1
+    @errors = []
+    @failures = []
+    @skipped = []
+    @pending = []
 
+    res = '\n\n'
+    for result in @results
+      switch result.state
+        when 'pending' then @pending.push result.example
+        when 'skipped' then @skipped.push result.example
+        when 'errored'
+          @errors.push result.example
+          res += @formatExampleError result.example
+        when 'failure'
+          @failures.push result.example
+          if result.expectations.length > 0
+            for expectation in result.expectations
+              unless expectation.success
+                res += @formatExpectationFailure expectation
+          else
+            res += @formatExampleFailure result.example
+
+    res += @formatResume()
     res += @formatTimers(lstart, lend, sstart, send)
     res += @formatCounters()
     res += '\n'
@@ -146,16 +157,32 @@ class exports.ResultsFormatter
     if @options.noColors
       "#{badge} #{message}\n"
     else
-      "#{badge.inverse.bold} #{message}\n".red
+      "#{badge.inverse.bold}[#{@failuresCounter++}] #{message}\n".red
 
   errorBadge: (message) ->
     badge = ' ERROR '
     if @options.noColors
       "#{badge} #{message}\n"
     else
-      "#{badge.inverse.bold} #{message}\n".yellow
+      "#{badge.inverse.bold}[#{@errorsCounter++}] #{message}\n".yellow
 
-  formatMessage: (message) -> "\n#{utils.indent message}\n"
+  formatMessage: (message) -> "\n#{utils.indent message}"
+
+  formatResume: ->
+    res = ''
+    res += @mapDescription('Errors:', @errors, 'yellow') if @errors.length > 0
+    res += @mapDescription('Failures:', @failures, 'red') if @failures.length > 0
+    res += @mapDescription('Skipped:', @skipped, 'magenta') if @skipped.length > 0
+    res += @mapDescription('Pending:', @pending, 'yellow') if @pending.length > 0
+    res
+
+  mapDescription: (desc, array, color) ->
+    res = "    #{desc}\n\n"
+    res += array.map((e, i) ->
+      "      #{i + 1}. #{e.description}"
+    ).join('\n')
+    res = res[color] unless @options.noColors
+    "#{res}\n\n"
 
   formatTimers: (loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt) ->
     loadDuration = @formatDuration loadStartedAt, loadEndedAt
@@ -168,13 +195,12 @@ class exports.ResultsFormatter
     """
 
   formatCounters: ->
-    success = @examples.filter((e)-> e.result.state is 'success').length
-    failures = @examples.filter((e)-> e.result.state is'failure').length
-    errored = @examples.filter((e)-> e.result.state is 'errored').length
-    skipped = @examples.filter((e)-> e.result.state is 'skipped').length
-    pending = @examples.filter((e)-> e.result.state is 'pending').length
+    failures = @failures.length
+    errored = @errors.length
+    skipped = @skipped.length
+    pending = @pending.length
+    success = @examples.length - failures - errored - pending - skipped
     assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
-
     @formatResults success, failures, errored, skipped, pending, assertions
 
   formatResults: (s, f, e, sk, p, a) ->
