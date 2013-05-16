@@ -9,12 +9,11 @@ class exports.StackFormatter
   constructor: (@error, @options) ->
 
   print: ->
-    stackString = @error.stack.replace(/^[^ ]{4}.*\n/, '')
-    stack = stackString.split('\n')
+    stack = @error.stack.split('\n').filter (line) -> /^\s{4}at.*$/g.test line
     @printErrorInFile stack[0] if @options.showSource
 
     if @options.longTrace
-      res = "\n\n#{stackString}"
+      res = "\n\n#{stack.join '\n'}"
     else
       res = "\n#{
         stack[0..5]
@@ -100,7 +99,7 @@ class exports.ResultsFormatter
   printExampleFailure: (example) ->
     message = example.description
     console.log @failureBadge message
-    @printExampleError example.examplePromise.reason
+    @printError example.examplePromise.reason
     console.log '\n'
 
   printExpectationFailure: (expectation) ->
