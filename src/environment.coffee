@@ -154,6 +154,8 @@ class spectacular.Environment
   xdescribe: (subject, block) =>
     @notInsideIt 'xdescribe'
 
+    describe subject, -> it -> pending()
+
   context: (subject, options, block) => @describe subject, options, block
   xcontext: => @xdescribe()
 
