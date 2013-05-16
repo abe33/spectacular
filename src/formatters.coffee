@@ -97,21 +97,25 @@ class exports.ResultsFormatter
     res += '\n'
 
   printExampleResult: (example) ->
+    res = @formatExampleResult example
+    util.print res if res?
+
+  formatExampleResult: (example) ->
     if @options.noColors
       switch example.result.state
-        when 'pending' then util.print '*'
-        when 'skipped' then util.print 'x'
-        when 'failure' then util.print 'F'
-        when 'errored' then util.print 'E'
-        when 'success' then util.print '.'
+        when 'pending' then '*'
+        when 'skipped' then 'x'
+        when 'failure' then 'F'
+        when 'errored' then 'E'
+        when 'success' then '.'
 
     else
       switch example.result.state
-        when 'pending' then util.print '*'.yellow
-        when 'skipped' then util.print 'x'.magenta
-        when 'failure' then util.print 'F'.red
-        when 'errored' then util.print 'E'.yellow
-        when 'success' then util.print '.'.green
+        when 'pending' then '*'.yellow
+        when 'skipped' then 'x'.magenta
+        when 'failure' then 'F'.red
+        when 'errored' then 'E'.yellow
+        when 'success' then '.'.green
 
   formatStack: (e) ->
     new exports.StackFormatter(e, @options).format()

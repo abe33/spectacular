@@ -4,6 +4,7 @@ createEnv = (block, context) ->
   env.options.noColors = true
   spyOn(env.runner, 'loadSpecs').andCallFake -> do block
   spyOn(env.formatter, 'printExampleResult').andCallFake ->
+    @formatExampleResult.apply this, arguments
   spyOn(env.formatter, 'printResults').andCallFake ->
     context.results = @buildResults.apply this, arguments
   env
