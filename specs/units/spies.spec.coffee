@@ -22,28 +22,31 @@ describe 'spyOn', ->
       it 'should have called through', ->
         @result.should be 42
 
-  context 'used to mock a method', ->
-    before -> @spy = spyOn(@object, 'method').andCallFake -> 0
-    subject -> @spy
+  describe '::andCallFake', ->
+    context 'used to mock a method', ->
+      before -> @spy = spyOn(@object, 'method').andCallFake -> 0
+      subject -> @spy
 
-    context 'the returned spy', ->
-      it -> should exist
-      it -> should be @object.method
+      context 'the returned spy', ->
+        it -> should exist
+        it -> should be @object.method
 
-    context 'calling the mocked function', ->
-      before ->
-        @spy
-        @result = @object.method('foo', 10)
+      context 'calling the mocked function', ->
+        before ->
+          @spy
+          @result = @object.method('foo', 10)
 
-      it 'should have registered the passed arguments', ->
-        @spy.argsForCall.should equal [['foo', 10]]
-        @object.method.argsForCall.should equal [['foo', 10]]
+        it 'should have registered the passed arguments', ->
+          @spy.argsForCall.should equal [['foo', 10]]
+          @object.method.argsForCall.should equal [['foo', 10]]
 
-      it 'should have called the fake', ->
-        @result.should be 0
+        it 'should have called the fake', ->
+          @result.should be 0
 
-    context 'with andReturns', ->
+  describe '::andReturns', ->
+    context 'used to mock a method', ->
       before -> @spy = spyOn(@object, 'method').andReturns 10
+      subject -> @spy
 
       context 'the returned spy', ->
         it -> should exist
@@ -60,3 +63,32 @@ describe 'spyOn', ->
 
         it 'should have called the fake', ->
           @result.should be 10
+
+  describe '::andCallThrough', ->
+    context 'used to spy on a method', ->
+      before -> @spy = spyOn(@object, 'method').andCallThrough (res) ->
+        res * 2
+
+      subject -> @spy
+
+      context 'the returned spy', ->
+        it -> should exist
+        it -> should be @object.method
+
+      context 'calling the spied function', ->
+        before ->
+          @spy
+          @result = @object.method('foo', 10)
+
+        it 'should have registered the passed arguments', ->
+          @spy.argsForCall.should equal [['foo', 10]]
+          @object.method.argsForCall.should equal [['foo', 10]]
+
+        it 'should have called the spied method and the block', ->
+          @result.should be 84
+
+
+
+
+
+

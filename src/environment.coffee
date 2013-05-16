@@ -166,6 +166,8 @@ class spectacular.Environment
 
   spyOn: (obj, method) =>
     oldMethod = obj[method]
+    context = @currentExample.context
+
     spy = (args...) ->
       spy.argsForCall.push args
       if spy.mock?
@@ -177,6 +179,12 @@ class spectacular.Environment
     spy.argsForCall = []
     spy.andCallFake = (@mock) -> this
     spy.andReturns = (value) -> spy.andCallFake -> value
+    spy.andCallThrough = (block) ->
+      @mock = ->
+        block.call context, oldMethod.apply this, arguments
+      this
+
+
 
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod
