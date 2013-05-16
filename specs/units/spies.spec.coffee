@@ -42,5 +42,21 @@ describe 'spyOn', ->
       it 'should have called the fake', ->
         @result.should be 0
 
+    context 'with andReturns', ->
+      before -> @spy = spyOn(@object, 'method').andReturns 10
 
+      context 'the returned spy', ->
+        it -> should exist
+        it -> should be @object.method
 
+      context 'calling the mocked function', ->
+        before ->
+          @spy
+          @result = @object.method('foo', 10)
+
+        it 'should have registered the passed arguments', ->
+          @spy.argsForCall.should equal [['foo', 10]]
+          @object.method.argsForCall.should equal [['foo', 10]]
+
+        it 'should have called the fake', ->
+          @result.should be 10

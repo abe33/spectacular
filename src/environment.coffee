@@ -184,6 +184,7 @@ class spectacular.Environment
     spy.spied = oldMethod
     spy.argsForCall = []
     spy.andCallFake = (@mock) -> this
+    spy.andReturns = (value) -> spy.andCallFake -> value
 
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod
