@@ -3,15 +3,33 @@
 
 class spectacular.Expectation
   constructor: (@example, @actual, @matcher, @not=false) ->
+
+  assert: =>
+    promise = new spectacular.Promise
+
     try
-      @success = @matcher.assert(@actual, if @not then ' not' else '')
-      @success = not @success if @not
+      assert = spectacular.Promise.unit()
+      .then =>
+        @matcher.assert(@actual, if @not then ' not' else '')
+      .then (@success) =>
+        @success = not @success if @not
+        @createMessage()
+        promise.resolve @success
+      .fail (@trace) =>
+        @success = false
+        @matcher.message = e.message unless @matcher.message?
+        @matcher.description = '' unless @matcher.description?
+        promise.resolve @success
     catch e
       @success = false
       @trace = e
       @matcher.message = e.message unless @matcher.message?
       @matcher.description = '' unless @matcher.description?
+      promise.resolve @success
 
+    promise
+
+  createMessage: =>
     @message = @matcher.message
     if not @success and not @trace?
       try
@@ -26,10 +44,19 @@ class spectacular.Expectation
 ## ExampleResult
 
 class spectacular.ExampleResult
+  @include spectacular.HasCollection('expectations', 'expectation')
+
   constructor: (@example, @state) ->
     @expectations = []
+    @promise = spectacular.Promise.unit()
 
   hasFailures: -> @expectations.some (e) -> not e.success
+
+  _addExpectation = ExampleResult::addExpectation
+  addExpectation: (expectation) ->
+    @promise = @promise.then -> expectation.assert()
+    _addExpectation.call this, expectation
+
 
 ## Example
 
@@ -64,7 +91,7 @@ class spectacular.Example
       @examplePromise.reject new Error 'Skipped'
       @result.state = 'skipped'
 
-  resolve: ->
+  resolve: =>
     if @examplePromise?.pending
       if @result.hasFailures()
         @examplePromise.reject()
@@ -73,7 +100,7 @@ class spectacular.Example
         @examplePromise.resolve()
         @result.state = 'success'
 
-  reject: (reason) ->
+  reject: (reason) =>
     if @examplePromise?.pending
       @examplePromise.reject reason
       @result.state = 'failure'
@@ -152,17 +179,17 @@ class spectacular.Example
     try
       if @acceptAsync @block
         async = new spectacular.AsyncExamplePromise
-        async.then =>
-          @resolve()
-        async.fail (reason) =>
-          @reject reason
+        async.then @executeExpectations, @reject
         async.run()
         @block.call(@context, async)
       else
         @block.call(@context)
-        @resolve()
+        @executeExpectations()
     catch e
       @error e
+
+  executeExpectations: =>
+    @result.promise.then @resolve, @reject
 
   toString: -> "[Example(#{@description})]"
 

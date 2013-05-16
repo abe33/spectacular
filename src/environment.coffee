@@ -19,7 +19,7 @@ class spectacular.Environment
       value: (matcher, neg=false) ->
         env.notOutsideIt 'should'
 
-        env.currentExample.result.expectations.push(
+        env.currentExample.result.addExpectation(
           new spectacular.Expectation(
             env.currentExample,
             @valueOf(),
@@ -200,7 +200,7 @@ class spectacular.Environment
   should: (matcher, neg=false) =>
     @notOutsideIt 'should'
 
-    @currentExample.result.expectations.push(
+    @currentExample.result.addExpectation(
       new spectacular.Expectation(
         @currentExample,
         @currentExample.subject,

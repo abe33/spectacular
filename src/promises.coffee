@@ -44,13 +44,16 @@ class spectacular.Promise
       res = fulfilledHandler? value
       if res?.then?
         res
-        .then (value) -> promise.resolve value
-        .fail (reason) -> promise.reject reason
+        .then (value) ->
+          promise.resolve value
+        .fail (reason) ->
+          promise.reject reason
       else
         promise.resolve res
     e = (reason) ->
       errorHandler? reason
       promise.reject reason
+
     if @pending
       @fulfilledHandlers.push f
       @errorHandlers.push e

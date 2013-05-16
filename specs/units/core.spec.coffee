@@ -1,4 +1,6 @@
-
+xdescribe should, ->
+  it -> should runInsideIt
+  it -> shouldnt runOutsideIt
 
 virtualEnv('pending examples')
 .shouldSucceedWith /0 errors, 0 skipped, 2 pending/, ->
