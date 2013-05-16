@@ -19,7 +19,7 @@
     "node": "~0.10.0"
   },
   "scripts": {
-    "test": "coffee --compile --bare --output lib/ src/ && echo '#!/usr/bin/env node' > bin/spectacular && cat lib/spectacular_bin.js >> bin/spectacular && chmod +x bin/spectacular && rm lib/spectacular_bin.js && bin/spectacular --coffee specs/**/*.coffee"
+    "test": "coffee --compile --bare --output lib/ src/ && echo '#!/usr/bin/env node' > bin/spectacular && cat lib/spectacular_bin.js >> bin/spectacular && chmod +x bin/spectacular && rm lib/spectacular_bin.js && istanbul cover bin/spectacular -- --coffee specs/**/*.coffee"
   },
   "bin": {
     "spectacular": "./bin/spectacular"
@@ -31,6 +31,7 @@
     "q": "~0.9.3",
     "colors": "~0.6.0-1",
     "difflet": "~0.2.5",
-    "walkdir": "0.0.7"
+    "walkdir": "0.0.7",
+    "istanbul": "~0.1.35"
   }
 }
