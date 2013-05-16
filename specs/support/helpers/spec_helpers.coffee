@@ -18,7 +18,7 @@ runEnvExpectingNormalTermination = (env, context, async) ->
   .fail (reason) ->
     context.reason = reason
     oldEnv.load()
-    async.reject new Error "run failed"
+    async.reject reason
 
 runEnvExpectingInterruption = (env, context, async) ->
   oldEnv = spectacular.env
