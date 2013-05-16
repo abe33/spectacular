@@ -1,20 +1,16 @@
 require 'colors'
 Q = require 'q'
-fs = require 'fs'
 glob = require 'glob'
 path = require 'path'
-util = require 'util'
-formatters = require './formatters'
 
 nextTick = process.setImmediate or process.nextTick or (callback) ->
   setTimeout callback, 0
 
 class Runner
-  constructor: (@root, @options, @env) ->
+  constructor: (@root, @options, @env, @formatter) ->
     @results = []
     @examples = []
     @stack = []
-    @formatter = new formatters.ResultsFormatter @root, @options
 
   run: =>
     promise = @globPaths()

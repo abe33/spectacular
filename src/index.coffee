@@ -6,6 +6,7 @@ Q = require 'q'
 path = require 'path'
 walk = require 'walkdir'
 Runner = require './runner'
+{ResultsFormatter} = require './formatters'
 
 requireIntoGlobal = (file) ->
   matchers = require file
@@ -20,7 +21,9 @@ loadSpectacular = (options) ->
       src = fs.readFileSync filename
       vm.runInThisContext src, filename
 
-    spectacular.env = new spectacular.Environment Runner, options
+    spectacular.env = new spectacular.Environment(
+      Runner, ResultsFormatter, options
+    )
 
 loadMatchers = (options) ->
   defer = Q.defer()

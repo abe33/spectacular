@@ -65,7 +65,7 @@ class exports.StackFormatter
 ## ResultsFormatter
 
 class exports.ResultsFormatter
-  constructor: (@root, @options) ->
+  constructor: (@root, @options, @env) ->
     @results = []
     @examples = []
 

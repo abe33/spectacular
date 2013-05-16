@@ -1,10 +1,11 @@
 
 class spectacular.Environment
-  constructor: (@Runner, @options) ->
+  constructor: (@Runner, @Formatter, @options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
-    @runner = new @Runner(@rootExampleGroup, @options, this)
+    @formatter = new @Formatter(@rootExampleGroup, @options, this)
+    @runner = new @Runner(@rootExampleGroup, @options, this, @formatter)
 
   run: =>
     @load()
@@ -54,7 +55,7 @@ class spectacular.Environment
   clone: ->
     optionsCopy = {}
     optionsCopy[k] = v for k,v of @options
-    new spectacular.Environment @Runner, optionsCopy
+    new spectacular.Environment @Runner, @Formatter, optionsCopy
 
   notInsideIt: (method) =>
     if @currentExample?

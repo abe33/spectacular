@@ -3,8 +3,8 @@ createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
   spyOn(env.runner, 'loadSpecs').andCallFake -> do block
-  spyOn(env.runner.formatter, 'printExampleResult').andCallFake ->
-  spyOn(env.runner.formatter, 'printResults').andCallFake ->
+  spyOn(env.formatter, 'printExampleResult').andCallFake ->
+  spyOn(env.formatter, 'printResults').andCallFake ->
     context.results = @formatCounters()
   env
 
