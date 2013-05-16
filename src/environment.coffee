@@ -167,6 +167,8 @@ class spectacular.Environment
 
     @given 'parameters', -> args
 
+  withArguments: => @withParameters.apply this, arguments
+
   dependsOn: (spec) =>
     @currentExampleGroup.ownDependencies.push spec
 
