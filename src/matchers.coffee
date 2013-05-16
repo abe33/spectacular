@@ -32,42 +32,38 @@ findStateMethodOrProperty = (obj, state) ->
 exports.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"
-    try
-      switch typeof value
-        when 'string'
-          state = findStateMethodOrProperty actual, value
+    switch typeof value
+      when 'string'
+        state = findStateMethodOrProperty actual, value
 
-          if state?
-            @message = utils.squeeze(
-              "Expected #{actual}.#{state}#{notText}
-               to be true but was #{actual[value]}"
-            )
-            result = if typeof actual[state] is 'function'
-              actual[state]()
-            else
-              actual[state]
-
-          else
-            @message = utils.squeeze(
-              "Expected #{actual} to be #{value} but
-               the state can't be found"
-            )
-            result = false
-
-          result
-        when 'number', 'boolean', 'string'
+        if state?
           @message = utils.squeeze(
-            "Expected #{actual}#{notText} to be #{value}"
+            "Expected #{actual}.#{state}#{notText}
+             to be true but was #{actual[value]}"
           )
-          actual.valueOf() is value
+          result = if typeof actual[state] is 'function'
+            actual[state]()
+          else
+            actual[state]
+
         else
           @message = utils.squeeze(
-            "Expected #{inspect actual}#{notText} to be #{inspect value}"
+            "Expected #{actual} to be #{value} but
+             the state can't be found"
           )
-          actual is value
+          result = false
 
-    catch e
-      console.log e
+        result
+      when 'number', 'boolean', 'string'
+        @message = utils.squeeze(
+          "Expected #{actual}#{notText} to be #{value}"
+        )
+        actual.valueOf() is value
+      else
+        @message = utils.squeeze(
+          "Expected #{inspect actual}#{notText} to be #{inspect value}"
+        )
+        actual is value
 
 objectDiff = (left, right) ->
   if isCommonJS
