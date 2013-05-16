@@ -40,7 +40,7 @@ exports.virtualEnv = (desc) ->
         @env = createEnv block, this
         runEnvExpectingNormalTermination @env, this, async
 
-      it "status", -> @status.should be 1
+      it 'status', -> @status.should be 1
       it 'results', -> @results.should match re
 
   shouldSucceedWith: (re, block) ->
@@ -49,7 +49,7 @@ exports.virtualEnv = (desc) ->
         @env = createEnv block, this
         runEnvExpectingNormalTermination @env, this, async
 
-      it "status", -> @status.should be 0
+      it 'status', -> @status.should be 0
       it 'results', -> @results.should match re
 
   shouldStopWith: (re, block) ->
