@@ -16,15 +16,15 @@ class spectacular.Environment
     Object.defineProperty Object.prototype, 'should', {
       writable: true,
       enumerable: false,
-      value: (matcher) ->
+      value: (matcher, neg=false) ->
         env.notOutsideIt 'should'
 
         env.currentExample.result.expectations.push(
           new spectacular.Expectation(
             env.currentExample,
-            this,
+            @valueOf(),
             matcher,
-            false
+            neg
           )
         )
     }
@@ -34,15 +34,7 @@ class spectacular.Environment
       enumerable: false,
       value: (matcher) ->
         env.notOutsideIt 'should'
-
-        env.currentExample.result.expectations.push(
-          new spectacular.Expectation(
-            env.currentExample,
-            this,
-            matcher,
-            true
-          )
-        )
+        @should matcher, true
     }
 
     'it xit describe xdescribe context xcontext
