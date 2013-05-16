@@ -10,8 +10,8 @@ the features currently implemented:
 
   - Specs dependecies (with minor changes in regards with the proposal)
   - Implicit subjects
-  - Smart describe (without instances methods handling)
-  - Spies and mocks (only andCallFake)
+  - Smart describe
+  - Spies and mocks
 
 Contributing
 ------------
