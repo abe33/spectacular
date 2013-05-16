@@ -18,7 +18,7 @@ loadSpectacular = (options) ->
       'promises', 'examples', 'environment'
     ].forEach (file) ->
       filename = path.resolve __dirname, "#{file}.js"
-      src = fs.readFileSync filename
+      src = fs.readFileSync(filename).toString()
       vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment(
