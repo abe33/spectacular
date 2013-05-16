@@ -4,6 +4,7 @@ if isCommonJS
   difflet = require('difflet')(indent: 2)
   diff = require 'node-diff'
   util = require 'util'
+  utils = require './utils'
   inspect = util.inspect
 else
   exports = window
@@ -28,9 +29,6 @@ findStateMethodOrProperty = (obj, state) ->
   else
     null
 
-squeeze = (s) ->
-  s.replace /\s+/g, ' '
-
 exports.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"
@@ -40,7 +38,7 @@ exports.be = (value) ->
           state = findStateMethodOrProperty actual, value
 
           if state?
-            @message = squeeze(
+            @message = utils.squeeze(
               "Expected #{actual}.#{state}#{notText}
                to be true but was #{actual[value]}"
             )
@@ -50,7 +48,7 @@ exports.be = (value) ->
               actual[state]
 
           else
-            @message = squeeze(
+            @message = utils.squeeze(
               "Expected #{actual} to be #{value} but
                the state can't be found"
             )
@@ -58,10 +56,12 @@ exports.be = (value) ->
 
           result
         when 'number', 'boolean', 'string'
-          @message = squeeze "Expected #{actual}#{notText} to be #{value}"
+          @message = utils.squeeze(
+            "Expected #{actual}#{notText} to be #{value}"
+          )
           actual.valueOf() is value
         else
-          @message = squeeze(
+          @message = utils.squeeze(
             "Expected #{inspect actual}#{notText} to be #{inspect value}"
           )
           actual is value
@@ -112,7 +112,6 @@ exports.equal = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be equal to #{inspect value}"
     @message = "Expected #{inspect actual}#{notText} to be equal to #{inspect value}"
-
     compare actual, value, this
 
 exports.match = (re) ->
@@ -127,7 +126,10 @@ exports.haveBeenCalled =
     if typeof actual?.spied is 'function'
       if @arguments?
         @description = "should have been called with #{@arguments}"
-        @message = "Expected #{actual.spied}#{notText} to have been called with #{@arguments} but was called with #{actual.argsForCall}"
+        @message = utils.squeeze(
+          "Expected #{actual.spied}#{notText} to have been called with
+          #{@arguments} but was called with #{actual.argsForCall}"
+        )
 
         actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
           equal(a).assert(@arguments, '')
