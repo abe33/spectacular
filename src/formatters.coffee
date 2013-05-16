@@ -30,6 +30,7 @@ class exports.StackFormatter
 
   formatErrorInFile: (line) ->
     re = /\((.*):(.*):(.*)\)/
+    return '' unless re.test line
     [match, file, line, column] = re.exec line
 
     "\n#{@getLines(file, parseInt(line), parseInt(column))}\n"
