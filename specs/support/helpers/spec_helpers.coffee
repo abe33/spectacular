@@ -5,7 +5,7 @@ createEnv = (block, context) ->
   spyOn(env.runner, 'loadSpecs').andCallFake -> do block
   spyOn(env.formatter, 'printExampleResult').andCallFake ->
   spyOn(env.formatter, 'printResults').andCallFake ->
-    context.results = @formatCounters()
+    context.results = @buildResults.apply this, arguments
   env
 
 runEnvExpectingNormalTermination = (env, context, async) ->

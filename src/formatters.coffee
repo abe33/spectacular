@@ -8,32 +8,31 @@ utils = require './utils'
 class exports.StackFormatter
   constructor: (@error, @options) ->
 
-  print: ->
+  format: ->
     stack = @error.stack.split('\n').filter (line) -> /^\s{4}at.*$/g.test line
-    @printErrorInFile stack[0] if @options.showSource
+    res = '\n'
+    res += @formatErrorInFile stack[0] if @options.showSource
 
     if @options.longTrace
-      res = "\n\n#{stack.join '\n'}"
+      res += "\n\n#{stack.join '\n'}\n"
     else
-      res = "\n#{
+      res += "\n#{
         stack[0..5]
         .concat(
           "    ...\n\n    use --long-trace option to view the #{
             stack.length - 6
           } remaining lines"
         ).join('\n')
-      }"
+      }\n\n"
 
     res = res.grey unless @options.noColors
-    res = "#{res}\n" unless res.substr(-1) is '\n'
-    console.log res
+    res
 
-  printErrorInFile: (line) ->
+  formatErrorInFile: (line) ->
     re = /\((.*):(.*):(.*)\)/
     [match, file, line, column] = re.exec line
 
-    console.log ''
-    console.log @getLines(file, parseInt(line), parseInt(column))
+    "\n#{@getLines(file, parseInt(line), parseInt(column))}\n"
 
   getLines: (file, line, column) ->
     fileContent = fs.readFileSync(file).toString()
@@ -51,7 +50,6 @@ class exports.StackFormatter
     endLine = Math.min(fileContent.length, line + 2) - 1
 
     lines = fileContent[startLine..endLine].join('\n')
-    lines = lines.grey unless @options.noColors
     lines
 
   insertColumnLine: (content, line, column) ->
@@ -76,6 +74,28 @@ class exports.ResultsFormatter
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
 
+  printResults: (lstart, lend, sstart, send) ->
+    console.log @buildResults lstart, lend, sstart, send
+
+  buildResults: (lstart, lend, sstart, send) ->
+    res = '\n\n'
+    if @hasFailures()
+      for result in @results
+        switch result.state
+          when 'errored'
+            res += @formatExampleError result.example
+          when 'failure'
+            if result.expectations.length > 0
+              for expectation in result.expectations
+                unless expectation.success
+                  res += @formatExpectationFailure expectation
+            else
+              res += @formatExampleFailure result.example
+
+    res += @formatTimers(lstart, lend, sstart, send)
+    res += @formatCounters()
+    res += '\n'
+
   printExampleResult: (example) ->
     if @options.noColors
       switch example.result.state
@@ -93,67 +113,44 @@ class exports.ResultsFormatter
         when 'errored' then util.print 'E'.yellow
         when 'success' then util.print '.'.green
 
-  printStack: (e) ->
-    new exports.StackFormatter(e, @options).print()
+  formatStack: (e) ->
+    new exports.StackFormatter(e, @options).format()
 
-  printExampleFailure: (example) ->
-    message = example.description
-    console.log @failureBadge message
-    @printError example.examplePromise.reason
-    console.log '\n'
+  formatExampleFailure: (example) ->
+    res =  @failureBadge example.description
+    res += @formatError example.examplePromise.reason
+    res += '\n'
 
-  printExpectationFailure: (expectation) ->
-    message = expectation.description
-    console.log @failureBadge message
-    @printMessage expectation.message
-    @printStack expectation.trace if @options.trace
-    console.log '\n'
+  formatExpectationFailure: (expectation) ->
+    res = @failureBadge expectation.description
+    res += '\n'
+    res += @formatMessage expectation.message
+    res += @formatStack expectation.trace if @options.trace
+    res += '\n'
 
-  printExampleError: (example) ->
-    message = example.description
-    console.log @errorBadge message
-    @printError example.examplePromise.reason
+  formatExampleError: (example) ->
+    res =  @errorBadge example.description
+    res += @formatError example.examplePromise.reason
 
-  printError: (error) ->
-    @printMessage error.message
-    @printStack error if @options.trace
+  formatError: (error) ->
+    res = @formatMessage error.message
+    res += @formatStack error if @options.trace
 
   failureBadge: (message) ->
     badge = ' FAIL '
     if @options.noColors
-      "#{badge} #{message}"
+      "#{badge} #{message}\n"
     else
-      "#{badge.inverse.bold} #{message}".red
+      "#{badge.inverse.bold} #{message}\n".red
 
   errorBadge: (message) ->
     badge = ' ERROR '
     if @options.noColors
-      "#{badge} #{message}"
+      "#{badge} #{message}\n"
     else
-      "#{badge.inverse.bold} #{message}".yellow
+      "#{badge.inverse.bold} #{message}\n".yellow
 
-  printMessage: (message) ->
-    console.log "\n#{utils.indent message}"
-
-  printResults: (lstart, lend, sstart, send) ->
-    console.log '\n'
-    if @hasFailures()
-      for result in @results
-        switch result.state
-          when 'errored'
-            @printExampleError result.example
-          when 'failure'
-            if result.expectations.length > 0
-              for expectation in result.expectations
-                unless expectation.success
-                  @printExpectationFailure expectation
-            else
-              @printExampleFailure result.example
-              console.log '\n'
-
-    console.log @formatTimers(lstart, lend, sstart, send)
-    console.log @formatCounters()
-    console.log ''
+  formatMessage: (message) -> "\n#{utils.indent message}\n"
 
   formatTimers: (loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt) ->
     loadDuration = @formatDuration loadStartedAt, loadEndedAt
@@ -162,6 +159,7 @@ class exports.ResultsFormatter
     """
     Specs loaded in #{loadDuration}
     Finished in #{specsDuration}
+
     """
 
   formatCounters: ->
