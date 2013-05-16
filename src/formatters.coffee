@@ -97,16 +97,38 @@ class exports.ResultsFormatter
   printStack: (e) ->
     new exports.StackFormatter(e, @options).print()
 
-  printFailure: (message) ->
+  printExampleFailure: (example) ->
+    message = example.description
+    console.log @failureBadge message
+    @printExampleError example.examplePromise.reason
+    console.log '\n'
+
+  printExpectationFailure: (expectation) ->
+    message = expectation.description
+    console.log @failureBadge message
+    @printMessage expectation.message
+    @printStack expectation.trace if @options.trace
+    console.log '\n'
+
+  printExampleError: (example) ->
+    message = example.description
+    console.log @errorBadge message
+    @printError example.examplePromise.reason
+
+  printError: (error) ->
+    @printMessage error.message
+    @printStack error if @options.trace
+
+  failureBadge: (message) ->
     badge = ' FAIL '
-    console.log if @options.noColors
+    if @options.noColors
       "#{badge} #{message}"
     else
       "#{badge.inverse.bold} #{message}".red
 
-  printError: (message) ->
+  errorBadge: (message) ->
     badge = ' ERROR '
-    console.log if @options.noColors
+    if @options.noColors
       "#{badge} #{message}"
     else
       "#{badge.inverse.bold} #{message}".yellow
@@ -120,21 +142,14 @@ class exports.ResultsFormatter
       for result in @results
         switch result.state
           when 'errored'
-            @printError result.example.description
-            @printMessage result.example.examplePromise.reason.message
-            @printStack result.example.examplePromise.reason if @options.trace
+            @printExampleError result.example
           when 'failure'
             if result.expectations.length > 0
               for expectation in result.expectations
                 unless expectation.success
-                  @printFailure expectation.description
-                  @printMessage expectation.message
-                  @printStack expectation.trace if @options.trace
-                  console.log '\n'
+                  @printExpectationFailure expectation
             else
-              @printFailure result.example.description
-              @printMessage result.example.examplePromise.reason.message
-              @printStack result.example.examplePromise.reason if @options.trace
+              @printExampleFailure result.example
               console.log '\n'
 
     console.log @formatTimers(lstart, lend, sstart, send)
