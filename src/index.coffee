@@ -56,4 +56,6 @@ exports.run = (options) ->
   .then(loadHelpers options)
   .then ->
     spectacular.env.run()
-
+  .fail (reason) ->
+    console.log spectacular.env.formatter.errorBadge "Spectacular failed"
+    spectacular.env.formatter.printError reason
