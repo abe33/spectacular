@@ -105,6 +105,13 @@ class spectacular.Environment
   itsInstance: (block) =>
     @notInsideIt 'itsInstance'
 
+    parentSubjectBlock = @currentExampleGroup.subjectBlock
+    @context 'instance', =>
+      @subject 'instance', ->
+        build parentSubjectBlock?(), @parameters or []
+
+      @it block
+
   itsReturn: (block) =>
     @notInsideIt 'itsReturn'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
