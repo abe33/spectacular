@@ -58,4 +58,4 @@ exports.run = (options) ->
     spectacular.env.run()
   .fail (reason) ->
     console.log spectacular.env.formatter.errorBadge "Spectacular failed"
-    spectacular.env.formatter.printError reason
+    console.log spectacular.env.formatter.formatError reason
