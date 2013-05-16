@@ -78,10 +78,10 @@ class spectacular.Example
       @examplePromise.reject reason
       @result.state = 'failure'
 
-  stop: (reason) ->
+  error: (reason) ->
     if @examplePromise?.pending
       @examplePromise.reject reason
-      @result.state = 'stopped'
+      @result.state = 'errored'
 
   createContext: ->
     context = {}
@@ -162,7 +162,7 @@ class spectacular.Example
         @block.call(@context)
         @resolve()
     catch e
-      @stop e
+      @error e
 
   toString: -> "[Example(#{@description})]"
 

@@ -124,7 +124,7 @@ class Runner
 
 
   hasFailures: ->
-    @results.some (result) -> result.state in ['failure', 'skipped', 'stopped']
+    @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
 
   indent: (string, ind=4) ->
     s = ''
@@ -137,14 +137,16 @@ class Runner
       switch example.result.state
         when 'pending' then util.print '*'
         when 'skipped' then util.print 'x'
-        when 'failure', 'stopped' then util.print 'F'
+        when 'failure' then util.print 'F'
+        when 'errored' then util.print 'E'
         when 'success' then util.print '.'
 
     else
       switch example.result.state
         when 'pending' then util.print '*'.yellow
         when 'skipped' then util.print 'x'.magenta
-        when 'failure', 'stopped' then util.print 'F'.red
+        when 'failure' then util.print 'F'.red
+        when 'errored' then util.print 'E'.yellow
         when 'success' then util.print '.'.green
 
   printStack: (e) ->
@@ -212,6 +214,14 @@ class Runner
     else
       "#{badge.inverse.bold} #{message}".red
 
+  printError: (message) ->
+    badge = ' ERROR '
+    console.log if @options.noColors
+      "#{badge} #{message}"
+    else
+      "#{badge.inverse.bold} #{message}".yellow
+
+
   printMessage: (message) ->
     console.log "\n#{@indent message}"
 
@@ -220,8 +230,8 @@ class Runner
     if @hasFailures()
       for result in @results
         switch result.state
-          when 'stopped'
-            @printFailure result.example.description
+          when 'errored'
+            @printError result.example.description
             @printMessage result.example.examplePromise.reason.message
             @printStack result.example.examplePromise.reason if @options.trace
           when 'failure'
@@ -242,7 +252,8 @@ class Runner
 
   formatCounters: ->
     success = @examples.filter((e)-> e.result.state is 'success').length
-    failures = @examples.filter((e)-> e.result.state in ['failure', 'stopped']).length
+    failures = @examples.filter((e)-> e.result.state in ['failure']).length
+    errored = @examples.filter((e)-> e.result.state in ['errored']).length
     skipped = @examples.filter((e)-> e.result.state is 'skipped').length
     pending = @examples.filter((e)-> e.result.state is 'pending').length
     assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
@@ -252,14 +263,15 @@ class Runner
     """
     Specs loaded in #{loadDuration}
     Finished in #{specsDuration}
-    #{@formatResults success, failures, skipped, pending, assertions}
+    #{@formatResults success, failures, errored, skipped, pending, assertions}
 
     """
 
-  formatResults: (s, f, sk, p, a) ->
+  formatResults: (s, f, e, sk, p, a) ->
     "#{@formatCount s, 'success', 'success', @toggle f, 'green'},
     #{@formatCount a, 'assertion', 'assertions', @toggle f, 'green'},
     #{@formatCount f, 'failure', 'failures', @toggle f, 'green', 'red'},
+    #{@formatCount e, 'error', 'errors', @toggle e, 'green', 'yellow'},
     #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'green', 'magenta'},
     #{@formatCount p, 'pending', 'pending', @toggle p, 'green', 'yellow'}
     ".replace /\s+/g, ' '

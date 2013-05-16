@@ -1,6 +1,6 @@
 
 virtualEnv('example depending on succeeding examples')
-.shouldSucceedWith /3 success, 3 assertions, 0 failures, 0 skipped/, ->
+.shouldSucceedWith /3 success, 3 assertions, 0 failures, 0 errors, 0 skipped/, ->
   describe 'dependency 1', id: 'success1', ->
     it -> true.should be true
 
@@ -15,7 +15,7 @@ virtualEnv('example depending on succeeding examples')
 
 
 virtualEnv('example depending on a failing example')
-.shouldFailWith /1 failure, 1 skipped/, ->
+.shouldFailWith /1 failure, 0 errors, 1 skipped/, ->
   describe 'dependency', id: 'top', ->
     context 'succeeding', ->
       it -> true.should be true
