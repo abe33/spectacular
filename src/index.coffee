@@ -57,5 +57,9 @@ exports.run = (options) ->
   .then ->
     spectacular.env.run()
   .fail (reason) ->
-    console.log spectacular.env.formatter.errorBadge "Spectacular failed"
-    console.log spectacular.env.formatter.formatError reason
+    if spectacular.env?
+      console.log spectacular.env.formatter.errorBadge "Spectacular failed"
+      console.log spectacular.env.formatter.formatError reason
+    else
+      console.log reason.stack
+
