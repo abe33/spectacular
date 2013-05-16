@@ -69,7 +69,7 @@ class Runner
         else
           @register dependency
       else
-        throw new Error "unmet dependencicy #{dep} for example #{example}"
+        throw new Error "unmet dependency #{dep} for example #{example}"
 
     example.dependenciesMet = -> deps.every (e) -> e.succeed
 

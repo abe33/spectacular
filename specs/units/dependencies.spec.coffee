@@ -1,4 +1,12 @@
 
+virtualEnv('missing dependency')
+.shouldStopWith /unmet dependency foo/, ->
+  describe 'dependent', ->
+    dependsOn 'foo'
+
+    it -> true.should be true
+
+
 virtualEnv('example depending on succeeding examples')
 .shouldSucceedWith /3 success, 3 assertions, 0 failures, 0 errors, 0 skipped/, ->
   describe 'dependency 1', id: 'success1', ->
