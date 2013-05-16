@@ -1,6 +1,13 @@
 
-declaration('error raised in describe')
-.shouldFailWith /message/, ->
+
+virtualEnv('pending examples')
+.shouldSucceedWith /0 errors, 0 skipped, 2 pending/, ->
+  describe 'pending examples', ->
+    it -> pending()
+    it -> pending()
+
+virtualEnv('error raised in describe')
+.shouldStopWith /message/, ->
   describe 'failing declaration', ->
     throw new Error 'message'
 

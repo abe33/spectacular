@@ -60,13 +60,3 @@ exports.virtualEnv = (desc) ->
 
       it 'error message', ->
         @reason.message.should match re
-
-exports.declaration = (desc) ->
-  shouldFailWith: (re, block) ->
-    try do block catch error
-
-    describe desc, ->
-      context 'the expected error message', ->
-        the -> error.message.should match re
-
-
