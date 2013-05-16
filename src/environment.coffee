@@ -64,7 +64,7 @@ class spectacular.Environment
     unless @currentExample?
       throw new Error "#{method} called outside a it block"
 
-  fail: => throw new Error 'Failed'
+  fail: => @currentExample.reject new Error 'Failed'
   pending: => @currentExample.pending()
   skip: => @currentExample.skip()
   success: =>
