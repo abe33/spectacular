@@ -210,7 +210,8 @@ class spectacular.ExampleGroup extends spectacular.Example
         @noSpaceBeforeDescription = true
         subject = desc
         @ownSubjectBlock = => subject
-        desc = subject?.name or subject?.toString() or ''
+
+        desc = subject?.name or subject?._name or subject?.toString() or ''
 
     super block, desc, @parent
     @children = []

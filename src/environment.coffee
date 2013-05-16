@@ -40,9 +40,12 @@ class spectacular.Environment
     'it xit describe xdescribe context xcontext
       before after given subject its itsInstance
       itsReturn withParameters fail pending success
-      skip should shouldnt dependsOn spyOn the'.split(/\s+/g).forEach (k) =>
-      global[k] = ->
-        env[k].apply env, arguments
+      skip should shouldnt dependsOn spyOn the
+      withArguments'.split(/\s+/g).forEach (k) =>
+
+      fn = -> env[k].apply env, arguments
+      fn._name = k
+      global[k] = fn
 
   clone: ->
     optionsCopy = {}
