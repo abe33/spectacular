@@ -83,32 +83,32 @@ class spectacular.Example
 
   pending: ->
     if @examplePromise?.pending
-      @examplePromise.resolve()
       @result.state = 'pending'
+      @examplePromise.resolve()
 
   skip: ->
     if @examplePromise?.pending
-      @examplePromise.reject new Error 'Skipped'
       @result.state = 'skipped'
+      @examplePromise.reject new Error 'Skipped'
 
   resolve: =>
     if @examplePromise?.pending
       if @result.hasFailures()
-        @examplePromise.reject()
         @result.state = 'failure'
+        @examplePromise.reject()
       else
-        @examplePromise.resolve()
         @result.state = 'success'
+        @examplePromise.resolve()
 
   reject: (reason) =>
     if @examplePromise?.pending
-      @examplePromise.reject reason
       @result.state = 'failure'
+      @examplePromise.reject reason
 
   error: (reason) ->
     if @examplePromise?.pending
-      @examplePromise.reject reason
       @result.state = 'errored'
+      @examplePromise.reject reason
 
   createContext: ->
     context = {}
@@ -122,7 +122,9 @@ class spectacular.Example
     @examplePromise = new spectacular.Promise
     @result = new spectacular.ExampleResult this
 
-    return @skip() and @examplePromise unless @dependenciesMet()
+    unless @dependenciesMet()
+      @skip()
+      @examplePromise
 
     afterPromise = new spectacular.Promise
 
@@ -166,7 +168,8 @@ class spectacular.Example
       if @acceptAsync hook
         async = new spectacular.AsyncPromise
         async.then => next()
-        async.fail (reason) => next(reason)
+        async.fail (reason) =>
+          next reason
         async.run()
         hook.call(@context, async)
       else
