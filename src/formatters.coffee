@@ -11,7 +11,7 @@ class exports.StackFormatter
   format: ->
     stack = @error.stack.split('\n').filter (line) -> /^\s{4}at.*$/g.test line
     res = '\n'
-    res += @formatErrorInFile stack[0] if @options.showSource
+    try res += @formatErrorInFile stack[0] if @options.showSource
 
     if @options.longTrace
       res += "\n\n#{stack.join '\n'}\n"

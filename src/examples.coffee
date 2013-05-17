@@ -47,7 +47,8 @@ class spectacular.Expectation
         throw new Error
       catch e
         stack = e.stack.split('\n')
-        e.stack = stack[3..].join('\n')
+        specIndex = spectacular.env.runner.findSpecFileInStack stack
+        e.stack = stack[specIndex..].join('\n') if specIndex isnt -1
         @trace = e
 
     @description = "#{@example.description} #{@matcher.description}"

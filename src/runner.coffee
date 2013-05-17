@@ -29,6 +29,12 @@ class Runner
     .then =>
       if @hasFailures() then 1 else 0
 
+  findSpecFileInStack: (stack) ->
+    for p in @paths
+      for l,i in stack
+        return i if l.indexOf(p) isnt -1
+    -1
+
   globPaths: =>
     Q.all(@glob p for p in @options.globs).then (results) =>
       paths = []
@@ -44,6 +50,7 @@ class Runner
     defer.promise
 
   loadSpecs: (paths) =>
+    @paths = paths
     console.log "Load specs: #{paths}" if @options.verbose
     console.log ''
     require path.resolve('.', p) for p in paths
