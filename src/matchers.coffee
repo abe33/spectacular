@@ -6,6 +6,7 @@ if isCommonJS
   util = require 'util'
   utils = require './utils'
   inspect = util.inspect
+  Q = require 'q'
 else
   exports = window
 

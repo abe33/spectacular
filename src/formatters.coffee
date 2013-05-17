@@ -64,6 +64,12 @@ class exports.StackFormatter
 
 class exports.ResultsFormatter
   constructor: (@root, @options, @env) ->
+    @errorsCounter = 1
+    @failuresCounter = 1
+    @errors = []
+    @failures = []
+    @skipped = []
+    @pending = []
     @results = []
     @examples = []
 
@@ -79,13 +85,6 @@ class exports.ResultsFormatter
     console.log @buildResults lstart, lend, sstart, send
 
   buildResults: (lstart, lend, sstart, send) ->
-    @errorsCounter = 1
-    @failuresCounter = 1
-    @errors = []
-    @failures = []
-    @skipped = []
-    @pending = []
-
     res = '\n\n'
     for result in @results
       switch result.state
@@ -213,7 +212,7 @@ class exports.ResultsFormatter
     #{@formatCount p, 'pending', 'pending', toggle p, 'green', 'yellow'}")
 
   formatDuration: (start, end) ->
-    duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
+    duration = (end.getTime() - start.getTime()) / 1000
     duration = "#{Math.max 0, duration}s"
     duration = duration.yellow unless @options.noColors
     duration

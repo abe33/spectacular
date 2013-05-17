@@ -10,7 +10,10 @@ Runner = require './runner'
 
 requireIntoGlobal = (file) ->
   matchers = require file
-  global[k] = v for k,v of matchers
+  for k,v of matchers
+    v._name = k if typeof v is 'function'
+    global[k] = v
+
 
 loadSpectacular = (options) ->
   Q.fcall ->
@@ -57,5 +60,9 @@ exports.run = (options) ->
   .then ->
     spectacular.env.run()
   .fail (reason) ->
-    console.log spectacular.env.formatter.errorBadge "Spectacular failed"
-    console.log spectacular.env.formatter.formatError reason
+    if spectacular.env?
+      console.log spectacular.env.formatter.errorBadge "Spectacular failed"
+      console.log spectacular.env.formatter.formatError reason
+    else
+      console.log reason.stack
+

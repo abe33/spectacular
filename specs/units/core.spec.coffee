@@ -1,4 +1,6 @@
-
+xdescribe should, ->
+  it -> should runInsideIt
+  it -> shouldnt runOutsideIt
 
 virtualEnv('pending examples')
 .shouldSucceedWith /0 errors, 0 skipped, 2 pending/, ->
@@ -17,6 +19,11 @@ virtualEnv('failing examples')
   describe 'failing examples', ->
     it -> fail()
     it -> fail()
+
+virtualEnv('async example timing out')
+.shouldFailWith /1 failure/, ->
+  it (async) ->
+    async.rejectAfter 100, 'Timed out'
 
 virtualEnv('xdescribe')
 .shouldSucceedWith /0 failures, (.*), 1 pending/, ->

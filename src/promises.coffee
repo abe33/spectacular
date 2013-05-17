@@ -41,11 +41,19 @@ class spectacular.Promise
   then: (fulfilledHandler, errorHandler, progressHandler) ->
     promise = new spectacular.Promise
     f = (value)->
-      fulfilledHandler? value
-      promise.resolve value
+      res = fulfilledHandler? value
+      if res?.then?
+        res
+        .then (value) ->
+          promise.resolve value
+        .fail (reason) ->
+          promise.reject reason
+      else
+        promise.resolve res
     e = (reason) ->
       errorHandler? reason
       promise.reject reason
+
     if @pending
       @fulfilledHandlers.push f
       @errorHandlers.push e
@@ -54,7 +62,7 @@ class spectacular.Promise
       if @fulfilled
         f @value
       else
-        e @reason
+        e @
 
     promise
 
@@ -83,7 +91,7 @@ class spectacular.Promise
     else
       handler @reason for handler in @errorHandlers
 
-class spectacular.AsyncExamplePromise extends spectacular.Promise
+class spectacular.AsyncPromise extends spectacular.Promise
   constructor: ->
     @interval = null
     @timeout = 5000
@@ -94,9 +102,12 @@ class spectacular.AsyncExamplePromise extends spectacular.Promise
     lastTime = new Date()
     @interval = setInterval =>
       if new Date() - lastTime >= @timeout
-        clearInterval @interval
         @reject new Error @message
     , 10
+
+  reject: (reason) ->
+    clearInterval @interval
+    super reason
 
   resolve: (value) ->
     clearInterval @interval
