@@ -1,5 +1,5 @@
 
-createEnv = (block, context) ->
+exports.createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
   spyOn(env.runner, 'loadSpecs').andCallFake -> do block
@@ -9,7 +9,7 @@ createEnv = (block, context) ->
     context.results = @buildResults.apply this, arguments
   env
 
-runEnvExpectingNormalTermination = (env, context, async) ->
+exports.runEnvExpectingNormalTermination = (env, context, async) ->
   oldEnv = spectacular.env
   env.run()
   .then (status) ->
@@ -21,7 +21,7 @@ runEnvExpectingNormalTermination = (env, context, async) ->
     oldEnv.load()
     async.reject reason
 
-runEnvExpectingInterruption = (env, context, async) ->
+exports.runEnvExpectingInterruption = (env, context, async) ->
   oldEnv = spectacular.env
   env.run()
   .then (status) =>
