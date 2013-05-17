@@ -10,7 +10,10 @@ Runner = require './runner'
 
 requireIntoGlobal = (file) ->
   matchers = require file
-  global[k] = v for k,v of matchers
+  for k,v of matchers
+    v._name = k if typeof v is 'function'
+    global[k] = v
+
 
 loadSpectacular = (options) ->
   Q.fcall ->
