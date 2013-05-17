@@ -61,3 +61,12 @@ exports.virtualEnv = (desc) ->
 
       it 'error message', ->
         @reason.message.should match re
+
+exports.environmentMethod = (method) ->
+  cannotBeCalledInsideIt: ->
+    virtualEnv('called inside it')
+    .shouldFailWith /called inside a it block/, ->
+      describe 'foo', ->
+        it ->
+          m = global[method]
+          m()
