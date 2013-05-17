@@ -165,7 +165,7 @@ class exports.ResultsFormatter
     else
       "#{badge.inverse.bold}[#{@errorsCounter++}] #{message}\n".yellow
 
-  formatMessage: (message) -> "\n#{utils.indent message}"
+  formatMessage: (message) -> "\n#{utils.indent message or ''}"
 
   formatResume: ->
     res = ''
