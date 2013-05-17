@@ -6,21 +6,32 @@ class spectacular.Expectation
 
   assert: =>
     promise = new spectacular.Promise
-
+    timeout = null
     try
       assert = spectacular.Promise.unit()
       .then =>
+        timeout = setTimeout =>
+          @success = false
+          @trace = new Error 'matcher timed out'
+          @message = @matcher.message
+          @description = @matcher.description
+          promise.reject @success
+        , @matcher.timeout or 5000
+
         @matcher.assert(@actual, if @not then ' not' else '')
       .then (@success) =>
+        clearTimeout timeout
         @success = not @success if @not
         @createMessage()
         promise.resolve @success
       .fail (@trace) =>
+        clearTimeout timeout
         @success = false
-        @matcher.message = e.message unless @matcher.message?
+        @matcher.message = @trace.message unless @matcher.message?
         @matcher.description = '' unless @matcher.description?
         promise.resolve @success
     catch e
+      clearTimeout timeout
       @success = false
       @trace = e
       @matcher.message = e.message unless @matcher.message?
@@ -54,7 +65,8 @@ class spectacular.ExampleResult
 
   _addExpectation = ExampleResult::addExpectation
   addExpectation: (expectation) ->
-    @promise = @promise.then -> expectation.assert()
+    handler = -> expectation.assert()
+    @promise = @promise.then handler, handler
     _addExpectation.call this, expectation
 
 
