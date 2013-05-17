@@ -213,7 +213,7 @@ class exports.ResultsFormatter
     #{@formatCount p, 'pending', 'pending', toggle p, 'green', 'yellow'}")
 
   formatDuration: (start, end) ->
-    duration = (end.getMilliseconds() - start.getMilliseconds()) / 1000
+    duration = (end.getTime() - start.getTime()) / 1000
     duration = "#{Math.max 0, duration}s"
     duration = duration.yellow unless @options.noColors
     duration
