@@ -1,5 +1,11 @@
 
 class spectacular.Environment
+  exposedMethods:'it xit describe xdescribe context xcontext
+    before after given subject its itsInstance
+    itsReturn withParameters fail pending success
+    skip should shouldnt dependsOn spyOn the
+    withArguments'
+
   constructor: (@Runner, @Formatter, @options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
@@ -19,6 +25,7 @@ class spectacular.Environment
       value: (matcher, neg=false) ->
         env.notOutsideIt 'should'
 
+        return unless matcher?
         env.currentExample.result.addExpectation(
           new spectacular.Expectation(
             env.currentExample,
@@ -37,12 +44,7 @@ class spectacular.Environment
         @should matcher, true
     }
 
-    'it xit describe xdescribe context xcontext
-      before after given subject its itsInstance
-      itsReturn withParameters fail pending success
-      skip should shouldnt dependsOn spyOn the
-      withArguments'.split(/\s+/g).forEach (k) =>
-
+    @exposedMethods.split(/\s+/g).forEach (k) =>
       fn = -> env[k].apply env, arguments
       fn._name = k
       global[k] = fn
@@ -200,6 +202,7 @@ class spectacular.Environment
   should: (matcher, neg=false) =>
     @notOutsideIt 'should'
 
+    return unless matcher?
     @currentExample.result.addExpectation(
       new spectacular.Expectation(
         @currentExample,
