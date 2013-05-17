@@ -164,7 +164,7 @@ class spectacular.Example
   executeHook: (hook, next) ->
     try
       if @acceptAsync hook
-        async = new spectacular.AsyncExamplePromise
+        async = new spectacular.AsyncPromise
         async.then => next()
         async.fail (reason) => next(reason)
         async.run()
@@ -178,7 +178,7 @@ class spectacular.Example
   executeBlock: ->
     try
       if @acceptAsync @block
-        async = new spectacular.AsyncExamplePromise
+        async = new spectacular.AsyncPromise
         async.then @executeExpectations, @reject
         async.run()
         @block.call(@context, async)

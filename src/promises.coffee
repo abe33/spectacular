@@ -91,7 +91,7 @@ class spectacular.Promise
     else
       handler @reason for handler in @errorHandlers
 
-class spectacular.AsyncExamplePromise extends spectacular.Promise
+class spectacular.AsyncPromise extends spectacular.Promise
   constructor: ->
     @interval = null
     @timeout = 5000
@@ -102,9 +102,12 @@ class spectacular.AsyncExamplePromise extends spectacular.Promise
     lastTime = new Date()
     @interval = setInterval =>
       if new Date() - lastTime >= @timeout
-        clearInterval @interval
         @reject new Error @message
     , 10
+
+  reject: (reason) ->
+    clearInterval @interval
+    super reason
 
   resolve: (value) ->
     clearInterval @interval
