@@ -35,6 +35,12 @@ virtualEnv('when unhandled exception is raised in example')
   describe 'failing example', ->
     it -> throw new Error 'message'
 
+
+virtualEnv('when unhandled exception is raised in matcher')
+.shouldFailWith /1 assertion, 0 failures, 1 error/, ->
+  describe 'failing example', ->
+    it -> {}.should throwing
+
 virtualEnv('when unhandled exception is raised in example with expectations')
 .shouldFailWith /1 assertion, 0 failures, 1 error/, ->
   describe 'failing example with expectation', ->

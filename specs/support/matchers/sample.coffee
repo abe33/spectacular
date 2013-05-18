@@ -12,3 +12,7 @@ exports.timeout =
     @message = 'matcher message'
 
     new spectacular.Promise
+
+exports.throwing =
+  assert: ->
+    throw new Error 'foo'

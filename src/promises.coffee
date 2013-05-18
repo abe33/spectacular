@@ -41,7 +41,12 @@ class spectacular.Promise
   then: (fulfilledHandler, errorHandler, progressHandler) ->
     promise = new spectacular.Promise
     f = (value)->
-      res = fulfilledHandler? value
+      try
+        res = fulfilledHandler? value
+      catch err
+        promise.reject err
+        return
+
       if res?.then?
         res
         .then (value) ->
@@ -50,6 +55,7 @@ class spectacular.Promise
           promise.reject reason
       else
         promise.resolve res
+
     e = (reason) ->
       errorHandler? reason
       promise.reject reason
@@ -62,7 +68,7 @@ class spectacular.Promise
       if @fulfilled
         f @value
       else
-        e @
+        e @reason
 
     promise
 
