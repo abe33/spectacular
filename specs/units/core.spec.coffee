@@ -21,11 +21,6 @@ virtualEnv('async example timing out')
   it (async) ->
     async.rejectAfter 100, 'Timed out'
 
-virtualEnv('xdescribe')
-.shouldSucceedWith /0 failures, (.*), 1 pending/, ->
-  xdescribe 'pending examples', ->
-    it -> fail()
-
 virtualEnv('error raised in spec file')
 .shouldStopWith /message/, ->
   throw new Error 'message'

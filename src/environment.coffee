@@ -191,8 +191,6 @@ class spectacular.Environment
         block.call context, oldMethod.apply this, arguments
       this
 
-
-
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod
 

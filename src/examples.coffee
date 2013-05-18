@@ -109,6 +109,9 @@ class spectacular.Example
       if @result.hasFailures()
         @result.state = 'failure'
         @examplePromise.reject()
+      else if @result.expectationsCount() is 0
+        @result.state = 'pending'
+        @examplePromise.resolve()
       else
         @result.state = 'success'
         @examplePromise.resolve()
