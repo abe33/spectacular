@@ -1,5 +1,5 @@
 
-virtualEnv('missing dependency')
+runningSpecs('missing dependency')
 .shouldStopWith /unmet dependency foo/, ->
   describe 'dependent', ->
     dependsOn 'foo'
@@ -7,7 +7,7 @@ virtualEnv('missing dependency')
     it -> true.should be true
 
 
-virtualEnv('example depending on succeeding examples')
+runningSpecs('example depending on succeeding examples')
 .shouldSucceedWith /3 success, 3 assertions, 0 failures, 0 errors, 0 skipped/, ->
   describe 'dependency 1', id: 'success1', ->
     it -> true.should be true
@@ -22,7 +22,7 @@ virtualEnv('example depending on succeeding examples')
     it -> true.should be true
 
 
-virtualEnv('example depending on a failing example')
+runningSpecs('example depending on a failing example')
 .shouldFailWith /1 failure, 0 errors, 1 skipped/, ->
   describe 'dependency', id: 'top', ->
     context 'succeeding', ->
@@ -38,7 +38,7 @@ virtualEnv('example depending on a failing example')
     it 'should be skipped', ->
       true.should be true
 
-virtualEnv('parent depending on child')
+runningSpecs('parent depending on child')
 .shouldStopWith /can't depends on ancestor/, ->
   describe 'parent', id: 'parent1', ->
     context 'child', id: 'child1', ->
@@ -46,7 +46,7 @@ virtualEnv('parent depending on child')
 
       it -> true.should be true
 
-virtualEnv('child depending on parent')
+runningSpecs('child depending on parent')
 .shouldStopWith /can't depends on ancestor/, ->
   describe 'parent', id: 'parent2', ->
     dependsOn 'child2'
@@ -54,7 +54,7 @@ virtualEnv('child depending on parent')
     context 'child', id: 'child2', ->
       it -> true.should be true
 
-virtualEnv('circular dependencies')
+runningSpecs('circular dependencies')
 .shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'
@@ -66,7 +66,7 @@ virtualEnv('circular dependencies')
 
     it -> true.should be true
 
-virtualEnv('deep circular dependencies')
+runningSpecs('deep circular dependencies')
 .shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     describe 'child 1', id: 'cc1', ->
@@ -79,7 +79,7 @@ virtualEnv('deep circular dependencies')
 
     it -> true.should be true
 
-virtualEnv('n+1 circular dependencies')
+runningSpecs('n+1 circular dependencies')
 .shouldStopWith /circular dependencies between/, ->
   describe 'cycle 1', id: 'c1', ->
     dependsOn 'c2'

@@ -32,11 +32,11 @@ exports.runEnvExpectingInterruption = (env, context, async) ->
     oldEnv.load()
     async.resolve()
 
-exports.virtualEnv = (desc) ->
+exports.runningSpecs = (desc) ->
   setupEnv = (context, async, block) ->
 
   shouldFailWith: (re, block) ->
-    describe desc, ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         runEnvExpectingNormalTermination @env, this, async
@@ -45,7 +45,7 @@ exports.virtualEnv = (desc) ->
       it 'results', -> @results.should match re
 
   shouldSucceedWith: (re, block) ->
-    describe desc, ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         runEnvExpectingNormalTermination @env, this, async
@@ -54,7 +54,7 @@ exports.virtualEnv = (desc) ->
       it 'results', -> @results.should match re
 
   shouldStopWith: (re, block) ->
-    describe desc, ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         runEnvExpectingInterruption @env, this, async
@@ -64,7 +64,7 @@ exports.virtualEnv = (desc) ->
 
 exports.environmentMethod = (method) ->
   cannotBeCalledInsideIt: ->
-    virtualEnv('called inside it')
+    runningSpecs('called inside it')
     .shouldFailWith /called inside a it block/, ->
       describe 'foo', ->
         it ->
