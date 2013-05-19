@@ -84,6 +84,7 @@ class spectacular.Example
   @getter 'finished', -> @examplePromise?.isResolved()
   @getter 'failed', -> @examplePromise?.isRejected()
   @getter 'succeed', -> @examplePromise?.isFulfilled()
+  @getter 'reason', -> @afterReason or @examplePromise?.reason
 
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
@@ -138,37 +139,39 @@ class spectacular.Example
     afterPromise = new spectacular.Promise
 
     @runBefore (err) =>
-      return @reject err if err?
+      return @error err if err?
       @executeBlock()
 
     @examplePromise.then => @runAfter (err) =>
-      return afterPromise.reject err if err?
+      return @handleAfterError err, afterPromise if err?
       afterPromise.resolve()
+
     @examplePromise.fail (reason) => @runAfter (err) =>
-      return afterPromise.reject err if err?
+      return @handleAfterError err, afterPromise if err?
       afterPromise.reject reason
 
     afterPromise
 
-  runBefore: (callback) ->
-    befores = @beforeHooks
-    next = (err) =>
-      return callback err if err?
-      if befores.length is 0
-        callback()
-      else
-        @executeHook befores.shift(), next
+  handleAfterError: (error, promise) ->
+    @result.state = 'errored'
+    @afterReason = error
+    promise.reject error
 
-    next()
+  runBefore: (callback) ->
+    befores = @beforeHooks.concat()
+    @runHooks befores, callback
 
   runAfter: (callback) ->
-    afters = @afterHooks
+    afters = @afterHooks.concat()
+    @runHooks afters, callback
+
+  runHooks: (hooks, callback) ->
     next = (err) =>
       return callback err if err?
-      if afters.length is 0
+      if hooks.length is 0
         callback()
       else
-        @executeHook afters.shift(), next
+        @executeHook hooks.shift(), next
 
     next()
 

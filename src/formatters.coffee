@@ -133,7 +133,7 @@ class exports.ResultsFormatter
 
   formatExampleFailure: (example) ->
     res =  @failureBadge example.description
-    res += @formatError example.examplePromise.reason
+    res += @formatError example.reason
     res += '\n'
 
   formatExpectationFailure: (expectation) ->
@@ -145,7 +145,7 @@ class exports.ResultsFormatter
 
   formatExampleError: (example) ->
     res =  @errorBadge example.description
-    res += @formatError example.examplePromise.reason
+    res += @formatError example.reason
 
   formatError: (error) ->
     res = @formatMessage error.message
