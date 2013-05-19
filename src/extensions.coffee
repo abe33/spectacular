@@ -42,7 +42,7 @@ Function::setter = (name, block) ->
 Function::accessor = (name, options) ->
   Object.defineProperty @prototype, name, {
     get: options.get
-    get: options.set
+    set: options.set
     configurable: true
     enumerable: true
   }
