@@ -4,7 +4,7 @@ class spectacular.Environment
     before after given subject its itsInstance
     itsReturn withParameters fail pending success
     skip should shouldnt dependsOn spyOn the
-    withArguments'
+    withArguments whenPass'
 
   constructor: (@Runner, @Formatter, @options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
@@ -170,6 +170,12 @@ class spectacular.Environment
 
   dependsOn: (spec) =>
     @currentExampleGroup.ownDependencies.push spec
+
+  whenPass: (block) =>
+    previousContext = @currentExampleGroup
+    @context '', =>
+      @currentExampleGroup.ownCascading = previousContext
+      block()
 
   spyOn: (obj, method) =>
     oldMethod = obj[method]

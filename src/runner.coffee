@@ -32,7 +32,7 @@ class Runner
   findSpecFileInStack: (stack) ->
     for p in @paths
       for l,i in stack
-        return i if l.indexOf(p) isnt -1
+        return i if p in l
     -1
 
   globPaths: =>
@@ -59,26 +59,46 @@ class Runner
     @register example for example in @root.allExamples
 
   register: (example) =>
-    if example.dependencies.length > 0
-      @handleDependencies example
+    @handleDependencies example
 
-    @stack.push example unless @stack.indexOf(example) isnt -1
+    @stack.push example unless example in @stack
 
   handleDependencies: (example) ->
-    deps = []
-    for dep in example.dependencies
-      dependency = @root.identifiedExamplesMap[dep]
-      if dependency?
-        @checkDependency example, dependency
-        deps.push dependency
-        if dependency.children?
-          @register s for s in dependency.allExamples
-        else
-          @register dependency
-      else
-        throw new Error "unmet dependency #{dep} for example #{example}"
+    return if example in @stack
 
-    example.dependenciesMet = -> deps.every (e) -> e.succeed
+    dependencies = []
+    cascading = null
+    dependenciesSucceed = null
+    cascadingSucceed = null
+
+    if example.dependencies.length > 0
+      for dep in example.dependencies
+        dependency = @root.identifiedExamplesMap[dep]
+        if dependency?
+          @checkDependency example, dependency
+          dependencies.push dependency
+          if dependency.children?
+            @register s for s in dependency.allExamples
+          else
+            @register dependency
+        else
+          throw new Error "unmet dependency #{dep} for example #{example}"
+
+      dependenciesSucceed = -> dependencies.every (e) -> e.succeed
+
+    if example.cascading?
+      @register s for s in example.cascading.examples
+      cascadingSucceed = -> example.cascading.examplesSuceed
+
+    if dependenciesSucceed?
+      if cascadingSucceed?
+        example.dependenciesMet = ->
+          dependenciesSucceed() and cascadingSucceed()
+      else
+        example.dependenciesMet = dependenciesSucceed
+    else if cascadingSucceed?
+      example.dependenciesMet = cascadingSucceed
+
 
   checkDependency: (example, dependency) ->
     if dependency in example.ancestors

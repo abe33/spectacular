@@ -71,17 +71,23 @@ spectacular.FollowUpProperty = (property) ->
   privateProperty = "own#{capitalizedProperty}"
   class ConcreteFollowUpProperty
     @included: (ctor) ->
-      ctor.getter property, -> @[privateProperty] or @parent?[property]
+      ctor.accessor property, {
+        get: -> @[privateProperty] or @parent?[property]
+        set: (value) -> @[privateProperty] = value
+      }
 
 spectacular.MergeUpProperty = (property) ->
   capitalizedProperty = property.capitalize()
   privateProperty = "own#{capitalizedProperty}"
   class ConcreteMergeUpProperty
     @included: (ctor) ->
-      ctor.getter property, ->
-        a = @[privateProperty]
-        a = @parent[property].concat a if @parent?
-        a
+      ctor.accessor property, {
+        get: ->
+          a = @[privateProperty]
+          a = @parent[property].concat a if @parent?
+          a
+        set: (value) -> @[privateProperty] = value
+      }
 
 class spectacular.Describable
   @included: (ctor) ->

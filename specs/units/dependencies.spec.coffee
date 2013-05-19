@@ -95,3 +95,28 @@ runningSpecs('n+1 circular dependencies')
     dependsOn 'c1'
 
     it -> true.should be true
+
+runningSpecs('cascading successful examples')
+.shouldSucceedWith /3 success, 3 assertions, 0 failures/, ->
+  describe 'parent group', ->
+    it -> true.should be true
+
+    whenPass ->
+      it -> true.should be true
+
+      whenPass ->
+        context 'in a nested context', ->
+          it -> true.should be true
+
+runningSpecs('cascading failing examples')
+.shouldFailWith /0 success, 1 assertion, 1 failure, (.*), 1 skipped/, ->
+  describe 'parent group', ->
+    it -> true.should be false
+
+    whenPass ->
+      context 'skipped', ->
+        it ->
+          true.should be true
+
+
+

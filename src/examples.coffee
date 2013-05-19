@@ -70,6 +70,7 @@ class spectacular.Example
   @include spectacular.HasAncestors
   @include spectacular.Describable
   @include spectacular.FollowUpProperty('subjectBlock')
+  @include spectacular.FollowUpProperty('cascading')
   @include spectacular.MergeUpProperty('beforeHooks')
   @include spectacular.MergeUpProperty('afterHooks')
   @include spectacular.MergeUpProperty('dependencies')
@@ -79,6 +80,7 @@ class spectacular.Example
     @ownBeforeHooks = []
     @ownAfterHooks = []
     @ownDependencies = []
+    @ownCascading = null
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
   @getter 'finished', -> @examplePromise?.isResolved()
@@ -134,7 +136,7 @@ class spectacular.Example
 
     unless @dependenciesMet()
       @skip()
-      @examplePromise
+      return @examplePromise
 
     afterPromise = new spectacular.Promise
 
@@ -226,6 +228,7 @@ class spectacular.ExampleGroup extends spectacular.Example
   @getter 'finished', -> @allExamples.every (e) -> e.finished
   @getter 'failed', -> @allExamples.some (e) -> e.failed
   @getter 'succeed', -> not @failed
+  @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
   constructor: (block, desc, @parent, @options={}) ->
     subject = null
