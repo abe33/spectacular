@@ -180,8 +180,7 @@ class spectacular.Example
       if @acceptAsync hook
         async = new spectacular.AsyncPromise
         async.then => next()
-        async.fail (reason) =>
-          next reason
+        async.fail (reason) => next reason
         async.run()
         hook.call(@context, async)
       else
