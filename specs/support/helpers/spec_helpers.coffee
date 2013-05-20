@@ -2,7 +2,10 @@
 exports.createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
-  spyOn(env.runner, 'loadSpecs').andCallFake -> do block
+  spyOn(env, 'load').andCallThrough ->
+    promise = new spectacular.Promise.unit()
+    promise.then -> do block
+
   spyOn(env.formatter, 'printExampleResult').andCallFake ->
     @formatExampleResult.apply this, arguments
   spyOn(env.formatter, 'printResults').andCallFake ->
@@ -11,7 +14,9 @@ exports.createEnv = (block, context) ->
 
 exports.runEnvExpectingNormalTermination = (env, context, async) ->
   oldEnv = spectacular.env
-  env.run()
+  env.load()
+  .then ->
+    env.run()
   .then (status) ->
     context.status = status
     oldEnv.load()
@@ -23,7 +28,9 @@ exports.runEnvExpectingNormalTermination = (env, context, async) ->
 
 exports.runEnvExpectingInterruption = (env, context, async) ->
   oldEnv = spectacular.env
-  env.run()
+  env.load()
+  .then ->
+    env.run()
   .then (status) =>
     oldEnv.load()
     async.reject new Error "run didn't failed"

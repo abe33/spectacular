@@ -1,9 +1,5 @@
-require 'colors'
-Q = require 'q'
-glob = require 'glob'
-path = require 'path'
 
-nextTick = process.setImmediate or process.nextTick or (callback) ->
+nextTick = process?.setImmediate or process?.nextTick or (callback) ->
   setTimeout callback, 0
 
 class Runner
@@ -12,14 +8,9 @@ class Runner
     @examples = []
     @stack = []
 
-  run: =>
-    promise = @globPaths()
-    .then (paths) =>
-      @loadStartedAt = new Date()
-      paths
-    .then(@loadSpecs)
+  run: () =>
+    promise = spectacular.Promise.unit()
     .then =>
-      @loadEndedAt = new Date()
       @specsStartedAt = new Date()
     .then(@registerSpecs)
     .then(@executeSpecs)
@@ -34,26 +25,6 @@ class Runner
       for l,i in stack
         return i if p in l
     -1
-
-  globPaths: =>
-    Q.all(@glob p for p in @options.globs).then (results) =>
-      paths = []
-      results.forEach (a) -> paths = paths.concat a
-      paths
-
-  glob: (path) ->
-    defer = Q.defer()
-    glob path, (err, res) ->
-      return defer.reject err if err
-      defer.resolve res
-
-    defer.promise
-
-  loadSpecs: (paths) =>
-    @paths = paths
-    console.log "Load specs: #{paths}" if @options.verbose
-    console.log ''
-    require path.resolve('.', p) for p in paths
 
   registerSpecs: =>
     @register example for example in @root.allExamples
@@ -122,9 +93,9 @@ class Runner
         @checkCircularity example, dependency if dependency?
 
   executeSpecs: =>
-    defer = Q.defer()
-    @nextExample defer
-    defer.promise
+    promise = new spectacular.Promise
+    @nextExample promise
+    promise
 
   nextExample: (defer) =>
     nextTick =>

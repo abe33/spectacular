@@ -1,9 +1,11 @@
 
 m = require 'module'
 fs = require 'fs'
+glob = require 'glob'
+path = require 'path'
 vm = require 'vm'
 Q = require 'q'
-path = require 'path'
+require 'colors'
 walk = require 'walkdir'
 Runner = require './runner'
 {ResultsFormatter} = require './formatters'
@@ -14,9 +16,8 @@ requireIntoGlobal = (file) ->
     v._name = k if typeof v is 'function'
     global[k] = v
 
-
 loadSpectacular = (options) ->
-  Q.fcall ->
+  Q.fcall(->
     [ 'factories', 'extensions', 'mixins',
       'promises', 'examples', 'environment'
     ].forEach (file) ->
@@ -27,6 +28,8 @@ loadSpectacular = (options) ->
     spectacular.env = new spectacular.Environment(
       Runner, ResultsFormatter, options
     )
+  ).then ->
+    spectacular.env.load()
 
 loadMatchers = (options) ->
   defer = Q.defer()
@@ -52,12 +55,42 @@ loadHelpers = (options) ->
 
   defer.promise
 
+globPath = (path) ->
+  defer = Q.defer()
+  glob path, (err, res) ->
+    return defer.reject err if err
+    defer.resolve res
+
+  defer.promise
+
+globPaths= (options) -> ->
+  Q.all(globPath p for p in options.globs).then (results) =>
+    paths = []
+    results.forEach (a) -> paths = paths.concat a
+    paths
+
+loadSpecs = (options) -> (paths) ->
+  console.log "Load specs: #{paths}\n" if options.verbose
+  require path.resolve('.', p) for p in paths
+  paths
+
 exports.run = (options) ->
+  loadStartedAt = null
+  loadEndedAt = null
+
   loadSpectacular(options)
   .then(-> requireIntoGlobal './matchers')
   .then(loadMatchers options)
   .then(loadHelpers options)
   .then ->
+    loadStartedAt = new Date()
+  .then(globPaths options)
+  .then(loadSpecs options)
+  .then (paths) ->
+    loadEndedAt = new Date()
+    spectacular.env.runner.loadStartedAt = loadStartedAt
+    spectacular.env.runner.loadEndedAt = loadEndedAt
+    spectacular.env.runner.paths = paths
     spectacular.env.run()
   .fail (reason) ->
     if spectacular.env?

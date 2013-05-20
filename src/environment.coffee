@@ -13,9 +13,7 @@ class spectacular.Environment
     @formatter = new @Formatter(@rootExampleGroup, @options, this)
     @runner = new @Runner(@rootExampleGroup, @options, this, @formatter)
 
-  run: =>
-    @load()
-    @runner.run()
+  run: => @runner.run()
 
   load: =>
     env = this

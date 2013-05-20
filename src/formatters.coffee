@@ -184,14 +184,13 @@ class exports.ResultsFormatter
     "#{res}\n\n"
 
   formatTimers: (loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt) ->
-    loadDuration = @formatDuration loadStartedAt, loadEndedAt
+    if loadStartedAt? and loadEndedAt?
+      loadDuration = @formatDuration loadStartedAt, loadEndedAt
     specsDuration = @formatDuration specsStartedAt, specsEndedAt
 
-    """
-    Specs loaded in #{loadDuration}
-    Finished in #{specsDuration}
-
-    """
+    res = ''
+    res += "Specs loaded in #{loadDuration}\n" if loadDuration?
+    res += "Finished in #{specsDuration}\n\n"
 
   formatCounters: ->
     failures = @failures.length

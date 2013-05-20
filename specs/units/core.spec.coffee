@@ -1,4 +1,3 @@
-
 # examples groups
 
 runningSpecs('error raised in spec file')
