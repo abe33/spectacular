@@ -124,6 +124,29 @@ exports.match = (re) ->
 
     re.test actual
 
+exports.throwAnError = (message) ->
+  assert: (actual, notText) ->
+    msg = if message? then " with message #{message}" else ''
+    msg += " with arguments #{@arguments}" if @arguments?
+
+    @description = "should#{notText} throw an error#{msg}"
+
+    try
+      if @arguments?
+        actual.apply @context, @arguments
+      else
+        actual.call @context
+    catch error
+    @message = "Expected#{notText} to throw an error#{msg} but was #{error}"
+    if message?
+      error? and message.test error.message
+    else
+      error?
+
+  with: (@arguments...) -> this
+  inContext: (@context) -> this
+
+
 exports.haveBeenCalled =
   assert: (actual, notText) ->
     if typeof actual?.spied is 'function'
@@ -144,7 +167,5 @@ exports.haveBeenCalled =
       @message = "Expected a spy but it was #{actual}"
       false
 
-  with: (args...) ->
-    @arguments = args
-    this
+  with: (@arguments...) -> this
 

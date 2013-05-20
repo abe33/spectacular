@@ -111,8 +111,27 @@ describe 'haveBeenCalled', ->
       the -> @object.method.shouldnt haveBeenCalled.with 'foo', 10
       the -> @object.method.should haveBeenCalled.with 10, 'foo'
 
+describe 'throwAnError', ->
+  context 'on a function that throw an error', ->
+    subject -> -> throw new Error 'message'
 
+    it -> should throwAnError()
+    it -> should throwAnError /message/
+    it -> shouldnt throwAnError /irrelevant/
 
+  context 'on a function that does not throw an error', ->
+    subject -> ->
+
+    it -> shouldnt throwAnError()
+    it -> shouldnt throwAnError /message/
+
+  context 'on a function that throw with arguments', ->
+    subject -> -> throw new Error 'message' if arguments.length > 0
+
+    it -> shouldnt throwAnError()
+    it -> shouldnt throwAnError /message/
+    it -> should throwAnError().with 'an argument'
+    it -> should throwAnError(/message/).with 'an argument'
 
 
 
