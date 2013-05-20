@@ -81,21 +81,27 @@ stringDiff = (left, right) ->
              .replace('</ins>', '\x1B[39m')
   res
 
+keys = (o) -> k for k of o
+
 compare = (actual, value, matcher, noMessage=false) ->
   switch typeof actual
     when 'object'
       if Object::toString.call(actual) is '[object Array]'
-        for v,i in actual
-          unless compare v, value[i], matcher, true
-            unless noMessage
-              matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
+        unless noMessage
+          matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
+        return false if actual.length isnt value.length
+
+        for v,i in value
+          unless compare actual[i], v, matcher, true
             return false
         return true
       else
-        for k,v of actual
-          unless compare v, value[k], matcher, true
-            unless noMessage
-              matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
+        unless noMessage
+          matcher.message = "#{matcher.message}\n\n#{objectDiff actual, value}"
+        return false if keys(actual).length isnt keys(value).length
+
+        for k,v of value
+          unless compare actual[k], v, matcher, true
             return false
         return true
     when 'string'

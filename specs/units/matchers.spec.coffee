@@ -33,13 +33,40 @@ describe 'equal', ->
     it -> shouldnt equal 1
     it -> shouldnt equal '10'
 
-  context 'with objects', ->
+  context 'with an object', ->
+
     subject ->
       foo: 'bar'
       baz: {foo: 10}
 
     it -> should equal foo: 'bar', baz: {foo: 10}
     it -> shouldnt equal foo: 'baz', baz: {foo: 6}
+
+    context 'that is empty', ->
+      subject -> {}
+
+      it -> shouldnt equal a: 10, b: 10, c: 10
+
+    context 'that have an extra property', ->
+      subject -> {a: 10, b: 10, c: 10, d: 10}
+
+      it -> shouldnt equal a: 10, b: 10, c: 10
+
+  context 'with an array', ->
+    subject -> [0,1,2]
+
+    it -> should equal [0,1,2]
+    it -> shouldnt equal [2,1,0]
+
+    context 'that is empty', ->
+      subject -> []
+
+      it -> shouldnt equal [10, 10, 10]
+
+    context 'that have an extra value', ->
+      subject -> [10, 10, 10, 10]
+
+      it -> shouldnt equal [10, 10, 10]
 
 describe 'exist', ->
   context 'with something', ->
