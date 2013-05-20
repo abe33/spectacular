@@ -2,14 +2,16 @@
 exports.createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
+  context.results = ''
+
   spyOn(env, 'load').andCallThrough ->
     promise = new spectacular.Promise.unit()
     promise.then -> do block
 
   spyOn(env.formatter, 'printExampleResult').andCallFake ->
-    @formatExampleResult.apply this, arguments
+    context.results += @formatExampleResult.apply this, arguments
   spyOn(env.formatter, 'printResults').andCallFake ->
-    context.results = @buildResults.apply this, arguments
+    context.results += @buildResults.apply this, arguments
   env
 
 exports.runEnvExpectingNormalTermination = (env, context, async) ->
