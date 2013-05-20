@@ -12,10 +12,4 @@ exports.padRight = (string, pad=4) ->
   string = " #{string}" while string.length < pad
   string
 
-
-exports.padLeft = (string, pad=4) ->
-  string = string.toString()
-  string = "#{string} " while string.length < pad
-  string
-
 exports.toggle = (value, c1, c2) -> if value then c2 else c1
