@@ -185,8 +185,9 @@ class exports.ResultsFormatter
 
     res = "Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
     for example in sortedExamples
+      duration = "#{Math.floor(example.duration) / 1000} seconds"
       res += "    #{
-        "#{Math.floor(example.duration) / 1000} seconds".red
+        if @options.noColors then duration else duration.red
       } #{example.description}\n"
 
     "#{res}\n"
