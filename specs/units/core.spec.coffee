@@ -39,7 +39,7 @@ runningSpecs('unhandled exception raised in example')
   describe 'failing example', ->
     it -> throw new Error 'message'
 
-runningSpecs('when unhandled exception is raised in example with expectations')
+runningSpecs('unhandled exception raised in example with expectations')
 .shouldFailWith /1 assertion, 0 failures, 1 error/, ->
   describe 'failing example with expectation', ->
     it 'should have been stopped', ->
@@ -48,13 +48,13 @@ runningSpecs('when unhandled exception is raised in example with expectations')
 
 # before
 
-runningSpecs('when unhandled exception is raised in before')
+runningSpecs('unhandled exception raised in before')
 .shouldFailWith /0 assertions, 0 failures, 1 error/, ->
   describe 'with successful example', ->
     before -> throw new Error 'message'
     it -> true.should be true
 
-runningSpecs('when async before hook timing out')
+runningSpecs('async before hook timing out')
 .shouldFailWith /0 assertions, (.*), 1 error/, ->
   describe 'with successful example', ->
     before (async) ->
@@ -62,7 +62,7 @@ runningSpecs('when async before hook timing out')
 
     it -> true.should be true
 
-runningSpecs('when async before hook rejected')
+runningSpecs('async before hook rejected')
 .shouldFailWith /0 assertions, (.*), 1 error/, ->
   describe 'with successful example', ->
     before (async) ->
@@ -72,19 +72,19 @@ runningSpecs('when async before hook rejected')
 
 # after
 
-runningSpecs('when unhandled exception is raised in after')
+runningSpecs('unhandled exception raised in after')
 .shouldFailWith /0 success, 1 assertion, 0 failures, 1 error/, ->
   describe 'with successful example', ->
     after -> throw new Error 'message'
     it -> true.should be true
 
-runningSpecs('when unhandled exception is raised in after')
+runningSpecs('unhandled exception raised in after')
 .shouldFailWith /0 success, 1 assertion, 0 failures, 1 error/, ->
   describe 'with failing example', ->
     after -> throw new Error 'message'
     it -> true.should be false
 
-runningSpecs('when async after hook timing out')
+runningSpecs('async after hook timing out')
 .shouldFailWith /1 assertion, (.*), 1 error/, ->
   describe 'with successful example', ->
     after (async) ->
@@ -92,7 +92,7 @@ runningSpecs('when async after hook timing out')
 
     it -> true.should be true
 
-runningSpecs('when async after hook rejected')
+runningSpecs('async after hook rejected')
 .shouldFailWith /1 assertion, (.*), 1 error/, ->
   describe 'with successful example', ->
     after (async) ->
@@ -101,7 +101,7 @@ runningSpecs('when async after hook rejected')
     it -> true.should be true
 
 # matchers
-runningSpecs('when unhandled exception is raised in matcher')
+runningSpecs('unhandled exception raised in matcher')
 .shouldFailWith /1 assertion, 0 failures, 1 error/, ->
   describe 'failing example', ->
     it -> {}.should throwing
