@@ -103,6 +103,7 @@ class exports.ResultsFormatter
             res += @formatExampleFailure result.example
 
     res += @formatResume()
+    res += @formatProfile(sstart, send) if @options.profile
     res += @formatTimers(lstart, lend, sstart, send)
     res += @formatCounters()
     res += '\n'
@@ -174,6 +175,21 @@ class exports.ResultsFormatter
     res += @mapDescription('Skipped:', @skipped, 'magenta') if @skipped.length > 0
     res += @mapDescription('Pending:', @pending, 'yellow') if @pending.length > 0
     res
+
+  formatProfile: (specsStartedAt, specsEndedAt) ->
+    sortedExamples = @examples.sort((a, b) -> b.duration - a.duration)[0..9]
+    totalDuration = specsEndedAt.getTime() - specsStartedAt.getTime()
+
+    topSlowest = sortedExamples.reduce ((a,b) -> a + b.duration), 0
+    rate = Math.floor(topSlowest / totalDuration * 10000) / 100
+
+    res = "Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
+    for example in sortedExamples
+      res += "    #{
+        "#{Math.floor(example.duration) / 1000} seconds".red
+      } #{example.description}\n"
+
+    "#{res}\n"
 
   mapDescription: (desc, array, color) ->
     res = "    #{desc}\n\n"

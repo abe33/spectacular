@@ -6,7 +6,7 @@ chmod +x bin/spectacular
 rm lib/spectacular_bin.js
 if [ $TRAVIS ]
   then
-    istanbul --hook-run-in-context cover bin/spectacular -- --coffee specs/**/*.coffee
+    istanbul --hook-run-in-context cover bin/spectacular -- --coffee --profile specs/**/*.coffee
 else
-  bin/spectacular --coffee specs/**/*.coffee
+  bin/spectacular --coffee --profile specs/**/*.coffee
 fi

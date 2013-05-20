@@ -20,6 +20,7 @@ _ref = process.argv, node = _ref[0], binPath = _ref[1], args = 3 <= _ref.length 
 options = {
   coffee: false,
   verbose: false,
+  profile: false,
   trace: true,
   longTrace: false,
   showSource: true,
@@ -72,6 +73,10 @@ while (args.length) {
     case '--verbose':
     case '-v':
       options.verbose = true;
+      break;
+    case '--profile':
+    case '-p':
+      options.profile = true;
       break;
     default:
       options.globs.push(option);

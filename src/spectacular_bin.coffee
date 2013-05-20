@@ -11,6 +11,7 @@ ROOT = path.resolve '.'
 options =
   coffee: false
   verbose: false
+  profile: false
   trace: true
   longTrace: false
   showSource: true
@@ -39,6 +40,7 @@ while args.length
     when '--no-source' then options.showSource = false
     when '--long-trace' then options.longTrace = true
     when '--verbose', '-v' then options.verbose = true
+    when '--profile', '-p' then options.profile = true
     else options.globs.push option
 
 console.log 'options:', options if options.verbose

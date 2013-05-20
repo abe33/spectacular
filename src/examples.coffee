@@ -87,6 +87,11 @@ class spectacular.Example
   @getter 'failed', -> @examplePromise?.isRejected()
   @getter 'succeed', -> @examplePromise?.isFulfilled()
   @getter 'reason', -> @afterReason or @examplePromise?.reason
+  @getter 'duration', ->
+    if @runEndedAt? and @runStartedAt?
+      @runEndedAt.getTime() - @runStartedAt.getTime()
+    else
+      0
 
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
@@ -130,6 +135,7 @@ class spectacular.Example
   dependenciesMet: -> true
 
   run: ->
+    @runStartedAt = new Date()
     @context = @createContext()
     @examplePromise = new spectacular.Promise
     @result = new spectacular.ExampleResult this
@@ -141,14 +147,17 @@ class spectacular.Example
     afterPromise = new spectacular.Promise
 
     @runBefore (err) =>
+      @runEndedAt = new Date()
       return @error err if err?
       @executeBlock()
 
     @examplePromise.then => @runAfter (err) =>
+      @runEndedAt = new Date()
       return @handleAfterError err, afterPromise if err?
       afterPromise.resolve()
 
     @examplePromise.fail (reason) => @runAfter (err) =>
+      @runEndedAt = new Date()
       return @handleAfterError err, afterPromise if err?
       afterPromise.reject reason
 
