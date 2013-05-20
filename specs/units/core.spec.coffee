@@ -106,3 +106,9 @@ runningSpecs('unhandled exception raised in matcher')
   describe 'failing example', ->
     it -> {}.should throwing
 
+describe 'sequencial assertions', ->
+  it 'should succeed', ->
+    o = {foo: 10}
+    o.foo.should equal 10
+    o.foo = "100"
+    o.foo.should equal '100'
