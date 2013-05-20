@@ -6,12 +6,12 @@ class spectacular.Environment
     skip should shouldnt dependsOn spyOn the
     withArguments whenPass'
 
-  constructor: (@Runner, @Formatter, @options) ->
+  constructor: (@Formatter, @options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
     @formatter = new @Formatter(@rootExampleGroup, @options, this)
-    @runner = new @Runner(@rootExampleGroup, @options, this, @formatter)
+    @runner = new spectacular.Runner(@rootExampleGroup, @options, this, @formatter)
 
   run: => @runner.run()
 
@@ -50,7 +50,7 @@ class spectacular.Environment
   clone: ->
     optionsCopy = {}
     optionsCopy[k] = v for k,v of @options
-    new spectacular.Environment @Runner, @Formatter, optionsCopy
+    new spectacular.Environment @Formatter, optionsCopy
 
   notInsideIt: (method) =>
     if @currentExample?

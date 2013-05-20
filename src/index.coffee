@@ -7,7 +7,6 @@ vm = require 'vm'
 Q = require 'q'
 require 'colors'
 walk = require 'walkdir'
-Runner = require './runner'
 {ResultsFormatter} = require './formatters'
 
 requireIntoGlobal = (file) ->
@@ -19,14 +18,14 @@ requireIntoGlobal = (file) ->
 loadSpectacular = (options) ->
   Q.fcall(->
     [ 'factories', 'extensions', 'mixins',
-      'promises', 'examples', 'environment'
+      'promises', 'examples', 'runner', 'environment'
     ].forEach (file) ->
       filename = path.resolve __dirname, "#{file}.js"
       src = fs.readFileSync(filename).toString()
       vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment(
-      Runner, ResultsFormatter, options
+      ResultsFormatter, options
     )
   ).then ->
     spectacular.env.load()

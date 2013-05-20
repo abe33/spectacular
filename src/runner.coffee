@@ -2,7 +2,7 @@
 nextTick = process?.setImmediate or process?.nextTick or (callback) ->
   setTimeout callback, 0
 
-class Runner
+class spectacular.Runner
   constructor: (@root, @options, @env, @formatter) ->
     @results = []
     @examples = []
@@ -124,6 +124,3 @@ class Runner
     )
 
   hasFailures: -> @formatter.hasFailures()
-
-
-module.exports = Runner
