@@ -1,30 +1,34 @@
 describe spectacular.Promise, ->
 
   it -> should exist
-  itsInstance -> should exist
 
-  describe '.unit', ->
-    it -> should exist
-    itsReturn -> should exist
+  whenPass ->
+    itsInstance -> should exist
 
-    describe 'the returned promise', ->
-      subject 'promise', -> spectacular.Promise.unit()
+    describe '.unit', ->
+      it -> should exist
+      whenPass ->
+        itsReturn -> should exist
 
-      it -> should be 'fulfilled'
-      its 'value', -> should equal 0
+        describe 'the returned promise', ->
+          subject 'promise', -> spectacular.Promise.unit()
 
-  describe '.all', ->
-    it -> should exist
+          it -> should be 'fulfilled'
+          its 'value', -> should equal 0
 
-    context 'when called with an array of promise', ->
-      withParameters [
-        spectacular.Promise.unit()
-        spectacular.Promise.unit()
-        spectacular.Promise.unit()
-      ]
+    describe '.all', ->
+      it -> should exist
 
-      itsReturn -> should exist
-      itsReturn -> should be 'fulfilled'
+      whenPass ->
+        context 'when called with an array of promise', ->
+          withParameters [
+            spectacular.Promise.unit()
+            spectacular.Promise.unit()
+            spectacular.Promise.unit()
+          ]
 
-  describe '::isPending', ->
-    itsReturn -> should equal true
+          itsReturn -> should exist
+          itsReturn -> should be 'fulfilled'
+
+    describe '::isPending', ->
+      itsReturn -> should equal true
