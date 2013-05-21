@@ -29,7 +29,8 @@ class spectacular.Environment
             env.currentExample,
             @valueOf(),
             matcher,
-            neg
+            neg,
+            new Error
           )
         )
     }
@@ -202,6 +203,7 @@ class spectacular.Environment
     spy
 
   should: (matcher, neg=false) =>
+    try throw new Error catch e
     @notOutsideIt 'should'
 
     return unless matcher?
@@ -210,7 +212,8 @@ class spectacular.Environment
         @currentExample,
         @currentExample.subject,
         matcher,
-        neg
+        neg,
+        new Error
       )
     )
 

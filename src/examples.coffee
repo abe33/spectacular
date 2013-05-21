@@ -2,7 +2,7 @@
 ## Expectation
 
 class spectacular.Expectation
-  constructor: (@example, @actual, @matcher, @not=false) ->
+  constructor: (@example, @actual, @matcher, @not=false, @callstack) ->
 
   assert: =>
     promise = new spectacular.Promise
@@ -35,13 +35,10 @@ class spectacular.Expectation
   createMessage: =>
     @message = @matcher.message
     if not @success and not @trace?
-      try
-        throw new Error
-      catch e
-        stack = e.stack.split('\n')
-        specIndex = spectacular.env.runner.findSpecFileInStack stack
-        e.stack = stack[specIndex..].join('\n') if specIndex isnt -1
-        @trace = e
+      stack = @callstack.stack.split('\n')
+      specIndex = spectacular.env.runner.findSpecFileInStack stack
+      @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
+      @trace = @callstack
 
     @description = "#{@example.description} #{@matcher.description}"
 

@@ -23,7 +23,7 @@ class spectacular.Runner
   findSpecFileInStack: (stack) ->
     for p in @paths
       for l,i in stack
-        return i if p in l
+        return i if l.indexOf(p) isnt -1
     -1
 
   registerSpecs: =>
