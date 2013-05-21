@@ -30,6 +30,8 @@ options = {
   noMatchers: false,
   noHelpers: false,
   noColors: false,
+  server: false,
+  source: null,
   globs: []
 };
 
@@ -77,6 +79,13 @@ while (args.length) {
     case '--profile':
     case '-p':
       options.profile = true;
+      break;
+    case '--server':
+      options.server = true;
+      break;
+    case '--source':
+    case '-s':
+      options.source = options.shift();
       break;
     default:
       options.globs.push(option);

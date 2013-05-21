@@ -1,4 +1,3 @@
-spectacular = {}
 spectacular.factories ||= {}
 
 spectacular.factories.buildMethodsCache = {}
