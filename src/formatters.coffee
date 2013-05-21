@@ -155,16 +155,16 @@ class exports.ResultsFormatter
   failureBadge: (message) ->
     badge = ' FAIL '
     if @options.noColors
-      "#{badge} #{message}\n"
+      "#{badge} - #{@failuresCounter++} - #{message}\n"
     else
-      "#{badge.inverse.bold}[#{@failuresCounter++}] #{message}\n".red
+      "#{badge.inverse.bold} #{@failuresCounter++} #{' '.inverse} #{message}\n".red
 
   errorBadge: (message) ->
     badge = ' ERROR '
     if @options.noColors
-      "#{badge} #{message}\n"
+      "#{badge} - #{@errorsCounter++} - #{message}\n"
     else
-      "#{badge.inverse.bold}[#{@errorsCounter++}] #{message}\n".yellow
+      "#{badge.inverse.bold} #{@errorsCounter++} #{' '.inverse} #{message}\n".yellow
 
   formatMessage: (message) -> "\n#{utils.indent message or ''}"
 
@@ -220,9 +220,10 @@ class exports.ResultsFormatter
 
   formatResults: (s, f, e, sk, p, a) ->
     toggle = utils.toggle
-    utils.squeeze("#{@formatCount s, 'success', 'success', toggle f, 'green'},
-    #{@formatCount a, 'assertion', 'assertions', toggle f, 'green'},
-    #{@formatCount f, 'failure', 'failures', toggle f, 'green', 'red'},
+    he = f + e
+    utils.squeeze("#{@formatCount s, 'success', 'success', toggle he, 'green'},
+    #{@formatCount a, 'assertion', 'assertions', toggle he, 'green'},
+    #{@formatCount f, 'failure', 'failures', toggle he, 'green', 'red'},
     #{@formatCount e, 'error', 'errors', toggle e, 'green', 'yellow'},
     #{@formatCount sk, 'skipped', 'skipped', toggle sk, 'green', 'magenta'},
     #{@formatCount p, 'pending', 'pending', toggle p, 'green', 'yellow'}")
