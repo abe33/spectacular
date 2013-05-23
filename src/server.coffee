@@ -1,10 +1,14 @@
 Q = require 'q'
-http = require 'http'
+path = require 'path'
+express = require 'express'
 
 exports.run = (options) ->
-  server = http.createServer (request, response) ->
-    console.log request
-    response.write 'hello world'
+  app = express()
 
-  server.listen 5000
+  app.use '/assets/js', express.static path.resolve '.', 'lib'
+
+  app.listen 5000
+  console.log 'Server listening on port 5000'.cyan
+
   Q.defer().promise
+
