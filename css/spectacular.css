@@ -1,0 +1,22 @@
+
+#reporter .example.success {
+  background: rgba(0,255,0,0.2)
+}
+
+#reporter .example.failure {
+  background: rgba(255,0, 0,0.2)
+}
+
+#reporter .example.skipped {
+  background: rgba(255,0, 255,0.2)
+}
+
+#reporter .example.pending {
+  background: rgba(255,255,0,0.2)
+}
+
+#reporter .example.errored {
+  background: rgba(255,200,0,0.2)
+}
+
+

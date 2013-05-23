@@ -7,7 +7,7 @@ vm = require 'vm'
 Q = require 'q'
 utils = require './utils'
 walk = require 'walkdir'
-{ResultsFormatter} = require './formatters'
+{ConsoleReporter} = require './console_reporter'
 
 requireIntoGlobal = (file) ->
   matchers = require file
@@ -22,7 +22,7 @@ loadSpectacular = (options) ->
     vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment(
-      ResultsFormatter, options
+      ConsoleReporter, options
     )
   ).then ->
     spectacular.env.load()

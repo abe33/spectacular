@@ -60,9 +60,9 @@ class exports.StackFormatter
       content.splice line, 0, "         |#{utils.padRight('^', column-2)}"
 
 
-## ResultsFormatter
+## ConsoleReporter
 
-class exports.ResultsFormatter
+class exports.ConsoleReporter
   constructor: (@root, @options, @env) ->
     @errorsCounter = 1
     @failuresCounter = 1

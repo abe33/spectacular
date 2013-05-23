@@ -1,5 +1,10 @@
 
 class spectacular.Environment
+  @getGlobal: ->
+    return global unless typeof global is 'undefined'
+    return window unless typeof window is 'undefined'
+    {}
+
   exposedMethods:'it xit describe xdescribe context xcontext
     before after given subject its itsInstance
     itsReturn withParameters fail pending success
@@ -46,7 +51,7 @@ class spectacular.Environment
     @exposedMethods.split(/\s+/g).forEach (k) =>
       fn = -> env[k].apply env, arguments
       fn._name = k
-      global[k] = fn
+      Environment.getGlobal()[k] = fn
 
   clone: ->
     optionsCopy = {}
@@ -220,6 +225,3 @@ class spectacular.Environment
   shouldnt: (matcher) => @should matcher, true
 
   toString: -> '[spectacular Environment]'
-
-
-
