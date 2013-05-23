@@ -1,3 +1,5 @@
+isCommonJS = typeof window is "undefined"
+exports = exports or window
 
 exports.squeeze = (s) -> s.replace /\s+/g, ' '
 
