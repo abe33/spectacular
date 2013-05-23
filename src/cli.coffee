@@ -5,7 +5,7 @@ glob = require 'glob'
 path = require 'path'
 vm = require 'vm'
 Q = require 'q'
-require 'colors'
+utils = require './utils'
 walk = require 'walkdir'
 {ResultsFormatter} = require './formatters'
 
@@ -59,8 +59,8 @@ globPath = (path) ->
 
   defer.promise
 
-globPaths= (options) -> ->
-  Q.all(globPath p for p in options.globs).then (results) =>
+globPaths= (globs) -> ->
+  Q.all(globPath p for p in globs).then (results) =>
     paths = []
     results.forEach (a) -> paths = paths.concat a
     paths
@@ -80,7 +80,7 @@ exports.run = (options) ->
   .then(loadHelpers options)
   .then ->
     loadStartedAt = new Date()
-  .then(globPaths options)
+  .then(globPaths options.globs)
   .then(loadSpecs options)
   .then (paths) ->
     loadEndedAt = new Date()

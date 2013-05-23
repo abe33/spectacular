@@ -1,3 +1,5 @@
+require 'colors'
+
 cli = require './cli'
 server = require './server'
 
