@@ -1,5 +1,64 @@
 
+class spectacular.StackReporter
+  @reports: 0
+  @files: {}
+  @filesLoader: {}
+
+  constructor: (@error) ->
+    @id = StackReporter.reports
+    StackReporter.reports += 1
+
+  report: ->
+    pre = "<pre id='pre_#{@id}' class='loading'></pre>"
+    stack = @error.stack.split('\n').filter (line) -> /( at |@)/g.test line
+    line = stack.shift()
+    [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
+
+    done = (data) =>
+      $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
+
+    $.ajax
+        url: url
+        success: (data) ->
+          done data
+        dataType: 'html'
+
+    pre
+
+  getLines: (fileContent, line, column) ->
+    line = parseInt line
+    fileContent = fileContent.split('\n').map (l,i) =>
+      " #{@padRight i + 1} | #{l}"
+
+    @insertColumnLine fileContent, line, column if column?
+
+    startLine = Math.max(1, line - 3) - 1
+    endLine = Math.min(fileContent.length, line + 2) - 1
+    fileContent[line-1] = "<span class='line'>#{fileContent[line-1]}</span>"
+    lines = fileContent[startLine..endLine].join('\n')
+    lines
+
+  insertColumnLine: (content, line, column) ->
+    column = parseInt column
+    if line is content.length
+      content.push line
+    else
+      content.splice line, 0, "      |#{@padRight('^', column)}"
+
+  padRight: (string, pad=4) ->
+    string = string.toString()
+    string = " #{string}" while string.length < pad
+    string
+
+
 class spectacular.BrowserReporter
+  STATE_CHARS =
+    pending: '*'
+    skipped: 'x'
+    failure: 'F'
+    errored: 'E'
+    success: '.'
+
   constructor: ->
     @errorsCounter = 1
     @failuresCounter = 1
@@ -14,6 +73,8 @@ class spectacular.BrowserReporter
       <div id="reporter">
         <header>
           <h1>Spectacular</h1>
+          <h2>#{spectacular.version}</h2>
+          <pre></pre>
           <p></p>
         </header>
         <section id="examples"></section>
@@ -22,57 +83,63 @@ class spectacular.BrowserReporter
     """)
 
     @examplesContainer = @reporter.find '#examples'
-    @progress = @reporter.find 'header p'
+    @progress = @reporter.find 'header pre'
+    @counters = @reporter.find 'header p'
 
   buildResults: (lstart, lend, sstart, send) ->
     res = '\n\n'
     for result in @results
       switch result.state
-        when 'pending' then @pending.push result.example
-        when 'skipped' then @skipped.push result.example
         when 'errored'
-          @errors.push result.example
           res += result.example.reason + '\n\n'
-        when 'failure'
-          @failures.push result.example
 
-    res += @formatCounters()
+    res += $(@formatCounters()).text()
     res += '\n'
+
+  link: (example, id) ->
+    """<a href='#example_#{id}'
+          class='#{example.result.state}'
+          title='#{example.description}'
+       >#{@stateChar example.result.state}</a>
+    """
+
+  stateChar: (state) -> STATE_CHARS[state]
 
   registerResult: (example) ->
     @results.push example.result
     @examples.push example
-    @progress.append switch example.result.state
-      when 'pending'
-        "<a class='pending' href='#example_#{@examples.length}'>*</a>"
-      when 'skipped'
-        "<a class='skipped' href='#example_#{@examples.length}'>x</a>"
-      when 'failure'
-        "<a class='failure' href='#example_#{@examples.length}'>F</a>"
-      when 'errored'
-        "<a class='errored' href='#example_#{@examples.length}'>E</a>"
-      when 'success'
-        "<a class='success' href='#example_#{@examples.length}'>.</a>"
+    @progress.append @link example, @examples.length
+    @counters.html @formatCounters()
+    switch example.result.state
+      when 'pending' then @pending.push example
+      when 'skipped' then @skipped.push example
+      when 'errored' then @errors.push example
+      when 'failure' then @failures.push example
 
     if example.result.expectations.length > 0
       @examplesContainer.append """
         <article class="example #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
+            <span class='result'>#{example.result.state}</span>
+            <span class='time'><span class='icon-time'></span>#{example.duration / 1000}s</span>
           </header>
           <div class="expectations">
-            #{@formatExpectation e for e in example.result.expectations}
+            #{(@formatExpectation e for e in example.result.expectations).join('')}
           </div>
         </article>
       """
     else
       @examplesContainer.append """
-        <article class="example #{example.result.state}">
+        <article class="example #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
+            <span class='result'>#{example.result.state}</span>
+            <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
           </header>
           <aside>
             <pre>#{example.reason}</pre>
+            #{ if example.reason? then @traceSource example.reason else ''}
             <pre>#{example.reason?.stack}</pre>
           </aside>
         </article>
@@ -80,12 +147,16 @@ class spectacular.BrowserReporter
 
   formatExpectation: (expectation) ->
     """
-    <div class="expectation">
+    <div class="expectation #{if expectation.success then 'success' else 'failure'}">
       <h5>#{expectation.description}</h5>
       <pre>#{expectation.message}</pre>
+      #{ if expectation.trace? then @traceSource expectation.trace else ''}
       <pre>#{expectation.trace?.stack}</pre>
     </div>
     """
+
+  traceSource: (error) ->
+    (new spectacular.StackReporter error).report()
 
   formatCounters: ->
     failures = @failures.length
@@ -94,22 +165,38 @@ class spectacular.BrowserReporter
     pending = @pending.length
     success = @examples.length - failures - errored - pending - skipped
     assertions = @results.reduce ((a, b) -> a + b.expectations.length), 0
-    @formatResults success, failures, errored, skipped, pending, assertions
+    "<span id='counters'>
+    #{@formatResults success, failures, errored, skipped, pending, assertions}
+    </span>"
 
   formatResults: (s, f, e, sk, p, a) ->
     he = f + e
-    "#{@formatCount s, 'success', 'success'}, #{@formatCount a, 'assertion', 'assertions'}, #{@formatCount f, 'failure', 'failures'}, #{@formatCount e, 'error', 'errors'}, #{@formatCount sk, 'skipped', 'skipped'}, #{@formatCount p, 'pending', 'pending'}"
+    "#{@formatCount s, 'success', 'success', @toggle he, 'success'},
+    #{@formatCount a, 'assertion', 'assertions', @toggle he, 'success'},
+    #{@formatCount f, 'failure', 'failures', @toggle he, 'success', 'failure'},
+    #{@formatCount e, 'error', 'errors', @toggle e, 'success', 'errored'},
+    #{@formatCount sk, 'skipped', 'skipped', @toggle sk, 'success', 'skipped'},
+    #{@formatCount p, 'pending', 'pending', @toggle p, 'success', 'pending'}".replace /\s+/g, ' '
 
-  formatCount: (value, singular, plural) ->
-    s = ("#{value} #{
-      if value is 0
+  formatCount: (value, singular, plural, color) ->
+    s = if value is 0
         plural
       else if value is 1
         singular
       else
         plural
-    }")
+
+    if color?
+      s = "<span class='#{color}'>#{value}</span> #{s}"
+    else
+      s = "<span>#{value}</span> #{s}"
     s
+  toggle: (value, c1, c2) -> if value then c2 else c1
+
+  formatDuration: (start, end) ->
+    duration = (end.getTime() - start.getTime()) / 1000
+    duration = "#{Math.max 0, duration}s"
+    duration
 
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
