@@ -22,7 +22,7 @@ else
   delEnd: '</del>'
   insStart: '<ins>'
   insEnd: '</ins>'
-  space: '\n'
+  space: ''
 
 escape = (s) ->
   n = s
@@ -127,7 +127,7 @@ stringDiff = (o, n) ->
         while n < out.o.length and not out.o[n].text?
           pre += TAGS.delStart + escape(out.o[n]) + oSpace[n] + TAGS.delEnd
           n++
-        str += " " + out.n[i].text + nSpace[i] + pre
+        str += "" + out.n[i].text + nSpace[i] + pre
       i++
   str
 
@@ -160,9 +160,9 @@ inspect = (obj, depth=1) ->
       if isArray obj
 
         return '[]' if obj.length is 0
-        "[#{
-            obj.map((o) -> ind + inspect o, depth+1).join ', '
-        }\n#{ind.substr 0, depth-2}]"
+        "[\n#{
+            obj.map((o) -> ind + inspect o, depth+1).join ',\n'
+        }\n#{ind[0..-3]}]"
       else
         return '{}' if keys(obj).length is 0
         "{\n#{
@@ -277,7 +277,7 @@ exports.be = (value) ->
           result = false
 
         result
-      when 'number', 'boolean', 'string'
+      when 'number', 'boolean'
         @message = "Expected #{actual}#{notText} to be #{value}"
         actual.valueOf() is value
       else
@@ -301,7 +301,7 @@ exports.match = (re) ->
 exports.throwAnError = (message) ->
   assert: (actual, notText) ->
     msg = if message? then " with message #{message}" else ''
-    msg += " with arguments #{@arguments}" if @arguments?
+    msg += " with arguments #{inspect @arguments}" if @arguments?
 
     @description = "should#{notText} throw an error#{msg}"
 
@@ -325,8 +325,8 @@ exports.haveBeenCalled =
   assert: (actual, notText) ->
     if typeof actual?.spied is 'function'
       if @arguments?
-        @description = "should have been called with #{@arguments}"
-        @message = "Expected #{actual.spied}#{notText} to have been called with #{@arguments} but was called with #{actual.argsForCall}"
+        @description = "should have been called with #{inspect @arguments}"
+        @message = "Expected #{actual.spied}#{notText} to have been called with #{inspect @arguments} but was called with #{actual.argsForCall}"
 
         actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
           equal(a).assert(@arguments, '')
