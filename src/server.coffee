@@ -51,9 +51,9 @@ scriptNode = (path) ->
 
 generateSpecRunner = (options) ->
   paths = [
-    '/assets/js/spectacular.js'
-    '/assets/js/matchers.js'
-    '/assets/js/browser_reporter.js'
+    'assets/js/spectacular.js'
+    'assets/js/matchers.js'
+    'assets/js/browser_reporter.js'
   ]
 
   findHelpers(options)
@@ -73,7 +73,7 @@ generateSpecRunner = (options) ->
           #{scriptNode 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'}
           <script>
             options = #{util.inspect options};
-            paths = #{util.inspect paths};
+            paths = #{util.inspect paths[3..]};
           </script>
           <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
           <link rel="stylesheet" href="assets/css/spectacular.css"/>
