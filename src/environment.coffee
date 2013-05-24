@@ -203,7 +203,6 @@ class spectacular.Environment
     spy
 
   should: (matcher, neg=false) =>
-    try throw new Error catch e
     @notOutsideIt 'should'
 
     return unless matcher?
