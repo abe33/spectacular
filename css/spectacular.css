@@ -1,22 +1,209 @@
-
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  background: #163a4c;
+}
+#reporter {
+  margin: 20px;
+  padding: 10px;
+}
+#reporter #examples {
+  background: #efefef;
+}
+#reporter .example {
+  min-height: 58px;
+  position: relative;
+  padding: 8px 8px 8px 80px;
+  border-bottom: 1px solid rgba(86,122,120,0.1);
+}
+#reporter .example h4,
+#reporter .example h5 {
+  color: #163a4c;
+  margin: 0;
+  font-weight: 300;
+}
+#reporter .example.success pre,
+#reporter .example.pending pre {
+  display: none;
+}
+#reporter .example.skipped pre + pre {
+  display: none;
+}
 #reporter .example.success {
-  background: rgba(0,255,0,0.2)
+  background: rgba(100,180,50,0.2);
+  border-left: 4px solid #64b432;
 }
-
+#reporter .example.success h4 {
+  color: #64b432;
+}
+#reporter .example.success .result {
+  background: #64b432;
+}
 #reporter .example.failure {
-  background: rgba(255,0, 0,0.2)
+  background: rgba(255,40,20,0.2);
+  border-left: 4px solid #ff2814;
 }
-
+#reporter .example.failure .result {
+  background: #ff2814;
+}
 #reporter .example.skipped {
-  background: rgba(255,0, 255,0.2)
+  background: rgba(255,20,220,0.2);
+  border-left: 4px solid #ff14dc;
 }
-
-#reporter .example.pending {
-  background: rgba(255,255,0,0.2)
+#reporter .example.skipped .result {
+  background: #ff14dc;
 }
-
 #reporter .example.errored {
-  background: rgba(255,200,0,0.2)
+  background: rgba(255,150,20,0.2);
+  border-left: 4px solid #ff9614;
 }
-
-
+#reporter .example.errored .result {
+  background: #ff9614;
+}
+#reporter .example.pending {
+  background: rgba(255,200,90,0.2);
+  border-left: 4px solid #ffc85a;
+}
+#reporter .example.pending .result {
+  background: #ffc85a;
+}
+#reporter .example .expectation.success h5 {
+  color: #64b432;
+}
+#reporter .example .expectation.success pre {
+  display: none;
+}
+#reporter .example .expectation.failure h5 {
+  color: #ff2814;
+}
+#reporter .example .expectation + .expectation {
+  margin-top: 4px;
+}
+#reporter .example .result {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 2px 0;
+  color: #fff;
+  text-align: center;
+  font-weight: 500;
+  width: 64px;
+  height: 20px;
+  font-family: monospace;
+  -webkit-text-shadow: 0 1px 2px #163a4c;
+  -moz-text-shadow: 0 1px 2px #163a4c;
+  -o-text-shadow: 0 1px 2px #163a4c;
+  text-shadow: 0 1px 2px #163a4c;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+#reporter .example .time {
+  padding: 2px 6px 2px 18px;
+  background: #163a4c;
+  color: #cfe7e6;
+  position: absolute;
+  display: block;
+  width: 64px;
+  left: 8px;
+  top: 30px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 0.8em;
+}
+#reporter .example .time .icon-time {
+  position: absolute;
+  color: #567a78;
+  left: 4px;
+  top: 4px;
+}
+#reporter .example pre {
+  color: #163a4c;
+  margin: 0;
+  margin-top: 6px;
+  padding: 8px;
+  background: #efefef;
+  border: 1px solid #e4e4e4;
+}
+#reporter .example pre+pre {
+  margin-top: 0;
+  border-top: 0;
+}
+#reporter .example pre .line {
+  background: rgba(255,0,0,0.2);
+}
+#reporter .example pre ins,
+#reporter .example pre del {
+  display: inline;
+  text-decoration: none;
+}
+#reporter .example pre ins {
+  background: rgba(0,255,0,0.2);
+  border: 1px solid rgba(0,255,0,0.6);
+}
+#reporter .example pre del {
+  background: rgba(255,0,0,0.2);
+  border: 1px solid rgba(255,0,0,0.6);
+}
+#reporter > header {
+  color: #567a78;
+}
+#reporter > header h1,
+#reporter > header h2 {
+  margin: 0;
+  font-weight: 300;
+  display: inline-block;
+}
+#reporter > header h2 {
+  color: #64b432;
+}
+#reporter > header pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+}
+#reporter > header pre a,
+#reporter > header pre a,
+#reporter > header pre a:hover {
+  text-decoration: none;
+}
+#reporter > header span span {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.3);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+#reporter > header .success {
+  color: #64b432;
+}
+#reporter > header .errored {
+  color: #ff9614;
+}
+#reporter > header .pending {
+  color: #ffc85a;
+}
+#reporter > header .failure {
+  color: #ff2814;
+}
+#reporter > header .skipped {
+  color: #ff14dc;
+}
+#reporter > header p {
+  color: #cfe7e6;
+}
