@@ -77,5 +77,5 @@ exports.environmentMethod = (method) ->
     .shouldFailWith /called inside a it block/, ->
       describe 'foo', ->
         it ->
-          m = global[method]
+          m = spectacular.global[method]
           m()

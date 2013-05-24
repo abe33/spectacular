@@ -40,13 +40,13 @@ class spectacular.factories.Trait
     @setters.forEach (setter) -> setter.apply instance
 
   load: ->
-    _global = spectacular.Environment.getGlobal()
+    _global = spectacular.global
     @constructor.EXPOSED_PROPERTIES.forEach (k) =>
       @previous[k] = _global[k] if _global[k]?
       _global[k] = @[k]
 
   unload: ->
-    _global = spectacular.Environment.getGlobal()
+    _global = spectacular.global
     @constructor.EXPOSED_PROPERTIES.forEach (k) =>
       if @previous[k]?
         _global[k] = @previous[k]
@@ -91,9 +91,9 @@ spectacular.factories.create = (name, traits..., options) ->
   throw new Error "missing factory #{name}" unless fct?
   fct.build(traits, options)
 
-spectacular.getGlobal().build = spectacular.factories.build
-spectacular.getGlobal().create = spectacular.factories.create
-spectacular.getGlobal().factory = spectacular.factories.factory
+spectacular.global.build = spectacular.factories.build
+spectacular.global.create = spectacular.factories.create
+spectacular.global.factory = spectacular.factories.factory
 
 build._name = 'build'
 create._name = 'create'

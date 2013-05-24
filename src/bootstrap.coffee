@@ -8,6 +8,8 @@ else
 
 exports.spectacular = spectacular
 
-f = -> this or global
-
-spectacular.getGlobal = -> f.call(null)
+spectacular.global = (->
+  return window unless typeof window is 'undefined'
+  return global unless typeof global is 'undefined'
+  {}
+)()

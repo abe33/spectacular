@@ -21,7 +21,7 @@ class spectacular.BrowserReporter
       </div>
     """)
 
-    @examples = @reporter.find '#examples'
+    @examplesContainer = @reporter.find '#examples'
     @progress = @reporter.find 'header p'
 
   buildResults: (lstart, lend, sstart, send) ->
@@ -55,7 +55,7 @@ class spectacular.BrowserReporter
         "<a class='success' href='#example_#{@examples.length}'>.</a>"
 
     if example.result.expectations.length > 0
-      @examples.append """
+      @examplesContainer.append """
         <article class="example #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
@@ -66,7 +66,7 @@ class spectacular.BrowserReporter
         </article>
       """
     else
-      @examples.append """
+      @examplesContainer.append """
         <article class="example #{example.result.state}">
           <header>
             <h4>#{example.description}</h4>
