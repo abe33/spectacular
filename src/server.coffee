@@ -75,7 +75,9 @@ generateSpecRunner = (options) ->
             options = #{util.inspect options};
             paths = #{util.inspect paths};
           </script>
+          <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
           <link rel="stylesheet" href="assets/css/spectacular.css"/>
+          <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"/>
           #{(scriptNode p for p in paths).join '\n'}
         </head>
         <body></body>
