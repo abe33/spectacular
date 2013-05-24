@@ -9,6 +9,7 @@ class spectacular.StackReporter
     StackReporter.reports += 1
 
   report: ->
+    return '' unless @error.stack
     pre = "<pre id='pre_#{@id}' class='loading'></pre>"
     stack = @error.stack.split('\n').filter (line) -> /( at |@)/g.test line
     line = stack.shift()
@@ -85,6 +86,11 @@ class spectacular.BrowserReporter
     @examplesContainer = @reporter.find '#examples'
     @progress = @reporter.find 'header pre'
     @counters = @reporter.find 'header p'
+
+  printResults: (lstart, lend, sstart, send) ->
+    window.resultReceived = true
+    window.result = not @hasFailures()
+    @counters.find('#counters').append ", finished in #{@formatDuration sstart, send}"
 
   buildResults: (lstart, lend, sstart, send) ->
     res = '\n\n'
@@ -195,7 +201,7 @@ class spectacular.BrowserReporter
 
   formatDuration: (start, end) ->
     duration = (end.getTime() - start.getTime()) / 1000
-    duration = "#{Math.max 0, duration}s"
+    duration = "<span class='yellow'>#{Math.max 0, duration}s</span>"
     duration
 
   hasFailures: ->
@@ -203,7 +209,6 @@ class spectacular.BrowserReporter
 
   appendToBody: -> $('body').append @reporter
 
-  printResults: (lstart, lend, sstart, send) ->
 
 # This bootstrap the
 unless isCommonJS

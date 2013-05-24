@@ -1,12 +1,6 @@
-describe spectacular.Promisel, ->
+describe spectacular.Promise, ->
 
-  it ->
-    should exist
-    true.should be true
-
-  it 'should be pending', -> pending()
-
-  it 'should throw an error', -> throw new Error
+  it -> should exist
 
   whenPass ->
     itsInstance -> should exist
