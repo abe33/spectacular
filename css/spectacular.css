@@ -179,6 +179,9 @@ body {
 #reporter > header pre a:hover {
   text-decoration: none;
 }
+#reporter > header p {
+  line-height: 1.2em;
+}
 #reporter > header span span {
   font-weight: 700;
   font-size: 14px;
@@ -195,7 +198,8 @@ body {
 #reporter > header .errored {
   color: #ff9614;
 }
-#reporter > header .pending {
+#reporter > header .pending,
+#reporter > header .yellow {
   color: #ffc85a;
 }
 #reporter > header .failure {

@@ -114,6 +114,7 @@ body
       border-left 4px solid error(1)
       .result
         background error(1)
+
     &.pending
       background pending(0.2)
       border-left 4px solid pending(1)
@@ -215,6 +216,9 @@ body
       a:hover
         text-decoration none
 
+    p
+      line-height 1.2em
+
     span span
       font-weight 700
       font-size 14px
@@ -228,7 +232,7 @@ body
     .errored
       color error(1)
 
-    .pending
+    .pending, .yellow
       color pending(1)
 
     .failure
