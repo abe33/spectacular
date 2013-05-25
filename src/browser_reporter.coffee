@@ -78,10 +78,20 @@ class spectacular.BrowserReporter
           <pre></pre>
           <p></p>
         </header>
+        <section id="controls">#{
+          ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
+            "<button class='toggle #{k}'>#{k}</button>"
+          ).join '\n'
+
+        }</section>
         <section id="examples"></section>
         <footer></footer>
       </div>
     """)
+    @reporter.find('button').click (e) ->
+      button = $(e.target)
+      $('html').toggleClass "hide-#{button.text()}"
+      button.toggleClass "off"
 
     @examplesContainer = @reporter.find '#examples'
     @progress = @reporter.find 'header pre'
@@ -123,7 +133,7 @@ class spectacular.BrowserReporter
       when 'failure' then @failures.push example
 
     if example.result.expectations.length > 0
-      @examplesContainer.append """
+      ex = $ """
         <article class="example #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
@@ -136,7 +146,7 @@ class spectacular.BrowserReporter
         </article>
       """
     else
-      @examplesContainer.append """
+      ex = $ """
         <article class="example #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
@@ -150,6 +160,9 @@ class spectacular.BrowserReporter
           </aside>
         </article>
       """
+
+    ex.click -> ex.toggleClass 'open'
+    @examplesContainer.append ex
 
   formatExpectation: (expectation) ->
     """

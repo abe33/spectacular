@@ -12,14 +12,130 @@ body {
   font-weight: 300;
   background: #163a4c;
 }
+.hide-success .example.success {
+  display: none !important;
+}
+.hide-pending .example.pending {
+  display: none !important;
+}
+.hide-skipped .example.skipped {
+  display: none !important;
+}
+.hide-failure .example.failure {
+  display: none !important;
+}
+.hide-errored .example.errored {
+  display: none !important;
+}
 #reporter {
+  position: relative;
   margin: 20px;
   padding: 10px;
 }
+#reporter #controls {
+  position: fixed;
+  top: 200px;
+  left: 30px;
+  padding: 8px;
+  background: #0b1d26;
+  width: 80px;
+  z-index: 10;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #0b1d26;
+  border-top: 1px solid rgba(22,58,76,0.5);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+#reporter #controls button {
+  cursor: pointer;
+  outline: 0 !important;
+  width: 100%;
+  border: none;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 10px;
+  font-family: monospace;
+  -webkit-text-shadow: 0 1px 2px #163a4c;
+  -moz-text-shadow: 0 1px 2px #163a4c;
+  -o-text-shadow: 0 1px 2px #163a4c;
+  text-shadow: 0 1px 2px #163a4c;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  padding: 2px 0;
+  margin-top: 4px;
+  -webkit-transition: background 0.5s ease-out;
+  -moz-transition: background 0.5s ease-out;
+  -o-transition: background 0.5s ease-out;
+  transition: background 0.5s ease-out;
+}
+#reporter #controls button.success {
+  background: #64b432;
+}
+#reporter #controls button.success.off {
+  background: rgba(100,180,50,0.4);
+}
+#reporter #controls button.pending {
+  background: #ffc85a;
+}
+#reporter #controls button.pending.off {
+  background: rgba(255,200,90,0.4);
+}
+#reporter #controls button.errored {
+  background: #ff9614;
+}
+#reporter #controls button.errored.off {
+  background: rgba(255,150,20,0.4);
+}
+#reporter #controls button.skipped {
+  background: #ff14dc;
+}
+#reporter #controls button.skipped.off {
+  background: rgba(255,20,220,0.4);
+}
+#reporter #controls button.failure {
+  background: #ff2814;
+}
+#reporter #controls button.failure.off {
+  background: rgba(255,40,20,0.4);
+}
 #reporter #examples {
+  position: relative;
   background: #efefef;
+  padding-left: 80px;
+  min-height: 400px;
+}
+#reporter #examples:before,
+#reporter #examples:after {
+  content: '';
+  height: 100%;
+  width: 80px;
+  left: 0;
+  top: 0;
+  display: block;
+  position: absolute;
+  background: #000;
+}
+#reporter #examples:after {
+  width: 70px;
+  background: #0b1d26;
+  border-left: 5px solid rgba(22,58,76,0.5);
+  border-right: 5px solid rgba(22,58,76,0.5);
+  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -o-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
 }
 #reporter .example {
+  cursor: pointer;
   min-height: 58px;
   position: relative;
   padding: 8px 8px 8px 80px;
@@ -34,6 +150,10 @@ body {
 #reporter .example.success pre,
 #reporter .example.pending pre {
   display: none;
+}
+#reporter .example.open pre:first-of-type {
+  display: block !important;
+  height: auto !important;
 }
 #reporter .example.skipped pre + pre {
   display: none;
@@ -92,12 +212,14 @@ body {
   position: absolute;
   left: 8px;
   top: 8px;
-  padding: 2px 0;
-  color: #fff;
-  text-align: center;
-  font-weight: 500;
+  padding: 4px 0;
   width: 64px;
   height: 20px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 10px;
   font-family: monospace;
   -webkit-text-shadow: 0 1px 2px #163a4c;
   -moz-text-shadow: 0 1px 2px #163a4c;

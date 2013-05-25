@@ -1,4 +1,6 @@
 
+dark_blue_const = #0b1d26
+
 dark_blue(op)
   rgba(22,58,76,op)
 
@@ -65,15 +67,108 @@ body
   font-weight 300
   background dark_blue(1)
 
-#reporter
+.hide-success
+  .example.success
+    display none !important
 
+.hide-pending
+  .example.pending
+    display none !important
+
+.hide-skipped
+  .example.skipped
+    display none !important
+
+.hide-failure
+  .example.failure
+    display none !important
+
+.hide-errored
+  .example.errored
+    display none !important
+
+#reporter
+  position relative
   margin 20px
   padding 10px
 
+  #controls
+    position fixed
+    top 200px
+    left 30px
+    padding 8px
+    background dark_blue_const
+    width 80px
+    z-index 10
+    border-radius(3px)
+    border 1px solid dark_blue_const
+    border-top 1px solid dark_blue(0.5)
+    box-shadow(0 1px 3px rgba(0,0,0,0.5))
+
+    button
+      cursor pointer
+      outline 0 !important
+      width 100%
+      border none
+      color white
+      text-align center
+      text-transform uppercase
+      font-weight 500
+      font-size 10px
+      font-family monospace
+      text-shadow(0 1px 2px dark_blue(1))
+      border-radius(3px)
+      padding 2px 0
+      margin-top 4px
+      transition(background 0.5s ease-out)
+
+      &.success
+        background success(1)
+        &.off
+          background success(0.4)
+      &.pending
+        background pending(1)
+        &.off
+          background pending(0.4)
+      &.errored
+        background error(1)
+        &.off
+          background error(0.4)
+      &.skipped
+        background skipped(1)
+        &.off
+          background skipped(0.4)
+      &.failure
+        background failure(1)
+        &.off
+          background failure(0.4)
+
   #examples
+    position relative
     background #efefef
+    padding-left 80px
+    min-height 400px
+
+    &:before
+    &:after
+      content ''
+      height 100%
+      width 80px
+      left 0
+      top 0
+      display block
+      position absolute
+      background rgb(0,0,0)
+
+    &:after
+      width 70px
+      background dark_blue_const
+      border-left 5px solid dark_blue(0.5)
+      border-right 5px solid dark_blue(0.5)
+      box-shadow(0 1px 5px rgba(0,0,0,0.5) inset)
 
   .example
+    cursor: pointer
     min-height 58px
     position relative
     padding 8px 8px 8px 80px
@@ -85,9 +180,16 @@ body
       margin 0
       font-weight 300
 
-    &.success pre
-    &.pending pre
-      display none
+    &.success
+    &.pending
+      pre
+        display none
+
+    &.open
+      pre:first-of-type
+        display block !important
+        height: auto !important
+
 
     &.skipped pre + pre
       display none
@@ -138,12 +240,14 @@ body
       position absolute
       left 8px
       top 8px
-      padding 2px 0
-      color white
-      text-align center
-      font-weight 500
+      padding 4px 0
       width 64px
       height 20px
+      color white
+      text-align center
+      text-transform uppercase
+      font-weight 500
+      font-size 10px
       font-family monospace
       text-shadow(0 1px 2px dark_blue(1))
       border-radius(3px)
