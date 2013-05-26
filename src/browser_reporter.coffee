@@ -16,9 +16,12 @@ class spectacular.StackReporter
     [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
 
     @options.loadFile(url).then (data) =>
-      $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
-      $("#pre_#{@id}").height $("#pre_#{@id}").height()
+      try
 
+        $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
+        $("#pre_#{@id}").height $("#pre_#{@id}").height()
+      catch e
+        console.log e
     pre
 
   getLines: (fileContent, line, column) ->
@@ -216,17 +219,23 @@ class spectacular.BrowserReporter
 # This bootstrap the
 unless isCommonJS
   cache = {}
+  loaders = {}
   options.loadFile = (file) ->
 
     promise = new spectacular.Promise
 
     if file of cache
-      promise.resolve cache[file]
+      setTimeout (-> promise.resolve cache[file]), 0
       return promise
 
-    $.ajax
+    if file of loaders
+      loaders[file].done (data) -> promise.resolve data
+      return promise
+
+    loaders[file] = $.ajax
       url: file
-      success: (data) -> promise.resolve cache[file] = data
+      success: (data) ->
+        promise.resolve cache[file] = data
       dataType: 'html'
 
     promise
