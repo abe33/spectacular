@@ -20,14 +20,14 @@ task 'compile', 'Compiles the project sources', ->
 
 task 'server', 'Compiles and run the server', ->
   exec 'cake compile', exeHandle ->
-    exe = spawn './bin/spectacular', ['--server', '--coffee', 'specs/units/**/*.spec.*']
+    exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
     exe.stdout.on 'data', (data) -> print data.toString()
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.on 'exit', (status) -> process.exit status
 
 task 'phantomjs', 'Run specs on phantomjs', ->
   exec 'cake compile', exeHandle ->
-    exe = spawn './bin/spectacular', ['--server', '--coffee', 'specs/units/**/*.spec.*']
+    exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.stdout.on 'data', (data) ->
       print data.toString()
@@ -37,7 +37,6 @@ task 'phantomjs', 'Run specs on phantomjs', ->
         phantom.stdout.on 'data', (data) -> print data.toString()
         phantom.stderr.on 'data', (data) -> print data.toString()
         phantom.on 'exit', (status) ->
-          console.log status
           exe.kill 'SIGINT'
           process.exit status
 

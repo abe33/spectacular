@@ -191,8 +191,8 @@ class spectacular.ConsoleReporter
     res += @formatMessage expectation.message
     if @options.trace
       @formatStack(expectation.trace).then (msg) ->
-        res += msg + '\n'
-        promise.resolve res
+        res += msg if msg?
+        promise.resolve res + '\n'
     else
       promise.resolve res
 

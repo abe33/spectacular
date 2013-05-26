@@ -17,19 +17,47 @@ page.open URL, (status) ->
     runnerAvailable = page.evaluate -> window.spectacular
 
     if runnerAvailable
+      page.evaluate ->
+        styles = {
+          # styles
+          bold: ['\x1B[1m', '\x1B[22m']
+          italic: ['\x1B[3m', '\x1B[23m']
+          underline: ['\x1B[4m', '\x1B[24m']
+          inverse: ['\x1B[7m', '\x1B[27m']
+          strikethrough: ['\x1B[9m', '\x1B[29m']
+          # grayscale
+          white: ['\x1B[37m', '\x1B[39m']
+          grey: ['\x1B[90m', '\x1B[39m']
+          black: ['\x1B[30m', '\x1B[39m']
+          # colors
+          blue: ['\x1B[34m', '\x1B[39m']
+          cyan: ['\x1B[36m', '\x1B[39m']
+          green: ['\x1B[32m', '\x1B[39m']
+          magenta: ['\x1B[35m', '\x1B[39m']
+          red: ['\x1B[31m', '\x1B[39m']
+          yellow: ['\x1B[33m', '\x1B[39m']
+        }
+        (k for k of styles).forEach (key) ->
+          Object.defineProperty String.prototype, key,
+            get: -> styles[key][0] + this + styles[key][1]
+
+        reporter = new window.spectacular.ConsoleReporter(options)
+        window.spectacular.env.runner.on 'result', reporter.onResult
+        window.spectacular.env.runner.on 'end', reporter.onEnd
+        reporter.on 'report', (msg) -> window.consoleResults = msg.target
+        reporter.on 'message', (msg) ->
+          window.consoleProgress ||= ''
+          window.consoleProgress += msg.target
+
       done = ->
         result = page.evaluate -> window.result
 
-        console.log page.evaluate -> $("#examples .example.errored, #examples .example.failure").text()
-
-        console.log squeeze page.evaluate -> $("#reporter header pre").text()
-        console.log squeeze page.evaluate -> $("#reporter header p").text()
+        console.log squeeze page.evaluate -> window.consoleProgress
+        console.log page.evaluate -> window.consoleResults
 
         if result
-          console.log 'specs succeed'
           phantom.exit(0)
         else
-          console.log 'specs failed'
           phantom.exit(1)
 
       waitFor specsReady, done
@@ -37,7 +65,7 @@ page.open URL, (status) ->
       phantom.exit(1)
 
 specsReady = ->
-  page.evaluate -> window.resultReceived
+  page.evaluate -> window.resultReceived and window.consoleResults?
 
 # Wait until the test condition is true or a timeout occurs.
 #

@@ -1,4 +1,4 @@
-describe spectacular.Promise, ->
+describe spectacular.Promises, ->
 
   it -> should exist
 
