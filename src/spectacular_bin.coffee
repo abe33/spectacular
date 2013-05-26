@@ -15,7 +15,6 @@ options =
   trace: true
   longTrace: false
   showSource: true
-  showColors: false
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
   noMatchers: false
