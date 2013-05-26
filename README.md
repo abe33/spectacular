@@ -1,7 +1,7 @@
 Spectacular
 ===========
 [![Build Status](https://travis-ci.org/abe33/spectacular.png)](https://travis-ci.org/abe33/spectacular)
-[![Coverage Status](https://coveralls.io/repos/abe33/spectacular/badge.png?branch=feature_browser_support)](https://coveralls.io/r/abe33/spectacular?branch=feature_browser_support)
+[![Coverage Status](https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master)](https://coveralls.io/r/abe33/spectacular?branch=master)
 [![Dependency Status](https://gemnasium.com/abe33/spectacular.png)](https://gemnasium.com/abe33/spectacular)
 
 Advanced BDD framework for CoffeeScript and JavaScript
