@@ -37,12 +37,12 @@ class spectacular.StackFormatter
   formatErrorInFile: (line) ->
     promise = new spectacular.Promise
 
-    re = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/
+    re = /(at.*\(|@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
     unless re.test line
       promise.resolve ''
       return promise
 
-    [match, file, e, line, c, column] = re.exec line
+    [match, p, file, h, e, line, c, column] = re.exec line
 
     @getLines(file, parseInt(line), parseInt(column)).then (lines) ->
       promise.resolve "\n#{lines}\n"
