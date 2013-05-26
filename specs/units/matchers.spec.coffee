@@ -131,7 +131,40 @@ describe 'throwAnError', ->
     it -> shouldnt throwAnError()
     it -> shouldnt throwAnError /message/
     it -> should throwAnError().with 'an argument'
-    it -> should throwAnError(/message/).with 'an argument'
+    it -> should throwAnError(/message/).with('an argument').inContext({})
 
+describe 'have', ->
+  context 'on an object with a collection', ->
+    subject -> items: [0,1,2,3], foo: 'bar'
 
+    it -> should have 4, 'items'
+    it -> shouldnt have 2, 'items'
+    it -> shouldnt have 6, 'children'
+    it -> shouldnt have 2, 'foo'
 
+    runningSpecs('error raised in describe')
+    .shouldFailWith /Undefined label in have matcher/, ->
+      subject -> items: [0,1,2,3], foo: 'bar'
+
+      it 'should throw an error', -> should have 2
+
+  context 'on a collection', ->
+    subject -> [0,1,2,3]
+
+    it -> should have 4
+    it -> should have 4, 'items'
+    it -> should have 4, 'children'
+    it -> shouldnt have 2
+    it -> shouldnt have 2, 'items'
+
+  context 'on a string', ->
+    subject -> 'string'
+
+    it -> should have 6
+    it -> should have 6, 'chars'
+    it -> shouldnt have 2, 'chars'
+
+  context 'on a number', ->
+    subject -> 10
+
+    it -> shouldnt have 10, 'elements'

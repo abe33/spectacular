@@ -18,6 +18,42 @@ exports.exist =
 
     actual?
 
+exports.have = (count, label) ->
+  assert: (actual, notText) ->
+    @description = "should#{notText} have #{count} #{label}"
+    switch typeof actual
+      when 'string'
+        label ||= 'chars'
+        @description = "should#{notText} have #{count} #{label}"
+        @message = "Expected string #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+
+        actual.length is count
+      when 'object'
+        if utils.isArray actual
+          label ||= 'items'
+          @description = "should#{notText} have #{count} #{label}"
+          @message = "Expected array #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+
+          actual.length is count
+        else
+          unless label?
+            throw new Error "Undefined label in have matcher"
+
+          @description = "should#{notText} have #{count} #{label}"
+          if actual[label]
+            if utils.isArray actual[label]
+              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+              actual[label].length is count
+            else
+              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but #{actual[label]} wasn't an array"
+              false
+          else
+            @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but it didn't have a property named #{label}"
+            false
+      else
+        @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} but it don't have a type that can be handled"
+        false
+
 exports.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"
