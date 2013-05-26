@@ -200,6 +200,9 @@ html.failure body #reporter > header h1 {
   background: rgba(100,180,50,0.2);
   border-left: 4px solid #64b432;
 }
+#reporter .example.success .line {
+  background: rgba(100,180,50,0.2);
+}
 #reporter .example.success h4 {
   color: #64b432;
 }
@@ -210,12 +213,18 @@ html.failure body #reporter > header h1 {
   background: rgba(255,40,20,0.2);
   border-left: 4px solid #ff2814;
 }
+#reporter .example.failure .line {
+  background: rgba(255,40,20,0.2);
+}
 #reporter .example.failure .result {
   background: #ff2814;
 }
 #reporter .example.skipped {
   background: rgba(255,20,220,0.2);
   border-left: 4px solid #ff14dc;
+}
+#reporter .example.skipped .line {
+  background: rgba(255,20,220,0.2);
 }
 #reporter .example.skipped .result {
   background: #ff14dc;
@@ -224,12 +233,18 @@ html.failure body #reporter > header h1 {
   background: rgba(255,150,20,0.2);
   border-left: 4px solid #ff9614;
 }
+#reporter .example.errored .line {
+  background: rgba(255,150,20,0.2);
+}
 #reporter .example.errored .result {
   background: #ff9614;
 }
 #reporter .example.pending {
   background: rgba(255,200,90,0.2);
   border-left: 4px solid #ffc85a;
+}
+#reporter .example.pending .line {
+  background: rgba(255,200,90,0.2);
 }
 #reporter .example.pending .result {
   background: #ffc85a;
@@ -296,9 +311,6 @@ html.failure body #reporter > header h1 {
 #reporter .example pre+pre {
   margin-top: 0;
   border-top: 0;
-}
-#reporter .example pre .line {
-  background: rgba(255,0,0,0.2);
 }
 #reporter .example pre ins,
 #reporter .example pre del {

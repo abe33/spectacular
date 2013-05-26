@@ -235,6 +235,9 @@ html
       display none
 
     &.success
+      .line
+        background success(0.2)
+
       background success(0.2)
       border-left 4px solid success(1)
       h4
@@ -242,22 +245,34 @@ html
       .result
         background success(1)
     &.failure
+      .line
+        background failure(0.2)
+
       background failure(0.2)
       border-left 4px solid failure(1)
       .result
         background failure(1)
     &.skipped
+      .line
+        background skipped(0.2)
+
       background skipped(0.2)
       border-left 4px solid skipped(1)
       .result
         background skipped(1)
     &.errored
+      .line
+        background error(0.2)
+
       background error(0.2)
       border-left 4px solid error(1)
       .result
         background error(1)
 
     &.pending
+      .line
+        background pending(0.2)
+
       background pending(0.2)
       border-left 4px solid pending(1)
       .result
@@ -313,9 +328,6 @@ html
       &+pre
         margin-top 0
         border-top 0
-
-      .line
-        background rgba(255,0,0,0.2)
 
       ins
       del
