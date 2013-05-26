@@ -156,8 +156,12 @@ class spectacular.Environment
 
     describe subject, -> it -> pending()
 
-  context: (subject, options, block) => @describe subject, options, block
-  xcontext: => @xdescribe()
+  context: (subject, options, block) =>
+    @notInsideIt 'context'
+    @describe subject, options, block
+  xcontext: =>
+    @notInsideIt 'xcontext'
+    @xdescribe()
 
   withParameters: (args...) =>
     @notInsideIt 'withParameters'

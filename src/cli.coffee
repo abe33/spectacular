@@ -91,8 +91,6 @@ exports.run = (options) ->
     reporter = getReporter options
     spectacular.env.runner.on 'result', reporter.onResult
     spectacular.env.runner.on 'end', reporter.onEnd
-  .then ->
-    requireIntoGlobal './matchers'
   .then(loadMatchers options)
   .then(loadHelpers options)
   .then ->

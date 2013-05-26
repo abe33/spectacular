@@ -1,6 +1,4 @@
 
-utils = spectacular.utils
-
 ## StackFormatter
 
 class spectacular.StackFormatter

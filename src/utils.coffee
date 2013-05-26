@@ -1,4 +1,4 @@
-u = spectacular.utils ||= {}
+utils = spectacular.utils ||= {}
 
 spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
 
@@ -97,44 +97,44 @@ spectacular.utils.diff = (o, n) ->
   n: n
 
 spectacular.utils.stringDiff = (o, n) ->
-  return u.TAGS.delStart + o + u.TAGS.delEnd if not n? or n.length is 0
-  return u.TAGS.insStart + n + u.TAGS.insEnd if not o? or o.length is 0
+  return utils.TAGS.delStart + o + utils.TAGS.delEnd if not n? or n.length is 0
+  return utils.TAGS.insStart + n + utils.TAGS.insEnd if not o? or o.length is 0
   o = o.replace(/\s+$/, "")
   n = n.replace(/\s+$/, "")
-  out = u.diff((if o is "" then [] else o.split(/\s+/)), (if n is "" then [] else n.split(/\s+/)))
+  out = utils.diff((if o is "" then [] else o.split(/\s+/)), (if n is "" then [] else n.split(/\s+/)))
   str = ""
   oSpace = o.match(/\s+/g)
   unless oSpace?
-    oSpace = [u.TAGS.space]
+    oSpace = [utils.TAGS.space]
   else
-    oSpace.push u.TAGS.space
+    oSpace.push utils.TAGS.space
   nSpace = n.match(/\s+/g)
   unless nSpace?
-    nSpace = [u.TAGS.space]
+    nSpace = [utils.TAGS.space]
   else
-    nSpace.push u.TAGS.space
+    nSpace.push utils.TAGS.space
   if out.n.length is 0
     i = 0
 
     while i < out.o.length
-      str += u.TAGS.delStart + u.escape(out.o[i]) + oSpace[i] + u.TAGS.delEnd
+      str += utils.TAGS.delStart + utils.escape(out.o[i]) + oSpace[i] + utils.TAGS.delEnd
       i++
   else
     unless out.n[0].text?
       n = 0
       while n < out.o.length and not out.o[n].text?
-        str += u.TAGS.delStart + u.escape(out.o[n]) + oSpace[n] + u.TAGS.delEnd
+        str += utils.TAGS.delStart + utils.escape(out.o[n]) + oSpace[n] + utils.TAGS.delEnd
         n++
     i = 0
 
     while i < out.n.length
       unless out.n[i].text?
-        str += u.TAGS.insStart + u.escape(out.n[i]) + nSpace[i] + u.TAGS.insEnd
+        str += utils.TAGS.insStart + utils.escape(out.n[i]) + nSpace[i] + utils.TAGS.insEnd
       else
         pre = ""
         n = out.n[i].row + 1
         while n < out.o.length and not out.o[n].text?
-          pre += u.TAGS.delStart + u.escape(out.o[n]) + oSpace[n] + u.TAGS.delEnd
+          pre += utils.TAGS.delStart + utils.escape(out.o[n]) + oSpace[n] + utils.TAGS.delEnd
           n++
         str += "" + out.n[i].text + nSpace[i] + pre
       i++
@@ -152,7 +152,7 @@ spectacular.utils.fill = (l=4, s=' ') ->
   o
 
 spectacular.utils.indent = (string, ind=4) ->
-  s = u.fill ind
+  s = utils.fill ind
   "#{string.replace /\n/g, "\n#{s}"}"
 
 spectacular.utils.uniq = (arr) ->
@@ -165,17 +165,17 @@ spectacular.utils.inspect = (obj, depth=1) ->
     when 'string' then "'#{obj}'"
     when 'number', 'boolean' then "#{obj}"
     when 'object'
-      ind = u.fill depth * 2
-      if u.isArray obj
+      ind = utils.fill depth * 2
+      if utils.isArray obj
 
         return '[]' if obj.length is 0
         "[\n#{
-            obj.map((o) -> ind + u.inspect o, depth+1).join ',\n'
+            obj.map((o) -> ind + utils.inspect o, depth+1).join ',\n'
         }\n#{ind[0..-3]}]"
       else
-        return '{}' if u.keys(obj).length is 0
+        return '{}' if utils.keys(obj).length is 0
         "{\n#{
-          ("#{ind}#{k}: #{u.inspect v, depth + 1}" for k,v of obj).join ',\n'
+          ("#{ind}#{k}: #{utils.inspect v, depth + 1}" for k,v of obj).join ',\n'
         }\n#{ind[0..-3]}}"
     else
       ''
@@ -186,40 +186,40 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
 
   unless typeLeft is typeRight
     s = ''
-    s += u.TAGS.delStart + u.inspect(left, depth) + u.TAGS.delEnd if left?
-    s += u.TAGS.insStart + u.inspect(right, depth) + u.TAGS.insEnd if right?
+    s += utils.TAGS.delStart + utils.inspect(left, depth) + utils.TAGS.delEnd if left?
+    s += utils.TAGS.insStart + utils.inspect(right, depth) + utils.TAGS.insEnd if right?
     return s
 
   switch typeLeft
-    when 'string' then u.inspect u.stringDiff left, right
-    when 'number', 'boolean' then u.stringDiff left.toString(), right.toString()
+    when 'string' then utils.inspect utils.stringDiff left, right
+    when 'number', 'boolean' then utils.stringDiff left.toString(), right.toString()
     when 'object'
-      unless u.isArray(left) is u.isArray(right)
-        return u.TAGS.delStart + u.inspect(left, depth) + u.TAGS.delEnd +
-               u.TAGS.insStart + u.inspect(right, depth) + u.TAGS.insEnd
+      unless utils.isArray(left) is utils.isArray(right)
+        return utils.TAGS.delStart + utils.inspect(left, depth) + utils.TAGS.delEnd +
+               utils.TAGS.insStart + utils.inspect(right, depth) + utils.TAGS.insEnd
 
-      ind = u.fill (depth) * 2
-      prevInd = u.fill (depth - 1) * 2
+      ind = utils.fill (depth) * 2
+      prevInd = utils.fill (depth - 1) * 2
 
-      if u.isArray left
+      if utils.isArray left
         l = Math.max left.length, right.length
         s = '['
         a = for i in [0..l-1]
-          '\n' + ind + u.objectDiff(left[i], right[i], depth + 1)
+          '\n' + ind + utils.objectDiff(left[i], right[i], depth + 1)
         s += a.join(',') + "\n#{prevInd}]"
 
       else
-        allKeys = u.uniq u.keys(left).concat u.keys(right)
+        allKeys = utils.uniq utils.keys(left).concat utils.keys(right)
         s = "{"
         a = for k in allKeys
           key = k + ': '
           p = ''
           unless right[k]
-            p = u.TAGS.delStart + "#{key}#{left[k]}" + u.TAGS.delEnd
+            p = utils.TAGS.delStart + "#{key}#{left[k]}" + utils.TAGS.delEnd
           else unless left[k]
-            p = u.TAGS.insStart + "#{key}#{right[k]}" + u.TAGS.insEnd
+            p = utils.TAGS.insStart + "#{key}#{right[k]}" + utils.TAGS.insEnd
           else
-            p = key + u.objectDiff(left[k], right[k], depth + 1)
+            p = key + utils.objectDiff(left[k], right[k], depth + 1)
 
           '\n' + ind + p
         s += a.join(',') + "\n#{prevInd}}"
@@ -229,27 +229,27 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
 spectacular.utils.compare = (actual, value, matcher, noMessage=false) ->
   switch typeof actual
     when 'object'
-      if u.isArray actual
+      if utils.isArray actual
         unless noMessage
-          matcher.message = "#{matcher.message}\n\n#{u.objectDiff actual, value}"
+          matcher.message = "#{matcher.message}\n\n#{utils.objectDiff actual, value}"
         return false if actual.length isnt value.length
 
         for v,i in value
-          unless u.compare actual[i], v, matcher, true
+          unless utils.compare actual[i], v, matcher, true
             return false
         return true
       else
         unless noMessage
-          matcher.message = "#{matcher.message}\n\n#{u.objectDiff actual, value}"
-        return false if u.keys(actual).length isnt u.keys(value).length
+          matcher.message = "#{matcher.message}\n\n#{utils.objectDiff actual, value}"
+        return false if utils.keys(actual).length isnt utils.keys(value).length
 
         for k,v of value
-          unless u.compare actual[k], v, matcher, true
+          unless utils.compare actual[k], v, matcher, true
             return false
         return true
     when 'string'
       unless noMessage
-        matcher.message = "#{matcher.message}\n\n'#{u.stringDiff actual, value}'"
+        matcher.message = "#{matcher.message}\n\n'#{utils.stringDiff actual, value}'"
       actual is value
     else
       actual is value

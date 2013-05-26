@@ -1,6 +1,4 @@
-isCommonJS = typeof window is "undefined"
-
-exports = window unless isCommonJS
+spectacular.matchers ||= {}
 
 # Javascript Diff Algorithm
 # By John Resig (http://ejohn.org/)
@@ -10,15 +8,14 @@ exports = window unless isCommonJS
 #
 # More Info:
 # http://ejohn.org/projects/javascript-diff-algorithm/
-utils = spectacular.utils
-exports.exist =
+spectacular.matchers.exist =
   assert: (actual, notText) ->
     @description = "should#{notText} exist"
     @message = "Expected #{actual}#{notText} to exist"
 
     actual?
 
-exports.have = (count, label) ->
+spectacular.matchers.have = (count, label) ->
   assert: (actual, notText) ->
     @description = "should#{notText} have #{count} #{label}"
     switch typeof actual
@@ -54,7 +51,7 @@ exports.have = (count, label) ->
         @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} but it don't have a type that can be handled"
         false
 
-exports.be = (value) ->
+spectacular.matchers.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"
     switch typeof value
@@ -81,20 +78,20 @@ exports.be = (value) ->
         @message = "Expected #{utils.inspect actual}#{notText} to be #{utils.inspect value}"
         actual is value
 
-exports.equal = (value) ->
+spectacular.matchers.equal = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be equal to #{utils.squeeze utils.inspect value}"
     @message = "Expected #{utils.inspect actual}#{notText} to be equal to #{utils.inspect value}"
     utils.compare actual, value, this
 
-exports.match = (re) ->
+spectacular.matchers.match = (re) ->
   assert: (actual, notText) ->
     @description = "should#{notText} match #{re}"
     @message = "Expected '#{actual}'#{notText} to match #{re}"
 
     re.test actual
 
-exports.throwAnError = (message) ->
+spectacular.matchers.throwAnError = (message) ->
   assert: (actual, notText) ->
     msg = if message? then " with message #{message}" else ''
     msg += " with arguments #{utils.inspect @arguments}" if @arguments?
@@ -117,7 +114,7 @@ exports.throwAnError = (message) ->
   inContext: (@context) -> this
 
 
-exports.haveBeenCalled =
+spectacular.matchers.haveBeenCalled =
   assert: (actual, notText) ->
     if typeof actual?.spied is 'function'
       if @arguments?
@@ -136,3 +133,4 @@ exports.haveBeenCalled =
 
   with: (@arguments...) -> this
 
+spectacular.global[k] = v for k,v of spectacular.matchers
