@@ -1,3 +1,4 @@
+utils = spectacular.utils
 class spectacular.StackReporter
   @reports: 0
   @files: {}
@@ -16,13 +17,14 @@ class spectacular.StackReporter
 
     @options.loadFile(url).then (data) =>
       $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
+      $("#pre_#{@id}").height $("#pre_#{@id}").height()
 
     pre
 
   getLines: (fileContent, line, column) ->
     line = parseInt line
     fileContent = fileContent.split('\n').map (l,i) =>
-      " #{@padRight i + 1} | #{l}"
+      " #{utils.padRight i + 1} | #{l}"
 
     @insertColumnLine fileContent, line, column if column?
 
@@ -37,12 +39,7 @@ class spectacular.StackReporter
     if line is content.length
       content.push line
     else
-      content.splice line, 0, "      |#{@padRight('^', column)}"
-
-  padRight: (string, pad=4) ->
-    string = string.toString()
-    string = " #{string}" while string.length < pad
-    string
+      content.splice line, 0, "      |#{utils.padRight('^', column)}"
 
 
 class spectacular.BrowserReporter
@@ -94,6 +91,11 @@ class spectacular.BrowserReporter
     runner = event.target
     window.resultReceived = true
     window.result = not @hasFailures()
+    if result
+      $('html').addClass 'success'
+    else
+      $('html').addClass 'failure'
+
     @counters.find('#counters').append ", finished in #{@formatDuration runner.specsStartedAt, runner.specsEndedAt}"
 
   link: (example, id) ->
@@ -119,7 +121,7 @@ class spectacular.BrowserReporter
 
     if example.result.expectations.length > 0
       ex = $ """
-        <article class="example #{example.result.state}" id="example_#{@examples.length}">
+        <article class="example preload #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
             <span class='result'>#{example.result.state}</span>
@@ -132,30 +134,33 @@ class spectacular.BrowserReporter
       """
     else
       ex = $ """
-        <article class="example #{example.result.state}" id="example_#{@examples.length}">
+        <article class="example preload #{example.result.state}" id="example_#{@examples.length}">
           <header>
             <h4>#{example.description}</h4>
             <span class='result'>#{example.result.state}</span>
             <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
           </header>
           <aside>
-            <pre>#{example.reason.message}</pre>
+            <pre>#{utils.escape example.reason.message}</pre>
             #{ if example.reason? then @traceSource example.reason else ''}
-            <pre>#{example.reason?.stack}</pre>
+            #{ if example.reason? then "<pre>#{utils.escape example.reason?.stack}</pre>" else ''}
           </aside>
         </article>
       """
 
-    ex.click -> ex.toggleClass 'open'
+    ex.click -> ex.toggleClass 'closed'
     @examplesContainer.append ex
+    ex.find('pre:not([id])').each -> $(@).height $(@).height()
+    ex.addClass 'closed'
+    ex.removeClass 'preload'
 
   formatExpectation: (expectation) ->
     """
     <div class="expectation #{if expectation.success then 'success' else 'failure'}">
       <h5>#{expectation.description}</h5>
-      <pre>#{expectation.message}</pre>
+      <pre>#{utils.escape expectation.message}</pre>
       #{ if expectation.trace? then @traceSource expectation.trace else ''}
-      <pre>#{expectation.trace?.stack}</pre>
+      #{ if expectation.trace? then "<pre>#{utils.escape expectation.trace?.stack}</pre>" else ''}
     </div>
     """
 
@@ -210,11 +215,18 @@ class spectacular.BrowserReporter
 
 # This bootstrap the
 unless isCommonJS
+  cache = {}
   options.loadFile = (file) ->
+
     promise = new spectacular.Promise
+
+    if file of cache
+      promise.resolve cache[file]
+      return promise
+
     $.ajax
       url: file
-      success: (data) -> promise.resolve data
+      success: (data) -> promise.resolve cache[file] = data
       dataType: 'html'
 
     promise

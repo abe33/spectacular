@@ -29,21 +29,20 @@ class spectacular.StackFormatter
     if @options.longTrace
       "\n\n#{stack.join '\n'}\n"
     else
-      "\n#{
-        stack[0..5]
-        .concat(
-          "    ...\n\n    use --long-trace option to view the #{
-            stack.length - 6
-          } remaining lines"
-        ).join('\n')
-      }\n\n"
+      s = "\n#{stack[0..5].join '\n'}"
+      s = utils.indent s if /@/.test s
+      s += "\n    ...\n\n    use --long-trace option to view the #{stack.length - 6} remaining lines" if stack.length > 6
+      s += "\n\n"
 
   formatErrorInFile: (line) ->
     promise = new spectacular.Promise
 
-    re = /\((.*):(.*):(.*)\)/
-    return '' unless re.test line
-    [match, file, line, column] = re.exec line
+    re = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/
+    unless re.test line
+      promise.resolve ''
+      return promise
+
+    [match, file, e, line, c, column] = re.exec line
 
     @getLines(file, parseInt(line), parseInt(column)).then (lines) ->
       promise.resolve "\n#{lines}\n"
