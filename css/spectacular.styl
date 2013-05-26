@@ -25,6 +25,9 @@ blue_gray(op)
 light_gray(op)
   rgba(207,231,230,op)
 
+light_blue(op)
+  rgba(56,147,193,op)
+
 transition(trans)
   -webkit-transition trans
   -moz-transition trans
@@ -62,10 +65,30 @@ text-shadow()
 
 body
   margin 0
-  padding 0
+  padding 20px
   font-family 'Roboto', sans-serif
   font-weight 300
+  transition(background 0.8s ease-in)
+
+html
   background dark_blue(1)
+
+  &.success body
+    background success(0.3)
+
+    #reporter > header h2
+      color success(1)
+  &.failure body
+    background failure(0.3)
+
+    #reporter > header h2
+      color failure(1)
+
+  &.success body
+  &.failure body
+    #reporter > header h1
+      color light_gray(1)
+
 
 .hide-success
   .example.success
@@ -89,21 +112,19 @@ body
 
 #reporter
   position relative
-  margin 20px
   padding 10px
 
   #controls
     position fixed
     top 200px
-    left 30px
+    left 36px
     padding 8px
     background dark_blue_const
-    width 80px
+    width 68px
     z-index 10
     border-radius(3px)
-    border 1px solid dark_blue_const
-    border-top 1px solid dark_blue(0.5)
-    box-shadow(0 1px 3px rgba(0,0,0,0.5))
+    border 1px solid dark_blue(0.5)
+    box-shadow(0px 1px 2px rgba(0,0,0,1))
 
     button
       cursor pointer
@@ -170,7 +191,7 @@ body
   .example
     cursor: pointer
     min-height 58px
-    position relativeP
+    position relative
     padding 8px 8px 8px 80px
     border-bottom 1px solid blue_gray(0.1)
 
@@ -179,16 +200,35 @@ body
       color dark_blue(1)
       margin 0
       font-weight 300
+    h4
+      margin-bottom 4px
 
+    &.success.closed
+    &.pending.closed
+      pre
+        height 0 !important
+        padding 0 8px
+        border-top 0px solid blue_gray(0.1)
+        border-bottom 0px solid blue_gray(0.1)
+        margin-top 0
+
+    &.failure
+    &.error
+    &.skipped
+      .expectation.success pre
+        display none
+
+    .expectation
+      &.success
+        h5
+          color success(1)
+      &.failure
+        h5
+            color failure(1)
     &.success
     &.pending
       pre
-        display none
-
-    &.open
-      pre:first-of-type
-        display block !important
-        height: auto !important
+        display block
 
 
     &.skipped pre + pre
@@ -222,16 +262,6 @@ body
       border-left 4px solid pending(1)
       .result
         background pending(1)
-
-    .expectation
-      &.success
-        h5
-          color success(1)
-        pre
-          display none
-      &.failure
-        h5
-          color failure(1)
 
     .expectation + .expectation
       margin-top 4px
@@ -277,6 +307,8 @@ body
       padding 8px
       background #efefef
       border 1px solid #e4e4e4
+      overflow hidden
+      transition(all 0.4s ease-in)
 
       &+pre
         margin-top 0
@@ -291,12 +323,12 @@ body
         text-decoration none
 
       ins
-        background rgba(0,255,0,0.2)
-        border 1px solid rgba(0,255,0,0.6)
+        background success(0.2)
+        border 1px solid success(0.6)
 
       del
-        background rgba(255,0,0,0.2)
-        border 1px solid rgba(255,0,0,0.6)
+        background failure(0.2)
+        border 1px solid failure(0.6)
 
   > header
     color blue_gray(1)
@@ -306,9 +338,10 @@ body
       margin 0
       font-weight 300
       display inline-block
+      transition(color 0.4s ease-in)
 
     h2
-      color success(1)
+      color light_blue(1)
 
     pre
       white-space pre-wrap

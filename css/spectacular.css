@@ -7,10 +7,32 @@
 }
 body {
   margin: 0;
-  padding: 0;
+  padding: 20px;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
+  -webkit-transition: background 0.8s ease-in;
+  -moz-transition: background 0.8s ease-in;
+  -o-transition: background 0.8s ease-in;
+  transition: background 0.8s ease-in;
+}
+html {
   background: #163a4c;
+}
+html.success body {
+  background: rgba(100,180,50,0.3);
+}
+html.success body #reporter > header h2 {
+  color: #64b432;
+}
+html.failure body {
+  background: rgba(255,40,20,0.3);
+}
+html.failure body #reporter > header h2 {
+  color: #ff2814;
+}
+html.success body #reporter > header h1,
+html.failure body #reporter > header h1 {
+  color: #cfe7e6;
 }
 .hide-success .example.success {
   display: none !important;
@@ -29,27 +51,25 @@ body {
 }
 #reporter {
   position: relative;
-  margin: 20px;
   padding: 10px;
 }
 #reporter #controls {
   position: fixed;
   top: 200px;
-  left: 30px;
+  left: 36px;
   padding: 8px;
   background: #0b1d26;
-  width: 80px;
+  width: 68px;
   z-index: 10;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  border: 1px solid #0b1d26;
-  border-top: 1px solid rgba(22,58,76,0.5);
-  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  border: 1px solid rgba(22,58,76,0.5);
+  -webkit-box-shadow: 0px 1px 2px #000;
+  -moz-box-shadow: 0px 1px 2px #000;
+  -o-box-shadow: 0px 1px 2px #000;
+  box-shadow: 0px 1px 2px #000;
 }
 #reporter #controls button {
   cursor: pointer;
@@ -147,13 +167,31 @@ body {
   margin: 0;
   font-weight: 300;
 }
-#reporter .example.success pre,
-#reporter .example.pending pre {
+#reporter .example h4 {
+  margin-bottom: 4px;
+}
+#reporter .example.success.closed pre,
+#reporter .example.pending.closed pre {
+  height: 0 !important;
+  padding: 0 8px;
+  border-top: 0px solid rgba(86,122,120,0.1);
+  border-bottom: 0px solid rgba(86,122,120,0.1);
+  margin-top: 0;
+}
+#reporter .example.failure .expectation.success pre,
+#reporter .example.error .expectation.success pre,
+#reporter .example.skipped .expectation.success pre {
   display: none;
 }
-#reporter .example.open pre:first-of-type {
-  display: block !important;
-  height: auto !important;
+#reporter .example .expectation.success h5 {
+  color: #64b432;
+}
+#reporter .example .expectation.failure h5 {
+  color: #ff2814;
+}
+#reporter .example.success pre,
+#reporter .example.pending pre {
+  display: block;
 }
 #reporter .example.skipped pre + pre {
   display: none;
@@ -195,15 +233,6 @@ body {
 }
 #reporter .example.pending .result {
   background: #ffc85a;
-}
-#reporter .example .expectation.success h5 {
-  color: #64b432;
-}
-#reporter .example .expectation.success pre {
-  display: none;
-}
-#reporter .example .expectation.failure h5 {
-  color: #ff2814;
 }
 #reporter .example .expectation + .expectation {
   margin-top: 4px;
@@ -258,6 +287,11 @@ body {
   padding: 8px;
   background: #efefef;
   border: 1px solid #e4e4e4;
+  overflow: hidden;
+  -webkit-transition: all 0.4s ease-in;
+  -moz-transition: all 0.4s ease-in;
+  -o-transition: all 0.4s ease-in;
+  transition: all 0.4s ease-in;
 }
 #reporter .example pre+pre {
   margin-top: 0;
@@ -272,12 +306,12 @@ body {
   text-decoration: none;
 }
 #reporter .example pre ins {
-  background: rgba(0,255,0,0.2);
-  border: 1px solid rgba(0,255,0,0.6);
+  background: rgba(100,180,50,0.2);
+  border: 1px solid rgba(100,180,50,0.6);
 }
 #reporter .example pre del {
-  background: rgba(255,0,0,0.2);
-  border: 1px solid rgba(255,0,0,0.6);
+  background: rgba(255,40,20,0.2);
+  border: 1px solid rgba(255,40,20,0.6);
 }
 #reporter > header {
   color: #567a78;
@@ -287,9 +321,13 @@ body {
   margin: 0;
   font-weight: 300;
   display: inline-block;
+  -webkit-transition: color 0.4s ease-in;
+  -moz-transition: color 0.4s ease-in;
+  -o-transition: color 0.4s ease-in;
+  transition: color 0.4s ease-in;
 }
 #reporter > header h2 {
-  color: #64b432;
+  color: #3893c1;
 }
 #reporter > header pre {
   white-space: pre-wrap;
