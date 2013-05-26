@@ -6,12 +6,11 @@ class spectacular.Environment
     skip should shouldnt dependsOn spyOn the
     withArguments whenPass'
 
-  constructor: (@Formatter, @options) ->
+  constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
-    @formatter = new @Formatter(@rootExampleGroup, @options, this)
-    @runner = new spectacular.Runner(@rootExampleGroup, @options, this, @formatter)
+    @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
 
   run: => @runner.run()
 
@@ -46,12 +45,12 @@ class spectacular.Environment
     @exposedMethods.split(/\s+/g).forEach (k) =>
       fn = -> env[k].apply env, arguments
       fn._name = k
-      global[k] = fn
+      spectacular.global[k] = fn
 
   clone: ->
     optionsCopy = {}
     optionsCopy[k] = v for k,v of @options
-    new spectacular.Environment @Formatter, optionsCopy
+    new spectacular.Environment optionsCopy
 
   notInsideIt: (method) =>
     if @currentExample?
@@ -203,7 +202,6 @@ class spectacular.Environment
     spy
 
   should: (matcher, neg=false) =>
-    try throw new Error catch e
     @notOutsideIt 'should'
 
     return unless matcher?
@@ -220,6 +218,3 @@ class spectacular.Environment
   shouldnt: (matcher) => @should matcher, true
 
   toString: -> '[spectacular Environment]'
-
-
-

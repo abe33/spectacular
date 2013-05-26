@@ -3,7 +3,9 @@ nextTick = process?.setImmediate or process?.nextTick or (callback) ->
   setTimeout callback, 0
 
 class spectacular.Runner
-  constructor: (@root, @options, @env, @formatter) ->
+  @include spectacular.EventDispatcher
+
+  constructor: (@root, @options, @env) ->
     @results = []
     @examples = []
     @stack = []
@@ -16,7 +18,7 @@ class spectacular.Runner
     .then(@executeSpecs)
     .then =>
       @specsEndedAt = new Date()
-    .then(@printResults)
+    .then(@notifyEnd)
     .then =>
       if @hasFailures() then 1 else 0
 
@@ -107,20 +109,18 @@ class spectacular.Runner
         @env.currentExample = nextExample
         nextExample.run()
         .then =>
-          @registerResults nextExample
+          @handleResult nextExample
           @nextExample defer
         .fail (reason) =>
-          @registerResults nextExample
+          @handleResult nextExample
           @nextExample defer
 
-  registerResults: (example) ->
+  handleResult: (example) ->
+    @dispatch new spectacular.Event 'result', example
     @env.currentExample = null
-    @formatter.registerResult example
 
-  printResults: =>
-    @formatter.printResults(
-      @loadStartedAt, @loadEndedAt,
-      @specsStartedAt, @specsEndedAt
-    )
+  notifyEnd: =>
+    @dispatch new spectacular.Event 'end', this
 
-  hasFailures: -> @formatter.hasFailures()
+  hasFailures: -> @root.allExamples.some (e) ->
+    e.result.state in ['skipped', 'failure', 'errored']

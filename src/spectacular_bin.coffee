@@ -21,6 +21,8 @@ options =
   noMatchers: false
   noHelpers: false
   noColors: false
+  server: false
+  source: null
   globs: []
 
 while args.length
@@ -41,6 +43,8 @@ while args.length
     when '--long-trace' then options.longTrace = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
+    when '--server' then options.server = true
+    when '--source', '-s' then options.source = options.shift()
     else options.globs.push option
 
 console.log 'options:', options if options.verbose

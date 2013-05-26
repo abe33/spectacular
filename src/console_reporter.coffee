@@ -1,22 +1,35 @@
 
-fs = require 'fs'
-util = require 'util'
-utils = require './utils'
+utils = spectacular.utils
 
 ## StackFormatter
 
-class exports.StackFormatter
+class spectacular.StackFormatter
   constructor: (@error, @options) ->
 
   format: ->
-    stack = @error.stack.split('\n').filter (line) -> /^\s{4}at.*$/g.test line
-    res = '\n'
-    try res += @formatErrorInFile stack[0] if @options.showSource
-
-    if @options.longTrace
-      res += "\n\n#{stack.join '\n'}\n"
+    promise = new spectacular.Promise
+    if @error.stack?
+      stack = @error.stack.split('\n').filter (line) -> /(at|@)/g.test line
+      res = '\n'
+      if @options.showSource
+        @formatErrorInFile(stack[0]).then (msg) =>
+          res += msg + @formatStack stack
+          res = res.grey unless @options.noColors
+          promise.resolve res
+      else
+        res += @formatStack stack
+        res = res.grey unless @options.noColors
+        promise.resolve res
     else
-      res += "\n#{
+      promise.resolve res
+
+    promise
+
+  formatStack: (stack) ->
+    if @options.longTrace
+      "\n\n#{stack.join '\n'}\n"
+    else
+      "\n#{
         stack[0..5]
         .concat(
           "    ...\n\n    use --long-trace option to view the #{
@@ -25,33 +38,33 @@ class exports.StackFormatter
         ).join('\n')
       }\n\n"
 
-    res = res.grey unless @options.noColors
-    res
-
   formatErrorInFile: (line) ->
+    promise = new spectacular.Promise
+
     re = /\((.*):(.*):(.*)\)/
     return '' unless re.test line
     [match, file, line, column] = re.exec line
 
-    "\n#{@getLines(file, parseInt(line), parseInt(column))}\n"
+    @getLines(file, parseInt(line), parseInt(column)).then (lines) ->
+      promise.resolve "\n#{lines}\n"
+
+    promise
 
   getLines: (file, line, column) ->
-    fileContent = fs.readFileSync(file).toString()
+    promise = new spectacular.Promise
+    @options.loadFile(file).then (fileContent) =>
+      fileContent = fileContent.split('\n').map (l,i) =>
+        "    #{utils.padRight i + 1} | #{l}"
 
-    if @options.coffee and file.indexOf('.coffee') isnt -1
-      {compile} = require 'coffee-script'
-      fileContent = compile fileContent, bare: true
+      @insertColumnLine fileContent, line, column
 
-    fileContent = fileContent.split('\n').map (l,i) =>
-      "    #{utils.padRight i + 1} | #{l}"
+      startLine = Math.max(1, line - 3) - 1
+      endLine = Math.min(fileContent.length, line + 2) - 1
 
-    @insertColumnLine fileContent, line, column
+      lines = fileContent[startLine..endLine].join('\n')
+      promise.resolve lines
 
-    startLine = Math.max(1, line - 3) - 1
-    endLine = Math.min(fileContent.length, line + 2) - 1
-
-    lines = fileContent[startLine..endLine].join('\n')
-    lines
+    promise
 
   insertColumnLine: (content, line, column) ->
     if line is content.length
@@ -60,10 +73,12 @@ class exports.StackFormatter
       content.splice line, 0, "         |#{utils.padRight('^', column-2)}"
 
 
-## ResultsFormatter
+## ConsoleReporter
 
-class exports.ResultsFormatter
-  constructor: (@root, @options, @env) ->
+class spectacular.ConsoleReporter
+  @include spectacular.EventDispatcher
+
+  constructor: (@options) ->
     @errorsCounter = 1
     @failuresCounter = 1
     @errors = []
@@ -73,44 +88,70 @@ class exports.ResultsFormatter
     @results = []
     @examples = []
 
-  registerResult: (example) ->
+  onResult: (event) =>
+    example = event.target
     @printExampleResult example
     @results.push example.result
     @examples.push example
+    switch example.result.state
+      when 'pending' then @pending.push example
+      when 'skipped' then @skipped.push example
+      when 'errored' then @errors.push example
+      when 'failure' then @failures.push example
 
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
 
-  printResults: (lstart, lend, sstart, send) ->
-    console.log @buildResults lstart, lend, sstart, send
+  onEnd: (event) =>
+    runner = event.target
+    @buildResults(
+      runner.loadStartedAt,
+      runner.loadEndedAt,
+      runner.specsStartedAt,
+      runner.specsEndedAt
+    ).then (report) =>
+      @dispatch new spectacular.Event 'report', report
 
   buildResults: (lstart, lend, sstart, send) ->
+    promise = new spectacular.Promise
     res = '\n\n'
-    for result in @results
-      switch result.state
-        when 'pending' then @pending.push result.example
-        when 'skipped' then @skipped.push result.example
-        when 'errored'
-          @errors.push result.example
-          res += @formatExampleError result.example
-        when 'failure'
-          @failures.push result.example
-          if result.expectations.length > 0
-            for expectation in result.expectations
-              unless expectation.success
-                res += @formatExpectationFailure expectation
-          else
-            res += @formatExampleFailure result.example
 
-    res += @formatResume()
-    res += @formatProfile(sstart, send) if @options.profile
-    res += @formatTimers(lstart, lend, sstart, send)
-    res += @formatCounters()
-    res += '\n'
+    spectacular.Promise.all(@formatResult result for result in @results)
+    .then (results) =>
+      res += results.filter((s) -> s? and s.length > 0).join '\n'
+      res += @formatResume()
+      res += @formatProfile(sstart, send) if @options.profile
+      res += @formatTimers(lstart, lend, sstart, send)
+      res += @formatCounters()
+      res += '\n\n'
 
-  printExampleResult: (example) ->
+      promise.resolve res
+
+    promise
+
+  formatResult: (result) =>
+    promise = new spectacular.Promise
+    switch result.state
+      when 'errored'
+        @formatExampleError(result.example).then (msg) ->
+          promise.resolve msg
+      when 'failure'
+        if result.expectations.length > 0
+          for expectation in result.expectations
+            unless expectation.success
+              @formatExpectationFailure(expectation).then (msg) ->
+                promise.resolve msg
+        else
+          @formatExampleFailure(result.example).then (msg) ->
+            promise.resolve msg
+      else
+        promise.resolve ''
+
+    promise
+
+  printExampleResult: (example) =>
     res = @formatExampleResult example
-    util.print res if res?
+    @dispatch new spectacular.Event 'message', res if res?
 
   formatExampleResult: (example) ->
     if @options.noColors
@@ -130,27 +171,54 @@ class exports.ResultsFormatter
         when 'success' then '.'.green
 
   formatStack: (e) ->
-    new exports.StackFormatter(e, @options).format()
+    new spectacular.StackFormatter(e, @options).format()
 
   formatExampleFailure: (example) ->
+    promise = new spectacular.Promise
+
     res =  @failureBadge example.description
-    res += @formatError example.reason
-    res += '\n'
+    @formatError(example.reason).then (msg) ->
+      res +=  msg + '\n'
+      promise.resolve res
+
+    promise
 
   formatExpectationFailure: (expectation) ->
+    promise = new spectacular.Promise
+
     res = @failureBadge expectation.description
     res += '\n'
     res += @formatMessage expectation.message
-    res += @formatStack expectation.trace if @options.trace
-    res += '\n'
+    if @options.trace
+      @formatStack(expectation.trace).then (msg) ->
+        res += msg if msg?
+        promise.resolve res + '\n'
+    else
+      promise.resolve res
+
+    promise
 
   formatExampleError: (example) ->
+    promise = new spectacular.Promise
+
     res =  @errorBadge example.description
-    res += @formatError example.reason
+
+    @formatError(example.reason).then (msg) ->
+      promise.resolve res + msg
+
+    promise
 
   formatError: (error) ->
+    promise = new spectacular.Promise
     res = @formatMessage error.message
-    res += @formatStack error if @options.trace
+
+    if @options.trace
+      @formatStack(error).then (msg) ->
+        promise.resolve res + msg
+    else
+      promise.resolve res
+
+    promise
 
   failureBadge: (message) ->
     badge = ' FAIL '

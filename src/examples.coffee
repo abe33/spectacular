@@ -35,9 +35,10 @@ class spectacular.Expectation
   createMessage: =>
     @message = @matcher.message
     if not @success and not @trace?
-      stack = @callstack.stack.split('\n')
-      specIndex = spectacular.env.runner.findSpecFileInStack stack
-      @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
+      if @callstack.stack?
+        stack = @callstack.stack.split('\n')
+        specIndex = spectacular.env.runner.findSpecFileInStack stack
+        @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
     @description = "#{@example.description} #{@matcher.description}"
@@ -244,7 +245,10 @@ class spectacular.ExampleGroup extends spectacular.Example
           @noSpaceBeforeDescription = true
           owner = @subject
           subject = owner?[desc.replace '.', '']
-          subject = subject.bind(owner) if typeof subject is 'function'
+          if typeof subject is 'function'
+            original = subject
+            subject = -> original.apply owner, arguments
+
           @ownSubjectBlock = => subject
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
@@ -252,7 +256,7 @@ class spectacular.ExampleGroup extends spectacular.Example
           @ownSubjectBlock = =>
             if type
               owner = build type, @parameters or []
-              owner[desc.replace '::', ''].bind owner
+              -> owner[desc.replace '::', ''].apply owner, arguments
         else
           @noSpaceBeforeDescription = true if @parent.description is ''
 

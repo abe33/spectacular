@@ -98,3 +98,23 @@ class spectacular.Describable
         "#{@parent.description}#{space}#{@ownDescription}"
       else
         @ownDescription
+
+class spectacular.Event
+  constructor: (@name, @target) ->
+
+class spectacular.EventDispatcher
+  on: (event, callback) ->
+    @listeners ||= {}
+    @listeners[event] ||= []
+
+    @listeners[event].push callback unless callback in @listeners[event]
+
+  off: (event, callback) ->
+    if @listeners?[event]? and callback in @listeners[event]
+      @listeners[event].splice @listeners[event].indexOf(callback), 1
+
+  hasListener: (event) ->
+    @listeners?[event]? and @listeners[event].length > 0
+
+  dispatch: (event) ->
+    @listeners?[event.name]?.forEach (listener) -> listener event

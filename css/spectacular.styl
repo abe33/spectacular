@@ -1,0 +1,350 @@
+
+dark_blue_const = #0b1d26
+
+dark_blue(op)
+  rgba(22,58,76,op)
+
+success(op)
+  rgba(100,180,50,op)
+
+pending(op)
+  rgba(255,200,90,op)
+
+error(op)
+  rgba(255,150,20,op)
+
+failure(op)
+  rgba(255,40,20,op)
+
+skipped(op)
+  rgba(255,20,220,op)
+
+blue_gray(op)
+  rgba(86,122,120,op)
+
+light_gray(op)
+  rgba(207,231,230,op)
+
+transition(trans)
+  -webkit-transition trans
+  -moz-transition trans
+  -o-transition trans
+  transition trans
+
+box-sizing(mode)
+  -webkit-box-sizing mode
+  -moz-box-sizing mode
+  -o-box-sizing mode
+  box-sizing mode
+
+
+border-radius(rad)
+  -webkit-border-radius rad
+  -moz-border-radius rad
+  -o-border-radius rad
+  border-radius rad
+
+box-shadow()
+  -webkit-box-shadow arguments
+  -moz-box-shadow arguments
+  -o-box-shadow arguments
+  box-shadow arguments
+
+text-shadow()
+  -webkit-text-shadow arguments
+  -moz-text-shadow arguments
+  -o-text-shadow arguments
+  text-shadow arguments
+
+*
+  box-sizing border-box
+  -webkit-font-smoothing antialiased
+
+body
+  margin 0
+  padding 0
+  font-family 'Roboto', sans-serif
+  font-weight 300
+  background dark_blue(1)
+
+.hide-success
+  .example.success
+    display none !important
+
+.hide-pending
+  .example.pending
+    display none !important
+
+.hide-skipped
+  .example.skipped
+    display none !important
+
+.hide-failure
+  .example.failure
+    display none !important
+
+.hide-errored
+  .example.errored
+    display none !important
+
+#reporter
+  position relative
+  margin 20px
+  padding 10px
+
+  #controls
+    position fixed
+    top 200px
+    left 30px
+    padding 8px
+    background dark_blue_const
+    width 80px
+    z-index 10
+    border-radius(3px)
+    border 1px solid dark_blue_const
+    border-top 1px solid dark_blue(0.5)
+    box-shadow(0 1px 3px rgba(0,0,0,0.5))
+
+    button
+      cursor pointer
+      outline 0 !important
+      width 100%
+      border none
+      color white
+      text-align center
+      text-transform uppercase
+      font-weight 500
+      font-size 10px
+      font-family monospace
+      text-shadow(0 1px 2px dark_blue(1))
+      border-radius(3px)
+      padding 2px 0
+      margin-top 4px
+      transition(background 0.5s ease-out)
+
+      &.success
+        background success(1)
+        &.off
+          background success(0.4)
+      &.pending
+        background pending(1)
+        &.off
+          background pending(0.4)
+      &.errored
+        background error(1)
+        &.off
+          background error(0.4)
+      &.skipped
+        background skipped(1)
+        &.off
+          background skipped(0.4)
+      &.failure
+        background failure(1)
+        &.off
+          background failure(0.4)
+
+  #examples
+    position relative
+    background #efefef
+    padding-left 80px
+    min-height 400px
+
+    &:before
+    &:after
+      content ''
+      height 100%
+      width 80px
+      left 0
+      top 0
+      display block
+      position absolute
+      background rgb(0,0,0)
+
+    &:after
+      width 70px
+      background dark_blue_const
+      border-left 5px solid dark_blue(0.5)
+      border-right 5px solid dark_blue(0.5)
+      box-shadow(0 1px 5px rgba(0,0,0,0.5) inset)
+
+  .example
+    cursor: pointer
+    min-height 58px
+    position relativeP
+    padding 8px 8px 8px 80px
+    border-bottom 1px solid blue_gray(0.1)
+
+    h4
+    h5
+      color dark_blue(1)
+      margin 0
+      font-weight 300
+
+    &.success
+    &.pending
+      pre
+        display none
+
+    &.open
+      pre:first-of-type
+        display block !important
+        height: auto !important
+
+
+    &.skipped pre + pre
+      display none
+
+    &.success
+      background success(0.2)
+      border-left 4px solid success(1)
+      h4
+        color success(1)
+      .result
+        background success(1)
+    &.failure
+      background failure(0.2)
+      border-left 4px solid failure(1)
+      .result
+        background failure(1)
+    &.skipped
+      background skipped(0.2)
+      border-left 4px solid skipped(1)
+      .result
+        background skipped(1)
+    &.errored
+      background error(0.2)
+      border-left 4px solid error(1)
+      .result
+        background error(1)
+
+    &.pending
+      background pending(0.2)
+      border-left 4px solid pending(1)
+      .result
+        background pending(1)
+
+    .expectation
+      &.success
+        h5
+          color success(1)
+        pre
+          display none
+      &.failure
+        h5
+          color failure(1)
+
+    .expectation + .expectation
+      margin-top 4px
+
+    .result
+      position absolute
+      left 8px
+      top 8px
+      padding 4px 0
+      width 64px
+      height 20px
+      color white
+      text-align center
+      text-transform uppercase
+      font-weight 500
+      font-size 10px
+      font-family monospace
+      text-shadow(0 1px 2px dark_blue(1))
+      border-radius(3px)
+
+    .time
+      padding 2px 6px 2px 18px
+      background dark_blue(1)
+      color light_gray(1)
+      position absolute
+      display block
+      width 64px
+      left 8px
+      top 30px
+      border-radius(3px)
+      font-size 0.8em
+
+      .icon-time
+        position absolute
+        color blue_gray(1)
+        left 4px
+        top 4px
+
+    pre
+      color dark_blue(1)
+      margin 0
+      margin-top 6px
+      padding 8px
+      background #efefef
+      border 1px solid #e4e4e4
+
+      &+pre
+        margin-top 0
+        border-top 0
+
+      .line
+        background rgba(255,0,0,0.2)
+
+      ins
+      del
+        display inline
+        text-decoration none
+
+      ins
+        background rgba(0,255,0,0.2)
+        border 1px solid rgba(0,255,0,0.6)
+
+      del
+        background rgba(255,0,0,0.2)
+        border 1px solid rgba(255,0,0,0.6)
+
+  > header
+    color blue_gray(1)
+
+    h1
+    h2
+      margin 0
+      font-weight 300
+      display inline-block
+
+    h2
+      color success(1)
+
+    pre
+      white-space pre-wrap
+      word-break break-all
+      font-family monospace
+      a
+
+      a
+      a:hover
+        text-decoration none
+
+    p
+      line-height 1.2em
+
+    span span
+      font-weight 700
+      font-size 14px
+      padding 4px 6px
+      background rgba(0,0,0,0.3)
+      border-radius(2px)
+
+    .success
+      color success(1)
+
+    .errored
+      color error(1)
+
+    .pending, .yellow
+      color pending(1)
+
+    .failure
+      color failure(1)
+
+    .skipped
+      color skipped(1)
+
+    p
+      color light_gray(1)
+
