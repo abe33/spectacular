@@ -8,17 +8,19 @@ class spectacular.StackFormatter
 
   format: ->
     promise = new spectacular.Promise
-
-    stack = @error.stack.split('\n').filter (line) -> /^\s{4}at.*$/g.test line
-    res = '\n'
-    if @options.showSource
-      @formatErrorInFile(stack[0]).then (msg) =>
-        res += msg + @formatStack stack
+    if @error.stack?
+      stack = @error.stack.split('\n').filter (line) -> /(at|@)/g.test line
+      res = '\n'
+      if @options.showSource
+        @formatErrorInFile(stack[0]).then (msg) =>
+          res += msg + @formatStack stack
+          res = res.grey unless @options.noColors
+          promise.resolve res
+      else
+        res += @formatStack stack
         res = res.grey unless @options.noColors
         promise.resolve res
     else
-      res += @formatStack stack
-      res = res.grey unless @options.noColors
       promise.resolve res
 
     promise

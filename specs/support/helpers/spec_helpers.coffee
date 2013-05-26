@@ -2,6 +2,7 @@
 exports.createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
+  env.options.showSource = false
   context.results = ''
 
   spyOn(env, 'load').andCallThrough ->

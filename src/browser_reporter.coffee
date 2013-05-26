@@ -1,10 +1,9 @@
-
 class spectacular.StackReporter
   @reports: 0
   @files: {}
   @filesLoader: {}
 
-  constructor: (@error) ->
+  constructor: (@error, @options) ->
     @id = StackReporter.reports
     StackReporter.reports += 1
 
@@ -15,14 +14,8 @@ class spectacular.StackReporter
     line = stack.shift()
     [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
 
-    done = (data) =>
+    @options.loadFile(url).then (data) =>
       $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
-
-    $.ajax
-        url: url
-        success: (data) ->
-          done data
-        dataType: 'html'
 
     pre
 
@@ -60,7 +53,7 @@ class spectacular.BrowserReporter
     errored: 'E'
     success: '.'
 
-  constructor: ->
+  constructor: (@options) ->
     @errorsCounter = 1
     @failuresCounter = 1
     @errors = []
@@ -97,20 +90,11 @@ class spectacular.BrowserReporter
     @progress = @reporter.find 'header pre'
     @counters = @reporter.find 'header p'
 
-  printResults: (lstart, lend, sstart, send) ->
+  onEnd: (event) =>
+    runner = event.target
     window.resultReceived = true
     window.result = not @hasFailures()
-    @counters.find('#counters').append ", finished in #{@formatDuration sstart, send}"
-
-  buildResults: (lstart, lend, sstart, send) ->
-    res = '\n\n'
-    for result in @results
-      switch result.state
-        when 'errored'
-          res += result.example.reason + '\n\n'
-
-    res += $(@formatCounters()).text()
-    res += '\n'
+    @counters.find('#counters').append ", finished in #{@formatDuration runner.specsStartedAt, runner.specsEndedAt}"
 
   link: (example, id) ->
     """<a href='#example_#{id}'
@@ -121,7 +105,8 @@ class spectacular.BrowserReporter
 
   stateChar: (state) -> STATE_CHARS[state]
 
-  registerResult: (example) ->
+  onResult: (event) =>
+    example = event.target
     @results.push example.result
     @examples.push example
     @progress.append @link example, @examples.length
@@ -154,7 +139,7 @@ class spectacular.BrowserReporter
             <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
           </header>
           <aside>
-            <pre>#{example.reason}</pre>
+            <pre>#{example.reason.message}</pre>
             #{ if example.reason? then @traceSource example.reason else ''}
             <pre>#{example.reason?.stack}</pre>
           </aside>
@@ -175,7 +160,7 @@ class spectacular.BrowserReporter
     """
 
   traceSource: (error) ->
-    (new spectacular.StackReporter error).report()
+    (new spectacular.StackReporter error, @options).report()
 
   formatCounters: ->
     failures = @failures.length
@@ -225,15 +210,25 @@ class spectacular.BrowserReporter
 
 # This bootstrap the
 unless isCommonJS
-  spectacular.env = new spectacular.Environment(
-    spectacular.BrowserReporter, options
-  )
+  options.loadFile = (file) ->
+    promise = new spectacular.Promise
+    $.ajax
+      url: file
+      success: (data) -> promise.resolve data
+      dataType: 'html'
+
+    promise
+
+  spectacular.env = new spectacular.Environment(options)
   spectacular.env.load()
   spectacular.env.runner.loadStartedAt = new Date()
   spectacular.env.runner.paths = paths
 
   window.onload = ->
-    spectacular.env.formatter.appendToBody()
+    reporter = new spectacular.BrowserReporter(options)
+    reporter.appendToBody()
+    spectacular.env.runner.on 'result', reporter.onResult
+    spectacular.env.runner.on 'end', reporter.onEnd
     spectacular.env.runner.loadEndedAt = new Date()
     spectacular.env.runner.specsStartedAt = new Date()
 
