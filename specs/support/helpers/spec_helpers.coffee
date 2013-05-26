@@ -2,7 +2,6 @@
 exports.createEnv = (block, context) ->
   env = spectacular.env.clone()
   env.options.noColors = true
-  env.options.showSource = false
   context.results = ''
 
   spyOn(env, 'load').andCallThrough ->
@@ -62,33 +61,33 @@ exports.runEnvExpectingInterruption = (env, context, async) ->
 exports.runningSpecs = (desc) ->
 
   shouldFailWith: (re, block) ->
-    describe "running specs with #{desc}", ->
+    describe "running specs, with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingNormalTermination @env, this, async
 
-      it 'should fail, status', -> @status.should be 1
-      it 'should fail, results', -> @results.should match re
+      it ', should fail, status', -> @status.should be 1
+      it ', should fail, results', -> @results.should match re
 
   shouldSucceedWith: (re, block) ->
-    describe "running specs with #{desc}", ->
+    describe "running specs, with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingNormalTermination @env, this, async
 
-      it 'should succeed, status', -> @status.should be 0
-      it 'should succeed, results', -> @results.should match re
+      it ', should succeed, status', -> @status.should be 0
+      it ', should succeed, results', -> @results.should match re
 
   shouldStopWith: (re, block) ->
-    describe "running specs with #{desc}", ->
+    describe "running specs, with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingInterruption @env, this, async
 
-      it 'should stop, error message', ->
+      it ', should stop, error message', ->
         @reason.message.should match re
 
 exports.environmentMethod = (method) ->
