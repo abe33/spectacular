@@ -6,6 +6,8 @@ express = require 'express'
 walk = require 'walkdir'
 util = require 'util'
 
+SPECTACULAR_ROOT = path.resolve __dirname, '..'
+
 findMatchers = (options) ->
   defer = Q.defer()
   res = []
@@ -52,7 +54,6 @@ scriptNode = (path) ->
 generateSpecRunner = (options) ->
   paths = [
     'assets/js/spectacular.js'
-    'assets/js/matchers.js'
     'assets/js/browser_reporter.js'
   ]
 
@@ -91,8 +92,8 @@ exports.run = (options) ->
     generateSpecRunner(options).then (html) ->
       res.send html
 
-  app.use '/assets/js', express.static path.resolve '.', 'lib'
-  app.use '/assets/css', express.static path.resolve '.', 'css'
+  app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
+  app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/specs', (req, res, next) ->
     content = fs.readFileSync(path.resolve "./specs#{req.url}").toString()
 
