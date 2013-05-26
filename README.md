@@ -1,5 +1,7 @@
 Spectacular
 ===========
+[![Build Status](https://travis-ci.org/abe33/spectacular.png)](https://travis-ci.org/abe33/spectacular)
+
 
 Advanced BDD framework for CoffeeScript and JavaScript
 
