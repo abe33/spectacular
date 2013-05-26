@@ -7,7 +7,7 @@ vm = require 'vm'
 Q = require 'q'
 utils = require './utils'
 walk = require 'walkdir'
-{ConsoleReporter} = require './console_reporter'
+util = require 'util'
 
 requireIntoGlobal = (file) ->
   matchers = require file
@@ -16,15 +16,12 @@ requireIntoGlobal = (file) ->
     global[k] = v
 
 loadSpectacular = (options) ->
-  Q.fcall(->
+  Q.fcall ->
     filename = path.resolve __dirname, "spectacular.js"
     src = fs.readFileSync(filename).toString()
     vm.runInThisContext src, filename
 
-    spectacular.env = new spectacular.Environment(
-      ConsoleReporter, options
-    )
-  ).then ->
+    spectacular.env = new spectacular.Environment options
     spectacular.env.load()
 
 loadMatchers = (options) ->
@@ -70,12 +67,33 @@ loadSpecs = (options) -> (paths) ->
   require path.resolve('.', p) for p in paths
   paths
 
+getReporter = (options) ->
+  reporter = new spectacular.ConsoleReporter options
+  reporter.on 'message', (event) -> util.print event.target
+  reporter.on 'report', (event) -> util.print event.target
+  reporter
+
+loadFile = (options) -> (file) ->
+  Q.fcall ->
+    fileContent = fs.readFileSync(file).toString()
+    if options.coffee and file.indexOf('.coffee') isnt -1
+      {compile} = require 'coffee-script'
+      fileContent = compile fileContent, bare: true
+    fileContent
+
 exports.run = (options) ->
   loadStartedAt = null
   loadEndedAt = null
 
+  options.loadFile = loadFile(options)
+
   loadSpectacular(options)
-  .then(-> requireIntoGlobal './matchers')
+  .then ->
+    reporter = getReporter options
+    spectacular.env.runner.on 'result', reporter.onResult
+    spectacular.env.runner.on 'end', reporter.onEnd
+  .then ->
+    requireIntoGlobal './matchers'
   .then(loadMatchers options)
   .then(loadHelpers options)
   .then ->
@@ -90,7 +108,9 @@ exports.run = (options) ->
     spectacular.env.run()
   .fail (reason) ->
     if spectacular.env?
-      console.log spectacular.env.formatter.errorBadge "Spectacular failed"
-      console.log spectacular.env.formatter.formatError reason
+      reporter = getReporter options
+      console.log reporter.errorBadge "Spectacular failed"
+      reporter.formatError(reason).then (msg) ->
+        console.log msg
     else
       console.log reason.stack
