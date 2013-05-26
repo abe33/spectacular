@@ -5,7 +5,6 @@ glob = require 'glob'
 path = require 'path'
 vm = require 'vm'
 Q = require 'q'
-utils = require './utils'
 walk = require 'walkdir'
 util = require 'util'
 
