@@ -122,9 +122,10 @@ class spectacular.BrowserReporter
       when 'errored' then @errors.push example
       when 'failure' then @failures.push example
 
+    id = @examples.length
     if example.result.expectations.length > 0
       ex = $ """
-        <article class="example preload #{example.result.state}" id="example_#{@examples.length}">
+        <article class="example preload #{example.result.state}" data-id="#{id}" id="example_#{id}">
           <header>
             <h4>#{example.description}</h4>
             <span class='result'>#{example.result.state}</span>
@@ -137,14 +138,14 @@ class spectacular.BrowserReporter
       """
     else
       ex = $ """
-        <article class="example preload #{example.result.state}" id="example_#{@examples.length}">
+        <article class="example preload #{example.result.state}" data-id="#{id}" id="example_#{id}">
           <header>
             <h4>#{example.description}</h4>
             <span class='result'>#{example.result.state}</span>
             <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
           </header>
           <aside>
-            <pre>#{utils.escape example.reason.message}</pre>
+            <pre>#{utils.escapeDiff example.reason.message}</pre>
             #{ if example.reason? then @traceSource example.reason else ''}
             #{ if example.reason? then "<pre>#{utils.escape example.reason?.stack}</pre>" else ''}
           </aside>
@@ -161,7 +162,7 @@ class spectacular.BrowserReporter
     """
     <div class="expectation #{if expectation.success then 'success' else 'failure'}">
       <h5>#{expectation.description}</h5>
-      <pre>#{utils.escape expectation.message}</pre>
+      <pre>#{utils.escapeDiff expectation.message}</pre>
       #{ if expectation.trace? then @traceSource expectation.trace else ''}
       #{ if expectation.trace? then "<pre>#{utils.escape expectation.trace?.stack}</pre>" else ''}
     </div>

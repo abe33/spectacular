@@ -34,6 +34,12 @@ transition(trans)
   -o-transition trans
   transition trans
 
+transform(trans)
+  -webkit-transform trans
+  -moz-transform trans
+  -o-transform trans
+  transform trans
+
 box-sizing(mode)
   -webkit-box-sizing mode
   -moz-box-sizing mode
@@ -60,7 +66,7 @@ text-shadow()
   text-shadow arguments
 
 *
-  box-sizing border-box
+  box-sizing(border-box)
   -webkit-font-smoothing antialiased
 
 body
@@ -194,6 +200,7 @@ html
     position relative
     padding 8px 8px 8px 80px
     border-bottom 1px solid blue_gray(0.1)
+    counter-increment example
 
     h4
     h5
@@ -202,6 +209,56 @@ html
       font-weight 300
     h4
       margin-bottom 4px
+
+    pre
+      color dark_blue(1)
+      margin 0
+      margin-top 6px
+      padding 8px
+      background #efefef
+      border 1px solid #e4e4e4
+      overflow hidden
+      transition(all 0.25s ease-in)
+
+      &+pre
+        margin-top 0
+        border-top 0
+
+      ins
+      del
+        display inline
+        text-decoration none
+
+      ins
+        background success(0.2)
+        border 1px solid success(0.6)
+
+      del
+        background failure(0.2)
+        border 1px solid failure(0.6)
+
+    &:hover:before
+      background rgba(255,255,255,0.1)
+      transition(all 0.15s ease-in)
+
+    &:before
+      content '#' attr(data-id)
+      position absolute
+      font-weight bold
+      display block
+      width 68px
+      height 100%
+      padding 8px 8px
+      top 0
+      left 0
+      text-align right
+      font-size 1.1em
+      margin-left: -78px
+      color rgba(255,255,255,0.3)
+      z-index 1
+      border-radius(4px)
+      box-sizing(border-box)
+      transition(all 0.45s ease-in)
 
     &.success.closed
     &.pending.closed
@@ -314,33 +371,6 @@ html
         color blue_gray(1)
         left 4px
         top 4px
-
-    pre
-      color dark_blue(1)
-      margin 0
-      margin-top 6px
-      padding 8px
-      background #efefef
-      border 1px solid #e4e4e4
-      overflow hidden
-      transition(all 0.4s ease-in)
-
-      &+pre
-        margin-top 0
-        border-top 0
-
-      ins
-      del
-        display inline
-        text-decoration none
-
-      ins
-        background success(0.2)
-        border 1px solid success(0.6)
-
-      del
-        background failure(0.2)
-        border 1px solid failure(0.6)
 
   > header
     color blue_gray(1)

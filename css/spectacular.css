@@ -160,6 +160,7 @@ html.failure body #reporter > header h1 {
   position: relative;
   padding: 8px 8px 8px 80px;
   border-bottom: 1px solid rgba(86,122,120,0.1);
+  counter-increment: example;
 }
 #reporter .example h4,
 #reporter .example h5 {
@@ -169,6 +170,71 @@ html.failure body #reporter > header h1 {
 }
 #reporter .example h4 {
   margin-bottom: 4px;
+}
+#reporter .example pre {
+  color: #163a4c;
+  margin: 0;
+  margin-top: 6px;
+  padding: 8px;
+  background: #efefef;
+  border: 1px solid #e4e4e4;
+  overflow: hidden;
+  -webkit-transition: all 0.25s ease-in;
+  -moz-transition: all 0.25s ease-in;
+  -o-transition: all 0.25s ease-in;
+  transition: all 0.25s ease-in;
+}
+#reporter .example pre+pre {
+  margin-top: 0;
+  border-top: 0;
+}
+#reporter .example pre ins,
+#reporter .example pre del {
+  display: inline;
+  text-decoration: none;
+}
+#reporter .example pre ins {
+  background: rgba(100,180,50,0.2);
+  border: 1px solid rgba(100,180,50,0.6);
+}
+#reporter .example pre del {
+  background: rgba(255,40,20,0.2);
+  border: 1px solid rgba(255,40,20,0.6);
+}
+#reporter .example:hover:before {
+  background: rgba(255,255,255,0.1);
+  -webkit-transition: all 0.15s ease-in;
+  -moz-transition: all 0.15s ease-in;
+  -o-transition: all 0.15s ease-in;
+  transition: all 0.15s ease-in;
+}
+#reporter .example:before {
+  content: '#' attr(data-id);
+  position: absolute;
+  font-weight: bold;
+  display: block;
+  width: 68px;
+  height: 100%;
+  padding: 8px 8px;
+  top: 0;
+  left: 0;
+  text-align: right;
+  font-size: 1.1em;
+  margin-left: -78px;
+  color: rgba(255,255,255,0.3);
+  z-index: 1;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all 0.45s ease-in;
+  -moz-transition: all 0.45s ease-in;
+  -o-transition: all 0.45s ease-in;
+  transition: all 0.45s ease-in;
 }
 #reporter .example.success.closed pre,
 #reporter .example.pending.closed pre {
@@ -294,36 +360,6 @@ html.failure body #reporter > header h1 {
   color: #567a78;
   left: 4px;
   top: 4px;
-}
-#reporter .example pre {
-  color: #163a4c;
-  margin: 0;
-  margin-top: 6px;
-  padding: 8px;
-  background: #efefef;
-  border: 1px solid #e4e4e4;
-  overflow: hidden;
-  -webkit-transition: all 0.4s ease-in;
-  -moz-transition: all 0.4s ease-in;
-  -o-transition: all 0.4s ease-in;
-  transition: all 0.4s ease-in;
-}
-#reporter .example pre+pre {
-  margin-top: 0;
-  border-top: 0;
-}
-#reporter .example pre ins,
-#reporter .example pre del {
-  display: inline;
-  text-decoration: none;
-}
-#reporter .example pre ins {
-  background: rgba(100,180,50,0.2);
-  border: 1px solid rgba(100,180,50,0.6);
-}
-#reporter .example pre del {
-  background: rgba(255,40,20,0.2);
-  border: 1px solid rgba(255,40,20,0.6);
 }
 #reporter > header {
   color: #567a78;
