@@ -2,9 +2,9 @@
 #### Promise
 
 class spectacular.Promise
-  @unit: ->
+  @unit: (value=0) ->
     promise = new spectacular.Promise
-    promise.resolve 0
+    promise.resolve value
     promise
 
   @all: (promises) ->

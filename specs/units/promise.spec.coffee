@@ -10,11 +10,18 @@ describe spectacular.Promise, ->
       whenPass ->
         itsReturn -> should exist
 
-        describe 'the returned promise', ->
+        context 'the returned promise', ->
           subject 'promise', -> spectacular.Promise.unit()
 
           it -> should be 'fulfilled'
           its 'value', -> should equal 0
+
+        context 'when called with a value', ->
+          subject 'promise', -> spectacular.Promise.unit('foo')
+
+          it -> should be 'fulfilled'
+          its 'value', -> should equal 'foo'
+
 
     describe '.all', ->
       it -> should exist
