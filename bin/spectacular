@@ -26,6 +26,7 @@ options = {
   showSource: true,
   matchersRoot: './specs/support/matchers',
   helpersRoot: './specs/support/helpers',
+  fixturesRoot: './specs/support/fixtures',
   noMatchers: false,
   noHelpers: false,
   noColors: false,
@@ -57,6 +58,9 @@ while (args.length) {
       break;
     case '--helpers':
       options.helpersRoot = options.shift();
+      break;
+    case '--fixtures':
+      options.fixturesRoot = options.shift();
       break;
     case '--trace':
     case '-t':

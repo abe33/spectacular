@@ -17,6 +17,7 @@ options =
   showSource: true
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
+  fixturesRoot: './specs/support/fixtures'
   noMatchers: false
   noHelpers: false
   noColors: false
@@ -36,6 +37,7 @@ while args.length
     when '--no-colors' then options.noColors = true
     when '--matchers', '-m' then options.matchersRoot = options.shift()
     when '--helpers' then options.helpersRoot = options.shift()
+    when '--fixtures' then options.fixturesRoot = options.shift()
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
     when '--no-source' then options.showSource = false

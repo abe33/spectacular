@@ -4,13 +4,14 @@ class spectacular.Environment
     before after given subject its itsInstance
     itsReturn withParameters fail pending success
     skip should shouldnt dependsOn spyOn the
-    withArguments whenPass'
+    withArguments whenPass fixture'
 
   constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
+    @registerFixtureHandler 'json', @handleJSONFixture
 
   run: => @runner.run()
 
@@ -218,6 +219,34 @@ class spectacular.Environment
         new Error
       )
     )
+
+  registerFixtureHandler: (ext, proc) ->
+    @fixtureHandlers ||= {}
+    @fixtureHandlers[ext] = proc
+
+  handleFixture: (ext, content) ->
+    if ext of @fixtureHandlers
+      @fixtureHandlers[ext] content
+    else
+      spectacular.Promise.unit(content)
+
+  handleJSONFixture: (content) ->
+    spectacular.Promise.unit JSON.parse content
+
+  fixture: (file, options={}) =>
+    name = options.as or 'fixture'
+    env = this
+    envOptions = @options
+    ext = file.split('.')[-1..][0]
+    @before (async) ->
+      p = "#{envOptions.fixturesRoot}/#{file}"
+      envOptions.loadFile(p)
+      .then (fileContent) =>
+        env.handleFixture(ext, fileContent).then (result) =>
+          @[name] = result
+          async.resolve()
+      .fail (reason) ->
+        async.reject reason
 
   shouldnt: (matcher) => @should matcher, true
 
