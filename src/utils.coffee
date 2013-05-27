@@ -112,8 +112,8 @@ spectacular.utils.diff = (o, n) ->
 spectacular.utils.stringDiff = (o, n) ->
   return utils.TAGS.delStart + o + utils.TAGS.delEnd if not n? or n.length is 0
   return utils.TAGS.insStart + n + utils.TAGS.insEnd if not o? or o.length is 0
-  o = o.replace(/\s+$/, "")
-  n = n.replace(/\s+$/, "")
+  o = String(o).replace(/\s+$/, "")
+  n = String(n).replace(/\s+$/, "")
   out = utils.diff((if o is "" then [] else o.split(/\s+/)), (if n is "" then [] else n.split(/\s+/)))
   str = ""
   oSpace = o.match(/\s+/g)
@@ -240,7 +240,7 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
 
 
 spectacular.utils.compare = (actual, value, matcher, noMessage=false) ->
-  switch typeof actual
+  switch typeof value
     when 'object'
       if utils.isArray actual
         unless noMessage
