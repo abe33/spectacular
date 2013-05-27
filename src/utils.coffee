@@ -2,6 +2,19 @@ utils = spectacular.utils ||= {}
 
 spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
 
+spectacular.utils.escapeDiff = (s) ->
+  utils.escape(
+    s
+    .replace(/<del>/g, '[[del]]')
+    .replace(/<\/del>/g, '[[/del]]')
+    .replace(/<ins>/g, '[[ins]]')
+    .replace(/<\/ins>/g, '[[/ins]]')
+  )
+  .replace(/\[\[del\]\]/g, '<del>')
+  .replace(/\[\[\/del\]\]/g, '</del>')
+  .replace(/\[\[ins\]\]/g, '<ins>')
+  .replace(/\[\[\/ins\]\]/g, '</ins>')
+
 spectacular.utils.escape = (s) ->
   if isCommonJS
     s
