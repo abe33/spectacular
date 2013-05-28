@@ -143,5 +143,21 @@ describe after, ->
 
   environmentMethod('after').cannotBeCalledInsideIt()
 
+describe withParameters, ->
+  environmentMethod('withParameters').cannotBeCalledInsideIt()
 
+describe withArguments, ->
+  environmentMethod('withArguments').cannotBeCalledInsideIt()
+
+describe dependsOn, ->
+  environmentMethod('dependsOn').cannotBeCalledInsideIt()
+
+describe whenPass, ->
+  environmentMethod('whenPass').cannotBeCalledInsideIt()
+
+describe fixture, ->
+  environmentMethod('fixture').cannotBeCalledInsideIt()
+
+describe spyOn, ->
+  environmentMethod('spyOn').cannotBeCalledOutsideIt()
 

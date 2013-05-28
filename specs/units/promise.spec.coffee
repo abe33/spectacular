@@ -10,11 +10,18 @@ describe spectacular.Promise, ->
       whenPass ->
         itsReturn -> should exist
 
-        describe 'the returned promise', ->
+        context 'the returned promise', ->
           subject 'promise', -> spectacular.Promise.unit()
 
           it -> should be 'fulfilled'
           its 'value', -> should equal 0
+
+        context 'when called with a value', ->
+          subject 'promise', -> spectacular.Promise.unit('foo')
+
+          it -> should be 'fulfilled'
+          its 'value', -> should equal 'foo'
+
 
     describe '.all', ->
       it -> should exist
@@ -32,3 +39,51 @@ describe spectacular.Promise, ->
 
     describe '::isPending', ->
       itsReturn -> should equal true
+
+    context 'when chained using then', ->
+      given 'firstPromise', -> new spectacular.Promise
+      given 'secondPromise', -> @firstPromise.then ->
+      given 'thirdPromise', -> @secondPromise.then ->
+
+      context 'when the first promise is fulfilled', ->
+        before -> @firstPromise.resolve()
+
+        the 'secondPromise', -> @secondPromise.should be 'fulfilled'
+        the 'thirdPromise', -> @thirdPromise.should be 'fulfilled'
+
+      context 'when the first promise is rejected', ->
+        before -> @firstPromise.reject('message')
+
+        the 'secondPromise', -> @secondPromise.should be 'rejected'
+        the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+
+      context 'and one of the factory return a promise', ->
+        given 'firstPromise', -> new spectacular.Promise
+        given 'returnedPromise', -> new spectacular.Promise
+        given 'secondPromise', -> @firstPromise.then => @returnedPromise
+        given 'thirdPromise', -> @secondPromise.then ->
+
+        context 'when the first promise is fulfilled', ->
+          before -> @firstPromise.resolve()
+
+          the 'secondPromise', -> @secondPromise.shouldnt be 'fulfilled'
+          the 'thirdPromise', -> @thirdPromise.should be 'pending'
+
+          context 'and the returned promise is fulfilled', ->
+            before -> @returnedPromise.resolve()
+
+            the 'secondPromise', -> @secondPromise.should be 'fulfilled'
+            the 'thirdPromise', -> @thirdPromise.should be 'fulfilled'
+
+          context 'and the returned promise is rejected', ->
+            before -> @returnedPromise.reject('message')
+
+            the 'secondPromise', -> @secondPromise.should be 'rejected'
+            the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+
+        context 'when the first promise is rejected', ->
+          before -> @firstPromise.reject('message')
+
+          the 'secondPromise', -> @secondPromise.should be 'rejected'
+          the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+

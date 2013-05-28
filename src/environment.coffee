@@ -4,13 +4,14 @@ class spectacular.Environment
     before after given subject its itsInstance
     itsReturn withParameters fail pending success
     skip should shouldnt dependsOn spyOn the
-    withArguments whenPass'
+    withArguments whenPass fixture'
 
   constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
+    @registerFixtureHandler 'json', @handleJSONFixture
 
   run: => @runner.run()
 
@@ -151,35 +152,49 @@ class spectacular.Environment
       throw error if error?
 
 
-  xdescribe: (subject, block) =>
+  xdescribe: (subject, options, block) =>
     @notInsideIt 'xdescribe'
+
+    [options, block] = [block, options] if typeof options is 'function'
 
     describe subject, -> it -> pending()
 
   context: (subject, options, block) =>
     @notInsideIt 'context'
+
     @describe subject, options, block
-  xcontext: =>
+
+  xcontext: (subject, options, block)  =>
     @notInsideIt 'xcontext'
-    @xdescribe()
+
+    @xdescribe subject, options, block
 
   withParameters: (args...) =>
     @notInsideIt 'withParameters'
 
     @given 'parameters', -> args
 
-  withArguments: => @withParameters.apply this, arguments
+  withArguments: =>
+    @notInsideIt 'withArguments'
+
+    @withParameters.apply this, arguments
 
   dependsOn: (spec) =>
+    @notInsideIt 'dependsOn'
+
     @currentExampleGroup.ownDependencies.push spec
 
   whenPass: (block) =>
+    @notInsideIt 'whenPass'
+
     previousContext = @currentExampleGroup
     @context '', =>
       @currentExampleGroup.ownCascading = previousContext
       block()
 
   spyOn: (obj, method) =>
+    @notOutsideIt 'spyOn'
+
     oldMethod = obj[method]
     context = @currentExample.context
 
@@ -205,6 +220,36 @@ class spectacular.Environment
     obj[method] = spy
     spy
 
+  fixture: (file, options={}) =>
+    @notInsideIt 'fixture'
+
+    name = options.as or 'fixture'
+    env = this
+    envOptions = @options
+    ext = file.split('.')[-1..][0]
+    @before (async) ->
+      p = "#{envOptions.fixturesRoot}/#{file}"
+      envOptions.loadFile(p)
+      .then (fileContent) =>
+        env.handleFixture(ext, fileContent).then (result) =>
+          @[name] = result
+          async.resolve()
+      .fail (reason) ->
+        async.reject reason
+
+  registerFixtureHandler: (ext, proc) ->
+    @fixtureHandlers ||= {}
+    @fixtureHandlers[ext] = proc
+
+  handleFixture: (ext, content) ->
+    if ext of @fixtureHandlers
+      @fixtureHandlers[ext] content
+    else
+      spectacular.Promise.unit(content)
+
+  handleJSONFixture: (content) ->
+    spectacular.Promise.unit JSON.parse content
+
   should: (matcher, neg=false) =>
     @notOutsideIt 'should'
 
@@ -220,5 +265,6 @@ class spectacular.Environment
     )
 
   shouldnt: (matcher) => @should matcher, true
+
 
   toString: -> '[spectacular Environment]'

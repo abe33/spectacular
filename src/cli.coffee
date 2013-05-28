@@ -72,13 +72,17 @@ getReporter = (options) ->
   reporter.on 'report', (event) -> util.print event.target
   reporter
 
-loadFile = (options) -> (file) ->
-  Q.fcall ->
-    fileContent = fs.readFileSync(file).toString()
-    if options.coffee and file.indexOf('.coffee') isnt -1
-      {compile} = require 'coffee-script'
-      fileContent = compile fileContent, bare: true
-    fileContent
+loadFile = (options) ->
+  cache = {}
+  (file) ->
+    Q.fcall ->
+      return cache[file] if file of cache
+
+      fileContent = fs.readFileSync(file).toString()
+      if options.coffee and file.indexOf('.coffee') isnt -1
+        {compile} = require 'coffee-script'
+        fileContent = compile fileContent, bare: true
+      cache[file] = fileContent
 
 exports.run = (options) ->
   loadStartedAt = null
