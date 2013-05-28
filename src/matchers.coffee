@@ -59,11 +59,14 @@ spectacular.matchers.be = (value) ->
         state = utils.findStateMethodOrProperty actual, value
 
         if state?
-          @message = "Expected #{actual}.#{state}#{notText} to be true but was #{actual[value]}"
-          result = if typeof actual[state] is 'function'
-            actual[state]()
+          if typeof actual[state] is 'function'
+            result = actual[state]()
+            r = if notText.length is 0 then result else not result
+            @message = "Expected #{actual}.#{state}()#{notText} to be true #{if r then 'and' else 'but'} was #{actual[state]()}"
           else
-            actual[state]
+            result = actual[state]
+            r = if notText.length is 0 then result else not result
+            @message = "Expected #{actual}.#{state}#{notText} to be true #{if r then 'and' else 'but'} was #{actual[state]}"
 
         else
           @message = "Expected #{actual} to be #{value} but the state can't be found"
