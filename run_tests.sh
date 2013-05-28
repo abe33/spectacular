@@ -6,9 +6,9 @@ else
   cake compile
   if [ $COVERAGE ]
     then
-      istanbul --hook-run-in-context cover bin/spectacular bin/spectacular -- --coffee --profile specs/**/*.coffee
+      istanbul --hook-run-in-context cover bin/spectacular -- --coffee --profile specs/**/*.coffee
   else
-      bin/spectacular bin/spectacular --coffee --profile specs/**/*.coffee
+      bin/spectacular --coffee --profile specs/**/*.coffee
   fi
 
 fi
