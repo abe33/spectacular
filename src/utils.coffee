@@ -135,8 +135,8 @@ spectacular.utils.diff = (o, n) ->
   n: n
 
 spectacular.utils.stringDiff = (o, n) ->
-  return utils.TAGS.delStart + o + utils.TAGS.delEnd if not n? or n.length is 0
-  return utils.TAGS.insStart + n + utils.TAGS.insEnd if not o? or o.length is 0
+  return utils.del o if not n? or n.length is 0
+  return utils.ins n if not o? or o.length is 0
   o = String(o).replace(/\s+$/, "")
   n = String(n).replace(/\s+$/, "")
   out = utils.diff((if o is "" then [] else o.split(/\s+/)), (if n is "" then [] else n.split(/\s+/)))
@@ -155,24 +155,24 @@ spectacular.utils.stringDiff = (o, n) ->
     i = 0
 
     while i < out.o.length
-      str += utils.TAGS.delStart + utils.escape(out.o[i]) + oSpace[i] + utils.TAGS.delEnd
+      str += utils.del utils.escape(out.o[i]) + oSpace[i]
       i++
   else
     unless out.n[0].text?
       n = 0
       while n < out.o.length and not out.o[n].text?
-        str += utils.TAGS.delStart + utils.escape(out.o[n]) + oSpace[n] + utils.TAGS.delEnd
+        str += utils.del utils.escape(out.o[n]) + oSpace[n]
         n++
     i = 0
 
     while i < out.n.length
       unless out.n[i].text?
-        str += utils.TAGS.insStart + utils.escape(out.n[i]) + nSpace[i] + utils.TAGS.insEnd
+        str += utils.ins utils.escape(out.n[i]) + nSpace[i]
       else
         pre = ""
         n = out.n[i].row + 1
         while n < out.o.length and not out.o[n].text?
-          pre += utils.TAGS.delStart + utils.escape(out.o[n]) + oSpace[n] + utils.TAGS.delEnd
+          pre += utils.del utils.escape(out.o[n]) + oSpace[n]
           n++
         str += "" + out.n[i].text + nSpace[i] + pre
       i++
@@ -204,8 +204,8 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
 
   unless typeLeft is typeRight
     s = ''
-    s += utils.TAGS.delStart + utils.inspect(left, depth) + utils.TAGS.delEnd if left?
-    s += utils.TAGS.insStart + utils.inspect(right, depth) + utils.TAGS.insEnd if right?
+    s += utils.del utils.inspect(left, depth) if left?
+    s += utils.ins utils.inspect(right, depth) if right?
     return s
 
   switch typeLeft
@@ -213,8 +213,8 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
     when 'number', 'boolean' then utils.stringDiff left.toString(), right.toString()
     when 'object'
       unless utils.isArray(left) is utils.isArray(right)
-        return utils.TAGS.delStart + utils.inspect(left, depth) + utils.TAGS.delEnd +
-               utils.TAGS.insStart + utils.inspect(right, depth) + utils.TAGS.insEnd
+        return utils.del(utils.inspect left, depth) +
+               utils.ins(utils.inspect right, depth)
 
       ind = utils.fill (depth) * 2
       prevInd = utils.fill (depth - 1) * 2
@@ -233,9 +233,9 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
           key = k + ': '
           p = ''
           unless right[k]
-            p = utils.TAGS.delStart + "#{key}#{left[k]}" + utils.TAGS.delEnd
+            p = utils.del "#{key}#{left[k]}"
           else unless left[k]
-            p = utils.TAGS.insStart + "#{key}#{right[k]}" + utils.TAGS.insEnd
+            p = utils.ins "#{key}#{right[k]}"
           else
             p = key + utils.objectDiff(left[k], right[k], depth + 1)
 
