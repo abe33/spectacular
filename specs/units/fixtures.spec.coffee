@@ -2,7 +2,7 @@ describe fixture, ->
   it -> should exist
 
   context 'for a json file', ->
-    context 'inside a context', ->
+    context 'without a name', ->
       fixture 'sample.json'
 
       subject -> @fixture
@@ -18,7 +18,7 @@ describe fixture, ->
         number: 10
         boolean: true
 
-    context 'inside a context with a name', ->
+    context 'with a name', ->
       fixture 'sample.json', as: 'sample'
 
       subject -> @sample
