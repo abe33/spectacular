@@ -2,6 +2,20 @@ utils = spectacular.utils ||= {}
 
 spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
 
+spectacular.utils.keys = (o) -> k for k of o
+
+spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'
+
+spectacular.utils.fill = (l=4, s=' ') ->
+  o = ''
+  o = "#{o}#{s}" while o.length < l
+  o
+
+spectacular.utils.uniq = (arr) ->
+  newArr = []
+  newArr.push v for v in arr when v not in newArr
+  newArr
+
 spectacular.utils.escapeDiff = (s) ->
   utils.escape(
     s
@@ -16,15 +30,20 @@ spectacular.utils.escapeDiff = (s) ->
   .replace(/\[\[\/ins\]\]/g, '</ins>')
 
 spectacular.utils.escape = (s) ->
-  if isCommonJS
-    s
-  else
-    n = s
-    n = n.replace(/&/g, "&amp;")
-    n = n.replace(/</g, "&lt;")
-    n = n.replace(/>/g, "&gt;")
-    n = n.replace(/"/g, "&quot;")
-    n
+  n = s
+  n = n.replace(/&/g, '&amp;')
+  n = n.replace(/</g, '&lt;')
+  n = n.replace(/>/g, '&gt;')
+  n = n.replace(/"/g, '&quot;')
+  n
+
+spectacular.utils.unescape = (s) ->
+  n = s
+  n = n.replace(/&amp;/g, '&')
+  n = n.replace(/&lt;/g, '<')
+  n = n.replace(/&gt;/g, '>')
+  n = n.replace(/&quot;/g, '"')
+  n
 
 spectacular.utils.indent = (string, ind=4) ->
   s = ''
@@ -51,6 +70,12 @@ else
   insStart: '<ins>'
   insEnd: '</ins>'
   space: ''
+
+spectacular.utils.ins = (str) ->
+  utils.TAGS.insStart + str + utils.TAGS.insEnd
+
+spectacular.utils.del = (str) ->
+  utils.TAGS.delStart + str + utils.TAGS.delEnd
 
 spectacular.utils.diff = (o, n) ->
   ns = new Object()
@@ -153,26 +178,6 @@ spectacular.utils.stringDiff = (o, n) ->
       i++
   str
 
-spectacular.utils.keys = (o) -> k for k of o
-
-spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'
-
-spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
-
-spectacular.utils.fill = (l=4, s=' ') ->
-  o = ''
-  o = "#{o}#{s}" while o.length < l
-  o
-
-spectacular.utils.indent = (string, ind=4) ->
-  s = utils.fill ind
-  "#{string.replace /\n/g, "\n#{s}"}"
-
-spectacular.utils.uniq = (arr) ->
-  newArr = []
-  newArr.push v for v in arr when v not in newArr
-  newArr
-
 spectacular.utils.inspect = (obj, depth=1) ->
   switch typeof obj
     when 'string' then "'#{obj}'"
@@ -237,8 +242,6 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
           '\n' + ind + p
         s += a.join(',') + "\n#{prevInd}}"
 
-
-
 spectacular.utils.compare = (actual, value, matcher, noMessage=false) ->
   switch typeof value
     when 'object'
@@ -279,3 +282,5 @@ spectacular.utils.findStateMethodOrProperty = (obj, state) ->
     snakedVersion
   else
     null
+
+v._name = k for k,v of utils
