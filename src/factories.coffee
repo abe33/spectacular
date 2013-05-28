@@ -27,7 +27,7 @@ class spectacular.factories.Set
       instance[@property] = @value
 
 class spectacular.factories.Trait
-  @EXPOSED_PROPERTIES = 'set'.split(/\s+/g)
+  @EXPOSED_PROPERTIES = 'set createWith'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
@@ -35,6 +35,8 @@ class spectacular.factories.Trait
 
   set: (property, value) =>
     @setters.push new spectacular.factories.Set property, value
+
+  createWith: (@arguments...) =>
 
   applySet: (instance) ->
     @setters.forEach (setter) -> setter.apply instance
@@ -54,7 +56,7 @@ class spectacular.factories.Trait
         delete _global[k]
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
-  @EXPOSED_PROPERTIES = 'set trait'.split(/\s+/g)
+  @EXPOSED_PROPERTIES = 'set trait createWith'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name
@@ -67,7 +69,10 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     trait.unload()
 
   build: (traits, options={}) ->
-    instance = build @class
+    args = @traits[trait].arguments for trait in traits
+    args ||= @arguments or []
+
+    instance = build @class, args
     @applySet instance
     @traits[trait].applySet instance for trait in traits
     instance[k] = v for k,v of options
