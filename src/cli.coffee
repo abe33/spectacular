@@ -82,7 +82,7 @@ loadFile = (options) ->
       if options.coffee and file.indexOf('.coffee') isnt -1
         {compile} = require 'coffee-script'
         fileContent = compile fileContent, bare: true
-      fileContent
+      cache[file] = fileContent
 
 exports.run = (options) ->
   loadStartedAt = null
