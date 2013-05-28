@@ -75,10 +75,10 @@ class spectacular.Example
 
   constructor: (@block, @ownDescription='', @parent) ->
     @noSpaceBeforeDescription = true if @ownDescription is ''
-    @ownBeforeHooks = []
-    @ownAfterHooks = []
-    @ownDependencies = []
-    @ownCascading = null
+    @beforeHooks = []
+    @afterHooks = []
+    @dependencies = []
+    @cascading = null
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
   @getter 'finished', -> @examplePromise?.isResolved()
@@ -251,11 +251,11 @@ class spectacular.ExampleGroup extends spectacular.Example
             original = subject
             subject = -> original.apply owner, arguments
 
-          @ownSubjectBlock = => subject
+          @subjectBlock = => subject
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
           type = @subjectBlock?()
-          @ownSubjectBlock = =>
+          @subjectBlock = =>
             if type
               owner = build type, @parameters or []
               -> owner[desc.replace '::', ''].apply owner, arguments
@@ -265,7 +265,7 @@ class spectacular.ExampleGroup extends spectacular.Example
       else
         @noSpaceBeforeDescription = true
         subject = desc
-        @ownSubjectBlock = => subject
+        @subjectBlock = => subject
 
         desc = subject?.name or subject?._name or subject?.toString() or ''
 
