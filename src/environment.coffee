@@ -152,35 +152,49 @@ class spectacular.Environment
       throw error if error?
 
 
-  xdescribe: (subject, block) =>
+  xdescribe: (subject, options, block) =>
     @notInsideIt 'xdescribe'
+
+    [options, block] = [block, options] if typeof options is 'function'
 
     describe subject, -> it -> pending()
 
   context: (subject, options, block) =>
     @notInsideIt 'context'
+
     @describe subject, options, block
-  xcontext: =>
+
+  xcontext: (subject, options, block)  =>
     @notInsideIt 'xcontext'
-    @xdescribe()
+
+    @xdescribe subject, options, block
 
   withParameters: (args...) =>
     @notInsideIt 'withParameters'
 
     @given 'parameters', -> args
 
-  withArguments: => @withParameters.apply this, arguments
+  withArguments: =>
+    @notInsideIt 'withArguments'
+
+    @withParameters.apply this, arguments
 
   dependsOn: (spec) =>
+    @notInsideIt 'dependsOn'
+
     @currentExampleGroup.ownDependencies.push spec
 
   whenPass: (block) =>
+    @notInsideIt 'whenPass'
+
     previousContext = @currentExampleGroup
     @context '', =>
       @currentExampleGroup.ownCascading = previousContext
       block()
 
   spyOn: (obj, method) =>
+    @notOutsideIt 'spyOn'
+
     oldMethod = obj[method]
     context = @currentExample.context
 
@@ -206,34 +220,9 @@ class spectacular.Environment
     obj[method] = spy
     spy
 
-  should: (matcher, neg=false) =>
-    @notOutsideIt 'should'
-
-    return unless matcher?
-    @currentExample.result.addExpectation(
-      new spectacular.Expectation(
-        @currentExample,
-        @currentExample.subject,
-        matcher,
-        neg,
-        new Error
-      )
-    )
-
-  registerFixtureHandler: (ext, proc) ->
-    @fixtureHandlers ||= {}
-    @fixtureHandlers[ext] = proc
-
-  handleFixture: (ext, content) ->
-    if ext of @fixtureHandlers
-      @fixtureHandlers[ext] content
-    else
-      spectacular.Promise.unit(content)
-
-  handleJSONFixture: (content) ->
-    spectacular.Promise.unit JSON.parse content
-
   fixture: (file, options={}) =>
+    @notInsideIt 'fixture'
+
     name = options.as or 'fixture'
     env = this
     envOptions = @options
@@ -248,6 +237,34 @@ class spectacular.Environment
       .fail (reason) ->
         async.reject reason
 
+  registerFixtureHandler: (ext, proc) ->
+    @fixtureHandlers ||= {}
+    @fixtureHandlers[ext] = proc
+
+  handleFixture: (ext, content) ->
+    if ext of @fixtureHandlers
+      @fixtureHandlers[ext] content
+    else
+      spectacular.Promise.unit(content)
+
+  handleJSONFixture: (content) ->
+    spectacular.Promise.unit JSON.parse content
+
+  should: (matcher, neg=false) =>
+    @notOutsideIt 'should'
+
+    return unless matcher?
+    @currentExample.result.addExpectation(
+      new spectacular.Expectation(
+        @currentExample,
+        @currentExample.subject,
+        matcher,
+        neg,
+        new Error
+      )
+    )
+
   shouldnt: (matcher) => @should matcher, true
+
 
   toString: -> '[spectacular Environment]'

@@ -99,3 +99,10 @@ exports.environmentMethod = (method) ->
         it ->
           m = spectacular.global[method]
           m()
+
+  cannotBeCalledOutsideIt: ->
+    runningSpecs('called outside it')
+    .shouldStopWith /called outside a it block/, ->
+      describe 'foo', ->
+        m = spectacular.global[method]
+        m()
