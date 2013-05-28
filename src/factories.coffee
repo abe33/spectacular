@@ -91,10 +91,3 @@ spectacular.factories.create = (name, traits..., options) ->
   throw new Error "missing factory #{name}" unless fct?
   fct.build(traits, options)
 
-spectacular.global.build = spectacular.factories.build
-spectacular.global.create = spectacular.factories.create
-spectacular.global.factory = spectacular.factories.factory
-
-build._name = 'build'
-create._name = 'create'
-factory._name = 'factory'

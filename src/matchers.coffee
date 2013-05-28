@@ -135,5 +135,3 @@ spectacular.matchers.haveBeenCalled =
       false
 
   with: (@arguments...) -> this
-
-spectacular.global[k] = v for k,v of spectacular.matchers

@@ -6,6 +6,11 @@ class spectacular.Environment
     skip should shouldnt dependsOn spyOn the
     withArguments whenPass fixture'
 
+  exposedSpectacularMethods:
+    build: spectacular.factories.build
+    factory: spectacular.factories.factory
+    create: spectacular.factories.create
+
   constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
@@ -16,6 +21,29 @@ class spectacular.Environment
   run: => @runner.run()
 
   load: =>
+    @loadObjectExtensions()
+    @loadSpectacularMethods()
+    @loadSpectacularMatchers()
+    @loadSpectacularEnvironment()
+
+  loadSpectacularEnvironment: ->
+    env = this
+    @exposedMethods.split(/\s+/g).forEach (k) =>
+      fn = -> env[k].apply env, arguments
+      fn._name = k
+      spectacular.global[k] = fn
+
+  loadSpectacularMatchers: ->
+    for k,v of spectacular.matchers
+      v._name = k
+      spectacular.global[k] = v
+
+  loadSpectacularMethods: ->
+    for k,v of @exposedSpectacularMethods
+      v._name = k
+      spectacular.global[k] = v
+
+  loadObjectExtensions: ->
     env = this
     Object.defineProperty Object.prototype, 'should', {
       writable: true,
@@ -42,11 +70,6 @@ class spectacular.Environment
         env.notOutsideIt 'should'
         @should matcher, true
     }
-
-    @exposedMethods.split(/\s+/g).forEach (k) =>
-      fn = -> env[k].apply env, arguments
-      fn._name = k
-      spectacular.global[k] = fn
 
   clone: ->
     optionsCopy = {}
