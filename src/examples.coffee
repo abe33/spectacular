@@ -199,6 +199,8 @@ class spectacular.Example
       next(e)
 
   executeBlock: ->
+    return @pending() unless @block?
+
     try
       if @acceptAsync @block
         async = new spectacular.AsyncPromise
@@ -272,7 +274,9 @@ class spectacular.ExampleGroup extends spectacular.Example
 
   run: ->
 
-  executeBlock: -> @block.call(this)
+  executeBlock: ->
+    return it(-> pending()) unless @block?
+    @block.call(this)
 
   toString: -> "[ExampleGroup(#{@description})]"
 
