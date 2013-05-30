@@ -41,6 +41,7 @@ class spectacular.StackFormatter
       return promise
 
     [match, p, file, h, e, line, c, column] = re.exec line
+    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
 
     @getLines(file, parseInt(line), parseInt(column)).then (lines) ->
       promise.resolve "\n#{lines}\n"
@@ -67,7 +68,7 @@ class spectacular.StackFormatter
     if line is content.length
       content.push line
     else
-      content.splice line, 0, "         |#{utils.padRight('^', column-2)}"
+      content.splice line, 0, "         | #{utils.padRight('^', column)}"
 
 
 ## ConsoleReporter

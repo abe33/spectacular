@@ -15,6 +15,8 @@ class spectacular.StackReporter
     line = stack.shift()
     [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
 
+    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
+
     @options.loadFile(url).then (data) =>
       try
 
@@ -25,6 +27,7 @@ class spectacular.StackReporter
     pre
 
   getLines: (fileContent, line, column) ->
+    console.log column
     line = parseInt line
     fileContent = fileContent.split('\n').map (l,i) =>
       " #{utils.padRight i + 1} | #{l}"
@@ -42,7 +45,7 @@ class spectacular.StackReporter
     if line is content.length
       content.push line
     else
-      content.splice line, 0, "      |#{utils.padRight('^', column)}"
+      content.splice line, 0, "      | #{utils.padRight('^', column)}"
 
 
 class spectacular.BrowserReporter
