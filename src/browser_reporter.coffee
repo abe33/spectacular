@@ -1,51 +1,32 @@
 utils = spectacular.utils
-class spectacular.StackReporter
+class spectacular.BrowserStackReporter extends spectacular.StackReporter
   @reports: 0
-  @files: {}
-  @filesLoader: {}
 
   constructor: (@error, @options) ->
-    @id = StackReporter.reports
-    StackReporter.reports += 1
+    @id = BrowserStackReporter.reports
+    BrowserStackReporter.reports += 1
 
   report: ->
     return '' unless @error.stack
-    pre = "<pre id='pre_#{@id}' class='loading'></pre>"
+
     stack = @error.stack.split('\n').filter (line) -> /( at |@)/g.test line
     line = stack.shift()
+
+    pre = """
+      <pre id='pre_#{@id}_source' class='loading'></pre>
+      <pre id='pre_#{@id}_stack'>#{utils.escape @formatStack stack}</pre>
+    """
+
     [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
 
     column = @error.columnNumber + 1 if not column? and @error.columnNumber?
 
-    @options.loadFile(url).then (data) =>
-      try
+    @getLines(url, parseInt(line), parseInt(column)).then (msg) =>
+      source = $("#pre_#{@id}_source")
+      source.html(msg).removeClass('loading')
+      source.height $("#pre_#{@id}").height()
 
-        $("#pre_#{@id}").html(@getLines data, line, column).removeClass 'loading'
-        $("#pre_#{@id}").height $("#pre_#{@id}").height()
-      catch e
-        console.log e
     pre
-
-  getLines: (fileContent, line, column) ->
-    console.log column
-    line = parseInt line
-    fileContent = fileContent.split('\n').map (l,i) =>
-      " #{utils.padRight i + 1} | #{l}"
-
-    @insertColumnLine fileContent, line, column if column?
-
-    startLine = Math.max(1, line - 3) - 1
-    endLine = Math.min(fileContent.length, line + 2) - 1
-    fileContent[line-1] = "<span class='line'>#{fileContent[line-1]}</span>"
-    lines = fileContent[startLine..endLine].join('\n')
-    lines
-
-  insertColumnLine: (content, line, column) ->
-    column = parseInt column
-    if line is content.length
-      content.push line
-    else
-      content.splice line, 0, "      | #{utils.padRight('^', column)}"
 
 
 class spectacular.BrowserReporter
@@ -78,13 +59,13 @@ class spectacular.BrowserReporter
           ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
             "<button class='toggle #{k}'>#{k}</button>"
           ).join '\n'
-
-        }</section>
+          }
+        </section>
         <section id="examples"></section>
         <footer></footer>
       </div>
     """)
-    @reporter.find('button').click (e) ->
+    @reporter.find('button.toggle').click (e) ->
       button = $(e.target)
       $('html').toggleClass "hide-#{button.text()}"
       button.toggleClass "off"
@@ -150,7 +131,6 @@ class spectacular.BrowserReporter
           <aside>
             <pre>#{utils.escapeDiff example.reason.message}</pre>
             #{ if example.reason? then @traceSource example.reason else ''}
-            #{ if example.reason? then "<pre>#{utils.escape example.reason?.stack}</pre>" else ''}
           </aside>
         </article>
       """
@@ -167,12 +147,11 @@ class spectacular.BrowserReporter
       <h5>#{expectation.description}</h5>
       <pre>#{utils.escapeDiff expectation.message}</pre>
       #{ if expectation.trace? then @traceSource expectation.trace else ''}
-      #{ if expectation.trace? then "<pre>#{utils.escape expectation.trace?.stack}</pre>" else ''}
     </div>
     """
 
   traceSource: (error) ->
-    (new spectacular.StackReporter error, @options).report()
+    (new spectacular.BrowserStackReporter error, @options).report()
 
   formatCounters: ->
     failures = @failures.length

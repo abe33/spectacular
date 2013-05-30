@@ -1,7 +1,7 @@
 
-## StackFormatter
+## StackReporter
 
-class spectacular.StackFormatter
+class spectacular.StackReporter
   constructor: (@error, @options) ->
 
   format: ->
@@ -169,7 +169,7 @@ class spectacular.ConsoleReporter
         when 'success' then '.'.green
 
   formatStack: (e) ->
-    new spectacular.StackFormatter(e, @options).format()
+    new spectacular.StackReporter(e, @options).format()
 
   formatExampleFailure: (example) ->
     promise = new spectacular.Promise
