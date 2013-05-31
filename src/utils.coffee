@@ -195,8 +195,15 @@ spectacular.utils.inspect = (obj, depth=1) ->
         "{\n#{
           ("#{ind}#{k}: #{utils.inspect v, depth + 1}" for k,v of obj).join ',\n'
         }\n#{ind[0..-3]}}"
+    when 'function'
+      if obj.name
+        obj.name
+      else if obj._name
+        obj._name
+      else
+        obj.toString()
     else
-      ''
+      'undefined'
 
 spectacular.utils.objectDiff = (left, right, depth=1) ->
   typeLeft = typeof left
