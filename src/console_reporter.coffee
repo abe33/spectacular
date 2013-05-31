@@ -184,7 +184,7 @@ class spectacular.ConsoleReporter
   formatExpectationFailure: (expectation) ->
     promise = new spectacular.Promise
 
-    res = @failureBadge expectation.description
+    res = @failureBadge expectation.fullDescription
     res += '\n'
     res += @formatMessage expectation.message
     if @options.trace
@@ -254,7 +254,7 @@ class spectacular.ConsoleReporter
       duration = "#{Math.floor(example.duration) / 1000} seconds"
       res += "    #{
         if @options.noColors then duration else duration.red
-      } #{example.description}\n"
+      } #{example.fullDescription}\n"
 
     "#{res}\n"
 

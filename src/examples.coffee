@@ -41,7 +41,8 @@ class spectacular.Expectation
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
-    @description = "#{@example.description} #{@matcher.description}"
+    @description = @matcher.description
+    @fullDescription = "#{@example.description} #{@matcher.description}"
 
 ## ExampleResult
 
@@ -90,6 +91,15 @@ class spectacular.Example
       @runEndedAt.getTime() - @runStartedAt.getTime()
     else
       0
+  @getter 'fullDescription', ->
+    expectationsDescriptions = @result.expectations.map (e) -> e.description
+    if expectationsDescriptions.length > 1
+      last = expectationsDescriptions.pop()
+      expectationsDescriptions = expectationsDescriptions.join(', ')
+      expectationsDescriptions += " and #{last}"
+    else
+      expectationsDescriptions = expectationsDescriptions.toString()
+    "#{@description} #{expectationsDescriptions}"
 
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
