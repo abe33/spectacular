@@ -131,6 +131,7 @@ spectacular.matchers.haveBeenCalled =
         @message = "Expected #{actual.spied}#{notText} to have been called"
         actual.argsForCall.length > 0
     else
+      @description = "should be a spy that have been called"
       @message = "Expected a spy but it was #{actual}"
       false
 
