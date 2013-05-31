@@ -62,33 +62,33 @@ exports.runEnvExpectingInterruption = (env, context, async) ->
 exports.runningSpecs = (desc) ->
 
   shouldFailWith: (re, block) ->
-    describe "running specs, with #{desc}", ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingNormalTermination @env, this, async
 
-      it ', should fail, status', -> @status.should be 1
-      it ', should fail, results', -> @results.should match re
+      specify 'the status', -> @status.should be 1
+      specify 'the results', -> @results.should match re
 
   shouldSucceedWith: (re, block) ->
-    describe "running specs, with #{desc}", ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingNormalTermination @env, this, async
 
-      it ', should succeed, status', -> @status.should be 0
-      it ', should succeed, results', -> @results.should match re
+      specify 'the status', -> @status.should be 0
+      specify 'the results', -> @results.should match re
 
   shouldStopWith: (re, block) ->
-    describe "running specs, with #{desc}", ->
+    describe "running specs with #{desc}", ->
       before (async) ->
         @env = createEnv block, this
         @reporter = createReporter @env, this, async
         runEnvExpectingInterruption @env, this, async
 
-      it ', should stop, error message', ->
+      specify 'the error message', ->
         @reason.message.should match re
 
 exports.environmentMethod = (method) ->
@@ -96,13 +96,9 @@ exports.environmentMethod = (method) ->
     runningSpecs('called inside it')
     .shouldFailWith /called inside a it block/, ->
       describe 'foo', ->
-        it ->
-          m = spectacular.global[method]
-          m()
+        it -> spectacular.global[method]()
 
   cannotBeCalledOutsideIt: ->
     runningSpecs('called outside it')
     .shouldStopWith /called outside a it block/, ->
-      describe 'foo', ->
-        m = spectacular.global[method]
-        m()
+      describe 'foo', -> spectacular.global[method]()
