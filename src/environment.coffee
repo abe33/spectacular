@@ -4,7 +4,7 @@ class spectacular.Environment
     before after given subject its itsInstance
     itsReturn withParameters fail pending success
     skip should shouldnt dependsOn spyOn the
-    withArguments whenPass fixture'
+    withArguments whenPass fixture specify'
 
   exposedSpectacularMethods:
     build: spectacular.factories.build
@@ -96,7 +96,13 @@ class spectacular.Environment
       new spectacular.Example block, msgOrBlock, @currentExampleGroup
     )
 
-  the: (msgOrBlock, block) => @it msgOrBlock, block
+  the: (msgOrBlock, block) =>
+    @notInsideIt 'the'
+    @it msgOrBlock, block
+
+  specify: (msgOrBlock, block) =>
+    @notInsideIt 'specify'
+    @it msgOrBlock, block
 
   xit: (msgOrBlock, block) =>
     @notInsideIt 'xit'
