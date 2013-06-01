@@ -198,44 +198,41 @@ class spectacular.BrowserReporter
 
   appendToBody: -> $('body').append @reporter
 
+cache = {}
+loaders = {}
+options.loadFile = (file) ->
 
-# This bootstrap the
-unless isCommonJS
-  cache = {}
-  loaders = {}
-  options.loadFile = (file) ->
+  promise = new spectacular.Promise
 
-    promise = new spectacular.Promise
+  if file of cache
+    setTimeout (-> promise.resolve cache[file]), 0
+    return promise
 
-    if file of cache
-      setTimeout (-> promise.resolve cache[file]), 0
-      return promise
+  if file of loaders
+    loaders[file].done (data) -> promise.resolve data
+    return promise
 
-    if file of loaders
-      loaders[file].done (data) -> promise.resolve data
-      return promise
+  loaders[file] = $.ajax
+    url: file
+    success: (data) ->
+      promise.resolve cache[file] = data
+    dataType: 'html'
 
-    loaders[file] = $.ajax
-      url: file
-      success: (data) ->
-        promise.resolve cache[file] = data
-      dataType: 'html'
+  promise
 
-    promise
+spectacular.env = new spectacular.Environment(options)
+spectacular.env.load()
+spectacular.env.runner.loadStartedAt = new Date()
+spectacular.env.runner.paths = paths
 
-  spectacular.env = new spectacular.Environment(options)
-  spectacular.env.load()
-  spectacular.env.runner.loadStartedAt = new Date()
-  spectacular.env.runner.paths = paths
+window.onload = ->
+  reporter = new spectacular.BrowserReporter(options)
+  reporter.appendToBody()
+  spectacular.env.runner.on 'result', reporter.onResult
+  spectacular.env.runner.on 'end', reporter.onEnd
+  spectacular.env.runner.loadEndedAt = new Date()
+  spectacular.env.runner.specsStartedAt = new Date()
 
-  window.onload = ->
-    reporter = new spectacular.BrowserReporter(options)
-    reporter.appendToBody()
-    spectacular.env.runner.on 'result', reporter.onResult
-    spectacular.env.runner.on 'end', reporter.onEnd
-    spectacular.env.runner.loadEndedAt = new Date()
-    spectacular.env.runner.specsStartedAt = new Date()
-
-    spectacular.env.run().fail (reason) ->
-      console.log reason
+  spectacular.env.run().fail (reason) ->
+    console.log reason
 
