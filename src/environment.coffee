@@ -17,6 +17,7 @@ class spectacular.Environment
     @currentExample = null
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
     @registerFixtureHandler 'json', @handleJSONFixture
+    @registerFixtureHandler 'html', @handleHTMLFixture
 
   run: => @runner.run()
 
@@ -25,6 +26,7 @@ class spectacular.Environment
     @loadSpectacularMethods()
     @loadSpectacularMatchers()
     @loadSpectacularEnvironment()
+    @loadJQuery()
 
   loadSpectacularEnvironment: ->
     env = this
@@ -42,6 +44,9 @@ class spectacular.Environment
     for k,v of @exposedSpectacularMethods
       v._name = k
       spectacular.global[k] = v
+
+  loadJQuery: ->
+    spectacular.global.$ = @options.jQuery
 
   loadObjectExtensions: ->
     env = this
@@ -272,12 +277,24 @@ class spectacular.Environment
 
   handleFixture: (ext, content) ->
     if ext of @fixtureHandlers
-      @fixtureHandlers[ext] content
+      @fixtureHandlers[ext].call this, content
     else
       spectacular.Promise.unit(content)
 
   handleJSONFixture: (content) ->
     spectacular.Promise.unit JSON.parse content
+
+  handleHTMLFixture: (content) ->
+    content = $(content)
+    parent = $('<div id="fixtures"></div>')
+    parent.append content
+    $('body').append parent
+
+    @currentExample.ownAfterHooks.push ->
+      parent.remove()
+
+    spectacular.Promise.unit content
+
 
   should: (matcher, neg=false) =>
     @notOutsideIt 'should'

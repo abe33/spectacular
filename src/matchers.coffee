@@ -58,6 +58,13 @@ spectacular.matchers.have = (count, label) ->
         @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} it don't belong to a type that can be handled"
         false
 
+spectacular.matchers.have.selector = (selector) ->
+  assert: (actual, notText) ->
+    @description = "should#{notText} have content that match '#{selector}'"
+
+    @message = "Expected '#{actual.html()}'#{notText} to have selector '#{selector}'"
+    actual.find(selector).length > 0
+
 spectacular.matchers.be = (value) ->
   assert: (actual, notText) ->
     @description = "should#{notText} be #{value}"

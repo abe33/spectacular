@@ -33,3 +33,13 @@ describe fixture, ->
         array: [10, 'foo', true]
         number: 10
         boolean: true
+
+  context 'for an html file', ->
+    fixture 'sample.html'
+
+    specify 'the dom', ->
+      $('body').should have.selector '#section'
+
+    specify 'the fixture', ->
+      @fixture.should exist
+      @fixture.should have.selector 'article'

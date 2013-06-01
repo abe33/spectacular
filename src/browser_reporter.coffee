@@ -206,6 +206,7 @@ class spectacular.BrowserReporter
 
 cache = {}
 loaders = {}
+options.jQuery = $
 options.loadFile = (file) ->
 
   promise = new spectacular.Promise

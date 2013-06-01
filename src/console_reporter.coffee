@@ -258,7 +258,7 @@ class spectacular.ConsoleReporter
   mapDescription: (desc, array, color) ->
     res = "    #{desc}\n\n"
     res += array.map((e, i) ->
-      "      #{i + 1}. #{e.description}"
+      "      #{i + 1}. #{e.fullDescription}"
     ).join('\n')
     res = res[color] unless @options.noColors
     "#{res}\n\n"

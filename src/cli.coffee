@@ -89,6 +89,7 @@ exports.run = (options) ->
   loadEndedAt = null
 
   options.loadFile = loadFile(options)
+  options.jQuery = require('jquery').create(null, '1.9')
 
   loadSpectacular(options)
   .then ->
