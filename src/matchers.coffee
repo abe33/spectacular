@@ -18,18 +18,21 @@ spectacular.matchers.exist =
 spectacular.matchers.have = (count, label) ->
   assert: (actual, notText) ->
     @description = "should#{notText} have #{count} #{label}"
+
     switch typeof actual
       when 'string'
         label ||= 'chars'
+        andOrBut = if notText.length is 0 then actual.length is count else actual.length isnt count
         @description = "should#{notText} have #{count} #{label}"
-        @message = "Expected string #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+        @message = "Expected string #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual.length}"
 
         actual.length is count
       when 'object'
         if utils.isArray actual
+          andOrBut = if notText.length is 0 then actual.length is count else actual.length isnt count
           label ||= 'items'
           @description = "should#{notText} have #{count} #{label}"
-          @message = "Expected array #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+          @message = "Expected array #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual.length}"
 
           actual.length is count
         else
@@ -39,16 +42,20 @@ spectacular.matchers.have = (count, label) ->
           @description = "should#{notText} have #{count} #{label}"
           if actual[label]
             if utils.isArray actual[label]
-              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but was #{actual.length}"
+              andOrBut = if notText.length is 0 then actual[label].length is count else actual[label].length isnt count
+              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual[label].length}"
               actual[label].length is count
             else
-              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but #{actual[label]} wasn't an array"
+              andOrBut = notText.length isnt 0
+              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} #{actual[label]} wasn't an array"
               false
           else
-            @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} but it didn't have a property named #{label}"
+            andOrBut = notText.length isnt 0
+            @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} it didn't have a property named #{label}"
             false
       else
-        @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} but it don't have a type that can be handled"
+        andOrBut = notText.length isnt 0
+        @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} it don't belong to a type that can be handled"
         false
 
 spectacular.matchers.be = (value) ->
@@ -62,14 +69,14 @@ spectacular.matchers.be = (value) ->
           if typeof actual[state] is 'function'
             result = actual[state]()
             r = if notText.length is 0 then result else not result
-            @message = "Expected #{actual}.#{state}()#{notText} to be true #{if r then 'and' else 'but'} was #{actual[state]()}"
+            @message = "Expected #{actual}.#{state}()#{notText} to be true #{utils.andOrBut r} was #{actual[state]()}"
           else
             result = actual[state]
             r = if notText.length is 0 then result else not result
-            @message = "Expected #{actual}.#{state}#{notText} to be true #{if r then 'and' else 'but'} was #{actual[state]}"
+            @message = "Expected #{actual}.#{state}#{notText} to be true #{utils.andOrBut r} was #{actual[state]}"
 
         else
-          @message = "Expected #{actual} to be #{value} but the state can't be found"
+          @message = "Expected #{actual} to be #{value} #{utils.andOrBut notText.length isnt 0} the state can't be found"
           result = false
 
         result
@@ -107,11 +114,14 @@ spectacular.matchers.throwAnError = (message) ->
       else
         actual.call @context
     catch error
-    @message = "Expected#{notText} to throw an error#{msg} but was #{error}"
-    if message?
+    result = if message?
       error? and message.test error.message
     else
       error?
+    r = if notText.length is 0 then result else not result
+    @message = "Expected#{notText} to throw an error#{msg} #{utils.andOrBut r} was #{error}"
+
+    result
 
   with: (@arguments...) -> this
   inContext: (@context) -> this
