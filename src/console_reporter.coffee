@@ -97,9 +97,6 @@ class spectacular.ConsoleReporter
       when 'errored' then @errors.push example
       when 'failure' then @failures.push example
 
-  hasFailures: ->
-    @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
-
   onEnd: (event) =>
     runner = event.target
     @buildResults(
