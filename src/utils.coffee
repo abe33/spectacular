@@ -183,6 +183,7 @@ spectacular.utils.inspect = (obj, depth=1) ->
     when 'string' then "'#{obj}'"
     when 'number', 'boolean' then "#{obj}"
     when 'object'
+      return 'null' unless obj?
       ind = utils.fill depth * 2
       if utils.isArray obj
 

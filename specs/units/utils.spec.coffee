@@ -53,3 +53,52 @@ describe spectacular.utils.stringDiff, ->
     withArguments 'foo'
 
     itsReturn -> should equal spectacular.utils.del 'foo'
+
+describe spectacular.utils.inspect, ->
+  context 'when called with a string', ->
+    withArguments 'foo'
+
+    itsReturn -> should equal "'foo'"
+
+  context 'when called with a number', ->
+    withArguments 10
+
+    itsReturn -> should equal '10'
+
+  context 'when called with an array', ->
+    withArguments [10, 'foo', true]
+
+    itsReturn -> should equal "[\n  10,\n  'foo',\n  true\n]"
+
+  context 'when called with an object', ->
+    withArguments foo: 'bar'
+
+    itsReturn -> should equal "{\n  foo: 'bar'\n}"
+
+  context 'when called with null', ->
+    withArguments null
+
+    itsReturn -> should equal "null"
+
+  context 'when called without arguments', ->
+    itsReturn -> should equal "undefined"
+
+  context 'when called with a function', ->
+    context 'that have a name', ->
+      withArguments class Foo
+
+      itsReturn -> should equal 'Foo'
+
+    context 'that have a user defined name', ->
+      withArguments (->
+        f = ->
+        f._name = 'foo'
+        f
+      )()
+
+      itsReturn -> should equal 'foo'
+
+    context 'that does not have a name', ->
+      withArguments ->
+
+      itsReturn -> should equal 'function () {}'

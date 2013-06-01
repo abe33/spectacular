@@ -41,6 +41,7 @@ describe 'equal', ->
 
     it -> should equal foo: 'bar', baz: {foo: 10}
     it -> shouldnt equal foo: 'baz', baz: {foo: 6}
+    it -> shouldnt equal [10, 'foo']
 
     context 'that is empty', ->
       subject -> {}
