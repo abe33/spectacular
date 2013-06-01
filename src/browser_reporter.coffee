@@ -106,6 +106,7 @@ class spectacular.BrowserReporter
       when 'errored' then @errors.push example
       when 'failure' then @failures.push example
 
+
     id = @examples.length
     if example.result.expectations.length > 0
       ex = $ """
@@ -128,12 +129,17 @@ class spectacular.BrowserReporter
             <span class='result'>#{example.result.state}</span>
             <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
           </header>
-          <aside>
-            <pre>#{utils.escapeDiff example.reason.message}</pre>
-            #{ if example.reason? then @traceSource example.reason else ''}
-          </aside>
+          #{
+            if example.reason?
+              "<aside>
+                <pre>#{utils.escapeDiff example.reason.message}</pre>
+                #{ if example.reason? then @traceSource example.reason else ''}
+              </aside>"
+            else ''
+          }
         </article>
       """
+
 
     ex.click -> ex.toggleClass 'closed'
     @examplesContainer.append ex
