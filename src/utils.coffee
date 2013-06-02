@@ -2,6 +2,7 @@ utils = spectacular.utils ||= {}
 
 spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
 
+spectacular.utils.strip = (s) -> s.replace /^\s+|\s+$/g, ''
 
 spectacular.utils.capitalize = (s) -> s.replace /^(\w)/, (m, c) -> c.toUpperCase()
 
