@@ -210,7 +210,11 @@ class spectacular.Environment
   withParameters: (args...) =>
     @notInsideIt 'withParameters'
 
-    @given 'parameters', -> args
+    @given 'parameters', ->
+      if typeof args[0] is 'function'
+        args[0].call(this)
+      else
+        args
 
   withArguments: =>
     @notInsideIt 'withArguments'

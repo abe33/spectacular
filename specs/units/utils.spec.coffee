@@ -85,20 +85,20 @@ describe spectacular.utils.inspect, ->
 
   context 'when called with a function', ->
     context 'that have a name', ->
-      withArguments class Foo
+      withArguments -> [class Foo]
 
       itsReturn -> should equal 'Foo'
 
     context 'that have a user defined name', ->
-      withArguments (->
+      withArguments ->
         f = ->
         f._name = 'foo'
-        f
-      )()
+        [f]
+
 
       itsReturn -> should equal 'foo'
 
     context 'that does not have a name', ->
-      withArguments ->
+      withArguments -> [->]
 
       itsReturn -> should equal 'function () {}'
