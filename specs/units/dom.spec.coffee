@@ -1,4 +1,4 @@
-describe spectacular.dom.DOMParser, ->
+describe spectacular.dom.DOMExpression, ->
   fixture 'sample.html'
   it -> should exist
 
@@ -43,7 +43,7 @@ describe spectacular.dom.DOMParser, ->
         itsReturn with: [$('html')], -> should be true
 
     context 'with an invalid dom', ->
-      subject -> => new spectacular.dom.DOMParser @dom
+      subject -> => new spectacular.dom.DOMExpression @dom
 
       context 'due to an invalid root indent', ->
         given 'dom', -> '  html'

@@ -19,7 +19,7 @@ class spectacular.dom.NodeExpression
       found = el.find(@expression)
       found.length > 0 and @expressions.every (e) -> e.contained found
 
-class spectacular.dom.DOMParser
+class spectacular.dom.DOMExpression
   @include spectacular.HasCollection('expressions', 'expression')
 
   constructor: (@source) ->
