@@ -261,14 +261,20 @@ class spectacular.ExampleGroup extends spectacular.Example
             original = subject
             subject = -> original.apply owner, arguments
 
-          @subjectBlock = => subject
+          @subjectBlock = -> subject
         else if desc.indexOf('::') is 0
           @noSpaceBeforeDescription = true
-          type = @subjectBlock?()
-          @subjectBlock = =>
+          type = @subject
+          @subjectBlock = ->
+            subject = null
             if type
               owner = build type, @parameters or []
-              -> owner[desc.replace '::', ''].apply owner, arguments
+              subject = owner[desc.replace '::', '']
+
+              if typeof subject is 'function'
+                original = subject
+                subject = -> original.apply owner, arguments
+            subject
         else
           @noSpaceBeforeDescription = true if @parent.description is ''
 
