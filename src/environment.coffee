@@ -129,25 +129,29 @@ class spectacular.Environment
     @notInsideIt 'its'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     @context "#{property} property", =>
-      @subject property, -> parentSubjectBlock?()[property]
+      @subject property, -> parentSubjectBlock?.call(this)[property]
       @it block
 
-  itsInstance: (block) =>
+  itsInstance: (property, block) =>
+    [property, block] = [block, property] if typeof property is 'function'
     @notInsideIt 'itsInstance'
 
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     @context 'instance', =>
       @subject 'instance', ->
-        build parentSubjectBlock?(), @parameters or []
+        build parentSubjectBlock?.call(this), @parameters or []
 
-      @it block
+      if property?
+        @its property, block
+      else
+        @it block
 
   itsReturn: (block) =>
     @notInsideIt 'itsReturn'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     @context 'returned value', =>
       @subject 'returnedValue', ->
-        parentSubjectBlock?().apply(this, @parameters or [])
+        parentSubjectBlock?.call(this).apply(this, @parameters or [])
 
       @it block
 
@@ -164,7 +168,7 @@ class spectacular.Environment
       Object.defineProperty this, name, {
         configurable: true
         enumerable: true
-        get: => @["__#{name}"] ||= block.call(this)
+        get: -> @["__#{name}"] ||= block.call(this)
       }
 
   describe: (subject, options, block) =>
