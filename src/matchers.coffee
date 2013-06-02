@@ -89,7 +89,7 @@ spectacular.matchers.be = (value) ->
         result
       when 'number', 'boolean'
         @message = "Expected #{actual}#{notText} to be #{value}"
-        actual.valueOf() is value
+        actual?.valueOf() is value
       else
         @description = "should#{notText} be #{utils.squeeze utils.inspect value}"
         @message = "Expected #{utils.inspect actual}#{notText} to be #{utils.inspect value}"
