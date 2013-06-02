@@ -11,8 +11,13 @@ class spectacular.dom.NodeExpression
     el.is(@expression) and @expressions.every (e) -> e.contained el
 
   contained: (el) ->
-    found = el.find(@expression)
-    found.length > 0 and @expressions.every (e) -> e.contained found
+    if @expression.indexOf('/') is 0
+      new RegExp(@expression[1..-2]).test el.text()
+    else if @expression.indexOf("'") is 0
+      el.text() is @expression[1..-2]
+    else
+      found = el.find(@expression)
+      found.length > 0 and @expressions.every (e) -> e.contained found
 
 class spectacular.dom.DOMParser
   @include spectacular.HasCollection('expressions', 'expression')
@@ -28,11 +33,17 @@ class spectacular.dom.DOMParser
     current = null
 
     @source.split('\n').forEach (line, i) =>
+      invalidIndent = ->
+        throw new Error "invalid indent on line #{i+1} of '#{@source}'"
+
       return if utils.strip(line).length is 0
+
 
       indent = @getIndent line
       expr = utils.strip line
       exprInst = new spectacular.dom.NodeExpression expr
+
+      invalidIndent() if current is null and indent isnt 0
 
       if indent is currentIndent
         exprInst.parent = currentParent
@@ -48,8 +59,7 @@ class spectacular.dom.DOMParser
 
       else if indent is currentIndent - 1
 
-      else
-        throw new Error "invalid indent on line #{i} of '#{@source}'"
+      else invalidIndent()
 
   getIndent: (line) ->
     re = /^(\s+).*/
