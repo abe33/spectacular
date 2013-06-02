@@ -151,10 +151,7 @@ class spectacular.Environment
 
     [block, options] = [options, {}] if typeof options is 'function'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
-    msg = 'returned value'
-    msg += " with #{utils.inspect options.with}" if options.with?
-    msg += " in context #{utils.inspect options.inContext}" if options.inContext?
-    @context msg, =>
+    @context 'returned value', =>
       @subject 'returnedValue', ->
         parentSubjectBlock?.call(this).apply(options.inContext or this,
                                              options.with or @parameters or [])
