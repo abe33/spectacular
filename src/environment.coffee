@@ -133,9 +133,9 @@ class spectacular.Environment
       @it block
 
   itsInstance: (property, block) =>
-    [property, block] = [block, property] if typeof property is 'function'
     @notInsideIt 'itsInstance'
 
+    [property, block] = [block, property] if typeof property is 'function'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     @context 'instance', =>
       @subject 'instance', ->
@@ -146,12 +146,18 @@ class spectacular.Environment
       else
         @it block
 
-  itsReturn: (block) =>
+  itsReturn: (options, block) =>
     @notInsideIt 'itsReturn'
+
+    [block, options] = [options, {}] if typeof options is 'function'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
-    @context 'returned value', =>
+    msg = 'returned value'
+    msg += " with #{utils.inspect options.with}" if options.with?
+    msg += " in context #{utils.inspect options.inContext}" if options.inContext?
+    @context msg, =>
       @subject 'returnedValue', ->
-        parentSubjectBlock?.call(this).apply(this, @parameters or [])
+        parentSubjectBlock?.call(this).apply(options.inContext or this,
+                                             options.with or @parameters or [])
 
       @it block
 
