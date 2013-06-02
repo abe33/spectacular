@@ -14,6 +14,15 @@ class spectacular.HasAncestors
     ctor.ancestorsScope = (name, block) ->
       @getter name, -> @ancestors.filter block
 
+  nthAncestor: (level) ->
+    level = 1 if level < 1
+    parent = this
+    n = 0
+    for n in [0..level]
+      parent = parent.parent
+
+    parent
+
 spectacular.HasCollection = (plural, singular) ->
   capitalizedSingular = utils.capitalize singular
   capitalizedPlural = utils.capitalize plural

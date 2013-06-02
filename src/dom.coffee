@@ -33,7 +33,7 @@ class spectacular.dom.DOMParser
     current = null
 
     @source.split('\n').forEach (line, i) =>
-      invalidIndent = ->
+      invalidIndent = =>
         throw new Error "invalid indent on line #{i+1} of '#{@source}'"
 
       return if utils.strip(line).length is 0
@@ -57,7 +57,12 @@ class spectacular.dom.DOMParser
         currentParent = current
         current = exprInst
 
-      else if indent is currentIndent - 1
+      else if indent < currentIndent and Math.round(indent) is indent
+        dif = currentIndent - indent
+        currentParent = current.nthAncestor Math.abs(dif)
+        currentIndent = indent
+        exprInst.parent = currentParent
+        current = exprInst
 
       else invalidIndent()
 

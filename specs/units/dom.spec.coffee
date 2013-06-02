@@ -7,6 +7,17 @@ describe spectacular.dom.DOMParser, ->
       html
         head
         body
+          section
+            header
+              h1
+                'title'
+            article
+              h3
+                'article title'
+              p
+                'article content'
+
+            footer
       '''
     withArguments -> [@dom]
 
@@ -15,6 +26,7 @@ describe spectacular.dom.DOMParser, ->
 
     describe '::match', ->
       itsReturn with: [$('html')], -> should be true
+      itsReturn with: [$('section')], -> should be false
 
     describe '::contained', ->
       itsReturn with: [$('html')], -> should be false
@@ -28,7 +40,7 @@ describe spectacular.dom.DOMParser, ->
               /article.*content/
           '''
 
-        itsReturn with: [$('html')], -> should be false
+        itsReturn with: [$('html')], -> should be true
 
     context 'with an invalid dom', ->
       subject -> => new spectacular.dom.DOMParser @dom
@@ -39,17 +51,11 @@ describe spectacular.dom.DOMParser, ->
         it -> should throwAnError(/invalid indent on line 1/)
 
       context 'due to an invalid nested indent', ->
-        given 'dom', -> '''
-          html
-              head
-          '''
+        given 'dom', -> 'html\n    head'
 
         it -> should throwAnError(/invalid indent on line 2/)
 
       context 'due to an incomplete indent', ->
-        given 'dom', -> '''
-          html
-           head
-          '''
+        given 'dom', -> 'html\n head'
 
         it -> should throwAnError(/invalid indent on line 2/)
