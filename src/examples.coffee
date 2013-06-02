@@ -270,7 +270,7 @@ class spectacular.ExampleGroup extends spectacular.Example
             if type
               owner = build type, @parameters or []
               subject = owner[desc.replace '::', '']
-
+              @owner = owner
               if typeof subject is 'function'
                 original = subject
                 subject = -> original.apply owner, arguments
