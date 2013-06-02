@@ -181,23 +181,26 @@ spectacular.utils.stringDiff = (o, n) ->
       i++
   str
 
-spectacular.utils.inspect = (obj, depth=1) ->
+spectacular.utils.inspect = (obj, depth=1, lookup=[]) ->
+
   switch typeof obj
     when 'string' then "'#{obj}'"
     when 'number', 'boolean' then "#{obj}"
     when 'object'
       return 'null' unless obj?
+      return '[circular]' if obj in lookup
+      lookup.push obj
       ind = utils.fill depth * 2
       if utils.isArray obj
 
         return '[]' if obj.length is 0
         "[\n#{
-            obj.map((o) -> ind + utils.inspect o, depth+1).join ',\n'
+            obj.map((o) -> ind + utils.inspect o, depth+1, lookup).join ',\n'
         }\n#{ind[0..-3]}]"
       else
         return '{}' if utils.keys(obj).length is 0
         "{\n#{
-          ("#{ind}#{k}: #{utils.inspect v, depth + 1}" for k,v of obj).join ',\n'
+          ("#{ind}#{k}: #{utils.inspect v, depth+1, lookup}" for k,v of obj).join ',\n'
         }\n#{ind[0..-3]}}"
     when 'function'
       if obj.name

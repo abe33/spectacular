@@ -75,6 +75,23 @@ describe spectacular.utils.inspect, ->
 
     itsReturn -> should equal "{\n  foo: 'bar'\n}"
 
+  context 'that contains a circular reference', ->
+    withArguments ->
+      o = foo: 'bar'
+      o.bar = o
+      [o]
+
+    itsReturn -> should equal "{\n  foo: 'bar',\n  bar: [circular]\n}"
+
+  context 'that contains a circular reference', ->
+    withArguments ->
+      o = foo: 'bar'
+      o.bar =
+        foo: o
+      [o]
+
+    itsReturn -> should equal "{\n  foo: 'bar',\n  bar: {\n    foo: [circular]\n  }\n}"
+
   context 'when called with null', ->
     withArguments null
 
