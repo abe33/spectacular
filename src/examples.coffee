@@ -93,12 +93,7 @@ class spectacular.Example
       0
   @getter 'fullDescription', ->
     expectationsDescriptions = @result.expectations.map (e) -> e.description
-    if expectationsDescriptions.length > 1
-      last = expectationsDescriptions.pop()
-      expectationsDescriptions = expectationsDescriptions.join(', ')
-      expectationsDescriptions += " and #{last}"
-    else
-      expectationsDescriptions = expectationsDescriptions.toString()
+    expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
     "#{@description} #{expectationsDescriptions}"
 
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?

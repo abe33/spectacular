@@ -1,4 +1,4 @@
-describe 'be', ->
+describe be, ->
   context 'when called with a string', ->
     subject ->
       truthy: true
@@ -18,7 +18,7 @@ describe 'be', ->
     it -> should be @subject
     it -> shouldnt be {}
 
-describe 'equal', ->
+describe equal, ->
 
   context 'with strings', ->
     subject -> 'irrelevant'
@@ -69,7 +69,7 @@ describe 'equal', ->
 
       it -> shouldnt equal [10, 10, 10]
 
-describe 'exist', ->
+describe exist, ->
   context 'with something', ->
     subject -> {}
 
@@ -85,13 +85,50 @@ describe 'exist', ->
 
     it -> should exist
 
-describe 'match', ->
+describe match, ->
   subject -> 'irrelevant'
 
   it -> should match /irrelevant/
   it -> shouldnt match /tnavelerri/
 
-describe 'haveBeenCalled', ->
+  context 'with a dom object', ->
+    fixture 'sample.html'
+    fixture 'sample.dom', as: 'dom'
+
+    context 'on $("html")', ->
+      subject -> $('html')
+
+      it -> shouldnt match @dom
+
+    context 'on $("#section")', ->
+      subject -> $('#section')
+
+      it -> should match @dom
+
+describe contains, ->
+  subject -> [0,1,2,'foo','bar',true]
+
+  it ->
+    should contains 0
+    should contains 'foo', true
+    shouldnt contains 4
+    shouldnt contains 'foo', false
+
+  context 'with a dom object', ->
+    fixture 'sample.html'
+    fixture 'sample.dom', as: 'dom'
+
+    context 'on $("html")', ->
+      subject -> $('html')
+
+      it -> should contains @dom
+
+    context 'on $("#section")', ->
+      subject -> $('#section')
+
+      it -> shouldnt contains @dom
+
+describe haveBeenCalled, ->
   given 'object', -> method: -> 42
 
   the -> @object.method.shouldnt haveBeenCalled
@@ -112,7 +149,7 @@ describe 'haveBeenCalled', ->
       the -> @object.method.shouldnt haveBeenCalled.with 'foo', 10
       the -> @object.method.should haveBeenCalled.with 10, 'foo'
 
-describe 'throwAnError', ->
+describe throwAnError, ->
   context 'on a function that throw an error', ->
     subject -> -> throw new Error 'message'
 

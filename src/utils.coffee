@@ -10,6 +10,16 @@ spectacular.utils.keys = (o) -> k for k of o
 
 spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'
 
+spectacular.utils.literalEnumeration = (array) ->
+  if array.length > 1
+    last = array.pop()
+    result = array.join(', ')
+    result += " and #{last}"
+  else
+    result = array.toString()
+
+  result
+
 spectacular.utils.fill = (l=4, s=' ') ->
   o = ''
   o = "#{o}#{s}" while o.length < l

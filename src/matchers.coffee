@@ -103,19 +103,19 @@ spectacular.matchers.equal = (value) ->
 
 spectacular.matchers.match = (re) ->
   assert: (actual, notText) ->
+    @description = "should#{notText} match #{re}"
     # The match matcher allow DOMExpression object as value
     if re.match? and re.contained?
-      @description = "should#{notText} match #{re}"
       @message = "Expected '#{$.map actual, (e) -> e.outerHTML}'#{notText} to match #{re}"
 
       re.match actual
     else
-      @description = "should#{notText} match #{re}"
       @message = "Expected '#{actual}'#{notText} to match #{re}"
 
       re.test actual
 
-spectacular.matchers.contains = (value) ->
+spectacular.matchers.contains = (values...) ->
+  value = values[0]
   assert: (actual, notText) ->
     # The contains matcher allow DOMExpression object as value
     if value.match? and value.contained?
@@ -124,6 +124,12 @@ spectacular.matchers.contains = (value) ->
 
       value.contained actual
 
+    else
+      valuesDescription = utils.literalEnumeration values.map (v) -> utils.inspect v
+      @description = "should#{notText} contains #{valuesDescription}"
+      @message = "Expected #{utils.inspect actual}#{notText} to contains #{valuesDescription}"
+
+      values.every (v) -> v in actual
 
 spectacular.matchers.throwAnError = (message) ->
   assert: (actual, notText) ->
