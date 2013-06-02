@@ -1,8 +1,6 @@
 
 #### Core JS Extensions
 
-String::capitalize = -> @replace /^(\w)/, (m, c) -> c.toUpperCase()
-
 Function::include = (mixins...) ->
   excluded = ['constructor']
   for mixin in mixins

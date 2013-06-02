@@ -2,6 +2,9 @@ utils = spectacular.utils ||= {}
 
 spectacular.utils.squeeze = (s) -> s.replace /\s+/g, ' '
 
+
+spectacular.utils.capitalize = (s) -> s.replace /^(\w)/, (m, c) -> c.toUpperCase()
+
 spectacular.utils.keys = (o) -> k for k of o
 
 spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'
@@ -285,7 +288,7 @@ spectacular.utils.compare = (actual, value, matcher, noMessage=false) ->
       actual is value
 
 spectacular.utils.findStateMethodOrProperty = (obj, state) ->
-  camelizedVersion = "is#{state.capitalize()}"
+  camelizedVersion = "is#{utils.capitalize state}"
   snakedVersion = "is_#{state}"
 
   if obj[state]?

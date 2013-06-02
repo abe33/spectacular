@@ -15,8 +15,8 @@ class spectacular.HasAncestors
       @getter name, -> @ancestors.filter block
 
 spectacular.HasCollection = (plural, singular) ->
-  capitalizedSingular = singular.capitalize()
-  capitalizedPlural = plural.capitalize()
+  capitalizedSingular = utils.capitalize singular
+  capitalizedPlural = utils.capitalize plural
 
   mixin = class ConcreteHasCollection
     @included: (ctor) ->
@@ -67,7 +67,7 @@ spectacular.HasNestedCollection = (name, options={}) ->
   mixin
 
 spectacular.FollowUpProperty = (property) ->
-  capitalizedProperty = property.capitalize()
+  capitalizedProperty = utils.capitalize property
   privateProperty = "own#{capitalizedProperty}"
   class ConcreteFollowUpProperty
     @included: (ctor) ->
@@ -77,7 +77,7 @@ spectacular.FollowUpProperty = (property) ->
       }
 
 spectacular.MergeUpProperty = (property) ->
-  capitalizedProperty = property.capitalize()
+  capitalizedProperty = utils.capitalize property
   privateProperty = "own#{capitalizedProperty}"
   class ConcreteMergeUpProperty
     @included: (ctor) ->
