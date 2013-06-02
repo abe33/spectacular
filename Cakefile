@@ -8,10 +8,42 @@ exeHandle = (f) ->
     f stdout
 
 task 'compile', 'Compiles the project sources', ->
-  exec './node_modules/.bin/coffee --compile --bare --output lib/ --join lib/spectacular.js src/extensions.coffee src/bootstrap.coffee src/utils.coffee src/factories.coffee src/mixins.coffee src/promises.coffee src/examples.coffee src/runner.coffee src/environment.coffee src/matchers.coffee src/console_reporter.coffee', exeHandle ->
+  options = [
+    "--compile"
+    "--bare"
+    "--output"
+    "lib/"
+    "--join"
+    "lib/spectacular.js"
+    "src/extensions.coffee"
+    "src/bootstrap.coffee"
+    "src/utils.coffee"
+    "src/factories.coffee"
+    "src/mixins.coffee"
+    "src/promises.coffee"
+    "src/examples.coffee"
+    "src/dom.coffee"
+    "src/runner.coffee"
+    "src/environment.coffee"
+    "src/matchers.coffee"
+    "src/console_reporter.coffee"
+  ]
+  exec "./node_modules/.bin/coffee #{options.join ' '}", exeHandle ->
 
-    exec './node_modules/.bin/coffee --compile --bare --output lib/ src/cli.coffee src/server.coffee src/index.coffee src/spectacular_bin.coffee src/browser_reporter.coffee src/spectacular_phantomjs.coffee', exeHandle ->
+    options = [
+      "--compile"
+      "--bare"
+      "--output"
+      "lib/"
+      "src/cli.coffee"
+      "src/server.coffee"
+      "src/index.coffee"
+      "src/spectacular_bin.coffee"
+      "src/browser_reporter.coffee"
+      "src/spectacular_phantomjs.coffee"
+    ]
 
+    exec "./node_modules/.bin/coffee #{options.join ' '}", exeHandle ->
       exec "echo '#!/usr/bin/env node' > bin/spectacular", exeHandle ->
         exec "cat lib/spectacular_bin.js >> bin/spectacular",exeHandle ->
           exec "chmod +x bin/spectacular", exeHandle ->
