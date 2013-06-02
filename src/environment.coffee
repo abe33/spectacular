@@ -18,6 +18,7 @@ class spectacular.Environment
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
     @registerFixtureHandler 'json', @handleJSONFixture
     @registerFixtureHandler 'html', @handleHTMLFixture
+    @registerFixtureHandler 'dom', @handleDOMFixture
 
   run: => @runner.run()
 
@@ -294,6 +295,9 @@ class spectacular.Environment
 
   handleJSONFixture: (content) ->
     spectacular.Promise.unit JSON.parse content
+
+  handleDOMFixture: (content) ->
+    spectacular.Promise.unit new spectacular.dom.DOMExpression content
 
   handleHTMLFixture: (content) ->
     content = $(content)

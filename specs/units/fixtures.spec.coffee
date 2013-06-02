@@ -43,3 +43,25 @@ describe fixture, ->
     specify 'the fixture', ->
       @fixture.should exist
       @fixture.should have.selector 'article'
+
+  context 'for a dom file', ->
+    fixture 'sample.html'
+    fixture 'sample.dom', as: 'dom'
+    subject -> @dom
+
+    it -> should exist
+
+    context 'the dom expression', ->
+      subject -> $('html')
+
+      it -> shouldnt match @dom
+      it -> should contains @dom
+
+      context 'on a matching element', ->
+        subject -> $('#section')
+
+        it -> should match @dom
+        it -> shouldnt contains @dom
+
+
+

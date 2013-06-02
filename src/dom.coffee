@@ -74,3 +74,5 @@ class spectacular.dom.DOMExpression
 
   match: (el) -> @expressions.every (e) -> e.match el
   contained: (el) -> @expressions.every (e) -> e.contained el
+
+  toString: -> @source
