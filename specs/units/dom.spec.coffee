@@ -15,6 +15,6 @@ describe spectacular.dom.DOMParser, ->
     describe '::match', ->
       itsReturn with: [$('html')], -> should be true
 
-    describe '::contains', ->
+    describe '::contained', ->
       itsReturn with: [$('html')], -> should be false
 
