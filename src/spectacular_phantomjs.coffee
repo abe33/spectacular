@@ -73,7 +73,7 @@ specsReady = ->
 # @param [Function] ready the action when the condition is fulfilled
 # @param [Number] timeout the max amount of time to wait in milliseconds
 #
-waitFor = (test, ready, timeout = 10000) ->
+waitFor = (test, ready, timeout = 60000) ->
     start = new Date().getTime()
     condition = false
 
