@@ -21,7 +21,7 @@ loadSpectacular = (options) ->
     vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment options
-    spectacular.env.load()
+    spectacular.env.globalize()
 
 loadMatchers = (options) ->
   defer = Q.defer()

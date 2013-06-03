@@ -228,7 +228,7 @@ options.loadFile = (file) ->
   promise
 
 spectacular.env = new spectacular.Environment(options)
-spectacular.env.load()
+spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
 spectacular.env.runner.paths = paths
 

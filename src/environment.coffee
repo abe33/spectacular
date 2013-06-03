@@ -1,10 +1,13 @@
 
 class spectacular.Environment
-  exposedMethods:'it xit describe xdescribe context xcontext
+  @include spectacular.Globalizable
+
+  Object.defineProperty this, 'EXPOSED_PROPERTIES', get: ->
+    'it xit describe xdescribe context xcontext
     before after given subject its itsInstance itsReturn
     withParameters fail pending success skip should shouldnt
     dependsOn spyOn the withArguments whenPass fixture specify
-    except only'
+    except only sharedExample'.split ' '
 
   exposedSpectacularMethods:
     build: spectacular.factories.build
@@ -22,19 +25,13 @@ class spectacular.Environment
 
   run: => @runner.run()
 
-  load: =>
+  _globalize = Environment::globalize
+  globalize: =>
+    _globalize.call(this)
     @loadObjectExtensions()
     @loadSpectacularMethods()
     @loadSpectacularMatchers()
-    @loadSpectacularEnvironment()
     @loadJQuery()
-
-  loadSpectacularEnvironment: ->
-    env = this
-    @exposedMethods.split(/\s+/g).forEach (k) =>
-      fn = -> env[k].apply env, arguments
-      fn._name = k
-      spectacular.global[k] = fn
 
   loadSpectacularMatchers: ->
     for k,v of spectacular.matchers

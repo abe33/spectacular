@@ -5,7 +5,7 @@ exports.createEnv = (block, context) ->
   env.runner.paths = spectacular.env.runner.paths
   context.results = ''
 
-  spyOn(env, 'load').andCallThrough ->
+  spyOn(env, 'globalize').andCallThrough ->
     promise = new spectacular.Promise.unit()
     promise.then -> do block
 
@@ -31,32 +31,34 @@ exports.createReporter = (env, context, async) ->
 
 exports.runEnvExpectingNormalTermination = (env, context, async) ->
   oldEnv = spectacular.env
-  env.load()
+  oldEnv.unglobalize()
+  env.globalize()
   .then ->
     env.run()
   .then (status) ->
     context.status = status
-    oldEnv.load()
+    oldEnv.globalize()
     async.resolve() if context.ended
     context.ended = true
   .fail (reason) ->
     context.reason = context.rejected = reason
-    oldEnv.load()
+    oldEnv.globalize()
     async.reject reason
 
 exports.runEnvExpectingInterruption = (env, context, async) ->
   oldEnv = spectacular.env
-  env.load()
+  oldEnv.unglobalize()
+  env.globalize()
   .then ->
     env.run()
   .then (status) =>
-    oldEnv.load()
+    oldEnv.globalize()
     context.rejected = new Error "run didn't failed"
     async.reject context.rejected if context.ended
     context.ended = true
   .fail (reason) =>
     context.reason = reason
-    oldEnv.load()
+    oldEnv.globalize()
     async.resolve()
 
 exports.runningSpecs = (desc) ->
