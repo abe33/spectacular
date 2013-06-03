@@ -36,7 +36,9 @@ class spectacular.Globalizable
       if typeof value is 'function'
         value._name = k
         if @keepContext
-          _global[k] = -> value.apply self, arguments
+          proxy = -> value.apply self, arguments
+          proxy._name = k
+          _global[k] = proxy
         else
           _global[k] = value
       else
