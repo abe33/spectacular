@@ -70,6 +70,8 @@ class spectacular.Example
   @include spectacular.Describable
   @include spectacular.FollowUpProperty('subjectBlock')
   @include spectacular.FollowUpProperty('cascading')
+  @include spectacular.FollowUpProperty('inclusive')
+  @include spectacular.FollowUpProperty('exclusive')
   @include spectacular.MergeUpProperty('beforeHooks')
   @include spectacular.MergeUpProperty('afterHooks')
   @include spectacular.MergeUpProperty('dependencies')
@@ -80,6 +82,8 @@ class spectacular.Example
     @afterHooks = []
     @dependencies = []
     @cascading = null
+    @inclusive = false
+    @exclusive = false
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
   @getter 'finished', -> @examplePromise?.isResolved()
@@ -231,9 +235,21 @@ class spectacular.ExampleGroup extends spectacular.Example
   @include spectacular.HasCollection('children', 'child')
   @include spectacular.HasNestedCollection('descendants', through: 'children')
 
-  @childrenScope 'exampleGroups', (e) -> e.children?
-  @childrenScope 'examples', (e) -> not e.children?
-  @descendantsScope 'allExamples', (e) -> not e.children?
+  @filterGroups: (e) ->
+    e.children? and not e.inclusive
+  @filterExamples: (e) ->
+    not e.children? and not e.inclusive
+  @filterExclusiveExamples: (e) ->
+    ExampleGroup.filterExamples(e) and e.exclusive
+
+
+  @childrenScope 'exampleGroups', ExampleGroup.filterGroups
+  @childrenScope 'examples', ExampleGroup.filterExamples
+  @childrenScope 'exclusiveExamples', ExampleGroup.filterExclusiveExamples
+
+  @descendantsScope 'allExamples', ExampleGroup.filterExamples
+  @descendantsScope 'allExclusiveExamples', ExampleGroup.filterExclusiveExamples
+
   @descendantsScope 'identifiedExamples', (e) -> e.options?.id?
   @getter 'identifiedExamplesMap', ->
     res = {}
@@ -288,6 +304,8 @@ class spectacular.ExampleGroup extends spectacular.Example
   executeBlock: ->
     return it(-> pending()) unless @block?
     @block.call(this)
+
+  hasExclusiveExamples: -> @allExclusiveExamples.length > 0
 
   toString: -> "[ExampleGroup(#{@description})]"
 

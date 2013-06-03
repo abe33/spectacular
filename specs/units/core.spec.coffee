@@ -17,6 +17,38 @@ runningSpecs('pending examples')
     it -> pending()
     it -> pending()
 
+runningSpecs('excluded examples')
+.shouldSucceedWith /2 success, 2 assertion/, ->
+  describe 'inclusive examples', ->
+    it -> true.should be true
+    it -> true.should be true
+    except it -> true.should be true
+
+runningSpecs('scoped examples')
+.shouldSucceedWith /1 success, 1 assertion/, ->
+  describe 'exclusive examples', ->
+    it -> true.should be true
+    it -> true.should be true
+    only it -> true.should be true
+
+runningSpecs('excluded groups')
+.shouldSucceedWith /2 success, 2 assertion/, ->
+  describe 'included groups', ->
+    it -> true.should be true
+    it -> true.should be true
+
+  except describe 'inclusive groups', ->
+    it -> true.should be true
+
+runningSpecs('scoped groups')
+.shouldSucceedWith /1 success, 1 assertion/, ->
+  describe 'excluded groups', ->
+    it -> true.should be true
+    it -> true.should be true
+
+  only describe 'exclusive groups', ->
+    it -> true.should be true
+
 runningSpecs('skipped examples')
 .shouldFailWith /0 errors, 2 skipped/, ->
   describe 'skipped examples', ->

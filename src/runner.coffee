@@ -29,11 +29,15 @@ class spectacular.Runner
     -1
 
   registerSpecs: =>
-    @register example for example in @root.allExamples
+    if @root.hasExclusiveExamples()
+      @register example for example in @root.allExclusiveExamples
+    else
+      @register example for example in @root.allExamples
 
   register: (example) =>
     @handleDependencies example
 
+    @examples.push example unless example in @examples
     @stack.push example unless example in @stack
 
   handleDependencies: (example) ->
@@ -122,5 +126,5 @@ class spectacular.Runner
   notifyEnd: =>
     @dispatch new spectacular.Event 'end', this
 
-  hasFailures: -> @root.allExamples.some (e) ->
+  hasFailures: -> @examples.some (e) ->
     e.result.state in ['skipped', 'failure', 'errored']

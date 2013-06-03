@@ -1,10 +1,10 @@
 
 class spectacular.Environment
   exposedMethods:'it xit describe xdescribe context xcontext
-    before after given subject its itsInstance
-    itsReturn withParameters fail pending success
-    skip should shouldnt dependsOn spyOn the
-    withArguments whenPass fixture specify'
+    before after given subject its itsInstance itsReturn
+    withParameters fail pending success skip should shouldnt
+    dependsOn spyOn the withArguments whenPass fixture specify
+    except only'
 
   exposedSpectacularMethods:
     build: spectacular.factories.build
@@ -98,9 +98,9 @@ class spectacular.Environment
     @notInsideIt 'it'
 
     [msgOrBlock, block] = ['', msgOrBlock] if typeof msgOrBlock is 'function'
-    @currentExampleGroup.addChild(
-      new spectacular.Example block, msgOrBlock, @currentExampleGroup
-    )
+    example = new spectacular.Example block, msgOrBlock, @currentExampleGroup
+    @currentExampleGroup.addChild example
+    example
 
   the: (msgOrBlock, block) =>
     @notInsideIt 'the'
@@ -181,7 +181,7 @@ class spectacular.Environment
 
     oldGroup = @currentExampleGroup
 
-    @currentExampleGroup = new spectacular.ExampleGroup(
+    @currentExampleGroup = currentGroup = new spectacular.ExampleGroup(
       block, subject, oldGroup, options
     )
     oldGroup.addChild @currentExampleGroup
@@ -192,6 +192,8 @@ class spectacular.Environment
     finally
       @currentExampleGroup = oldGroup
       throw error if error?
+
+    currentGroup
 
 
   xdescribe: (subject, options, block) =>
@@ -326,6 +328,9 @@ class spectacular.Environment
     )
 
   shouldnt: (matcher) => @should matcher, true
+
+  except: (example) -> example.inclusive = true
+  only: (example) -> example.exclusive = true
 
 
   toString: -> '[spectacular Environment]'
