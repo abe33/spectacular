@@ -1,4 +1,4 @@
-spectacular.matchers ||= {}
+spectacular.matchers ||= new spectacular.GlobalizableObject
 
 # Javascript Diff Algorithm
 # By John Resig (http://ejohn.org/)

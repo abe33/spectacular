@@ -28,7 +28,7 @@ class spectacular.Globalizable
     @previous ||= {}
 
     _global = spectacular.global
-    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
+    @EXPOSED_PROPERTIES.forEach (k) =>
       @previous[k] = _global[k] if _global[k]?
       value = @[k]
       self = this
@@ -42,13 +42,26 @@ class spectacular.Globalizable
 
   unglobalize: ->
     _global = spectacular.global
-    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
+    @EXPOSED_PROPERTIES.forEach (k) =>
       if @previous[k]?
         _global[k] = @previous[k]
       else
         delete _global[k]
 
     @globalized = false
+
+class spectacular.GlobalizableObject
+  @include spectacular.Globalizable
+
+  constructor: (@__EXPOSED_PROPERTIES...) ->
+
+  Object.defineProperty this.prototype, 'EXPOSED_PROPERTIES',
+    configurable: true
+    get: ->
+      if @__EXPOSED_PROPERTIES.length > 0
+        @__EXPOSED_PROPERTIES
+      else
+        utils.keys this
 
 spectacular.HasCollection = (plural, singular) ->
   capitalizedSingular = utils.capitalize singular

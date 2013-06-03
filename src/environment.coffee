@@ -2,17 +2,11 @@
 class spectacular.Environment
   @include spectacular.Globalizable
 
-  Object.defineProperty this, 'EXPOSED_PROPERTIES', get: ->
-    'it xit describe xdescribe context xcontext
+  EXPOSED_PROPERTIES: 'it xit describe xdescribe context xcontext
     before after given subject its itsInstance itsReturn
     withParameters fail pending success skip should shouldnt
     dependsOn spyOn the withArguments whenPass fixture specify
-    except only sharedExample'.split ' '
-
-  exposedSpectacularMethods:
-    build: spectacular.factories.build
-    factory: spectacular.factories.factory
-    create: spectacular.factories.create
+    except only sharedExample'.split(/\s+/g)
 
   constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
@@ -26,22 +20,20 @@ class spectacular.Environment
   run: => @runner.run()
 
   _globalize = Environment::globalize
-  globalize: =>
+  _unglobalize = Environment::unglobalize
+
+  globalize: ->
     _globalize.call(this)
+    spectacular.factories.globalize()
+    spectacular.matchers.globalize()
     @loadObjectExtensions()
-    @loadSpectacularMethods()
-    @loadSpectacularMatchers()
     @loadJQuery()
 
-  loadSpectacularMatchers: ->
-    for k,v of spectacular.matchers
-      v._name = k
-      spectacular.global[k] = v
+  unglobalize: ->
+    _unglobalize.call(this)
+    spectacular.factories.unglobalize()
+    spectacular.matchers.unglobalize()
 
-  loadSpectacularMethods: ->
-    for k,v of @exposedSpectacularMethods
-      v._name = k
-      spectacular.global[k] = v
 
   loadJQuery: ->
     spectacular.global.$ = @options.jQuery
@@ -86,12 +78,12 @@ class spectacular.Environment
     unless @currentExample?
       throw new Error "#{method} called outside a it block"
 
-  fail: => @currentExample.reject new Error 'Failed'
-  pending: => @currentExample.pending()
-  skip: => @currentExample.skip()
-  success: =>
+  fail: -> @currentExample.reject new Error 'Failed'
+  pending: -> @currentExample.pending()
+  skip: -> @currentExample.skip()
+  success: ->
 
-  it: (msgOrBlock, block) =>
+  it: (msgOrBlock, block) ->
     @notInsideIt 'it'
 
     [msgOrBlock, block] = ['', msgOrBlock] if typeof msgOrBlock is 'function'
@@ -99,15 +91,15 @@ class spectacular.Environment
     @currentExampleGroup.addChild example
     example
 
-  the: (msgOrBlock, block) =>
+  the: (msgOrBlock, block) ->
     @notInsideIt 'the'
     @it msgOrBlock, block
 
-  specify: (msgOrBlock, block) =>
+  specify: (msgOrBlock, block) ->
     @notInsideIt 'specify'
     @it msgOrBlock, block
 
-  xit: (msgOrBlock, block) =>
+  xit: (msgOrBlock, block) ->
     @notInsideIt 'xit'
 
     if typeof msgOrBlock is 'string'
@@ -115,22 +107,22 @@ class spectacular.Environment
     else
       @it -> pending()
 
-  before: (block) =>
+  before: (block) ->
     @notInsideIt 'before'
     @currentExampleGroup.ownBeforeHooks.push block
 
-  after: (block) =>
+  after: (block) ->
     @notInsideIt 'after'
     @currentExampleGroup.ownAfterHooks.push block
 
-  its: (property, block) =>
+  its: (property, block) ->
     @notInsideIt 'its'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     @context "#{property} property", =>
       @subject property, -> parentSubjectBlock?.call(this)[property]
       @it block
 
-  itsInstance: (property, block) =>
+  itsInstance: (property, block) ->
     @notInsideIt 'itsInstance'
 
     [property, block] = [block, property] if typeof property is 'function'
@@ -144,7 +136,7 @@ class spectacular.Environment
       else
         @it block
 
-  itsReturn: (options, block) =>
+  itsReturn: (options, block) ->
     @notInsideIt 'itsReturn'
 
     [block, options] = [options, {}] if typeof options is 'function'
@@ -156,13 +148,13 @@ class spectacular.Environment
 
       @it block
 
-  subject: (name, block) =>
+  subject: (name, block) ->
     @notInsideIt 'subject'
     [name, block] = [block, name] if typeof name is 'function'
     @currentExampleGroup.ownSubjectBlock = block
     @given name, block if name?
 
-  given: (name, block) =>
+  given: (name, block) ->
     @notInsideIt 'given'
 
     @before ->
@@ -172,7 +164,7 @@ class spectacular.Environment
         get: -> @["__#{name}"] ||= block.call(this)
       }
 
-  describe: (subject, options, block) =>
+  describe: (subject, options, block) ->
     [options, block] = [block, options] if typeof options is 'function'
     @notInsideIt 'describe'
 
@@ -193,24 +185,24 @@ class spectacular.Environment
     currentGroup
 
 
-  xdescribe: (subject, options, block) =>
+  xdescribe: (subject, options, block) ->
     @notInsideIt 'xdescribe'
 
     [options, block] = [block, options] if typeof options is 'function'
 
     describe subject, -> it -> pending()
 
-  context: (subject, options, block) =>
+  context: (subject, options, block) ->
     @notInsideIt 'context'
 
     @describe subject, options, block
 
-  xcontext: (subject, options, block)  =>
+  xcontext: (subject, options, block)  ->
     @notInsideIt 'xcontext'
 
     @xdescribe subject, options, block
 
-  withParameters: (args...) =>
+  withParameters: (args...) ->
     @notInsideIt 'withParameters'
 
     @given 'parameters', ->
@@ -219,17 +211,17 @@ class spectacular.Environment
       else
         args
 
-  withArguments: =>
+  withArguments: ->
     @notInsideIt 'withArguments'
 
     @withParameters.apply this, arguments
 
-  dependsOn: (spec) =>
+  dependsOn: (spec) ->
     @notInsideIt 'dependsOn'
 
     @currentExampleGroup.ownDependencies.push spec
 
-  whenPass: (block) =>
+  whenPass: (block) ->
     @notInsideIt 'whenPass'
 
     previousContext = @currentExampleGroup
@@ -237,7 +229,7 @@ class spectacular.Environment
       @currentExampleGroup.ownCascading = previousContext
       block()
 
-  spyOn: (obj, method) =>
+  spyOn: (obj, method) ->
     @notOutsideIt 'spyOn'
 
     oldMethod = obj[method]
@@ -265,7 +257,7 @@ class spectacular.Environment
     obj[method] = spy
     spy
 
-  fixture: (file, options={}) =>
+  fixture: (file, options={}) ->
     @notInsideIt 'fixture'
 
     name = options.as or 'fixture'
@@ -310,7 +302,7 @@ class spectacular.Environment
     spectacular.Promise.unit content
 
 
-  should: (matcher, neg=false) =>
+  should: (matcher, neg=false) ->
     @notOutsideIt 'should'
 
     return unless matcher?
@@ -324,7 +316,7 @@ class spectacular.Environment
       )
     )
 
-  shouldnt: (matcher) => @should matcher, true
+  shouldnt: (matcher) -> @should matcher, true
 
   except: (example) -> example.inclusive = true
   only: (example) -> example.exclusive = true
