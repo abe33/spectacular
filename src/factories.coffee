@@ -1,6 +1,7 @@
 spectacular.factories ||= new spectacular.GlobalizableObject 'build',
                                                              'create',
                                                              'factory'
+spectacular.factories.keepContext = false
 
 spectacular.factories.buildMethodsCache = {}
 spectacular.factories.build = (ctor, args=[]) ->

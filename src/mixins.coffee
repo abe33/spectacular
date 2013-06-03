@@ -24,6 +24,7 @@ class spectacular.HasAncestors
     parent
 
 class spectacular.Globalizable
+  keepContext: true
   globalize: ->
     @previous ||= {}
 
@@ -34,7 +35,10 @@ class spectacular.Globalizable
       self = this
       if typeof value is 'function'
         value._name = k
-        _global[k] = -> value.apply self, arguments
+        if @keepContext
+          _global[k] = -> value.apply self, arguments
+        else
+          _global[k] = value
       else
         _global[k] = value
 

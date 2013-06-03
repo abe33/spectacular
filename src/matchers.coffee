@@ -1,4 +1,5 @@
 spectacular.matchers ||= new spectacular.GlobalizableObject
+spectacular.matchers.keepContext = false
 
 # Javascript Diff Algorithm
 # By John Resig (http://ejohn.org/)
