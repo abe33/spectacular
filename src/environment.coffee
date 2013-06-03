@@ -6,7 +6,7 @@ class spectacular.Environment
     before after given subject its itsInstance itsReturn
     withParameters fail pending success skip should shouldnt
     dependsOn spyOn the withArguments whenPass fixture specify
-    except only sharedExample'.split(/\s+/g)
+    except only sharedExample itBehaveLike'.split(/\s+/g)
 
   constructor: (@options) ->
     @rootExampleGroup = new spectacular.ExampleGroup
@@ -16,6 +16,7 @@ class spectacular.Environment
     @registerFixtureHandler 'json', @handleJSONFixture
     @registerFixtureHandler 'html', @handleHTMLFixture
     @registerFixtureHandler 'dom', @handleDOMFixture
+    @sharedExamples = {}
 
   run: => @runner.run()
 
@@ -321,5 +322,14 @@ class spectacular.Environment
   except: (example) -> example.inclusive = true
   only: (example) -> example.exclusive = true
 
+  sharedExample: (name, block) ->
+    if name of @sharedExamples
+      throw new Error "shared example '#{name}' already registered"
+    @sharedExamples[name] = block
+
+  itBehaveLike: (name, options={}) ->
+    unless name of @sharedExamples
+      throw new Error "shared example '#{name}' not found"
+    @sharedExamples[name].call null, options
 
   toString: -> '[spectacular Environment]'
