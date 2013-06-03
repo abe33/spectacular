@@ -23,6 +23,33 @@ class spectacular.HasAncestors
 
     parent
 
+class spectacular.Globalizable
+  globalize: ->
+    @previous ||= {}
+
+    _global = spectacular.global
+    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
+      @previous[k] = _global[k] if _global[k]?
+      value = @[k]
+      self = this
+      if typeof value is 'function'
+        value._name = k
+        _global[k] = -> value.apply self, arguments
+      else
+        _global[k] = value
+
+    @globalized = true
+
+  unglobalize: ->
+    _global = spectacular.global
+    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
+      if @previous[k]?
+        _global[k] = @previous[k]
+      else
+        delete _global[k]
+
+    @globalized = false
+
 spectacular.HasCollection = (plural, singular) ->
   capitalizedSingular = utils.capitalize singular
   capitalizedPlural = utils.capitalize plural

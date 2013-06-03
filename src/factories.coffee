@@ -27,33 +27,21 @@ class spectacular.factories.Set
       instance[@property] = @value
 
 class spectacular.factories.Trait
+  @include spectacular.Globalizable
+
   @EXPOSED_PROPERTIES = 'set createWith'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
     @setters = []
 
-  set: (property, value) =>
+  set: (property, value) ->
     @setters.push new spectacular.factories.Set property, value
 
-  createWith: (@arguments...) =>
+  createWith: (@arguments...) ->
 
   applySet: (instance) ->
     @setters.forEach (setter) -> setter.apply instance
-
-  load: ->
-    _global = spectacular.global
-    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
-      @previous[k] = _global[k] if _global[k]?
-      _global[k] = @[k]
-
-  unload: ->
-    _global = spectacular.global
-    @constructor.EXPOSED_PROPERTIES.forEach (k) =>
-      if @previous[k]?
-        _global[k] = @previous[k]
-      else
-        delete _global[k]
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
   @EXPOSED_PROPERTIES = 'set trait createWith'.split(/\s+/g)
@@ -62,11 +50,11 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     super name
     @traits = {}
 
-  trait: (name, block) =>
+  trait: (name, block) ->
     trait = @traits[name] ||= new spectacular.factories.Trait name
-    trait.load()
+    trait.globalize()
     block.call(trait)
-    trait.unload()
+    trait.unglobalize()
 
   build: (traits, options={}) ->
     args = @traits[trait].arguments for trait in traits
@@ -82,9 +70,9 @@ spectacular.factoriesCache = {}
 spectacular.factories.factory = (name, options, block) ->
   cache = spectacular.factoriesCache
   fct = cache[name] ||= new spectacular.factories.Factory name, options.class
-  fct.load()
+  fct.globalize()
   block.call(fct)
-  fct.unload()
+  fct.unglobalize()
 
 spectacular.factories.create = (name, traits..., options) ->
   throw new Error 'no factory name provided' unless name?
