@@ -7,17 +7,24 @@ class spectacular.dom.NodeExpression
   constructor: (@expression) ->
     @expressions = []
 
+  isTextExpression: -> /^(\/|'|").*(\/|'|")$/gm.test @expression
+
   match: (el) ->
     el.is(@expression) and @expressions.every (e) -> e.contained el
 
   contained: (el) ->
-    if @expression.indexOf('/') is 0
-      new RegExp(@expression[1..-2]).test el.text()
-    else if @expression.indexOf("'") is 0
-      el.text() is @expression[1..-2]
+    if @isTextExpression()
+      @handleTextExpression el
     else
       found = el.find(@expression)
       found.length > 0 and @expressions.every (e) -> e.contained found
+
+  handleTextExpression: (el) ->
+    content = @expression[1..-2]
+    if @expression.indexOf('/') is 0
+      new RegExp(content).test el.text()
+    else
+      el.text() is content
 
 class spectacular.dom.DOMExpression
   @include spectacular.HasCollection('expressions', 'expression')
@@ -51,6 +58,8 @@ class spectacular.dom.DOMExpression
         current = exprInst
 
       else if indent is currentIndent + 1
+        if current.isTextExpression()
+          throw new Error "text expressions cannot have children on line #{i+1}"
         exprInst.parent = current
         current.addExpression exprInst
         currentIndent = indent

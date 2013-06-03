@@ -59,3 +59,8 @@ describe spectacular.dom.DOMExpression, ->
         given 'dom', -> 'html\n head'
 
         it -> should throwAnError(/invalid indent on line 2/)
+
+      context 'due to a child for text expression', ->
+        given 'dom', -> 'html\n  "text"\n    div'
+
+        it -> should throwAnError(/text expressions cannot have children on line 3/)
