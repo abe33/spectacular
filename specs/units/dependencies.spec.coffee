@@ -115,8 +115,19 @@ runningSpecs('cascading failing examples')
 
     whenPass ->
       context 'skipped', ->
-        it ->
-          true.should be true
+        it -> true.should be true
 
+runningSpecs('cascading & depenpent failing examples')
+.shouldFailWith /1 success, 2 assertions, 1 failure, (.*), 1 skipped/, ->
 
+  describe 'success group', id: 'success', ->
+    it -> true.should be true
+
+  describe 'parent group', ->
+    it -> true.should be false
+
+    whenPass ->
+      dependsOn 'success'
+      context 'skipped', ->
+        it -> true.should be true
 

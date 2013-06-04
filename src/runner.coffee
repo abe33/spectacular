@@ -54,10 +54,7 @@ class spectacular.Runner
         if dependency?
           @checkDependency example, dependency
           dependencies.push dependency
-          if dependency.children?
-            @register s for s in dependency.allExamples
-          else
-            @register dependency
+          @register s for s in dependency.allExamples
         else
           throw new Error "unmet dependency #{dep} for example #{example}"
 
@@ -97,6 +94,8 @@ class spectacular.Runner
       for dep in dependency.dependencies
         dependency = @root.identifiedExamplesMap[dep]
         @checkCircularity example, dependency if dependency?
+
+    return
 
   executeSpecs: =>
     promise = new spectacular.Promise
