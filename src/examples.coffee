@@ -301,7 +301,9 @@ class spectacular.ExampleGroup extends spectacular.Example
 
   run: ->
 
-  executeBlock: -> @block.call(this)
+  executeBlock: ->
+    return it(-> pending()) unless @block?
+    @block.call(this)
 
   hasExclusiveExamples: -> @allExclusiveExamples.length > 0
 

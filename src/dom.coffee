@@ -69,8 +69,9 @@ class spectacular.dom.DOMExpression
       else if indent < currentIndent and Math.round(indent) is indent
         dif = currentIndent - indent
         currentParent = current.nthAncestor Math.abs(dif)
-        currentIndent = indent
+        currentParent.addExpression exprInst
         exprInst.parent = currentParent
+        currentIndent = indent
         current = exprInst
 
       else invalidIndent()

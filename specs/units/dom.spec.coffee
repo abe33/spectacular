@@ -15,7 +15,7 @@ describe spectacular.dom.DOMExpression, ->
               h3
                 'article title'
               p
-                'article content'
+                /article content/
 
             footer
       '''
@@ -41,6 +41,17 @@ describe spectacular.dom.DOMExpression, ->
           '''
 
         itsReturn with: [$('html')], -> should be true
+
+      context 'with a dom failing after a negative indent', ->
+        given 'dom', -> '''
+          article
+            h3
+              'article title'
+            p
+              /article.*foo/
+          '''
+
+        itsReturn with: [$('html')], -> should be false
 
     context 'with an invalid dom', ->
       subject -> => new spectacular.dom.DOMExpression @dom
