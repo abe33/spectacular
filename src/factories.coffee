@@ -32,7 +32,7 @@ class spectacular.factories.Set
 class spectacular.factories.Trait
   @include spectacular.Globalizable
 
-  EXPOSED_PROPERTIES: 'set createWith'.split(/\s+/g)
+  globalizable: 'set createWith'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
@@ -47,7 +47,7 @@ class spectacular.factories.Trait
     @setters.forEach (setter) -> setter.apply instance
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
-  EXPOSED_PROPERTIES: 'set trait createWith'.split(/\s+/g)
+  globalizable: 'set trait createWith'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name

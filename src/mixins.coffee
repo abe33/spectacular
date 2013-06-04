@@ -25,47 +25,49 @@ class spectacular.HasAncestors
 
 class spectacular.Globalizable
   keepContext: true
+
   globalize: ->
     @previous ||= {}
-
-    _global = spectacular.global
-    @EXPOSED_PROPERTIES.forEach (k) =>
-      @previous[k] = _global[k] if _global[k]?
-      value = @[k]
-      self = this
-      if typeof value is 'function'
-        value._name = k
-        if @keepContext
-          proxy = -> value.apply self, arguments
-          proxy._name = k
-          _global[k] = proxy
-        else
-          _global[k] = value
-      else
-        _global[k] = value
-
+    @globalizable.forEach (k) => @globalizeMember k, @[k]
     @globalized = true
 
   unglobalize: ->
-    _global = spectacular.global
-    @EXPOSED_PROPERTIES.forEach (k) =>
-      if @previous[k]?
-        _global[k] = @previous[k]
-      else
-        delete _global[k]
-
+    @globalizable.forEach (k) => @unglobalizeMember k, @[k]
     @globalized = false
+
+  globalizeMember: (key, value) ->
+    _global = spectacular.global
+    @previous[key] = _global[key] if _global[key]?
+    self = this
+    if typeof value is 'function'
+      value._name = key
+      if @keepContext
+        proxy = -> value.apply self, arguments
+        proxy._name = key
+        _global[key] = proxy
+      else
+        _global[key] = value
+    else
+      _global[key] = value
+
+  unglobalizeMember: (key, value) ->
+    _global = spectacular.global
+
+    if @previous[k]?
+      _global[k] = @previous[k]
+    else
+      delete _global[k]
 
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable
 
-  constructor: (@__EXPOSED_PROPERTIES...) ->
+  constructor: (@__globalizable...) ->
 
-  Object.defineProperty this.prototype, 'EXPOSED_PROPERTIES',
+  Object.defineProperty this.prototype, 'globalizable',
     configurable: true
     get: ->
-      if @__EXPOSED_PROPERTIES.length > 0
-        @__EXPOSED_PROPERTIES
+      if @__globalizable.length > 0
+        @__globalizable
       else
         utils.keys this
 

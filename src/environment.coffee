@@ -2,7 +2,7 @@
 class spectacular.Environment
   @include spectacular.Globalizable
 
-  EXPOSED_PROPERTIES: 'it xit describe xdescribe context xcontext
+  globalizable: 'it xit describe xdescribe context xcontext
     before after given subject its itsInstance itsReturn
     withParameters fail pending success skip should shouldnt
     dependsOn spyOn the withArguments whenPass fixture specify
@@ -27,8 +27,8 @@ class spectacular.Environment
     _globalize.call(this)
     spectacular.factories.globalize()
     spectacular.matchers.globalize()
-    @loadObjectExtensions()
-    @loadJQuery()
+    @globalizeObjectExtensions()
+    @globalizeJQuery()
 
   unglobalize: ->
     _unglobalize.call(this)
@@ -36,10 +36,10 @@ class spectacular.Environment
     spectacular.matchers.unglobalize()
 
 
-  loadJQuery: ->
+  globalizeJQuery: ->
     spectacular.global.$ = @options.jQuery
 
-  loadObjectExtensions: ->
+  globalizeObjectExtensions: ->
     env = this
     Object.defineProperty Object.prototype, 'should', {
       writable: true,
