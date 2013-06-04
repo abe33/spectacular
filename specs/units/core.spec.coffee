@@ -61,6 +61,16 @@ runningSpecs('failing examples')
     it -> fail()
     it -> fail()
 
+
+runningSpecs('it without block')
+.shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
+  describe 'it without block', ->
+    it 'foo'
+
+runningSpecs('describe without block')
+.shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
+  describe 'foo'
+
 runningSpecs('async example timing out')
 .shouldFailWith /1 failure/, ->
   it (async) ->
