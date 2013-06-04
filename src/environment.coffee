@@ -2,26 +2,55 @@
 class spectacular.Environment
   @include spectacular.Globalizable
 
-  globalizable: 'it xit describe xdescribe context xcontext
-    before after given subject its itsInstance itsReturn
-    withParameters fail pending success skip should shouldnt
-    dependsOn spyOn the withArguments whenPass fixture specify
-    except only sharedExample itBehaveLike'.split(/\s+/g)
-
   constructor: (@options) ->
+    @globalizable = 'it xit describe xdescribe
+      before after given subject its itsInstance itsReturn
+      withParameters fail pending success skip should shouldnt
+      dependsOn spyOn whenPass fixture except only sharedExample itBehaveLike'.split(/\s+/g)
+
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
+    @sharedExamples = {}
+
+    @createExampleAlias 'the'
+    @createExampleAlias 'specify'
+
+    @createExampleGroupAlias 'context'
+    @createOuterExampleAlias 'xcontext', 'xdescribe'
+    @createOuterExampleAlias 'withArguments', 'withParameters'
+
     @registerFixtureHandler 'json', @handleJSONFixture
     @registerFixtureHandler 'html', @handleHTMLFixture
     @registerFixtureHandler 'dom', @handleDOMFixture
-    @sharedExamples = {}
 
   run: => @runner.run()
 
   _globalize = Environment::globalize
   _unglobalize = Environment::unglobalize
+
+  createGlobalizedMethod: (name, block) ->
+    unless name in @globalizable
+      @globalizable.push name
+      @[name] = block
+
+      @globalizeMember name, block if @globalized
+
+  createExampleGroupAlias: (name) -> @createOuterExampleAlias name, 'describe'
+  createExampleAlias: (name) -> @createOuterExampleAlias name, 'it'
+
+  createInnerExampleAlias: (newName, oldName) ->
+    @createGlobalizedMethod newName, ->
+      @notOutsideIt newName
+
+      @[oldName].apply this, arguments
+
+  createOuterExampleAlias: (newName, oldName) ->
+    @createGlobalizedMethod newName, ->
+      @notInsideIt newName
+
+      @[oldName].apply this, arguments
 
   globalize: ->
     _globalize.call(this)
@@ -34,7 +63,6 @@ class spectacular.Environment
     _unglobalize.call(this)
     spectacular.factories.unglobalize()
     spectacular.matchers.unglobalize()
-
 
   globalizeJQuery: ->
     spectacular.global.$ = @options.jQuery
@@ -91,14 +119,6 @@ class spectacular.Environment
     example = new spectacular.Example block, msgOrBlock, @currentExampleGroup
     @currentExampleGroup.addChild example
     example
-
-  the: (msgOrBlock, block) ->
-    @notInsideIt 'the'
-    @it msgOrBlock, block
-
-  specify: (msgOrBlock, block) ->
-    @notInsideIt 'specify'
-    @it msgOrBlock, block
 
   xit: (msgOrBlock, block) ->
     @notInsideIt 'xit'
@@ -185,23 +205,12 @@ class spectacular.Environment
 
     currentGroup
 
-
   xdescribe: (subject, options, block) ->
     @notInsideIt 'xdescribe'
 
     [options, block] = [block, options] if typeof options is 'function'
 
     describe subject, -> it -> pending()
-
-  context: (subject, options, block) ->
-    @notInsideIt 'context'
-
-    @describe subject, options, block
-
-  xcontext: (subject, options, block)  ->
-    @notInsideIt 'xcontext'
-
-    @xdescribe subject, options, block
 
   withParameters: (args...) ->
     @notInsideIt 'withParameters'
@@ -211,11 +220,6 @@ class spectacular.Environment
         args[0].call(this)
       else
         args
-
-  withArguments: ->
-    @notInsideIt 'withArguments'
-
-    @withParameters.apply this, arguments
 
   dependsOn: (spec) ->
     @notInsideIt 'dependsOn'
@@ -257,6 +261,35 @@ class spectacular.Environment
 
     obj[method] = spy
     spy
+
+  should: (matcher, neg=false) ->
+    @notOutsideIt 'should'
+
+    return unless matcher?
+    @currentExample.result.addExpectation(
+      new spectacular.Expectation(
+        @currentExample,
+        @currentExample.subject,
+        matcher,
+        neg,
+        new Error
+      )
+    )
+
+  shouldnt: (matcher) -> @should matcher, true
+
+  except: (example) -> example.inclusive = true
+  only: (example) -> example.exclusive = true
+
+  sharedExample: (name, block) ->
+    if name of @sharedExamples
+      throw new Error "shared example '#{name}' already registered"
+    @sharedExamples[name] = block
+
+  itBehaveLike: (name, options={}) ->
+    unless name of @sharedExamples
+      throw new Error "shared example '#{name}' not found"
+    @sharedExamples[name].call null, options
 
   fixture: (file, options={}) ->
     @notInsideIt 'fixture'
@@ -302,34 +335,5 @@ class spectacular.Environment
 
     spectacular.Promise.unit content
 
-
-  should: (matcher, neg=false) ->
-    @notOutsideIt 'should'
-
-    return unless matcher?
-    @currentExample.result.addExpectation(
-      new spectacular.Expectation(
-        @currentExample,
-        @currentExample.subject,
-        matcher,
-        neg,
-        new Error
-      )
-    )
-
-  shouldnt: (matcher) -> @should matcher, true
-
-  except: (example) -> example.inclusive = true
-  only: (example) -> example.exclusive = true
-
-  sharedExample: (name, block) ->
-    if name of @sharedExamples
-      throw new Error "shared example '#{name}' already registered"
-    @sharedExamples[name] = block
-
-  itBehaveLike: (name, options={}) ->
-    unless name of @sharedExamples
-      throw new Error "shared example '#{name}' not found"
-    @sharedExamples[name].call null, options
 
   toString: -> '[spectacular Environment]'
