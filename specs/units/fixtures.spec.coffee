@@ -63,5 +63,12 @@ describe fixture, ->
         it -> should match @dom
         it -> shouldnt contains @dom
 
+  context 'for an unhandled extension', ->
+    fixture 'sample.txt'
+    subject -> @fixture
+
+    it -> should equal 'sample\n'
+
+
 
 
