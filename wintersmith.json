@@ -1,0 +1,11 @@
+{
+  "contents": "./docs",
+  "templates": "./docs/templates",
+  "output": "./pages",
+  "ignore": [
+    "./docs/templates/*"
+  ],
+  "locals": {
+    "title": "Spectacular"
+  }
+}
