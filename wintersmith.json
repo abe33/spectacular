@@ -6,6 +6,11 @@
     "./docs/templates/*"
   ],
   "locals": {
-    "title": "Spectacular"
-  }
+    "title": "Spectacular",
+    "version": "0.0.1"
+  },
+  "plugins": [
+    "wintersmith-stylus",
+    "wintersmith-coffee"
+  ]
 }

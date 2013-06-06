@@ -35,6 +35,8 @@
     "express": "~3.2.4",
     "stylus": "~0.32.1",
     "jquery": "~1.8.3",
-    "wintersmith": "~2.0.5"
+    "wintersmith": "~2.0.5",
+    "wintersmith-stylus": "~0.1.2",
+    "wintersmith-coffee": "~0.1.2"
   }
 }
