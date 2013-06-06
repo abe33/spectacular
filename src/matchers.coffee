@@ -66,9 +66,9 @@ spectacular.matchers.have.selector = (selector) ->
     @message = "Expected '#{actual.html()}'#{notText} to have selector '#{selector}'"
     actual.find(selector).length > 0
 
-spectacular.matchers.be = (value) ->
+spectacular.matchers.be = (desc, value=desc) ->
   assert: (actual, notText) ->
-    @description = "should#{notText} be #{value}"
+    @description = "should#{notText} be #{desc}"
     switch typeof value
       when 'string'
         state = utils.findStateMethodOrProperty actual, value
@@ -92,7 +92,8 @@ spectacular.matchers.be = (value) ->
         @message = "Expected #{actual}#{notText} to be #{value}"
         actual?.valueOf() is value
       else
-        @description = "should#{notText} be #{utils.squeeze utils.inspect value}"
+        desc = if typeof desc is 'string' then desc else utils.squeeze utils.inspect value
+        @description = "should#{notText} be #{desc}"
         @message = "Expected #{utils.inspect actual}#{notText} to be #{utils.inspect value}"
         actual is value
 
