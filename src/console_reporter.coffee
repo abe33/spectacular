@@ -1,7 +1,22 @@
 
 ## StackReporter
 
+PROGRESS_CHAR_MAP =
+  pending: '*'
+  skipped: 'x'
+  failure: 'F'
+  errored: 'E'
+  success: '.'
+
+PROGRESS_COLOR_MAP =
+  pending: 'yellow'
+  skipped: 'magenta'
+  failure: 'red'
+  errored: 'yellow'
+  success: 'green'
+
 class spectacular.StackReporter
+
   constructor: (@error, @options) ->
 
   format: ->
@@ -149,21 +164,52 @@ class spectacular.ConsoleReporter
     @dispatch new spectacular.Event 'message', res if res?
 
   formatExampleResult: (example) ->
-    if @options.noColors
-      switch example.result.state
-        when 'pending' then '*'
-        when 'skipped' then 'x'
-        when 'failure' then 'F'
-        when 'errored' then 'E'
-        when 'success' then '.'
+    state = example.result.state
 
+    if @options.documentation
+      @lastDepth ||= 0
+      @lastAncestorsStack ||= []
+
+      ancestors = example.ancestors.filter (e) -> e.ownDescription isnt ''
+      dif = @cropAncestors ancestors, @lastAncestorsStack
+      start = ancestors.length - dif.length
+      res = @formatDocumentation example, dif, start, PROGRESS_COLOR_MAP[state]
+
+      @lastAncestorsStack = ancestors
+
+
+      res
     else
-      switch example.result.state
-        when 'pending' then '*'.yellow
-        when 'skipped' then 'x'.magenta
-        when 'failure' then 'F'.red
-        when 'errored' then 'E'.yellow
-        when 'success' then '.'.green
+      @colorize PROGRESS_CHAR_MAP[state], PROGRESS_COLOR_MAP[state]
+
+  formatDocumentation: (example, stack, start, color) ->
+    reverseStack = []
+    reverseStack.unshift e for e in stack
+    res = ''
+
+    for e,i in reverseStack
+      res += '\n' if i is 0
+      res += '\n'
+      res += utils.indent(utils.strip(e.ownDescription), (start + 1) * 2)
+      start += 1
+
+    res += '\n'
+    res += utils.indent(
+      @colorize(utils.strip(example.ownDescriptionWithExpectations), color),
+      (start + 1) * 2
+    )
+
+    @lastDepth = start
+
+    res
+
+  cropAncestors: (ancestors, lastAncestorsStack) ->
+    a = []
+    a.push elder for elder in ancestors when elder not in lastAncestorsStack
+    a
+
+  colorize: (str, color) ->
+    if @options.noColors then str else str[color]
 
   formatStack: (e) ->
     new spectacular.StackReporter(e, @options).format()

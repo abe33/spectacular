@@ -15,6 +15,7 @@ options =
   trace: true
   longTrace: false
   showSource: true
+  documentation: false
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
   fixturesRoot: './specs/support/fixtures'
@@ -45,6 +46,7 @@ while args.length
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
     when '--server' then options.server = true
+    when '--documentation' then options.documentation = true
     when '--source', '-s' then options.source = options.shift()
     else options.globs.push option
 

@@ -24,6 +24,7 @@ options = {
   trace: true,
   longTrace: false,
   showSource: true,
+  documentation: false,
   matchersRoot: './specs/support/matchers',
   helpersRoot: './specs/support/helpers',
   fixturesRoot: './specs/support/fixtures',
@@ -85,6 +86,9 @@ while (args.length) {
       break;
     case '--server':
       options.server = true;
+      break;
+    case '--documentation':
+      options.documentation = true;
       break;
     case '--source':
     case '-s':

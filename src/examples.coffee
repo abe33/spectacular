@@ -100,6 +100,11 @@ class spectacular.Example
     expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
     "#{@description} #{expectationsDescriptions}"
 
+  @getter 'ownDescriptionWithExpectations', ->
+    expectationsDescriptions = @result.expectations.map (e) -> e.description
+    expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
+    "#{@ownDescription} #{expectationsDescriptions}"
+
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
   pending: ->
