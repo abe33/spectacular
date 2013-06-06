@@ -48,14 +48,14 @@ describe spectacular.Promise, ->
       context 'when the first promise is fulfilled', ->
         before -> @firstPromise.resolve()
 
-        the 'secondPromise', -> @secondPromise.should be 'fulfilled'
-        the 'thirdPromise', -> @thirdPromise.should be 'fulfilled'
+        specify 'the secondPromise', -> @secondPromise.should be 'fulfilled'
+        specify 'the thirdPromise', -> @thirdPromise.should be 'fulfilled'
 
       context 'when the first promise is rejected', ->
         before -> @firstPromise.reject('message')
 
-        the 'secondPromise', -> @secondPromise.should be 'rejected'
-        the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+        specify 'the secondPromise', -> @secondPromise.should be 'rejected'
+        specify 'the thirdPromise', -> @thirdPromise.should be 'rejected'
 
       context 'and one of the factory return a promise', ->
         given 'firstPromise', -> new spectacular.Promise
@@ -66,24 +66,24 @@ describe spectacular.Promise, ->
         context 'when the first promise is fulfilled', ->
           before -> @firstPromise.resolve()
 
-          the 'secondPromise', -> @secondPromise.shouldnt be 'fulfilled'
-          the 'thirdPromise', -> @thirdPromise.should be 'pending'
+          specify 'the secondPromise', -> @secondPromise.shouldnt be 'fulfilled'
+          specify 'the thirdPromise', -> @thirdPromise.should be 'pending'
 
           context 'and the returned promise is fulfilled', ->
             before -> @returnedPromise.resolve()
 
-            the 'secondPromise', -> @secondPromise.should be 'fulfilled'
-            the 'thirdPromise', -> @thirdPromise.should be 'fulfilled'
+            specify 'the secondPromise', -> @secondPromise.should be 'fulfilled'
+            specify 'the thirdPromise', -> @thirdPromise.should be 'fulfilled'
 
           context 'and the returned promise is rejected', ->
             before -> @returnedPromise.reject('message')
 
-            the 'secondPromise', -> @secondPromise.should be 'rejected'
-            the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+            specify 'the secondPromise', -> @secondPromise.should be 'rejected'
+            specify 'the thirdPromise', -> @thirdPromise.should be 'rejected'
 
         context 'when the first promise is rejected', ->
           before -> @firstPromise.reject('message')
 
-          the 'secondPromise', -> @secondPromise.should be 'rejected'
-          the 'thirdPromise', -> @thirdPromise.should be 'rejected'
+          specify 'the secondPromise', -> @secondPromise.should be 'rejected'
+          specify 'the thirdPromise', -> @thirdPromise.should be 'rejected'
 

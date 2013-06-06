@@ -1,6 +1,6 @@
 
 describe describe, ->
-  runningSpecs('called in a describe block')
+  runningSpecs('call in a describe block')
   .shouldSucceedWith /1 success/, ->
     describe 'foo', ->
       describe 'bar', ->
@@ -10,7 +10,7 @@ describe describe, ->
   environmentMethod('describe').cannotBeCalledInsideIt()
 
 describe context, ->
-  runningSpecs('called in a describe block')
+  runningSpecs('call in a describe block')
   .shouldSucceedWith /1 success/, ->
     describe 'foo', ->
       context 'bar', ->
@@ -20,7 +20,7 @@ describe context, ->
   environmentMethod('context').cannotBeCalledInsideIt()
 
 describe xdescribe, ->
-  runningSpecs('called at top level')
+  runningSpecs('call at top level')
   .shouldSucceedWith /0 failures, (.*), 1 pending/, ->
     xdescribe 'pending examples', ->
       it -> fail()
@@ -28,7 +28,7 @@ describe xdescribe, ->
   environmentMethod('xdescribe').cannotBeCalledInsideIt()
 
 describe xcontext, ->
-  runningSpecs('called at top level')
+  runningSpecs('call at top level')
   .shouldSucceedWith /0 failures, (.*), 1 pending/, ->
     xcontext 'pending examples', ->
       it -> fail()
@@ -36,25 +36,25 @@ describe xcontext, ->
   environmentMethod('xcontext').cannotBeCalledInsideIt()
 
 describe should, ->
-  runningSpecs('called inside it')
+  runningSpecs('call inside it')
   .shouldSucceedWith /1 success, 1 assertion/, ->
     describe 'foo', ->
       subject -> true
       it -> should be true
 
-  runningSpecs('called inside it without matcher')
+  runningSpecs('call inside it without matcher')
   .shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
     describe 'foo', ->
       subject -> true
       it -> should()
 
-  runningSpecs('called outside it')
+  runningSpecs('call outside it')
   .shouldStopWith /should called outside a it block/, ->
     describe 'foo', ->
       should be true
 
 describe it, ->
-  runningSpecs('called inside describe')
+  runningSpecs('call inside describe')
   .shouldSucceedWith /2 success, 2 assertion/, ->
     describe 'foo', ->
       subject -> true
@@ -64,7 +64,7 @@ describe it, ->
   environmentMethod('it').cannotBeCalledInsideIt()
 
 describe the, ->
-  runningSpecs('called inside describe')
+  runningSpecs('call inside describe')
   .shouldSucceedWith /2 success, 2 assertion/, ->
     describe 'foo', ->
       subject -> true
@@ -74,7 +74,7 @@ describe the, ->
   environmentMethod('the').cannotBeCalledInsideIt()
 
 describe xit, ->
-  runningSpecs('called inside describe')
+  runningSpecs('call inside describe')
   .shouldSucceedWith /2 pending/, ->
     describe 'foo', ->
       subject -> true
@@ -84,7 +84,7 @@ describe xit, ->
   environmentMethod('xit').cannotBeCalledInsideIt()
 
 describe withParameters, ->
-  runningSpecs('called inside describe')
+  runningSpecs('call inside describe')
   .shouldSucceedWith /1 success/, ->
     f = (a) -> a
     describe f, ->
@@ -95,7 +95,7 @@ describe withParameters, ->
   environmentMethod('withParameters').cannotBeCalledInsideIt()
 
 describe withArguments, ->
-  runningSpecs('called inside describe')
+  runningSpecs('call inside describe')
   .shouldSucceedWith /1 success/, ->
     f = (a) -> a
     describe f, ->
@@ -107,23 +107,23 @@ describe withArguments, ->
 
 describe Object, ->
   describe '::should', ->
-    runningSpecs('called inside it')
+    runningSpecs('call inside it')
     .shouldSucceedWith /1 success, 1 assertion/, ->
       describe 'foo', ->
         the -> true.should be true
 
-    runningSpecs('called inside it without matcher')
+    runningSpecs('call inside it without matcher')
     .shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
       describe 'foo', ->
         the -> {}.should()
 
-    runningSpecs('called outside it')
+    runningSpecs('call outside it')
     .shouldStopWith /should called outside a it block/, ->
       describe 'foo', ->
         {}.should be true
 
 describe before, ->
-  runningSpecs('called in describe')
+  runningSpecs('call in describe')
   .shouldSucceedWith /1 success/, ->
     describe 'foo', ->
       before -> @object = {}
@@ -133,7 +133,7 @@ describe before, ->
 
 describe after, ->
   afterCalled = false
-  runningSpecs('called in describe')
+  runningSpecs('call in describe')
   .shouldSucceedWith /1 success/, ->
     describe 'foo', ->
       after -> afterCalled = true
