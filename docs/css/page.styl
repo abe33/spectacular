@@ -1,0 +1,107 @@
+body
+  margin 0
+  padding 20px
+  font-family 'Roboto', sans-serif
+  font-weight 300
+  color #666
+
+pre
+  border 1px solid #e4e4e4
+  padding 8px
+  color #333
+
+  .keyword
+  .operators
+  .punctuation
+  .hash_begin
+  .hash_end
+  .function
+  .params_begin
+  .params_end
+  .property_end
+  .class
+  .group_begin
+  .group_end
+    color: blue
+
+  // .params
+  // .subst
+  // .hash
+  // .text
+  //   color: code_color
+
+  .string
+  .heredocs
+    color: green
+
+  .string_begin
+  .string_end
+  .heredocs_begin
+  .heredocs_end
+  .embedded_begin
+  .embedded_end
+    color: #C60000
+
+  .number
+    color: magenta
+
+  .literal
+  .top_level
+  .constant
+  .char_range_begin
+  .char_range_end
+  .range_begin
+  .range_end
+  .regexp_operators
+    color: orange
+
+  .title
+  .property
+  .class_end
+    color: blue
+
+  .regexp
+  .hereregexp
+    color: #ff0000
+
+  .comment
+  .embedded
+  .string_quote
+    color: #586e75
+
+  .global
+  .escaped
+  .subst_begin
+  .subst_end
+  .char_range
+    color: orange
+
+  .char_range > .escaped
+    color: pink
+
+header
+  h1
+  h2
+    display inline-block
+
+h1
+  font-weight 100
+  font-size 3em
+h2
+  font-weight 300
+  font-size 2.4em
+h3
+  font-weight 300
+  font-size 1.6em
+
+
+.coffee
+  .lang-javascript
+    display none
+
+  &.compiled
+    .lang-javascript
+      display block
+
+    .lang-coffeescript
+      display none
