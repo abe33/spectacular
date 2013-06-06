@@ -139,6 +139,8 @@ class spectacular.Example
     Object.defineProperty context, 'subject', get: => @subject
     context
 
+  hasDependencies: -> @dependencies.length > 0
+
   dependenciesMet: -> true
 
   run: ->
@@ -249,6 +251,10 @@ class spectacular.ExampleGroup extends spectacular.Example
 
   @descendantsScope 'allExamples', ExampleGroup.filterExamples
   @descendantsScope 'allExclusiveExamples', ExampleGroup.filterExclusiveExamples
+  @descendantsScope 'allExamplesWithDependecies', (e) ->
+    ExampleGroup.filterExamples(e) and e.hasDependencies()
+  @descendantsScope 'allExclusiveExamplesWithDependecies', (e) ->
+    ExampleGroup.filterExclusiveExamples(e) and e.hasDependencies()
 
   @descendantsScope 'identifiedExamples', (e) -> e.options?.id?
   @getter 'identifiedExamplesMap', ->
@@ -306,6 +312,12 @@ class spectacular.ExampleGroup extends spectacular.Example
     @block.call(this)
 
   hasExclusiveExamples: -> @allExclusiveExamples.length > 0
+
+  hasExamplesWithDependencies: ->
+    @allExamples.some (e) -> e.hasDependencies()
+
+  hasExclusiveExamplesWithDependencies: ->
+    @allExclusiveExamples.some (e) -> e.hasDependencies()
 
   toString: -> "[ExampleGroup(#{@description})]"
 
