@@ -177,4 +177,7 @@ spectacular.matchers.haveBeenCalled =
       @message = "Expected a spy but it was #{actual}"
       false
 
-  with: (@arguments...) -> this
+  with: (args...) ->
+    m = Object.create this
+    m.arguments = args
+    m
