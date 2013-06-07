@@ -172,8 +172,10 @@ class spectacular.Environment
   subject: (name, block) ->
     @notInsideIt 'subject'
     [name, block] = [block, name] if typeof name is 'function'
-    @currentExampleGroup.ownSubjectBlock = block
-    @given name, block if name?
+    subjectBlock = ->
+      @["__#{name or 'subject'}"] ||= block.call this
+    @currentExampleGroup.ownSubjectBlock = subjectBlock
+    @given name, subjectBlock if name?
 
   given: (name, block) ->
     @notInsideIt 'given'
