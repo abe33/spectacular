@@ -86,7 +86,6 @@ class spectacular.Example
     @exclusive = false
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
-  @getter 'finished', -> @examplePromise?.isResolved()
   @getter 'failed', -> @examplePromise?.isRejected()
   @getter 'succeed', -> @examplePromise?.isFulfilled()
   @getter 'reason', -> @afterReason or @examplePromise?.reason
@@ -266,7 +265,6 @@ class spectacular.ExampleGroup extends spectacular.Example
     res = {}
     res[e.options.id] = e for e in @identifiedExamples
     res
-  @getter 'finished', -> @allExamples.every (e) -> e.finished
   @getter 'failed', -> @allExamples.some (e) -> e.failed
   @getter 'succeed', -> not @failed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
