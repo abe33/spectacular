@@ -109,6 +109,7 @@ class spectacular.Example
     "#{@description} #{expectationsDescriptions}"
 
   @getter 'ownDescriptionWithExpectations', ->
+    return @result.state if @result.expectations.length is 0 and @ownDescription is ''
     expectationsDescriptions = @result.expectations.map (e) -> e.description
     expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
     "#{@ownDescription} #{expectationsDescriptions}"
