@@ -169,3 +169,11 @@ describe itsInstance, ->
   environmentMethod('itsInstance').cannotBeCalledInsideIt()
   environmentMethod('itsInstance').cannotBeCalledWithoutPreviousSubject()
 
+runningSpecs('inner example alias').
+shouldSucceedWith /1 success/, ->
+  spectacular.env.createInnerExampleAlias 'may', 'should'
+
+  describe 'foo', ->
+    subject -> true
+
+    it -> may be true
