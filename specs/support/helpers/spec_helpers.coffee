@@ -95,13 +95,13 @@ exports.runningSpecs = (desc) ->
 
 exports.environmentMethod = (method) ->
   cannotBeCalledInsideIt: ->
-    runningSpecs('called inside it')
+    runningSpecs('call inside it')
     .shouldFailWith /called inside a it block/, ->
       describe 'foo', ->
         it -> spectacular.global[method]()
 
   cannotBeCalledOutsideIt: ->
-    runningSpecs('called outside it')
+    runningSpecs('call outside it')
     .shouldStopWith /called outside a it block/, ->
       describe 'foo', -> spectacular.global[method]()
 
