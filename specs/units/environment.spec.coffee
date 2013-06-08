@@ -169,6 +169,15 @@ describe itsInstance, ->
   environmentMethod('itsInstance').cannotBeCalledInsideIt()
   environmentMethod('itsInstance').cannotBeCalledWithoutPreviousSubject()
 
+  context 'with a class that takes arguments in constructor', ->
+    subject ->
+      class Foo
+        constructor: (@a, @b) ->
+
+    itsInstance with: [0,1], -> should exist
+    itsInstance 'a', with: [0,1], -> should equal 0
+    itsInstance 'b', with: [0,1], -> should equal 1
+
 runningSpecs('inner example alias').
 shouldSucceedWith /1 success/, ->
   spectacular.env.createInnerExampleAlias 'may', 'should'

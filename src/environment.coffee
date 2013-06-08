@@ -143,10 +143,15 @@ class spectacular.Environment
       @subject property, -> parentSubjectBlock?.call(this)[property]
       @it block
 
-  itsInstance: (property, block) ->
+  itsInstance: (property, options, block) ->
     @notInsideIt 'itsInstance'
 
-    [property, block] = [block, property] if typeof property is 'function'
+    if typeof property is 'function'
+      [property, options, block] = [block, {}, property]
+    else if typeof property is 'object'
+      [property, options, block] = [null, property, options]
+    else if typeof options is 'function'
+      [options, block] = [{}, options]
 
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     unless parentSubjectBlock?
@@ -154,7 +159,7 @@ class spectacular.Environment
 
     @context 'instance', =>
       @subject 'instance', ->
-        build parentSubjectBlock?.call(this), @parameters or []
+        build parentSubjectBlock?.call(this), options.with or @parameters or []
 
       if property?
         @its property, block
