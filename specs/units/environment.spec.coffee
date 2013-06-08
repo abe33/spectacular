@@ -174,6 +174,29 @@ describe itsInstance, ->
     itsInstance 'a', with: [0,1], -> should equal 0
     itsInstance 'b', with: [0,1], -> should equal 1
 
+describe 'expect(...).to', ->
+  environmentMethod('expect').cannotBeCalledOutsideIt()
+
+  runningSpecs('call with only a value')
+  .shouldSucceedWith /10 should be equal to 10/, ->
+    specify -> expect(10).to equal 10
+
+  runningSpecs('call with a description and a value')
+  .shouldSucceedWith /a number should be equal to 10/, ->
+    specify -> expect('a number', 10).to equal 10
+
+  runningSpecs('call without matcher')
+  .shouldFailWith /called without a matcher/, ->
+    specify -> expect().to()
+
+describe 'expect(...).not.to', ->
+  specify ->
+    expect('a number', 5).not.to equal 10
+
+  runningSpecs('call without matcher')
+  .shouldFailWith /called without a matcher/, ->
+    specify -> expect().not.to()
+
 runningSpecs('inner example alias').
 shouldSucceedWith /1 success/, ->
   spectacular.env.createInnerExampleAlias 'may', 'should'

@@ -3,10 +3,11 @@ class spectacular.Environment
   @include spectacular.Globalizable
 
   constructor: (@options) ->
-    @globalizable = 'it xit describe xdescribe
+    @globalizable = 'it xit describe xdescribe expect
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
-      dependsOn spyOn whenPass fixture except only sharedExample itBehaveLike'.split(/\s+/g)
+      dependsOn spyOn whenPass fixture except only sharedExample
+      itBehaveLike'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
@@ -295,6 +296,39 @@ class spectacular.Environment
     )
 
   shouldnt: (matcher) -> @should matcher, true
+
+  expect: (desc, value=desc) ->
+    @notOutsideIt 'expect'
+    self = this
+    err = new Error
+
+    to: (matcher) ->
+      self.notWihoutMatcher 'expect(...).to' unless matcher?
+
+      self.currentExample.result.addExpectation(
+        new spectacular.Expectation(
+          self.currentExample,
+          value,
+          matcher,
+          false,
+          err,
+          desc
+        )
+      )
+    not:
+      to: (matcher) ->
+        self.notWihoutMatcher 'expect(...).not.to' unless matcher?
+
+        self.currentExample.result.addExpectation(
+          new spectacular.Expectation(
+            self.currentExample,
+            value,
+            matcher,
+            true,
+            err,
+            desc
+          )
+        )
 
   except: (example) -> example.inclusive = true
   only: (example) -> example.exclusive = true

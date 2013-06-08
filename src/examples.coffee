@@ -2,7 +2,16 @@
 ## Expectation
 
 class spectacular.Expectation
-  constructor: (@example, @actual, @matcher, @not=false, @callstack) ->
+  constructor: (@example,
+                @actual,
+                @matcher,
+                @not=false,
+                @callstack,
+                ownDescription) ->
+    @ownDescription = if ownDescription?
+      "#{ownDescription} "
+    else
+      ''
 
   assert: =>
     promise = new spectacular.Promise
@@ -41,8 +50,8 @@ class spectacular.Expectation
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
-    @description = @matcher.description
-    @fullDescription = "#{@example.description} #{@matcher.description}"
+    @description = "#{@ownDescription}#{@matcher.description}"
+    @fullDescription = "#{@example.description} #{@ownDescription}#{@matcher.description}"
 
 ## ExampleResult
 
