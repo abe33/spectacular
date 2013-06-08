@@ -31,7 +31,7 @@ runningSpecs('scoped examples')
     it -> true.should be true
     only it -> true.should be true
 
-runningSpecs('excluded groups')
+runningSpecs('inclusive groups')
 .shouldSucceedWith /2 success, 2 assertion/, ->
   describe 'included groups', ->
     it -> true.should be true
@@ -40,7 +40,7 @@ runningSpecs('excluded groups')
   except describe 'inclusive groups', ->
     it -> true.should be true
 
-runningSpecs('scoped groups')
+runningSpecs('exclusive groups')
 .shouldSucceedWith /1 success, 1 assertion/, ->
   describe 'excluded groups', ->
     it -> true.should be true
@@ -61,6 +61,29 @@ runningSpecs('failing examples')
     it -> fail()
     it -> fail()
 
+
+runningSpecs('long trace, colors, no source and no documentation')
+.withOption('longTrace', true)
+.withOption('noColors', false)
+.withOption('showSource', false)
+.withOption('documentation', false)
+.shouldFailWith ///
+  1\ssuccess
+  (.*)
+  1\sfailure
+  (.*)
+  1\serror
+  (.*)
+  1\sskipped
+  (.*)
+  1\spending
+///, ->
+  describe 'failing examples', ->
+    it -> true.should be true
+    it -> fail()
+    it -> throw new Error
+    it -> skip()
+    it -> pending()
 
 runningSpecs('it without block')
 .shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
