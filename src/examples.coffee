@@ -271,7 +271,7 @@ class spectacular.ExampleGroup extends spectacular.Example
   @getter 'succeed', -> not @failed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
-  constructor: (block, desc, @parent, @options={}) ->
+  constructor: (block, desc='', @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
@@ -298,7 +298,8 @@ class spectacular.ExampleGroup extends spectacular.Example
                 subject = -> original.apply owner, arguments
             subject
         else
-          @noSpaceBeforeDescription = true if @parent.description is ''
+          if not @parent? or @parent.description is ''
+            @noSpaceBeforeDescription = true
 
       else
         @noSpaceBeforeDescription = true

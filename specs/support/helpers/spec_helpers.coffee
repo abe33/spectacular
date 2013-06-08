@@ -104,3 +104,8 @@ exports.environmentMethod = (method) ->
     runningSpecs('called outside it')
     .shouldStopWith /called outside a it block/, ->
       describe 'foo', -> spectacular.global[method]()
+
+  cannotBeCalledWithoutPreviousSubject: ->
+    runningSpecs('call in contex without previous subject')
+    .shouldStopWith /called in context without a previous subject/, ->
+      describe 'foo', -> spectacular.global[method]()

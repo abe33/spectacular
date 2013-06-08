@@ -147,7 +147,11 @@ class spectacular.Environment
     @notInsideIt 'itsInstance'
 
     [property, block] = [block, property] if typeof property is 'function'
+
     parentSubjectBlock = @currentExampleGroup.subjectBlock
+    unless parentSubjectBlock?
+      throw new Error 'itsReturn called in context without a previous subject'
+
     @context 'instance', =>
       @subject 'instance', ->
         build parentSubjectBlock?.call(this), @parameters or []
@@ -161,7 +165,11 @@ class spectacular.Environment
     @notInsideIt 'itsReturn'
 
     [block, options] = [options, {}] if typeof options is 'function'
+
     parentSubjectBlock = @currentExampleGroup.subjectBlock
+    unless parentSubjectBlock?
+      throw new Error 'itsReturn called in context without a previous subject'
+
     @context 'returned value', =>
       @subject 'returnedValue', ->
         parentSubjectBlock?.call(this).apply(options.inContext or this,

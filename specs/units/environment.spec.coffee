@@ -161,3 +161,11 @@ describe fixture, ->
 describe spyOn, ->
   environmentMethod('spyOn').cannotBeCalledOutsideIt()
 
+describe itsReturn, ->
+  environmentMethod('itsReturn').cannotBeCalledInsideIt()
+  environmentMethod('itsReturn').cannotBeCalledWithoutPreviousSubject()
+
+describe itsInstance, ->
+  environmentMethod('itsInstance').cannotBeCalledInsideIt()
+  environmentMethod('itsInstance').cannotBeCalledWithoutPreviousSubject()
+
