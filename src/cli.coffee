@@ -7,6 +7,7 @@ vm = require 'vm'
 Q = require 'q'
 walk = require 'walkdir'
 util = require 'util'
+jsdom = require 'jsdom'
 
 requireIntoGlobal = (file) ->
   matchers = require file
@@ -72,6 +73,17 @@ getReporter = (options) ->
   reporter.on 'report', (event) -> util.print event.target
   reporter
 
+loadDOM = ->
+  defer = Q.defer()
+  jsdom.env
+    html: '<html><head></head><body></body></html>'
+    features:
+      QuerySelector: true
+    done: (err, window) ->
+      return defer.reject(err) if err?
+      defer.resolve window
+  defer.promise
+
 loadFile = (options) ->
   cache = {}
   (file) ->
@@ -88,11 +100,13 @@ exports.run = (options) ->
   loadStartedAt = null
   loadEndedAt = null
 
-  options.loadFile = loadFile(options)
-  options.jQuery = require('jquery').create(null, '1.9')
-
   loadSpectacular(options)
-  .then ->
+  .then(loadDOM)
+  .then (window) ->
+    options.loadFile = loadFile(options)
+    spectacular.global.window = window
+    spectacular.global.document = window.document
+
     reporter = getReporter options
     spectacular.env.runner.on 'result', reporter.onResult
     spectacular.env.runner.on 'end', reporter.onEnd

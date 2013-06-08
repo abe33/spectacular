@@ -2,7 +2,16 @@
 ## Expectation
 
 class spectacular.Expectation
-  constructor: (@example, @actual, @matcher, @not=false, @callstack) ->
+  constructor: (@example,
+                @actual,
+                @matcher,
+                @not=false,
+                @callstack,
+                ownDescription) ->
+    @ownDescription = if ownDescription?
+      "#{ownDescription} "
+    else
+      ''
 
   assert: =>
     promise = new spectacular.Promise
@@ -41,8 +50,8 @@ class spectacular.Expectation
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
-    @description = @matcher.description
-    @fullDescription = "#{@example.description} #{@matcher.description}"
+    @description = "#{@ownDescription}#{@matcher.description}"
+    @fullDescription = "#{@example.description} #{@ownDescription}#{@matcher.description}"
 
 ## ExampleResult
 
@@ -86,7 +95,6 @@ class spectacular.Example
     @exclusive = false
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
-  @getter 'finished', -> @examplePromise?.isResolved()
   @getter 'failed', -> @examplePromise?.isRejected()
   @getter 'succeed', -> @examplePromise?.isFulfilled()
   @getter 'reason', -> @afterReason or @examplePromise?.reason
@@ -99,6 +107,12 @@ class spectacular.Example
     expectationsDescriptions = @result.expectations.map (e) -> e.description
     expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
     "#{@description} #{expectationsDescriptions}"
+
+  @getter 'ownDescriptionWithExpectations', ->
+    return @result.state if @result.expectations.length is 0 and @ownDescription is ''
+    expectationsDescriptions = @result.expectations.map (e) -> e.description
+    expectationsDescriptions = utils.literalEnumeration expectationsDescriptions
+    "#{@ownDescription} #{expectationsDescriptions}"
 
   @ancestorsScope 'identifiedAncestors', (e) -> e.options.id?
 
@@ -138,6 +152,8 @@ class spectacular.Example
     context = {}
     Object.defineProperty context, 'subject', get: => @subject
     context
+
+  hasDependencies: -> @dependencies.length > 0
 
   dependenciesMet: -> true
 
@@ -249,18 +265,21 @@ class spectacular.ExampleGroup extends spectacular.Example
 
   @descendantsScope 'allExamples', ExampleGroup.filterExamples
   @descendantsScope 'allExclusiveExamples', ExampleGroup.filterExclusiveExamples
+  @descendantsScope 'allExamplesWithDependecies', (e) ->
+    ExampleGroup.filterExamples(e) and e.hasDependencies()
+  @descendantsScope 'allExclusiveExamplesWithDependecies', (e) ->
+    ExampleGroup.filterExclusiveExamples(e) and e.hasDependencies()
 
   @descendantsScope 'identifiedExamples', (e) -> e.options?.id?
   @getter 'identifiedExamplesMap', ->
     res = {}
     res[e.options.id] = e for e in @identifiedExamples
     res
-  @getter 'finished', -> @allExamples.every (e) -> e.finished
   @getter 'failed', -> @allExamples.some (e) -> e.failed
   @getter 'succeed', -> not @failed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
-  constructor: (block, desc, @parent, @options={}) ->
+  constructor: (block, desc='', @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
@@ -287,7 +306,8 @@ class spectacular.ExampleGroup extends spectacular.Example
                 subject = -> original.apply owner, arguments
             subject
         else
-          @noSpaceBeforeDescription = true if @parent.description is ''
+          if not @parent? or @parent.description is ''
+            @noSpaceBeforeDescription = true
 
       else
         @noSpaceBeforeDescription = true
@@ -306,6 +326,12 @@ class spectacular.ExampleGroup extends spectacular.Example
     @block.call(this)
 
   hasExclusiveExamples: -> @allExclusiveExamples.length > 0
+
+  hasExamplesWithDependencies: ->
+    @allExamples.some (e) -> e.hasDependencies()
+
+  hasExclusiveExamplesWithDependencies: ->
+    @allExclusiveExamples.some (e) -> e.hasDependencies()
 
   toString: -> "[ExampleGroup(#{@description})]"
 

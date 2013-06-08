@@ -8,7 +8,7 @@ describe 'spyOn', ->
 
     context 'the returned spy', ->
       it -> should exist
-      it -> should be @object.method
+      it -> should be 'the object method', @object.method
 
     context 'calling the spied function', ->
       before ->
@@ -29,7 +29,7 @@ describe 'spyOn', ->
 
       context 'the returned spy', ->
         it -> should exist
-        it -> should be @object.method
+        it -> should be 'the object method', @object.method
 
       context 'calling the mocked function', ->
         before ->
@@ -50,7 +50,7 @@ describe 'spyOn', ->
 
       context 'the returned spy', ->
         it -> should exist
-        it -> should be @object.method
+        it -> should be 'the object method', @object.method
 
       context 'calling the mocked function', ->
         before ->
@@ -73,7 +73,7 @@ describe 'spyOn', ->
 
       context 'the returned spy', ->
         it -> should exist
-        it -> should be @object.method
+        it -> should be 'the object method', @object.method
 
       context 'calling the spied function', ->
         before ->

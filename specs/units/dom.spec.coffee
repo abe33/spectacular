@@ -25,11 +25,14 @@ describe spectacular.dom.DOMExpression, ->
     itsInstance 'source', -> should equal @dom
 
     describe '::match', ->
-      itsReturn with: [$('html')], -> should be true
-      itsReturn with: [$('section')], -> should be false
+      itsReturn with: (-> [document.querySelector 'html']), -> should be true
+      itsReturn with: (-> [document.querySelector '#fixtures section']), ->
+        should be false
+      itsReturn with: (-> [document.querySelectorAll 'section']), ->
+        should be false
 
     describe '::contained', ->
-      itsReturn with: [$('html')], -> should be false
+      itsReturn with: (-> [document.querySelector 'html']), -> should be false
 
       context 'with a dom looking for node content', ->
         given 'dom', -> '''
@@ -40,7 +43,7 @@ describe spectacular.dom.DOMExpression, ->
               /article.*content/
           '''
 
-        itsReturn with: [$('html')], -> should be true
+        itsReturn with: (-> [document]), -> should be true
 
       context 'with a dom failing after a negative indent', ->
         given 'dom', -> '''
@@ -51,7 +54,7 @@ describe spectacular.dom.DOMExpression, ->
               /article.*foo/
           '''
 
-        itsReturn with: [$('html')], -> should be false
+        itsReturn with: (-> [document]), -> should be false
 
     context 'with an invalid dom', ->
       subject -> => new spectacular.dom.DOMExpression @dom

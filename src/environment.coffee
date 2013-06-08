@@ -3,10 +3,11 @@ class spectacular.Environment
   @include spectacular.Globalizable
 
   constructor: (@options) ->
-    @globalizable = 'it xit describe xdescribe
+    @globalizable = 'it xit describe xdescribe expect
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
-      dependsOn spyOn whenPass fixture except only sharedExample itBehaveLike'.split(/\s+/g)
+      dependsOn spyOn whenPass fixture except only sharedExample
+      itBehavesLike'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
@@ -20,6 +21,7 @@ class spectacular.Environment
     @createExampleGroupAlias 'context'
     @createOuterExampleAlias 'xcontext', 'xdescribe'
     @createOuterExampleAlias 'withArguments', 'withParameters'
+    @createOuterExampleAlias 'itShould', 'itBehavesLike'
 
     @registerFixtureHandler 'json', @handleJSONFixture
     @registerFixtureHandler 'html', @handleHTMLFixture
@@ -100,12 +102,15 @@ class spectacular.Environment
     optionsCopy[k] = v for k,v of @options
     new spectacular.Environment optionsCopy
 
-  notInsideIt: (method) =>
+  notInsideIt: (method) ->
     if @currentExample?
       throw new Error "#{method} called inside a it block"
-  notOutsideIt: (method) =>
+  notOutsideIt: (method) ->
     unless @currentExample?
       throw new Error "#{method} called outside a it block"
+
+   notWihoutMatcher: (method) ->
+    throw new Error "#{method} called without a matcher"
 
   fail: -> @currentExample.reject new Error 'Failed'
   pending: -> @currentExample.pending()
@@ -143,14 +148,31 @@ class spectacular.Environment
       @subject property, -> parentSubjectBlock?.call(this)[property]
       @it block
 
-  itsInstance: (property, block) ->
+  itsInstance: (property, options, block) ->
     @notInsideIt 'itsInstance'
 
-    [property, block] = [block, property] if typeof property is 'function'
+    if typeof property is 'function'
+      [property, options, block] = [block, {}, property]
+    else if typeof property is 'object'
+      [property, options, block] = [null, property, options]
+    else if typeof options is 'function'
+      [options, block] = [{}, options]
+
     parentSubjectBlock = @currentExampleGroup.subjectBlock
+    unless parentSubjectBlock?
+      throw new Error 'itsReturn called in context without a previous subject'
+
     @context 'instance', =>
       @subject 'instance', ->
-        build parentSubjectBlock?.call(this), @parameters or []
+        params = if options.with?
+         if typeof options.with is 'function'
+            options.with.call(this)
+          else
+            options.with
+        else
+          @parameters or []
+
+        build parentSubjectBlock?.call(this), params
 
       if property?
         @its property, block
@@ -161,19 +183,39 @@ class spectacular.Environment
     @notInsideIt 'itsReturn'
 
     [block, options] = [options, {}] if typeof options is 'function'
+
     parentSubjectBlock = @currentExampleGroup.subjectBlock
+    unless parentSubjectBlock?
+      throw new Error 'itsReturn called in context without a previous subject'
+
     @context 'returned value', =>
       @subject 'returnedValue', ->
-        parentSubjectBlock?.call(this).apply(options.inContext or this,
-                                             options.with or @parameters or [])
+        context = if options.inContext?
+          if typeof options.inContext is 'function'
+            options.inContext.call(this)
+          else
+            options.inContext
+        else
+          this
+
+        params = if options.with?
+         if typeof options.with is 'function'
+            options.with.call(this)
+          else
+            options.with
+        else
+          @parameters or []
+        parentSubjectBlock?.call(this).apply(context, params)
 
       @it block
 
   subject: (name, block) ->
     @notInsideIt 'subject'
     [name, block] = [block, name] if typeof name is 'function'
-    @currentExampleGroup.ownSubjectBlock = block
-    @given name, block if name?
+    subjectBlock = ->
+      @["__#{name or 'subject'}"] ||= block.call this
+    @currentExampleGroup.ownSubjectBlock = subjectBlock
+    @given name, subjectBlock if name?
 
   given: (name, block) ->
     @notInsideIt 'given'
@@ -264,8 +306,8 @@ class spectacular.Environment
 
   should: (matcher, neg=false) ->
     @notOutsideIt 'should'
+    @notWihoutMatcher 'should' unless matcher?
 
-    return unless matcher?
     @currentExample.result.addExpectation(
       new spectacular.Expectation(
         @currentExample,
@@ -278,6 +320,41 @@ class spectacular.Environment
 
   shouldnt: (matcher) -> @should matcher, true
 
+  expect: (desc, value) ->
+    value = desc if not value? and arguments.length < 2
+
+    @notOutsideIt 'expect'
+    self = this
+    err = new Error
+
+    to: (matcher) ->
+      self.notWihoutMatcher 'expect(...).to' unless matcher?
+
+      self.currentExample.result.addExpectation(
+        new spectacular.Expectation(
+          self.currentExample,
+          value,
+          matcher,
+          false,
+          err,
+          desc
+        )
+      )
+    not:
+      to: (matcher) ->
+        self.notWihoutMatcher 'expect(...).not.to' unless matcher?
+
+        self.currentExample.result.addExpectation(
+          new spectacular.Expectation(
+            self.currentExample,
+            value,
+            matcher,
+            true,
+            err,
+            desc
+          )
+        )
+
   except: (example) -> example.inclusive = true
   only: (example) -> example.exclusive = true
 
@@ -286,7 +363,7 @@ class spectacular.Environment
       throw new Error "shared example '#{name}' already registered"
     @sharedExamples[name] = block
 
-  itBehaveLike: (name, options={}) ->
+  itBehavesLike: (name, options={}) ->
     unless name of @sharedExamples
       throw new Error "shared example '#{name}' not found"
     @sharedExamples[name].call null, options
@@ -325,15 +402,19 @@ class spectacular.Environment
     spectacular.Promise.unit new spectacular.dom.DOMExpression content
 
   handleHTMLFixture: (content) ->
-    content = $(content)
-    parent = $('<div id="fixtures"></div>')
-    parent.append content
-    $('body').append parent
+    parent = document.querySelector '#fixtures'
+    unless parent?
+      body = document.querySelector('body')
+      fixtures = document.createElement('div')
+      fixtures.id = 'fixtures'
+      body.appendChild fixtures
 
-    @currentExample.ownAfterHooks.push ->
-      parent.remove()
+    parent = document.querySelector '#fixtures'
+    parent.innerHTML = content
 
-    spectacular.Promise.unit content
+    @currentExample.ownAfterHooks.push -> parent.innerHTML = ''
+
+    spectacular.Promise.unit parent.childNodes
 
 
   toString: -> '[spectacular Environment]'

@@ -62,13 +62,20 @@ spectacular.matchers.have = (count, label) ->
 spectacular.matchers.have.selector = (selector) ->
   assert: (actual, notText) ->
     @description = "should#{notText} have content that match '#{selector}'"
+    if actual.length?
+      actualDesc = Array::map.call actual, (e) -> e.outerHTML
+      @message = "Expected #{utils.inspect actualDesc}#{notText} to have selector '#{selector}'"
 
-    @message = "Expected '#{actual.html()}'#{notText} to have selector '#{selector}'"
-    actual.find(selector).length > 0
+      Array::some.call actual, (e) -> e.querySelectorAll(selector).length > 0
+    else
+      actualDesc = actual.outerHTML
+      @message = "Expected #{utils.inspect actualDesc}#{notText} to have selector '#{selector}'"
 
-spectacular.matchers.be = (value) ->
+      actual.querySelectorAll(selector).length > 0
+
+spectacular.matchers.be = (desc, value=desc) ->
   assert: (actual, notText) ->
-    @description = "should#{notText} be #{value}"
+    @description = "should#{notText} be #{desc}"
     switch typeof value
       when 'string'
         state = utils.findStateMethodOrProperty actual, value
@@ -92,7 +99,8 @@ spectacular.matchers.be = (value) ->
         @message = "Expected #{actual}#{notText} to be #{value}"
         actual?.valueOf() is value
       else
-        @description = "should#{notText} be #{utils.squeeze utils.inspect value}"
+        desc = if typeof desc is 'string' then desc else utils.squeeze utils.inspect value
+        @description = "should#{notText} be #{desc}"
         @message = "Expected #{utils.inspect actual}#{notText} to be #{utils.inspect value}"
         actual is value
 
@@ -107,7 +115,11 @@ spectacular.matchers.match = (re) ->
     @description = "should#{notText} match #{re}"
     # The match matcher allow DOMExpression object as value
     if re.match? and re.contained?
-      @message = "Expected '#{$.map actual, (e) -> e.outerHTML}'#{notText} to match #{re}"
+      actualDesc = if actual.length
+        Array::map.call actual, (e) -> e.outerHTML
+      else
+        actual.outerHTML
+      @message = "Expected #{utils.inspect actualDesc}#{notText} to match #{re}"
 
       re.match actual
     else
@@ -120,8 +132,13 @@ spectacular.matchers.contains = (values...) ->
   assert: (actual, notText) ->
     # The contains matcher allow DOMExpression object as value
     if value.match? and value.contained?
+      actualDesc = if actual.length
+        Array::map.call actual, (e) -> e.outerHTML
+      else
+        actual.outerHTML
+
       @description = "should#{notText} contains #{value}"
-      @message = "Expected '#{$.map actual, (e) -> e.outerHTML}'#{notText} to contains #{value}"
+      @message = "Expected #{utils.inspect actualDesc}#{notText} to contains #{value}"
 
       value.contained actual
 
@@ -176,4 +193,7 @@ spectacular.matchers.haveBeenCalled =
       @message = "Expected a spy but it was #{actual}"
       false
 
-  with: (@arguments...) -> this
+  with: (args...) ->
+    m = Object.create this
+    m.arguments = args
+    m

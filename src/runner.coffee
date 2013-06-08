@@ -29,20 +29,46 @@ class spectacular.Runner
     -1
 
   registerSpecs: =>
-    if @root.hasExclusiveExamples()
-      @register example for example in @root.allExclusiveExamples
+    for example in @root.children
+      @register example, @root.hasExclusiveExamples()
+
+  register: (child, exclusiveOnly=false) ->
+    if child.children?
+      if exclusiveOnly
+        if child.hasExclusiveExamplesWithDependencies()
+          for c in child.allExclusiveExamplesWithDependecies
+            @registerDependencies c, exclusiveOnly
+
+        @register c, exclusiveOnly for c in child.allExclusiveExamples
+
+      else
+        if child.hasExamplesWithDependencies()
+          for c in child.allExamplesWithDependecies
+            @registerDependencies c, exclusiveOnly
+
+        @register c, exclusiveOnly for c in child.allExamples
+
     else
-      @register example for example in @root.allExamples
+      return if exclusiveOnly and not child.exclusive
+      if child.hasDependencies()
+        @registerDependencies child, exclusiveOnly
 
-  register: (example) =>
+      @insert child, exclusiveOnly
+
+  registerDependencies: (child) ->
+    for dep in child.dependencies
+      dependency = @root.identifiedExamplesMap[dep]
+      if dependency?
+        @checkDependency child, dependency
+        @register dependency
+
+  insert: (example) ->
     @handleDependencies example
-
     @examples.push example unless example in @examples
     @stack.push example unless example in @stack
 
   handleDependencies: (example) ->
     return if example in @stack
-
     dependencies = []
     cascading = null
     dependenciesSucceed = null
@@ -52,9 +78,7 @@ class spectacular.Runner
       for dep in example.dependencies
         dependency = @root.identifiedExamplesMap[dep]
         if dependency?
-          @checkDependency example, dependency
           dependencies.push dependency
-          @register s for s in dependency.allExamples
         else
           throw new Error "unmet dependency #{dep} for example #{example}"
 
@@ -72,7 +96,6 @@ class spectacular.Runner
         example.dependenciesMet = dependenciesSucceed
     else if cascadingSucceed?
       example.dependenciesMet = cascadingSucceed
-
 
   checkDependency: (example, dependency) ->
     if dependency in example.ancestors

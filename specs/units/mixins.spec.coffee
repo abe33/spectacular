@@ -43,7 +43,53 @@ class ClassWithCollection
 describe ClassWithCollection, ->
   subject -> new ClassWithCollection
 
-  itBehaveLike 'a collection like object', {
+  itBehavesLike 'a collection like object', {
     singular: 'child'
     plural: 'children'
   }
+
+describe spectacular.EventDispatcher, ->
+  given 'listener', ->
+    dummy = {foo: ->}
+    spyOn(dummy, 'foo')
+    dummy.foo
+
+  subject 'dispatcher', -> new spectacular.EventDispatcher
+
+  context 'when adding a listener', ->
+    before -> @dispatcher.on 'event', @listener
+
+    specify 'calling hasListener("event")', ->
+      @dispatcher.hasListener('event').should be true
+
+    context 'and then removing it', ->
+      before -> @dispatcher.off 'event', @listener
+
+      specify 'calling hasListener("event")', ->
+        @dispatcher.hasListener('event').should be false
+
+    context 'and then dispatching a message', ->
+      before -> @dispatcher.dispatch name: 'event', message: 'message'
+      subject -> @listener
+
+      specify 'the listener', -> should haveBeenCalled
+
+class GlobalizableClass
+  @include spectacular.Globalizable
+
+  globalizable: ['test', 'testMethod']
+
+  test: ->
+  testMethod: ->
+
+describe GlobalizableClass, ->
+  subject -> new GlobalizableClass
+
+  context ' when globalized', ->
+    before -> @subject.globalize()
+    after -> @subject.unglobalize()
+
+    specify 'the globalizable method', ->
+      expect('test', spectacular.global.test).to exist
+      expect('testMethod', spectacular.global.testMethod).to exist
+      expect('test_method', spectacular.global.test_method).to exist

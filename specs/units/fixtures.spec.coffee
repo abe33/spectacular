@@ -38,7 +38,7 @@ describe fixture, ->
     fixture 'sample.html'
 
     specify 'the dom', ->
-      $('body').should have.selector '#section'
+      document.querySelector('body').should have.selector '#section'
 
     specify 'the fixture', ->
       @fixture.should exist
@@ -52,13 +52,13 @@ describe fixture, ->
     it -> should exist
 
     context 'the dom expression', ->
-      subject -> $('html')
+      subject -> document
 
       it -> shouldnt match @dom
       it -> should contains @dom
 
       context 'on a matching element', ->
-        subject -> $('#section')
+        subject -> document.querySelector '#fixtures section'
 
         it -> should match @dom
         it -> shouldnt contains @dom

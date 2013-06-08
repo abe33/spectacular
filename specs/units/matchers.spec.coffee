@@ -86,6 +86,7 @@ describe exist, ->
     it -> should exist
 
 describe match, ->
+  given 'fixturesContainer', -> document.querySelector '#fixtures'
   subject -> 'irrelevant'
 
   it -> should match /irrelevant/
@@ -95,17 +96,23 @@ describe match, ->
     fixture 'sample.html'
     fixture 'sample.dom', as: 'dom'
 
-    context 'on $("html")', ->
-      subject -> $('html')
+    context 'on document', ->
+      subject -> document
 
       it -> shouldnt match @dom
 
-    context 'on $("#section")', ->
-      subject -> $('#section')
+    context 'on a section node', ->
+      subject -> @fixturesContainer.querySelector 'section'
+
+      it -> should match @dom
+
+    context 'on a section nodelist', ->
+      subject -> @fixturesContainer.querySelectorAll 'section'
 
       it -> should match @dom
 
 describe contains, ->
+  given 'fixturesContainer', -> document.querySelector '#fixtures'
   subject -> [0,1,2,'foo','bar',true]
 
   it ->
@@ -118,13 +125,18 @@ describe contains, ->
     fixture 'sample.html'
     fixture 'sample.dom', as: 'dom'
 
-    context 'on $("html")', ->
-      subject -> $('html')
+    context 'on document', ->
+      subject -> document
 
       it -> should contains @dom
 
-    context 'on $("#section")', ->
-      subject -> $('#section')
+    context 'on a section node', ->
+      subject -> @fixturesContainer.querySelector 'section'
+
+      it -> shouldnt contains @dom
+
+    context 'on a section nodelist', ->
+      subject -> @fixturesContainer.querySelectorAll 'section'
 
       it -> shouldnt contains @dom
 

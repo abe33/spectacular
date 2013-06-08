@@ -1,7 +1,22 @@
 
 ## StackReporter
 
+PROGRESS_CHAR_MAP =
+  pending: '*'
+  skipped: 'x'
+  failure: 'F'
+  errored: 'E'
+  success: '.'
+
+PROGRESS_COLOR_MAP =
+  pending: 'yellow'
+  skipped: 'magenta'
+  failure: 'red'
+  errored: 'yellow'
+  success: 'green'
+
 class spectacular.StackReporter
+
   constructor: (@error, @options) ->
 
   format: ->
@@ -11,21 +26,23 @@ class spectacular.StackReporter
       res = '\n'
       if @options.showSource
         @formatErrorInFile(stack[0]).then (msg) =>
-          res += msg + @formatStack stack
-          res = res.grey unless @options.noColors
+          res += @colorize msg + @formatStack(stack), 'grey'
           promise.resolve res
       else
-        res += @formatStack stack
-        res = res.grey unless @options.noColors
+        res += @colorize @formatStack(stack), 'grey'
         promise.resolve res
     else
       promise.resolve res
 
     promise
 
+  colorize: (str, color) ->
+    if str? and not @options.noColors and str?[color] then str[color] else str
+
   formatStack: (stack) ->
     if @options.longTrace
-      "\n\n#{stack.join '\n'}\n"
+      s = "\n\n#{stack.join '\n'}\n"
+      s = utils.indent s if /@/.test s
     else
       s = "\n#{stack[0..5].join '\n'}"
       s = utils.indent s if /@/.test s
@@ -149,21 +166,49 @@ class spectacular.ConsoleReporter
     @dispatch new spectacular.Event 'message', res if res?
 
   formatExampleResult: (example) ->
-    if @options.noColors
-      switch example.result.state
-        when 'pending' then '*'
-        when 'skipped' then 'x'
-        when 'failure' then 'F'
-        when 'errored' then 'E'
-        when 'success' then '.'
+    state = example.result.state
+    if @options.documentation
+      @lastDepth ||= 0
+      @lastAncestorsStack ||= []
 
+      ancestors = example.ancestors.filter (e) -> e.ownDescription isnt ''
+      dif = @cropAncestors ancestors, @lastAncestorsStack
+      start = ancestors.length - dif.length
+      res = @formatDocumentation example, dif, start, PROGRESS_COLOR_MAP[state]
+
+      @lastAncestorsStack = ancestors
+      res
     else
-      switch example.result.state
-        when 'pending' then '*'.yellow
-        when 'skipped' then 'x'.magenta
-        when 'failure' then 'F'.red
-        when 'errored' then 'E'.yellow
-        when 'success' then '.'.green
+      @colorize PROGRESS_CHAR_MAP[state], PROGRESS_COLOR_MAP[state]
+
+  formatDocumentation: (example, stack, start, color) ->
+    reverseStack = []
+    reverseStack.unshift e for e in stack
+    res = ''
+
+    for e,i in reverseStack
+      res += '\n' if i is 0
+      res += '\n'
+      res += utils.indent(utils.strip(e.ownDescription), (start + 1) * 2)
+      start += 1
+
+    res += '\n'
+    res += utils.indent(
+      @colorize(utils.strip(example.ownDescriptionWithExpectations), color),
+      (start + 1) * 2
+    )
+
+    @lastDepth = start
+
+    res
+
+  cropAncestors: (ancestors, lastAncestorsStack) ->
+    a = []
+    a.push elder for elder in ancestors when elder not in lastAncestorsStack
+    a
+
+  colorize: (str, color) ->
+    if str? and not @options.noColors and str?[color] then str[color] else str
 
   formatStack: (e) ->
     new spectacular.StackReporter(e, @options).format()
@@ -220,14 +265,14 @@ class spectacular.ConsoleReporter
     if @options.noColors
       "#{badge} - #{@failuresCounter++} - #{message}\n"
     else
-      "#{badge.inverse.bold} #{@failuresCounter++} #{' '.inverse} #{message}\n".red
+      @colorize "#{@colorize(@colorize(badge,'inverse'), 'bold')} #{@failuresCounter++} #{@colorize ' ', 'inverse'} #{message}\n", 'red'
 
   errorBadge: (message) ->
     badge = ' ERROR '
     if @options.noColors
       "#{badge} - #{@errorsCounter++} - #{message}\n"
     else
-      "#{badge.inverse.bold} #{@errorsCounter++} #{' '.inverse} #{message}\n".yellow
+      @colorize "#{@colorize(@colorize(badge,'inverse'), 'bold')} #{@errorsCounter++} #{@colorize ' ', 'inverse'} #{message}\n", 'yellow'
 
   formatMessage: (message) -> "\n#{utils.indent message or ''}"
 
@@ -306,7 +351,7 @@ class spectacular.ConsoleReporter
       else
         plural
     }")
-    s = s[color] if color? and not @options.noColors
+    s = @colorize s, color if color?
     s
 
 

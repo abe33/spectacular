@@ -8,7 +8,7 @@ runningSpecs('a valid shared example')
     it -> true.should be true
 
   describe 'something', ->
-    itBehaveLike 'a shared example'
+    itBehavesLike 'a shared example'
 
     it -> true.should be true
 
@@ -21,7 +21,7 @@ runningSpecs('two shared example with same name')
 runningSpecs('an unregistered sharedExample')
 .shouldStopWith /shared example '.*' not found/, ->
   describe 'something', ->
-    itBehaveLike 'a shared example'
+    itBehavesLike 'a shared example'
 
     it -> true.should be true
 

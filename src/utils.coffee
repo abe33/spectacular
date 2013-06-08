@@ -6,6 +6,12 @@ spectacular.utils.strip = (s) -> s.replace /^\s+|\s+$/g, ''
 
 spectacular.utils.capitalize = (s) -> s.replace /^(\w)/, (m, c) -> c.toUpperCase()
 
+spectacular.utils.underscore = (s) ->
+  s.replace(/([a-z])([A-Z])/g, "$1_$2")
+  .split(/[-/]|\s/g)
+  .join("_")
+  .toLowerCase()
+
 spectacular.utils.keys = (o) -> k for k of o
 
 spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'
