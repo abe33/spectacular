@@ -5,26 +5,59 @@ class spectacular.dom.NodeExpression
   @include spectacular.HasCollection('expressions', 'expression')
 
   constructor: (@expression) ->
+    @matchesSelector =  document.matchesSelector or
+                        document.mozMatchesSelector or
+                        document.msMatchesSelector or
+                        document.oMatchesSelector or
+                        document.webkitMatchesSelector or
+                        (selector) ->
+                          node = this
+                          nodes = (node.parentNode or document).querySelectorAll(selector)
+                          i = -1
+
+                          while nodes[++i] && nodes[i] isnt node
+                            i
+
+                          !!nodes[i]
     @expressions = []
 
   isTextExpression: -> /^(\/|'|").*(\/|'|")$/gm.test @expression
 
   match: (el) ->
-    el.is(@expression) and @expressions.every (e) -> e.contained el
+    matchesSelector = if el.length?
+      Array::every.call el, (e) => @matchesSelector.call(e, @expression)
+    else
+      @matchesSelector.call(el, @expression)
+
+    matchesSelector and @expressions.every (e) -> e.contained el
 
   contained: (el) ->
     if @isTextExpression()
       @handleTextExpression el
     else
-      found = el.find(@expression)
-      found.length > 0 and @expressions.every (e) -> e.contained found
+      if el?
+        if el.length?
+          found = []
+          for e in el
+            found.push n for n in e.querySelectorAll(@expression)
+        else
+          found = el.querySelectorAll(@expression)
+
+        found.length > 0 and @expressions.every (e) -> e.contained found
+      else
+        false
 
   handleTextExpression: (el) ->
+    textContent = if el.length?
+      Array::map.call(el, (e) -> e.textContent).join ''
+    else
+      el.textContent
+
     content = @expression[1..-2]
     if @expression.indexOf('/') is 0
-      new RegExp(content).test el.text()
+      new RegExp(content).test textContent
     else
-      el.text() is content
+      textContent is content
 
 class spectacular.dom.DOMExpression
   @include spectacular.HasCollection('expressions', 'expression')

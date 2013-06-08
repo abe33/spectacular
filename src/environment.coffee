@@ -399,15 +399,19 @@ class spectacular.Environment
     spectacular.Promise.unit new spectacular.dom.DOMExpression content
 
   handleHTMLFixture: (content) ->
-    content = $(content)
-    parent = $('<div id="fixtures"></div>')
-    parent.append content
-    $('body').append parent
+    parent = document.querySelector '#fixtures'
+    unless parent?
+      body = document.querySelector('body')
+      fixtures = document.createElement('div')
+      fixtures.id = 'fixtures'
+      body.appendChild fixtures
 
-    @currentExample.ownAfterHooks.push ->
-      parent.remove()
+    parent = document.querySelector '#fixtures'
+    parent.innerHTML = content
 
-    spectacular.Promise.unit content
+    @currentExample.ownAfterHooks.push -> parent.innerHTML = ''
+
+    spectacular.Promise.unit parent.childNodes
 
 
   toString: -> '[spectacular Environment]'
