@@ -319,7 +319,9 @@ class spectacular.Environment
 
   shouldnt: (matcher) -> @should matcher, true
 
-  expect: (desc, value=desc) ->
+  expect: (desc, value) ->
+    value = desc if not value? and arguments.length < 2
+
     @notOutsideIt 'expect'
     self = this
     err = new Error
