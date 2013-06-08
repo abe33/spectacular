@@ -1,5 +1,4 @@
 describe spectacular.Promise, ->
-
   it -> should exist
 
   whenPass ->

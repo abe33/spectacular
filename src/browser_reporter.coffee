@@ -1,4 +1,38 @@
 utils = spectacular.utils
+
+
+wrapNode = (node) ->
+  if node.length? then node else [node]
+
+hasClass = (nl, cls) ->
+  nl = wrapNode nl
+
+  Array::every.call nl, (n) -> n.className.indexOf(cls) isnt -1
+
+addClass = (nl, cls) ->
+  nl = wrapNode nl
+  Array::forEach.call nl, (node) ->
+    node.className += " #{cls}" unless hasClass node, cls
+
+removeClass = (nl, cls) ->
+  nl = wrapNode nl
+  Array::forEach.call nl, (node) ->
+    node.className = node.className.replace cls, ''
+
+toggleClass = (nl, cls) ->
+  nl = wrapNode nl
+  Array::forEach.call nl, (node) ->
+    if hasClass node, cls
+      removeClass node, cls
+    else
+      addClass node, cls
+
+fixNodeHeight = (nl) ->
+  nl = wrapNode nl
+  Array::forEach.call nl, (node) ->
+    node.style.height = "#{node.clientHeight}px"
+
+
 class spectacular.BrowserStackReporter extends spectacular.StackReporter
   @reports: 0
 
@@ -22,9 +56,10 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
     column = @error.columnNumber + 1 if not column? and @error.columnNumber?
 
     @getLines(url, parseInt(line), parseInt(column)).then (msg) =>
-      source = $("#pre_#{@id}_source")
-      source.html(msg).removeClass('loading')
-      source.height $("#pre_#{@id}").height()
+      source = document.getElementById "pre_#{@id}_source"
+      source.innerHTML = msg
+      removeClass source, 'loading'
+      fixNodeHeight source
 
     pre
 
@@ -47,50 +82,55 @@ class spectacular.BrowserReporter
     @results = []
     @examples = []
 
-    @reporter = $("""
-      <div id="reporter">
-        <header>
-          <h1>Spectacular</h1>
-          <h2>#{spectacular.version}</h2>
-          <pre></pre>
-          <p></p>
-        </header>
-        <section id="controls">#{
-          ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
-            "<button class='toggle #{k}'>#{k}</button>"
-          ).join '\n'
-          }
-        </section>
-        <section id="examples"></section>
-        <footer></footer>
-      </div>
-    """)
-    @reporter.find('button.toggle').click (e) ->
-      button = $(e.target)
-      $('html').toggleClass "hide-#{button.text()}"
-      button.toggleClass "off"
+    @reporter = document.createElement('div')
+    @reporter.id = 'reporter'
+    @reporter.innerHTML = """
+      <header>
+        <h1>Spectacular</h1>
+        <h2>#{spectacular.version}</h2>
+        <pre></pre>
+        <p></p>
+      </header>
+      <section id="controls">#{
+        ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
+          "<button class='toggle #{k}'>#{k}</button>"
+        ).join '\n'
+        }
+      </section>
+      <section id="examples"></section>
+      <footer></footer>
+    """
+    html = document.querySelector('html')
+    buttons = @reporter.querySelectorAll 'button.toggle'
+    Array::forEach.call buttons, (button) ->
+      button.onclick = (e) ->
+        toggleClass html, "hide-#{button.text()}"
+        toggleClass button, "off"
 
-    @examplesContainer = @reporter.find '#examples'
-    @progress = @reporter.find 'header pre'
-    @counters = @reporter.find 'header p'
+    @examplesContainer = @reporter.querySelector '#examples'
+    @progress = @reporter.querySelector 'header pre'
+    @counters = @reporter.querySelector 'header p'
 
   onEnd: (event) =>
+    html = document.querySelector 'html'
     runner = event.target
     window.resultReceived = true
     window.result = not @hasFailures()
     if result
-      $('html').addClass 'success'
+      addClass html, 'success'
     else
-      $('html').addClass 'failure'
+      addClass html, 'failure'
 
-    @counters.find('#counters').append ", finished in #{@formatDuration runner.specsStartedAt, runner.specsEndedAt}"
+    counters = @counters.querySelector('#counters')
+    counters.innerHTML = "#{counters.innerHTML}, finished in #{@formatDuration runner.specsStartedAt, runner.specsEndedAt}"
 
   link: (example, id) ->
-    """<a href='#example_#{id}'
-          class='#{example.result.state}'
-          title='#{example.description}'
-       >#{@stateChar example.result.state}</a>
-    """
+    link = document.createElement 'a'
+    link.className = example.result.state
+    link.setAttribute 'href', "#example_#{id}"
+    link.setAttribute 'title', example.description
+    link.innerHTML = @stateChar example.result.state
+    link
 
   stateChar: (state) -> STATE_CHARS[state]
 
@@ -98,8 +138,8 @@ class spectacular.BrowserReporter
     example = event.target
     @results.push example.result
     @examples.push example
-    @progress.append @link example, @examples.length
-    @counters.html @formatCounters()
+    @progress.appendChild @link example, @examples.length
+    @counters.innerHTML = @formatCounters()
     switch example.result.state
       when 'pending' then @pending.push example
       when 'skipped' then @skipped.push example
@@ -108,44 +148,45 @@ class spectacular.BrowserReporter
 
 
     id = @examples.length
+    ex = document.createElement 'article'
+    ex.id = "example_#{id}"
+    ex.className = "example preload #{example.result.state}"
+    ex.dataset.id = id
+
     if example.result.expectations.length > 0
-      ex = $ """
-        <article class="example preload #{example.result.state}" data-id="#{id}" id="example_#{id}">
-          <header>
-            <h4>#{example.description}</h4>
-            <span class='result'>#{example.result.state}</span>
-            <span class='time'><span class='icon-time'></span>#{example.duration / 1000}s</span>
-          </header>
-          <div class="expectations">
-            #{(@formatExpectation e for e in example.result.expectations).join('')}
-          </div>
-        </article>
+      ex.innerHTML = """
+        <header>
+          <h4>#{example.description}</h4>
+          <span class='result'>#{example.result.state}</span>
+          <span class='time'><span class='icon-time'></span>#{example.duration / 1000}s</span>
+        </header>
+        <div class="expectations">
+          #{(@formatExpectation e for e in example.result.expectations).join('')}
+        </div>
       """
     else
-      ex = $ """
-        <article class="example preload #{example.result.state}" data-id="#{id}" id="example_#{id}">
-          <header>
-            <h4>#{example.description}</h4>
-            <span class='result'>#{example.result.state}</span>
-            <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
-          </header>
-          #{
-            if example.reason?
-              "<aside>
-                <pre>#{utils.escapeDiff example.reason.message}</pre>
-                #{ if example.reason? then @traceSource example.reason else ''}
-              </aside>"
-            else ''
-          }
-        </article>
+      ex.innerHTML = """
+        <header>
+          <h4>#{example.description}</h4>
+          <span class='result'>#{example.result.state}</span>
+          <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
+        </header>
+        #{
+          if example.reason?
+            "<aside>
+              <pre>#{utils.escapeDiff example.reason.message}</pre>
+              #{ if example.reason? then @traceSource example.reason else ''}
+            </aside>"
+          else ''
+        }
       """
 
-
-    ex.click -> ex.toggleClass 'closed'
-    @examplesContainer.append ex
-    ex.find('pre:not([id])').each -> $(@).height $(@).height()
-    ex.addClass 'closed'
-    ex.removeClass 'preload'
+    ex.onclick = -> toggleClass ex, 'closed'
+    @examplesContainer.appendChild ex
+    pres = ex.querySelectorAll('pre:not([id])')
+    Array::forEach.call pres, (node) -> fixNodeHeight node
+    addClass ex, 'closed'
+    removeClass ex, 'preload'
 
   formatExpectation: (expectation) ->
     """
@@ -202,11 +243,10 @@ class spectacular.BrowserReporter
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
 
-  appendToBody: -> $('body').append @reporter
+  appendToBody: -> document.querySelector('body').appendChild @reporter
 
 cache = {}
 loaders = {}
-options.jQuery = $
 options.loadFile = (file) ->
 
   promise = new spectacular.Promise
@@ -216,14 +256,19 @@ options.loadFile = (file) ->
     return promise
 
   if file of loaders
-    loaders[file].done (data) -> promise.resolve data
+    loaders[file].push (data) -> promise.resolve data
     return promise
 
-  loaders[file] = $.ajax
-    url: file
-    success: (data) ->
-      promise.resolve cache[file] = data
-    dataType: 'html'
+  req = new XMLHttpRequest()
+  req.onload = ->
+    data = @responseText
+    loaders[file].forEach (f) -> f data
+
+  listener = (data) -> promise.resolve cache[file] = data
+  loaders[file] = [listener]
+
+  req.open 'get', file, true
+  req.send()
 
   promise
 

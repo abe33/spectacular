@@ -71,7 +71,6 @@ generateSpecRunner = (options) ->
       <!doctype html>
       <html>
         <head>
-          #{scriptNode 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'}
           <script>
             options = #{util.inspect options};
             paths = #{util.inspect paths[3..]};
