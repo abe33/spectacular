@@ -7,7 +7,7 @@ class spectacular.Environment
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
       dependsOn spyOn whenPass fixture except only sharedExample
-      itBehaveLike'.split(/\s+/g)
+      itBehavesLike'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup
     @currentExampleGroup = @rootExampleGroup
@@ -363,7 +363,7 @@ class spectacular.Environment
       throw new Error "shared example '#{name}' already registered"
     @sharedExamples[name] = block
 
-  itBehaveLike: (name, options={}) ->
+  itBehavesLike: (name, options={}) ->
     unless name of @sharedExamples
       throw new Error "shared example '#{name}' not found"
     @sharedExamples[name].call null, options
