@@ -50,6 +50,9 @@ class spectacular.Globalizable
     else
       _global[key] = value
 
+    snake = utils.underscore key
+    @globalizeMember snake, value if snake isnt key
+
   unglobalizeMember: (key, value) ->
     _global = spectacular.global
 
@@ -57,6 +60,9 @@ class spectacular.Globalizable
       _global[k] = @previous[k]
     else
       delete _global[k]
+
+    snake = utils.underscore key
+    @unglobalizeMember snake, value if snake isnt key
 
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable

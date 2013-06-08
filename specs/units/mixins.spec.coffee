@@ -73,3 +73,23 @@ describe spectacular.EventDispatcher, ->
       subject -> @listener
 
       specify 'the listener', -> should haveBeenCalled
+
+class GlobalizableClass
+  @include spectacular.Globalizable
+
+  globalizable: ['test', 'testMethod']
+
+  test: ->
+  testMethod: ->
+
+describe GlobalizableClass, ->
+  subject -> new GlobalizableClass
+
+  context ' when globalized', ->
+    before -> @subject.globalize()
+    after -> @subject.unglobalize()
+
+    specify 'the globalizable method', ->
+      expect('test', spectacular.global.test).to exist
+      expect('testMethod', spectacular.global.testMethod).to exist
+      expect('test_method', spectacular.global.test_method).to exist

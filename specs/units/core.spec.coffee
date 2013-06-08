@@ -177,3 +177,12 @@ describe 'sequencial assertions', ->
     o.foo.should equal 10
     o.foo = "100"
     o.foo.should equal '100'
+
+describe 'snake case syntax', ->
+  given 'object', -> method: ->
+  before ->
+    spy_on @object, 'method'
+    @object.method()
+
+  specify 'for haveBeenCalled matcher', ->
+    @object.method.should have_been_called
