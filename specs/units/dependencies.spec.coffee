@@ -21,7 +21,6 @@ runningSpecs('example depending on succeeding examples')
 
     it -> true.should be true
 
-
 runningSpecs('example depending on a failing example')
 .shouldFailWith /1 failure, 0 errors, 1 skipped/, ->
   describe 'dependency', id: 'top', ->
@@ -65,6 +64,17 @@ runningSpecs('circular dependencies')
     dependsOn 'c1'
 
     it -> true.should be true
+
+runningSpecs('exclusive examples in group with dependencies')
+.shouldSucceedWith /3 success, 3 assertion/, ->
+  describe 'excluded groups', id: 'success', ->
+    it -> true.should be true
+    it -> true.should be true
+
+  describe 'exclusive groups', ->
+    dependsOn 'success'
+
+    only it -> true.should be true
 
 runningSpecs('deep circular dependencies')
 .shouldStopWith /circular dependencies between/, ->
