@@ -107,6 +107,9 @@ class spectacular.Environment
     unless @currentExample?
       throw new Error "#{method} called outside a it block"
 
+   notWihoutMatcher: (method) ->
+    throw new Error "#{method} called without a matcher"
+
   fail: -> @currentExample.reject new Error 'Failed'
   pending: -> @currentExample.pending()
   skip: -> @currentExample.skip()
@@ -279,8 +282,8 @@ class spectacular.Environment
 
   should: (matcher, neg=false) ->
     @notOutsideIt 'should'
+    @notWihoutMatcher 'should' unless matcher?
 
-    return unless matcher?
     @currentExample.result.addExpectation(
       new spectacular.Expectation(
         @currentExample,

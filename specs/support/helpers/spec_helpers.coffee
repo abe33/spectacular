@@ -127,3 +127,8 @@ exports.environmentMethod = (method) ->
     runningSpecs('call in contex without previous subject')
     .shouldStopWith /called in context without a previous subject/, ->
       describe 'foo', -> spectacular.global[method]()
+
+  cannotBeCalledWithoutMatcher: ->
+    runningSpecs('call without matcher')
+    .shouldFailWith /called without a matcher/, ->
+      specify -> spectacular.global[method]()

@@ -42,16 +42,12 @@ describe should, ->
       subject -> true
       it -> should be true
 
-  runningSpecs('call inside it without matcher')
-  .shouldSucceedWith /0 success, 0 assertions, (.*), 1 pending/, ->
-    describe 'foo', ->
-      subject -> true
-      it -> should()
-
   runningSpecs('call outside it')
   .shouldStopWith /should called outside a it block/, ->
     describe 'foo', ->
       should be true
+
+  environmentMethod('should').cannotBeCalledWithoutMatcher()
 
 describe it, ->
   runningSpecs('call inside describe')
