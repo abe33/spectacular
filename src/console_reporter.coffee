@@ -167,7 +167,6 @@ class spectacular.ConsoleReporter
 
   formatExampleResult: (example) ->
     state = example.result.state
-
     if @options.documentation
       @lastDepth ||= 0
       @lastAncestorsStack ||= []
@@ -178,8 +177,6 @@ class spectacular.ConsoleReporter
       res = @formatDocumentation example, dif, start, PROGRESS_COLOR_MAP[state]
 
       @lastAncestorsStack = ancestors
-
-
       res
     else
       @colorize PROGRESS_CHAR_MAP[state], PROGRESS_COLOR_MAP[state]
