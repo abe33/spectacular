@@ -100,10 +100,10 @@ class spectacular.Environment
     optionsCopy[k] = v for k,v of @options
     new spectacular.Environment optionsCopy
 
-  notInsideIt: (method) =>
+  notInsideIt: (method) ->
     if @currentExample?
       throw new Error "#{method} called inside a it block"
-  notOutsideIt: (method) =>
+  notOutsideIt: (method) ->
     unless @currentExample?
       throw new Error "#{method} called outside a it block"
 
