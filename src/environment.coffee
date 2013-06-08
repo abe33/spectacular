@@ -163,7 +163,15 @@ class spectacular.Environment
 
     @context 'instance', =>
       @subject 'instance', ->
-        build parentSubjectBlock?.call(this), options.with or @parameters or []
+        params = if options.with?
+         if typeof options.with is 'function'
+            options.with.call(this)
+          else
+            options.with
+        else
+          @parameters or []
+
+        build parentSubjectBlock?.call(this), params
 
       if property?
         @its property, block
@@ -181,8 +189,22 @@ class spectacular.Environment
 
     @context 'returned value', =>
       @subject 'returnedValue', ->
-        parentSubjectBlock?.call(this).apply(options.inContext or this,
-                                             options.with or @parameters or [])
+        context = if options.inContext?
+          if typeof options.inContext is 'function'
+            options.inContext.call(this)
+          else
+            options.inContext
+        else
+          this
+
+        params = if options.with?
+         if typeof options.with is 'function'
+            options.with.call(this)
+          else
+            options.with
+        else
+          @parameters or []
+        parentSubjectBlock?.call(this).apply(context, params)
 
       @it block
 
