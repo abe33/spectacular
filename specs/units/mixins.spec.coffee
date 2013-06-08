@@ -43,7 +43,7 @@ class ClassWithCollection
 describe ClassWithCollection, ->
   subject -> new ClassWithCollection
 
-  itBehaveLike 'a collection like object', {
+  itBehavesLike 'a collection like object', {
     singular: 'child'
     plural: 'children'
   }

@@ -21,6 +21,7 @@ class spectacular.Environment
     @createExampleGroupAlias 'context'
     @createOuterExampleAlias 'xcontext', 'xdescribe'
     @createOuterExampleAlias 'withArguments', 'withParameters'
+    @createOuterExampleAlias 'itShould', 'itBehavesLike'
 
     @registerFixtureHandler 'json', @handleJSONFixture
     @registerFixtureHandler 'html', @handleHTMLFixture
