@@ -1,5 +1,5 @@
 exports.sample =
-  assert: ->
+  match: ->
     @description = 'sample description'
     @message = 'sample message'
 
@@ -7,12 +7,12 @@ exports.sample =
 
 exports.timeout =
   timeout: 100
-  assert: ->
+  match: ->
     @description = 'timing out promise based matcher'
     @message = 'matcher message'
 
     new spectacular.Promise
 
 exports.throwing =
-  assert: ->
+  match: ->
     throw new Error 'foo'
