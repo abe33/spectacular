@@ -16,6 +16,10 @@ factory 'dummy', class: Dummy, ->
   trait 'with createWith', ->
     createWith 'bar', 'foo'
 
+  trait 'with createWith function', ->
+    createWith -> ['bar', 'foo']
+
+
 describe create, ->
   context 'called with nothing', ->
     it -> should throwAnError /no factory name provided/
@@ -43,8 +47,14 @@ describe create, ->
 
     itsReturn -> should equal property: 'value', args: ['foo', 'bar']
 
-  context 'called with a trait that defines constructor arguments', ->
-    withArguments 'dummy', 'with createWith'
+  context 'called with a trait', ->
+    context 'that defines constructor arguments', ->
+      withArguments 'dummy', 'with createWith'
 
-    itsReturn -> should equal property: 'value', args: ['bar', 'foo']
+      itsReturn -> should equal property: 'value', args: ['bar', 'foo']
+
+    context 'that defines constructor arguments with a function', ->
+      withArguments 'dummy', 'with createWith function'
+
+      itsReturn -> should equal property: 'value', args: ['bar', 'foo']
 

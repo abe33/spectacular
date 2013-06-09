@@ -62,6 +62,8 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
   build: (traits, options={}) ->
     args = @traits[trait].arguments for trait in traits
     args ||= @arguments or []
+    if typeof args[0] is 'function'
+      args = args[0].call(spectacular.env.currentExample.context)
 
     instance = build @class, args
     @applySet instance

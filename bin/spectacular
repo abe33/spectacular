@@ -32,7 +32,6 @@ options = {
   noHelpers: false,
   noColors: false,
   server: false,
-  source: null,
   globs: []
 };
 
@@ -70,9 +69,6 @@ while (args.length) {
     case '--no-trace':
       options.trace = false;
       break;
-    case '--no-source':
-      options.showSource = false;
-      break;
     case '--long-trace':
       options.longTrace = true;
       break;
@@ -85,14 +81,12 @@ while (args.length) {
       options.profile = true;
       break;
     case '--server':
+    case '-s':
       options.server = true;
       break;
     case '--documentation':
+    case '-d':
       options.documentation = true;
-      break;
-    case '--source':
-    case '-s':
-      options.source = options.shift();
       break;
     default:
       options.globs.push(option);
