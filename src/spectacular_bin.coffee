@@ -23,7 +23,6 @@ options =
   noHelpers: false
   noColors: false
   server: false
-  source: null
   globs: []
 
 while args.length
@@ -41,13 +40,11 @@ while args.length
     when '--fixtures' then options.fixturesRoot = options.shift()
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
-    when '--no-source' then options.showSource = false
     when '--long-trace' then options.longTrace = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
-    when '--server' then options.server = true
-    when '--documentation' then options.documentation = true
-    when '--source', '-s' then options.source = options.shift()
+    when '--server', '-s' then options.server = true
+    when '--documentation', '-d' then options.documentation = true
     else options.globs.push option
 
 console.log 'options:', options if options.verbose
