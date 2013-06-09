@@ -45,13 +45,121 @@ text-shadow()
 
 body
   margin 0
-  padding 20px
   font-family roboto
   font-weight 300
   color #666
+  padding-bottom 80px
 
   *
     box-sizing border-box
+
+table
+  border 1px solid #e4e4e4
+  border-radius 3px
+
+  td
+    border-bottom 1px solid #e4e4e4
+    vertical-align top
+    padding 8px
+
+  td
+    line-height 1.6em
+
+  td:first-child
+    text-align right
+
+  tr:last-child td
+    border none
+
+code
+  background #efefef
+  border 1px solid #e4e4e4
+  padding 2px
+  border-radius 2px
+  display inline-block
+  white-space pre
+  line-height 1em
+  vertical-align baseline
+
+
+header
+  h1
+  h2
+    margin 0
+    display inline-block
+
+  h1
+    color #888
+
+p
+ul
+  line-height 1.6em
+
+h1
+  font-weight 100
+  font-size 3em
+h2
+  font-weight 100
+  font-size 2.35em
+h3
+  font-weight 300
+  font-size 1.6em
+
+.gutter
+  margin auto
+  width 600px
+
+.code
+  position relative
+  overflow hidden
+  border 1px solid #e4e4e4
+  transition(height 0.3s ease-in)
+
+  pre
+    transition(left 0.5s ease-out)
+    border none
+    position absolute
+    width 100%
+
+
+  .toggle
+    overflow hidden
+    position absolute
+    top 0
+    right 0
+    cursor pointer
+    display block
+    line-height 15px
+    width 100px
+    height 21px
+    z-index 10
+    background #e4e4e4
+    font-size 10px
+    text-transform uppercase
+    border-radius(0 0 0 4px)
+
+    span
+      transition(margin-top 0.2s ease-in)
+      padding 4px 8px
+      display block
+      width 100%
+      text-align center
+
+  .lang-coffeescript
+    left 0
+  .lang-javascript
+    left 100%
+
+  &.compiled
+    .toggle span:first-child
+      margin-top -21px
+
+    .lang-javascript
+      display block
+      left 0
+
+    .lang-coffeescript
+      left -100%
 
 pre
   border 1px solid #e4e4e4
@@ -60,12 +168,13 @@ pre
   overflow auto
   margin 0
 
-
   code
   ol
     line-height 16px
 
   code
+    background none
+    border none
     width 100%
     padding 8px
     padding-left 46px
@@ -164,77 +273,3 @@ pre
 
   .char_range > .escaped
     color pink
-
-header
-  h1
-  h2
-    display inline-block
-
-p
-ul
-  line-height 1.6em
-
-h1
-  font-weight 100
-  font-size 3em
-h2
-  font-weight 300
-  font-size 2.4em
-h3
-  font-weight 300
-  font-size 1.6em
-
-.gutter
-  margin auto
-  width 600px
-
-.code
-  position relative
-  overflow hidden
-  border 1px solid #e4e4e4
-  transition(height 0.3s ease-in)
-
-  pre
-    transition(left 0.5s ease-out)
-    border none
-    position absolute
-    width 100%
-
-
-  .toggle
-    overflow hidden
-    position absolute
-    top 0
-    right 0
-    cursor pointer
-    display block
-    width 100px
-    height 21px
-    z-index 10
-    background #e4e4e4
-    font-size 10px
-    text-transform uppercase
-    border-radius(0 0 0 4px)
-
-    span
-      transition(margin-top 0.2s ease-in)
-      padding 4px 8px
-      display block
-      width 100%
-      text-align center
-
-  .lang-coffeescript
-    left 0
-  .lang-javascript
-    left 100%
-
-  &.compiled
-    .toggle span:first-child
-      margin-top -21px
-
-    .lang-javascript
-      display block
-      left 0
-
-    .lang-coffeescript
-      left -100%
