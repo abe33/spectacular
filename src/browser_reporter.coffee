@@ -104,7 +104,7 @@ class spectacular.BrowserReporter
     buttons = @reporter.querySelectorAll 'button.toggle'
     Array::forEach.call buttons, (button) ->
       button.onclick = (e) ->
-        toggleClass html, "hide-#{button.text()}"
+        toggleClass html, "hide-#{button.textContent}"
         toggleClass button, "off"
 
     @examplesContainer = @reporter.querySelector '#examples'

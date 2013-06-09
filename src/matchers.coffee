@@ -10,14 +10,14 @@ spectacular.matchers.keepContext = false
 # More Info:
 # http://ejohn.org/projects/javascript-diff-algorithm/
 spectacular.matchers.exist =
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} exist"
     @message = "Expected #{actual}#{notText} to exist"
 
     actual?
 
 spectacular.matchers.have = (count, label) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} have #{count} #{label}"
 
     switch typeof actual
@@ -60,7 +60,7 @@ spectacular.matchers.have = (count, label) ->
         false
 
 spectacular.matchers.have.selector = (selector) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} have content that match '#{selector}'"
     if actual.length?
       actualDesc = Array::map.call actual, (e) -> e.outerHTML
@@ -74,7 +74,7 @@ spectacular.matchers.have.selector = (selector) ->
       actual.querySelectorAll(selector).length > 0
 
 spectacular.matchers.be = (desc, value=desc) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} be #{desc}"
     switch typeof value
       when 'string'
@@ -105,13 +105,13 @@ spectacular.matchers.be = (desc, value=desc) ->
         actual is value
 
 spectacular.matchers.equal = (value) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} be equal to #{utils.squeeze utils.inspect value}"
     @message = "Expected #{utils.inspect actual}#{notText} to be equal to #{utils.inspect value}"
     utils.compare actual, value, this
 
 spectacular.matchers.match = (re) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     @description = "should#{notText} match #{re}"
     # The match matcher allow DOMExpression object as value
     if re.match? and re.contained?
@@ -129,7 +129,7 @@ spectacular.matchers.match = (re) ->
 
 spectacular.matchers.contains = (values...) ->
   value = values[0]
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     # The contains matcher allow DOMExpression object as value
     if value.match? and value.contained?
       actualDesc = if actual.length
@@ -150,7 +150,7 @@ spectacular.matchers.contains = (values...) ->
       values.every (v) -> v in actual
 
 spectacular.matchers.throwAnError = (message) ->
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     msg = if message? then " with message #{message}" else ''
     msg += " with arguments #{utils.inspect @arguments}" if @arguments?
 
@@ -176,14 +176,14 @@ spectacular.matchers.throwAnError = (message) ->
 
 
 spectacular.matchers.haveBeenCalled =
-  assert: (actual, notText) ->
+  match: (actual, notText) ->
     if typeof actual?.spied is 'function'
       if @arguments?
         @description = "should have been called with #{utils.inspect @arguments}"
         @message = "Expected #{actual.spied}#{notText} to have been called with #{utils.inspect @arguments} but was called with #{actual.argsForCall}"
 
         actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
-          equal(a).assert(@arguments, '')
+          equal(a).match(@arguments, '')
       else
         @description = "should have been called"
         @message = "Expected #{actual.spied}#{notText} to have been called"

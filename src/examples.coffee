@@ -13,7 +13,7 @@ class spectacular.Expectation
     else
       ''
 
-  assert: =>
+  match: =>
     promise = new spectacular.Promise
     timeout = null
     spectacular.Promise.unit()
@@ -26,7 +26,7 @@ class spectacular.Expectation
         promise.resolve @success
       , @matcher.timeout or 5000
 
-      @matcher.assert(@actual, if @not then ' not' else '')
+      @matcher.match(@actual, if @not then ' not' else '')
     .then (@success) =>
       clearTimeout timeout
       @success = not @success if @not
@@ -66,7 +66,7 @@ class spectacular.ExampleResult
 
   _addExpectation = ExampleResult::addExpectation
   addExpectation: (expectation) ->
-    successHandler = => expectation.assert().fail (e) =>
+    successHandler = => expectation.match().fail (e) =>
       @example.error e
     @promise = @promise.then successHandler
     _addExpectation.call this, expectation
