@@ -1,3 +1,10 @@
+---
+title: Features
+date: 2013-06-05 20:19
+author: Cédric Néhémie <cedric.nehemie@gmail.com>
+template: page.jade
+----
+
 ### Features List
 
   1. Priorized specs: Some specs may run before others and prevent the following specs to run if one failure arise:
@@ -85,21 +92,20 @@
       whenPass ->
         describe '.someClassMethod', ->
           context 'called with some parameters', ->
-            withArguments 10
+            # subject is now the result
+            # of calling AClass.someMethod(10)
+            itsReturn with: [10], -> should equal 20
 
-            # subject is now the result of calling AClass.someMethod(10)
-            itsReturn -> should equal 20
-
-        # Automatically create an instance with the provided parameters as subject
+        # Automatically create an instance with
+        # the provided parameters as subject
         itsInstance -> should exist
 
         whenPass ->
           describe '::someInstanceMethod', ->
             context 'called with some parameters', ->
-              withArguments 'foo'
-
-              # subject is now the result of calling new Aclass(a,b,c).someInstanceMethod('foo')
-              itsReturn -> should equal 'oof'
+              # subject is now the result
+              # of calling new Aclass(a,b,c).someInstanceMethod('foo')
+              itsReturn with: ['foo'], -> should equal 'oof'
     ```
 
     The `context` method is just an alias of the `describe` method used to make explicit that the block describe a specific context and not the subject.
@@ -107,13 +113,13 @@
   5. Built-in spies and mocks (jasmine style):
 
     ```coffeescript
-    before 'each', ->
+    before ->
       # Intercepts the returned value of the spied method call and passed
       # it to the provided method
-      spy = spyOn(object, 'method').andCallThrough (result) ->
+      spy = spyOn(object, 'method').andCallThrough (result) -> result
 
       # Mock the call to the method with another one.
-      spy = spyOn(object, 'method').andCallFake (args...) ->
+      spy = spyOn(object, 'method').andCallFake ->
 
       # Mock the call to the method by returning the given value
       spy = spyOn(object, 'method').andReturns(value)
@@ -147,9 +153,9 @@
   7. Matcher based spec description:
 
     ```coffeescript
-    describe 'an object', ->
+    describe 'an array', ->
       it -> should have 2, 'elements'
-      # 'an object should have 2 elements'
+      # 'an array should have 2 elements'
     ```
     When `should` is called the description of the expectation is retrieved from the passed-in matcher.
 
@@ -164,7 +170,8 @@
   9. Native objects factory:
 
     ```coffeescript
-    given 'someObject', -> create 'myFactory', 'trait1', 'trait2', property: value
+    given 'someObject', ->
+       create 'myFactory', 'trait1', 'trait2', property: value
     ```
 
     The factory being defined with:
@@ -222,10 +229,10 @@
     describe 'a test with a dom fixture', ->
       fixture 'my_dom_expression.dom', as: 'myExpression'
 
-      subject -> $('#container')
+      subject -> document.getElementById 'container'
 
       it -> should match @myExpression
-      it -> shouldnt contains myExpression
+      it -> shouldnt contains @myExpression
     ```
 
   12. `xdescribe`, `xcontext`, `xit`, `fail`, `skip` and `pending` methods

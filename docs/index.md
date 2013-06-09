@@ -7,14 +7,25 @@ template: page.jade
 
 Spectacular is a <abbr title='Behavior-Driven Development'>BDD</abbr> framework for CoffeeScript and JavaScript whose attempt to bring the power of RSpec to JavaScript. Spectacular try to favor the best practices used for writing [better RSpec tests](http://betterspecs.org/) in its design.
 
+
+Below is a small snippets of how Spectacular can be used
+
 ```coffeescript
 describe Array, ->
+  given 'item', -> foo: 'bar'
+
   it -> should exist
 
   itsInstance 'length', -> should equal 0
 
   describe '::indexOf', ->
-    itsReturn with: ['foo'], -> should equal -1
+    itsReturn with: (-> [@item]), -> should equal -1
+
+    context 'with an item present in the array', ->
+      subject 'array', -> [@item]
+
+      specify 'the returned value', ->
+        expect(@array.indexOf @item).to equal 0
 ```
 
 ### Features, the short tour
@@ -33,3 +44,5 @@ describe Array, ->
   * Custom matchers
   * CSS-queries expressions to test the DOM content
   * Strings and objects diff in comparison results
+  * The API is provided with both camelCase and snake_case version
+  * No external dependencies in browsers
