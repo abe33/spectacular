@@ -1,38 +1,124 @@
+
+roboto = 'Roboto', sans-serif
+
+// dark-blue = #004358
+// blue = #1097FF
+// cyan = #1F8A70
+// green = #BEDB39
+// yellow = #FFE11A
+// orange = #FD7400
+// red = #D90B0B
+// magenta = #D90452
+// light-grey = #e4e4e4
+
+transition(trans)
+  -webkit-transition trans
+  -moz-transition trans
+  -o-transition trans
+  transition trans
+
+box-sizing(mode)
+  -webkit-box-sizing mode
+  -moz-box-sizing mode
+  -o-box-sizing mode
+  box-sizing mode
+
+
+border-radius(rad)
+  -webkit-border-radius rad
+  -moz-border-radius rad
+  -o-border-radius rad
+  border-radius rad
+
+box-shadow()
+  -webkit-box-shadow arguments
+  -moz-box-shadow arguments
+  -o-box-shadow arguments
+  box-shadow arguments
+
+text-shadow()
+  -webkit-text-shadow arguments
+  -moz-text-shadow arguments
+  -o-text-shadow arguments
+  text-shadow arguments
+
+
 body
   margin 0
   padding 20px
-  font-family 'Roboto', sans-serif
+  font-family roboto
   font-weight 300
   color #666
 
+  *
+    box-sizing border-box
+
 pre
   border 1px solid #e4e4e4
-  padding 8px
-  color #333
+  color light-grey
+  background dark-blue
+  overflow auto
+  margin 0
+
+
+  code
+  ol
+    line-height 16px
+
+  code
+    width 100%
+    padding 8px
+    padding-left 46px
+    display block
+
+  ol
+    padding 8px
+    margin 0
+    float left
+    top 0
+    left 0
+    border 0
+    background #e4e4e4
+    height 100%
+
+  li
+    width 22px
+    color dark-blue
+    margin 0
+    padding 2px 4px
+    text-align right
+    height 16px
+    font-size 10px
+    display block
+    list-style none
+    position relative
+
 
   .keyword
   .operators
+  .function
+    color blue
+
   .punctuation
   .hash_begin
   .hash_end
-  .function
   .params_begin
   .params_end
   .property_end
   .class
   .group_begin
   .group_end
-    color: blue
+    color light-grey
 
   // .params
   // .subst
   // .hash
   // .text
-  //   color: code_color
+  //   color code_color
 
   .string
   .heredocs
-    color: green
+    color green
 
   .string_begin
   .string_end
@@ -40,49 +126,53 @@ pre
   .heredocs_end
   .embedded_begin
   .embedded_end
-    color: #C60000
+    color red
 
   .number
-    color: magenta
+    color magenta
 
-  .literal
-  .top_level
-  .constant
+  // .literal
+  // .top_level
+  // .constant
   .char_range_begin
   .char_range_end
   .range_begin
   .range_end
   .regexp_operators
-    color: orange
+    color orange
 
   .title
   .property
   .class_end
-    color: blue
+    color blue
 
   .regexp
   .hereregexp
-    color: #ff0000
+    color red
 
   .comment
   .embedded
   .string_quote
-    color: #586e75
+    color gray
 
   .global
   .escaped
   .subst_begin
   .subst_end
   .char_range
-    color: orange
+    color orange
 
   .char_range > .escaped
-    color: pink
+    color pink
 
 header
   h1
   h2
     display inline-block
+
+p
+ul
+  line-height 1.6em
 
 h1
   font-weight 100
@@ -94,14 +184,57 @@ h3
   font-weight 300
   font-size 1.6em
 
+.gutter
+  margin auto
+  width 600px
 
-.coffee
+.code
+  position relative
+  overflow hidden
+  border 1px solid #e4e4e4
+  transition(height 0.3s ease-in)
+
+  pre
+    transition(left 0.5s ease-out)
+    border none
+    position absolute
+    width 100%
+
+
+  .toggle
+    overflow hidden
+    position absolute
+    top 0
+    right 0
+    cursor pointer
+    display block
+    width 100px
+    height 21px
+    z-index 10
+    background #e4e4e4
+    font-size 10px
+    text-transform uppercase
+    border-radius(0 0 0 4px)
+
+    span
+      transition(margin-top 0.2s ease-in)
+      padding 4px 8px
+      display block
+      width 100%
+      text-align center
+
+  .lang-coffeescript
+    left 0
   .lang-javascript
-    display none
+    left 100%
 
   &.compiled
+    .toggle span:first-child
+      margin-top -21px
+
     .lang-javascript
       display block
+      left 0
 
     .lang-coffeescript
-      display none
+      left -100%

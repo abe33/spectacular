@@ -15,10 +15,11 @@ html(lang='en', class=slug)
 
 
   body
-    header
-      h1!= locals.title
-      h2!= locals.version
+    .gutter
+      header
+        h1!= locals.title
+        h2!= locals.version
 
-    h1!= page.title
-    != page.html
+      h1!= page.title
+      != page.html
 
