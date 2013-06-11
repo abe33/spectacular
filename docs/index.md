@@ -51,6 +51,8 @@ describe Array, ->
   * The API is provided with both camelCase and snake_case version
   * No external dependencies in browsers
 
+----
+
 ## Install
 
 Spectacular is available as a [npm](http://npmjs.org) module, you can then install it with:

@@ -1,4 +1,22 @@
 $ ->
+  hs = $('h2, h3, h4, h5, h6')
+
+  afterInstall = false
+  hs = hs.filter ->
+    afterInstall = true if this.textContent is 'Install'
+    return afterInstall
+
+  toc = $ '<nav id="toc"><h2>Table Of Content</h2><ul></ul></nav>'
+  tocList = toc.find('ul')
+  hs.each ->
+    level = parseInt(this.nodeName[1..])
+    content = this.textContent
+    id = content.replace /[^\w]+/g, '-'
+    this.id = id
+    tocList.append "<li><a href='##{id}' class='level#{level}'>#{content}</a></li>"
+
+  $('hr').before toc
+
   $('.lang-coffeescript').each ->
     pre = $(this).parent()
     coffee = pre.text()
