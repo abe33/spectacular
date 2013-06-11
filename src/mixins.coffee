@@ -31,12 +31,16 @@ class spectacular.Globalizable
   globalize: ->
     @previous ||= {}
     @globalizable.forEach (k) =>
-      @globalizeMember k, @[k] unless k in Globalizable.excluded
+      unless k in (@constructor.excluded or Globalizable.excluded)
+        @globalizeMember k, @[k]
+
     @globalized = true
 
   unglobalize: ->
     @globalizable.forEach (k) =>
-      @unglobalizeMember k, @[k] unless k in Globalizable.excluded
+      unless k in (@constructor.excluded or Globalizable.excluded)
+        @unglobalizeMember k, @[k]
+
     @globalized = false
 
   globalizeMember: (key, value) ->
@@ -70,6 +74,7 @@ class spectacular.Globalizable
 
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable
+  @excluded = spectacular.Globalizable.excluded.concat 'set'
 
   constructor: (@__globalizable...) ->
 
@@ -80,6 +85,10 @@ class spectacular.GlobalizableObject
         @__globalizable
       else
         utils.keys this
+
+  set: (property, value) ->
+    @[property] = value
+    @globalizeMember property, value if @globalized
 
 spectacular.HasCollection = (plural, singular) ->
   capitalizedSingular = utils.capitalize singular
