@@ -122,6 +122,9 @@ exports.run = (options) ->
     spectacular.env.runner.loadEndedAt = loadEndedAt
     spectacular.env.runner.paths = paths
     spectacular.env.run()
+  .then (status) ->
+    spectacular.env.unglobalize()
+    status
   .fail (reason) ->
     if spectacular.env?
       reporter = getReporter options

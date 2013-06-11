@@ -24,15 +24,19 @@ class spectacular.HasAncestors
     parent
 
 class spectacular.Globalizable
+  @excluded: ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized']
+
   keepContext: true
 
   globalize: ->
     @previous ||= {}
-    @globalizable.forEach (k) => @globalizeMember k, @[k]
+    @globalizable.forEach (k) =>
+      @globalizeMember k, @[k] unless k in Globalizable.excluded
     @globalized = true
 
   unglobalize: ->
-    @globalizable.forEach (k) => @unglobalizeMember k, @[k]
+    @globalizable.forEach (k) =>
+      @unglobalizeMember k, @[k] unless k in Globalizable.excluded
     @globalized = false
 
   globalizeMember: (key, value) ->
@@ -56,10 +60,10 @@ class spectacular.Globalizable
   unglobalizeMember: (key, value) ->
     _global = spectacular.global
 
-    if @previous[k]?
-      _global[k] = @previous[k]
+    if @previous[key]?
+      _global[key] = @previous[key]
     else
-      delete _global[k]
+      delete _global[key]
 
     snake = utils.underscore key
     @unglobalizeMember snake, value if snake isnt key

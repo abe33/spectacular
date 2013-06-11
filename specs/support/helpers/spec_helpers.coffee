@@ -39,12 +39,14 @@ exports.runEnvExpectingNormalTermination = (env, context, async) ->
     env.run()
   .then (status) ->
     context.status = status
+    spectacular.env.unglobalize()
     spectacular.env = oldEnv
     oldEnv.globalize()
     async.resolve() if context.ended
     context.ended = true
   .fail (reason) ->
     context.reason = context.rejected = reason
+    spectacular.env.unglobalize()
     spectacular.env = oldEnv
     oldEnv.globalize()
     async.reject reason
@@ -58,12 +60,14 @@ exports.runEnvExpectingInterruption = (env, context, async) ->
     env.run()
   .then (status) =>
     spectacular.env = oldEnv
+    spectacular.env.unglobalize()
     oldEnv.globalize()
     context.rejected = new Error "run didn't failed"
     async.reject context.rejected if context.ended
     context.ended = true
   .fail (reason) =>
     spectacular.env = oldEnv
+    spectacular.env.unglobalize()
     context.reason = reason
     oldEnv.globalize()
     async.resolve()

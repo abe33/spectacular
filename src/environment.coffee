@@ -29,8 +29,8 @@ class spectacular.Environment
 
   run: => @runner.run()
 
-  _globalize = Environment::globalize
-  _unglobalize = Environment::unglobalize
+  @_globalize = Environment::globalize
+  @_unglobalize = Environment::unglobalize
 
   createGlobalizedMethod: (name, block) ->
     unless name in @globalizable
@@ -55,25 +55,29 @@ class spectacular.Environment
       @[oldName].apply this, arguments
 
   globalize: ->
-    _globalize.call(this)
+    Environment._globalize.call(this)
     spectacular.factories.globalize()
     spectacular.matchers.globalize()
     @globalizeObjectExtensions()
-    @globalizeJQuery()
 
   unglobalize: ->
-    _unglobalize.call(this)
+    Environment._unglobalize.call(this)
     spectacular.factories.unglobalize()
     spectacular.matchers.unglobalize()
+    @unglobalizeObjectExtensions()
 
-  globalizeJQuery: ->
-    spectacular.global.$ = @options.jQuery
+  unglobalizeObjectExtensions: ->
+    delete Object::should
+    delete Object::shouldnt
+    delete spectacular.global.should
+    delete spectacular.global.shouldnt
 
   globalizeObjectExtensions: ->
     env = this
     Object.defineProperty Object.prototype, 'should', {
-      writable: true,
-      enumerable: false,
+      writable: true
+      configurable: true
+      enumerable: false
       value: (matcher, neg=false) ->
         env.notOutsideIt 'should'
 
@@ -90,8 +94,9 @@ class spectacular.Environment
     }
 
     Object.defineProperty Object.prototype, 'shouldnt', {
-      writable: true,
-      enumerable: false,
+      writable: true
+      configurable: true
+      enumerable: false
       value: (matcher) ->
         env.notOutsideIt 'should'
         @should matcher, true
@@ -190,11 +195,12 @@ class spectacular.Environment
 
     @context 'returned value', =>
       @subject 'returnedValue', ->
-        context = if options.inContext?
-          if typeof options.inContext is 'function'
-            options.inContext.call(this)
+        context = if options.inContext? or options.in_context?
+          ctx = options.inContext or options.in_context
+          if typeof ctx is 'function'
+            ctx.call(this)
           else
-            options.inContext
+            ctx
         else
           this
 
