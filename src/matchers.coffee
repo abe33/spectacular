@@ -1,6 +1,37 @@
 spectacular.matchers ||= new spectacular.GlobalizableObject
 spectacular.matchers.keepContext = false
 
+spectacular.matcher = (name, block) ->
+  o = new spectacular.GlobalizableObject
+  takes = null
+  match = null
+  timeout = null
+
+  o.match = (value) -> match = value
+  o.timeout = (value) -> timeout = value
+  o.takes = (args...) -> takes = args
+
+  o.globalize()
+  block.call(null)
+  o.unglobalize()
+
+  unless match?
+    throw new Error "can't create matcher #{name} without a match"
+
+  matcher = if takes?
+    ->
+      matcher = {}
+      matcher[k] = arguments[i] for k,i in takes
+
+      matcher.match = match
+      matcher.timeout = timeout
+
+      matcher
+  else
+    {match, timeout}
+
+  spectacular.matchers.set name, matcher
+
 # Javascript Diff Algorithm
 # By John Resig (http://ejohn.org/)
 # Modified by Chu Alan "sprite"
