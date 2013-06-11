@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="introduction"><head><meta charset="utf-8"><title>Spectacular - Introduction</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>0.0.2</h2></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
+<!DOCTYPE html><html lang="en" class="introduction"><head><meta charset="utf-8"><title>Spectacular - Introduction</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>0.0.1</h2></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
 <a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a>
 <a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a>
 <a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></p>
@@ -228,30 +228,15 @@ describe <span class="string"><span class="string_begin">'</span>depending conte
 <p>The inverse of <code>should</code> is <code>shouldnt</code>.
 The inverse of <code>expect(...).to</code> is <code>expect(...).not.to</code>.</p>
 <h3>Matchers</h3>
-<p>Matchers are defined with the <code>spectacular.matcher</code> function. It generates an object with a <code>match</code> method that should return a boolean value corresponding to the assertion result.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>returnSomething<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  match <span class="group"><span class="group_begin">(</span>actual<span class="punctuation">,</span> notText<span class="group_end">)</span></span> <span class="function">-></span>
+<p>Matchers are simple object with a <code>match</code> method that should return a boolean value corresponding to the assertion result.</p>
+<pre><code class="lang-coffeescript">myMatcher <span class="operators">=</span>
+  <span class="property">match<span class='punctuation'>:</span></span> <span class="group"><span class="group_begin">(</span>actual<span class="punctuation">,</span> notText<span class="group_end">)</span></span> <span class="function">-></span>
     <span class="property">@description</span> <span class="operators">=</span> <span class="string"><span class="string_begin">"</span>should<span class="subst"><span class="subst_begin">#{</span>notText<span class="subst_end">}</span></span> return something<span class="string_end">"</span></span>
     <span class="property">@message</span> <span class="operators">=</span> <span class="string"><span class="string_begin">"</span>Expected <span class="subst"><span class="subst_begin">#{</span>actual<span class="subst_end">}</span></span> to return something<span class="string_end">"</span></span>
 
-    actual<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span> <span class="keyword">isnt</span> <span class="literal">null</span>
-
-<span class="comment"># Usage:</span>
-it <span class="function">-></span> should returnSomething</code></pre>
+    actual<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span> <span class="keyword">isnt</span> <span class="literal">null</span></code></pre>
 <p>The matcher receive a string containing <code>&#39; not&#39;</code> if the matcher was passed to <code>shouldnt</code> or <code>expect(...).not.to</code>.</p>
 <p>If an exception is raised during the matcher execution, the example will be marked as <code>errored</code> instead of <code>failure</code>.</p>
-<p>You can create parameterizable matcher by calling the <code>takes</code> function in the matcher definition block.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>parameterizableMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  takes <span class="string"><span class="string_begin">'</span>value1<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>value2<span class="string_end">'</span></span>
-  match <span class="function">-></span>
-    <span class="property">@description</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>parameterizableMatcher description<span class="string_end">'</span></span>
-    <span class="property">@message</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>parameterizableMatcher message<span class="string_end">'</span></span>
-
-    <span class="property">@value1</span> <span class="keyword">and</span> <span class="property">@value2</span>
-
-<span class="comment"># Usage:</span>
-it <span class="function">-></span> should parameterizableMatcher<span class="group"><span class="group_begin">(</span><span class="literal">true</span><span class="punctuation">,</span> <span class="literal">true</span><span class="group_end">)</span></span></code></pre>
-<p>The parameters defined with takes are then stored in the matcher instance with the provided names.</p>
 <p>The following matchers are provided by Spectacular:</p>
 <table>
 
@@ -324,10 +309,10 @@ it <span class="function">-></span> should parameterizableMatcher<span class="gr
 </table>
 
 <h3>Asynchronous Matchers</h3>
-<p>Matchers can be asynchronous, in that case they should return a promise instead of a boolean value. The default timeout for asynchronous matchers is 5000ms, it can be changed by setting the <code>timeout</code> in the matcher block.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>asyncMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  timeout <span class="number">1000</span>
-  match <span class="group"><span class="group_begin">(</span>actual<span class="punctuation">,</span> notText<span class="group_end">)</span></span> <span class="function">-></span>
+<p>Matchers can be asynchronous, in that case they should return a promise instead of a boolean value. The default timeout for asynchronous matchers is 5000ms, it can be changed by setting a <code>timeout</code> property on the matcher object.</p>
+<pre><code class="lang-coffeescript">asyncMatcher <span class="operators">=</span>
+  <span class="property">timeout<span class='punctuation'>:</span></span> <span class="number">1000</span>
+  <span class="property">match<span class='punctuation'>:</span></span> <span class="group"><span class="group_begin">(</span>actual<span class="punctuation">,</span> notText<span class="group_end">)</span></span> <span class="function">-></span>
     <span class="property">@description</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>should match asynchronously<span class="string_end">'</span></span>
     <span class="property">@message</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>Expected to match asynchronously<span class="string_end">'</span></span>
 
@@ -337,16 +322,6 @@ it <span class="function">-></span> should parameterizableMatcher<span class="gr
 
     promise</code></pre>
 <p>If the promise is rejected, the example is marked as <code>errored</code>.</p>
-<h2>Tests Helpers</h2>
-<p>Helpers can be created and exposed with the <code>spectacular.helper</code> function.
-The function takes a name and a value and will expose it on the global object
-through a <code>GlobalizableObject</code>.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>helper <span class="string"><span class="string_begin">'</span>environmentMethod<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>method<span class="group_end">)</span></span> <span class="function">-></span>
-  <span class="property">cannotBeCalledInsideIt<span class='punctuation'>:</span></span> <span class="function">-></span>
-    runningSpecs<span class="group"><span class="group_begin">(</span><span class="string"><span class="string_begin">'</span>call inside it<span class="string_end">'</span></span><span class="group_end">)</span></span>
-    <span class="punctuation">.</span>shouldFailWith <span class="regexp">/called inside a it block/</span><span class="punctuation">,</span> <span class="function">-></span>
-      describe <span class="string"><span class="string_begin">'</span>foo<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-        it <span class="function">-></span> spectacular<span class="punctuation">.</span><span class="global">global</span><span class="punctuation">[</span>method<span class="punctuation">]</span><span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span></code></pre>
 <h2>Before &amp; After Hooks</h2>
 <p>Before and after hooks are defined in a per context basis.</p>
 <pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>context with hooks<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
@@ -437,11 +412,11 @@ one of the processor defined in the environment.</p>
     p
       /article(\s+content)*/</code></pre>
 <p>These expressions, when parsed, can be passed to the <code>match</code> or <code>contains</code> matchers.</p>
-<pre><code class="lang-coffeescript">specify <span class="string"><span class="string_begin">'</span>the page<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  <span class="global">document</span><span class="punctuation">.</span>should contains <span class="property">@domExpression</span>
+<pre><code>specify &#39;the page&#39;, -&gt;
+  document.should contains @domExpression
 
-specify <span class="string"><span class="string_begin">'</span>the node<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  node<span class="punctuation">.</span>should match <span class="property">@domExpression</span></code></pre>
+specify &#39;the node&#39;, -&gt;
+  node.should match @domExpression</code></pre>
 <h2>Shared Example</h2>
 <p>Shared example are groups of tests that can be used to test similar functionalities accross several classes. For instance the following shared examples test that an object behave like a collection as defined by the <code>spectacular.HasCollection</code> mixin:</p>
 <pre><code class="lang-coffeescript">sharedExample <span class="string"><span class="string_begin">'</span>a collection like object<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>options<span class="group_end">)</span></span> <span class="function">-></span>
@@ -485,61 +460,4 @@ specify <span class="string"><span class="string_begin">'</span>the node<span cl
     <span class="property">singular<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>child<span class="string_end">'</span></span>
     <span class="property">plural<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>children<span class="string_end">'</span></span>
   <span class="hash_end">}</span></span></code></pre>
-<h2>Snake Case Syntax</h2>
-<p>All the exposed methods are provided both with <code>camelCase</code> and <code>snake_case</code> syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.</p>
-<p>You can define any matcher, or helper, or aliases, with either the snake case
-or camel case form, the alternative will be also added to the globale object.</p>
-<p>For instance, the <code>sharedExample</code> is also available through <code>shared_example</code>.</p>
-<p>You can find below a table with all the snake case equivalent:</p>
-<table>
-    <tr><td><code>after</code></td><td>No differences</td></tr>
-    <tr><td><code>before</code></td><td>No differences</td></tr>
-    <tr><td><code>contains</code></td><td>No differences</td></tr>
-    <tr><td><code>context</code></td><td>No differences</td></tr>
-    <tr><td><code>createWith</code></td><td><code>create_with</code></td></tr>
-    <tr><td><code>dependsOn</code></td><td><code>depends_on</code></td></tr>
-    <tr><td><code>describe</code></td><td>No differences</td></tr>
-    <tr><td><code>equal</code></td><td>No differences</td></tr>
-    <tr><td><code>exist</code></td><td>No differences</td></tr>
-    <tr><td><code>expect</code></td><td>No differences</td></tr>
-    <tr><td><code>factory</code></td><td>No differences</td></tr>
-    <tr><td><code>fail</code></td><td>No differences</td></tr>
-    <tr><td><code>fixtures</code></td><td>No differences</td></tr>
-    <tr><td><code>given</code></td><td>No differences</td></tr>
-    <tr><td><code>have.selector</code></td><td>No differences</td></tr>
-    <tr><td><code>have</code></td><td>No differences</td></tr>
-    <tr><td><code>haveBeenCalled.with</code></td><td><code>have_been_called.with</code></td></tr>
-    <tr><td><code>haveBeenCalled</code></td><td><code>have_been_called</code></td></tr>
-    <tr><td><code>it</code></td><td>No differences</td></tr>
-    <tr><td><code>itBehavesLike</code></td><td><code>it_behaves_like</code></td></tr>
-    <tr><td><code>its</code></td><td>No differences</td></tr>
-    <tr><td><code>itShould</code></td><td><code>it_should</code></td></tr>
-    <tr><td><code>itsInstance</code></td><td><code>its_instance</code></td></tr>
-    <tr><td><code>itsReturn</code></td><td><code>its_return</code></td></tr>
-    <tr><td><code>match</code></td><td>No differences</td></tr>
-    <tr><td><code>pending</code></td><td>No differences</td></tr>
-    <tr><td><code>set</code></td><td>No differences</td></tr>
-    <tr><td><code>should</code></td><td>No differences</td></tr>
-    <tr><td><code>shouldnt</code></td><td>No differences</td></tr>
-    <tr><td><code>skip</code></td><td>No differences</td></tr>
-    <tr><td><code>specify</code></td><td>No differences</td></tr>
-    <tr><td><code>spy.argsForCall</code></td><td><code>spy.args_for_call</code></td></tr>
-    <tr><td><code>spyOn(...).andCallFake</code></td><td><code>spy_on(...).and_call_fake</code></td></tr>
-    <tr><td><code>spyOn(...).andCallThrough</code></td><td><code>spy_on(...).and_call_trough</code></td></tr>
-    <tr><td><code>spyOn(...).andReturns</code></td><td><code>spy_on(...).and_returns</code></td></tr>
-    <tr><td><code>spyOn</code></td><td><code>spy_on</code></td></tr>
-    <tr><td><code>subject</code></td><td>No differences</td></tr>
-    <tr><td><code>success</code></td><td>No differences</td></tr>
-    <tr><td><code>the</code></td><td>No differences</td></tr>
-    <tr><td><code>throwAnError(msg).inContext</code></td><td><code>throw_an_error(msg).in_context</code></td></tr>
-    <tr><td><code>throwAnError(msg).with</code></td><td><code>throw_an_error(msg).with</code></td></tr>
-    <tr><td><code>throwAnError</code></td><td><code>throw_an_error</code></td></tr>
-    <tr><td><code>trait</code></td><td>No differences</td></tr>
-    <tr><td><code>whenPass</code></td><td><code>when_pass</code></td></tr>
-    <tr><td><code>withArguments</code></td><td><code>with_arguments</code></td></tr>
-    <tr><td><code>withParameters</code></td><td><code>with_parameters</code></td></tr>
-    <tr><td><code>xcontext</code></td><td>No differences</td></tr>
-    <tr><td><code>xdescribe</code></td><td>No differences</td></tr>
-    <tr><td><code>xit</code></td><td>No differences</td></tr>
-</table>
 </div></body></html>
