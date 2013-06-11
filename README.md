@@ -31,7 +31,7 @@ describe Array, ->
 
 ### Features, the short tour
 
-  * Conditionned Specs
+  * Conditioned Specs
   * Matcher based description
   * Implicit subjects
   * Describe auto-subject

@@ -34,7 +34,7 @@ describe Array, ->
 
 ### Features, the short tour
 
-  * Conditionned Specs
+  * Conditioned Specs
   * Matcher based description
   * Implicit subjects
   * Describe auto-subject
@@ -278,7 +278,7 @@ describe AClass, ->
 
 ## Assertions
 
-Spectacular support two types of assertions, either with the `should` function or with the `èxpect(...).to` syntax. As addition, the `Object`'s prototype is decorated with a `should` method, allowing to write `10.should equal 10`.
+Spectacular support two types of assertions, either with the `should` function or with the `expect(...).to` syntax. As addition, the `Object`'s prototype is decorated with a `should` method, allowing to write `10.should equal 10`.
 
 
 The global `should` function will use the current example subject as actual value to pass to the provided matcher.
@@ -293,7 +293,7 @@ describe 'a number', ->
 
   it -> expect(@subject).to equal 10
 ```
-The matchers's description is used as part of the examples description, for instance the following example:
+The matcher's description is used as part of the examples description, for instance the following example:
 
 ```coffeescript
 specify 'the value', -> should equal 10
@@ -372,7 +372,7 @@ The following matchers are provided by Spectacular:
     <td>`be(value)`</td>
     <td>The `be` matcher have different behavior according to the type of the provided value.
       <ul>
-        <li>If a string is passed, the matcher will look for a property named either `value`, `isValue` or `is_value`, if the property contained a function it will call it, in the end if the value is `true` the match succeed. It is usefull to test the state of an object. For instance you can test the resolution of a promise with `@promise.should be 'fulfilled'`
+        <li>If a string is passed, the matcher will look for a property named either `value`, `isValue` or `is_value`, if the property contained a function it will call it, in the end if the value is `true` the match succeed. It is useful to test the state of an object. For instance you can test the resolution of a promise with `@promise.should be 'fulfilled'`
         </li>
         <li>If the value is an object or an array, the identity of the object is tested using the `===` operator.</li>
         <li>Boolean and numeric values are test by value like with the `equal` matcher.</li>
@@ -630,7 +630,7 @@ sharedExample 'a collection like object', (options) ->
       specify 'the collection', ->
         @subject[plural].shouldnt contains @item
 
-    context 'removing an inexistant item', ->
+    context 'removing an inexistent item', ->
       before -> @subject["remove#{capitalizedSingular}"] @item2
 
       specify 'the collection', ->
@@ -654,7 +654,7 @@ describe ClassWithCollection, ->
 All the exposed methods are provided both with `camelCase` and `snake_case` syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.
 
 You can define any matcher, or helper, or aliases, with either the snake case
-or camel case form, the alternative will be also added to the globale object.
+or camel case form, the alternative will be also added to the global object.
 
 For instance, the `sharedExample` is also available through `shared_example`.
 
