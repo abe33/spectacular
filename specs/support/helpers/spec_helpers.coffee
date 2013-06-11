@@ -1,5 +1,5 @@
 
-exports.createEnv = (block, context, options) ->
+spectacular.helper 'createEnv', (block, context, options) ->
   env = spectacular.env.clone()
   env.options.noColors = true
   env.options[k] = v for k,v of options
@@ -12,7 +12,7 @@ exports.createEnv = (block, context, options) ->
 
   env
 
-exports.createReporter = (env, context, async) ->
+spectacular.helper 'createReporter', (env, context, async) ->
   reporter = new spectacular.ConsoleReporter env.options
   context.results = ''
   reporter.on 'message', (e) -> context.results += e.target
@@ -30,7 +30,7 @@ exports.createReporter = (env, context, async) ->
   env.runner.on 'end', reporter.onEnd
   reporter
 
-exports.runEnvExpectingNormalTermination = (env, context, async) ->
+spectacular.helper 'runEnvExpectingNormalTermination', (env, context, async) ->
   oldEnv = spectacular.env
   oldEnv.unglobalize()
   spectacular.env = env
@@ -51,7 +51,7 @@ exports.runEnvExpectingNormalTermination = (env, context, async) ->
     oldEnv.globalize()
     async.reject reason
 
-exports.runEnvExpectingInterruption = (env, context, async) ->
+spectacular.helper 'runEnvExpectingInterruption', (env, context, async) ->
   oldEnv = spectacular.env
   oldEnv.unglobalize()
   spectacular.env = env
@@ -72,7 +72,7 @@ exports.runEnvExpectingInterruption = (env, context, async) ->
     oldEnv.globalize()
     async.resolve()
 
-exports.runningSpecs = (desc) ->
+spectacular.helper 'runningSpecs', (desc) ->
   options = {}
 
   withOption: (option, value) ->
@@ -115,7 +115,7 @@ exports.runningSpecs = (desc) ->
 
     this
 
-exports.environmentMethod = (method) ->
+spectacular.helper 'environmentMethod', (method) ->
   cannotBeCalledInsideIt: ->
     runningSpecs('call inside it')
     .shouldFailWith /called inside a it block/, ->

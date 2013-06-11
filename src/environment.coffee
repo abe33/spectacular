@@ -1,3 +1,6 @@
+spectacular.helpers = new spectacular.GlobalizableObject
+
+spectacular.helper = (name, value) -> spectacular.helpers.set name, value
 
 class spectacular.Environment
   @include spectacular.Globalizable
@@ -58,12 +61,14 @@ class spectacular.Environment
     Environment._globalize.call(this)
     spectacular.factories.globalize()
     spectacular.matchers.globalize()
+    spectacular.helpers.globalize()
     @globalizeObjectExtensions()
 
   unglobalize: ->
     Environment._unglobalize.call(this)
     spectacular.factories.unglobalize()
     spectacular.matchers.unglobalize()
+    spectacular.helpers.unglobalize()
     @unglobalizeObjectExtensions()
 
   unglobalizeObjectExtensions: ->

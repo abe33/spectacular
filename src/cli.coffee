@@ -9,11 +9,11 @@ walk = require 'walkdir'
 util = require 'util'
 jsdom = require 'jsdom'
 
-requireIntoGlobal = (file) ->
-  matchers = require file
-  for k,v of matchers
-    v._name = k if typeof v is 'function'
-    global[k] = v
+requireFile = (file, context) ->
+  try
+    require file
+  catch err
+    console.log file, err
 
 loadSpectacular = (options) ->
   Q.fcall ->
@@ -31,7 +31,7 @@ loadMatchers = (options) ->
     defer.resolve()
   else
     emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) -> requireIntoGlobal path
+    emitter.on 'file', (path, stat) -> requireFile path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
@@ -43,7 +43,7 @@ loadHelpers = (options) ->
     defer.resolve()
   else
     emitter = walk options.helpersRoot
-    emitter.on 'file', (path, stat) -> requireIntoGlobal path
+    emitter.on 'file', (path, stat) -> requireFile path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
