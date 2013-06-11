@@ -77,10 +77,11 @@ describe spectacular.EventDispatcher, ->
 class GlobalizableClass
   @include spectacular.Globalizable
 
-  globalizable: ['test', 'testMethod']
+  globalizable: ['test', 'testMethod', 'another_test_method']
 
   test: ->
   testMethod: ->
+  another_test_method: ->
 
 describe GlobalizableClass, ->
   subject -> new GlobalizableClass
@@ -89,7 +90,12 @@ describe GlobalizableClass, ->
     before -> @subject.globalize()
     after -> @subject.unglobalize()
 
-    specify 'the globalizable method', ->
-      expect('test', spectacular.global.test).to exist
-      expect('testMethod', spectacular.global.testMethod).to exist
-      expect('test_method', spectacular.global.test_method).to exist
+    [
+      'test',
+      'testMethod',
+      'test_method',
+      'anotherTestMethod',
+      'another_test_method'
+    ].forEach (method) ->
+      specify "the globalizable", ->
+        expect(method, spectacular.global[method]).to exist

@@ -24,7 +24,7 @@ class spectacular.HasAncestors
     parent
 
 class spectacular.Globalizable
-  @excluded: ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized']
+  @excluded: ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized', 'alternate', 'previous']
 
   keepContext: true
 
@@ -43,7 +43,7 @@ class spectacular.Globalizable
 
     @globalized = false
 
-  globalizeMember: (key, value) ->
+  globalizeMember: (key, value, alternate=true) ->
     _global = spectacular.global
     @previous[key] = _global[key] if _global[key]?
     self = this
@@ -58,10 +58,11 @@ class spectacular.Globalizable
     else
       _global[key] = value
 
-    snake = utils.underscore key
-    @globalizeMember snake, value if snake isnt key
+    if alternate
+      alt = @alternate key
+      @globalizeMember alt, value, false if alt isnt key
 
-  unglobalizeMember: (key, value) ->
+  unglobalizeMember: (key, value, alternate=true) ->
     _global = spectacular.global
 
     if @previous[key]?
@@ -69,8 +70,15 @@ class spectacular.Globalizable
     else
       delete _global[key]
 
-    snake = utils.underscore key
-    @unglobalizeMember snake, value if snake isnt key
+    if alternate
+      alt = @alternate key
+      @unglobalizeMember alt, value, false if alt isnt key
+
+  alternate: (key) ->
+    if key.indexOf('_') is -1
+      utils.underscore key
+    else
+      utils.camelize key
 
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable

@@ -12,6 +12,12 @@ spectacular.utils.underscore = (s) ->
   .join("_")
   .toLowerCase()
 
+spectacular.utils.camelize = (s) ->
+  a = s.toLowerCase().split /[_\s-]/
+  s = a.shift()
+  s = "#{s}#{utils.capitalize w}" for w in a
+  s
+
 spectacular.utils.snakify = (o) ->
   for k,v of o
     o[utils.underscore k] = v
