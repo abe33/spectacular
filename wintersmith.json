@@ -7,7 +7,7 @@
   ],
   "locals": {
     "title": "Spectacular",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "plugins": [
     "wintersmith-stylus",
