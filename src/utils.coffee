@@ -12,6 +12,10 @@ spectacular.utils.underscore = (s) ->
   .join("_")
   .toLowerCase()
 
+spectacular.utils.snakify = (o) ->
+  for k,v of o
+    o[utils.underscore k] = v
+
 spectacular.utils.keys = (o) -> k for k of o
 
 spectacular.utils.isArray = (o) -> Object::toString.call(o) is '[object Array]'

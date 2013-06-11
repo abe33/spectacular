@@ -304,6 +304,8 @@ class spectacular.Environment
         block.call context, oldMethod.apply this, arguments
       this
 
+    utils.snakify spy
+
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod
 

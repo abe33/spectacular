@@ -150,30 +150,33 @@ spectacular.matchers.contains = (values...) ->
       values.every (v) -> v in actual
 
 spectacular.matchers.throwAnError = (message) ->
-  match: (actual, notText) ->
-    msg = if message? then " with message #{message}" else ''
-    msg += " with arguments #{utils.inspect @arguments}" if @arguments?
+  matcher =
+    match: (actual, notText) ->
+      msg = if message? then " with message #{message}" else ''
+      msg += " with arguments #{utils.inspect @arguments}" if @arguments?
 
-    @description = "should#{notText} throw an error#{msg}"
+      @description = "should#{notText} throw an error#{msg}"
 
-    try
-      if @arguments?
-        actual.apply @context, @arguments
+      try
+        if @arguments?
+          actual.apply @context, @arguments
+        else
+          actual.call @context
+      catch error
+      result = if message?
+        error? and message.test error.message
       else
-        actual.call @context
-    catch error
-    result = if message?
-      error? and message.test error.message
-    else
-      error?
-    r = if notText.length is 0 then result else not result
-    @message = "Expected#{notText} to throw an error#{msg} #{utils.andOrBut r} was #{error}"
+        error?
+      r = if notText.length is 0 then result else not result
+      @message = "Expected#{notText} to throw an error#{msg} #{utils.andOrBut r} was #{error}"
 
-    result
+      result
 
-  with: (@arguments...) -> this
-  inContext: (@context) -> this
+    with: (@arguments...) -> this
+    inContext: (@context) -> this
 
+  utils.snakify matcher
+  matcher
 
 spectacular.matchers.haveBeenCalled =
   match: (actual, notText) ->
@@ -197,3 +200,5 @@ spectacular.matchers.haveBeenCalled =
     m = Object.create this
     m.arguments = args
     m
+
+utils.snakify spectacular.matchers
