@@ -322,20 +322,40 @@ The inverse of `expect(...).to` is `expect(...).not.to`.
 
 ### Matchers
 
-Matchers are simple object with a `match` method that should return a boolean value corresponding to the assertion result.
+Matchers are defined with the `spectacular.matcher` function. It generates an object with a `match` method that should return a boolean value corresponding to the assertion result.
 
 ```coffeescript
-myMatcher =
-  match: (actual, notText) ->
+spectacular.matcher 'returnSomething', ->
+  match (actual, notText) ->
     @description = "should#{notText} return something"
     @message = "Expected #{actual} to return something"
 
     actual() isnt null
+
+# Usage:
+it -> should returnSomething
 ```
 
 The matcher receive a string containing `' not'` if the matcher was passed to `shouldnt` or `expect(...).not.to`.
 
 If an exception is raised during the matcher execution, the example will be marked as `errored` instead of `failure`.
+
+You can create parameterizable matcher by calling the `takes` function in the matcher definition block.
+
+```coffeescript
+spectacular.matcher 'parameterizableMatcher', ->
+  takes 'value1', 'value2'
+  match ->
+    @description = 'parameterizableMatcher description'
+    @message = 'parameterizableMatcher message'
+
+    @value1 and @value2
+
+# Usage:
+it -> should parameterizableMatcher(true, true)
+```
+
+The parameters defined with takes are then stored in the matcher instance with the provided names.
 
 The following matchers are provided by Spectacular:
 
@@ -411,12 +431,12 @@ The following matchers are provided by Spectacular:
 
 ### Asynchronous Matchers
 
-Matchers can be asynchronous, in that case they should return a promise instead of a boolean value. The default timeout for asynchronous matchers is 5000ms, it can be changed by setting a `timeout` property on the matcher object.
+Matchers can be asynchronous, in that case they should return a promise instead of a boolean value. The default timeout for asynchronous matchers is 5000ms, it can be changed by setting the `timeout` in the matcher block.
 
 ```coffeescript
-asyncMatcher =
-  timeout: 1000
-  match: (actual, notText) ->
+spectacular.matcher 'asyncMatcher', ->
+  timeout 1000
+  match (actual, notText) ->
     @description = 'should match asynchronously'
     @message = 'Expected to match asynchronously'
 
@@ -427,6 +447,21 @@ asyncMatcher =
     promise
 ```
 If the promise is rejected, the example is marked as `errored`.
+
+## Tests Helpers
+
+Helpers can be created and exposed with the `spectacular.helper` function.
+The function takes a name and a value and will expose it on the global object
+through a `GlobalizableObject`.
+
+```coffeescript
+spectacular.helper 'environmentMethod', (method) ->
+  cannotBeCalledInsideIt: ->
+    runningSpecs('call inside it')
+    .shouldFailWith /called inside a it block/, ->
+      describe 'foo', ->
+        it -> spectacular.global[method]()
+```
 
 ## Before & After Hooks
 
@@ -554,7 +589,7 @@ It's also possible to test the text content of a node using quote or regex liter
 
 These expressions, when parsed, can be passed to the `match` or `contains` matchers.
 
-```
+```coffeescript
 specify 'the page', ->
   document.should contains @domExpression
 
@@ -613,3 +648,66 @@ describe ClassWithCollection, ->
     plural: 'children'
   }
 ```
+
+## Snake Case Syntax
+
+All the exposed methods are provided both with `camelCase` and `snake_case` syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.
+
+You can define any matcher, or helper, or aliases, with either the snake case
+or camel case form, the alternative will be also added to the globale object.
+
+For instance, the `sharedExample` is also available through `shared_example`.
+
+You can find below a table with all the snake case equivalent:
+
+<table>
+    <tr><td>`after`</td><td>No differences</td></tr>
+    <tr><td>`before`</td><td>No differences</td></tr>
+    <tr><td>`contains`</td><td>No differences</td></tr>
+    <tr><td>`context`</td><td>No differences</td></tr>
+    <tr><td>`createWith`</td><td>`create_with`</td></tr>
+    <tr><td>`dependsOn`</td><td>`depends_on`</td></tr>
+    <tr><td>`describe`</td><td>No differences</td></tr>
+    <tr><td>`equal`</td><td>No differences</td></tr>
+    <tr><td>`exist`</td><td>No differences</td></tr>
+    <tr><td>`expect`</td><td>No differences</td></tr>
+    <tr><td>`factory`</td><td>No differences</td></tr>
+    <tr><td>`fail`</td><td>No differences</td></tr>
+    <tr><td>`fixtures`</td><td>No differences</td></tr>
+    <tr><td>`given`</td><td>No differences</td></tr>
+    <tr><td>`have.selector`</td><td>No differences</td></tr>
+    <tr><td>`have`</td><td>No differences</td></tr>
+    <tr><td>`haveBeenCalled.with`</td><td>`have_been_called.with`</td></tr>
+    <tr><td>`haveBeenCalled`</td><td>`have_been_called`</td></tr>
+    <tr><td>`it`</td><td>No differences</td></tr>
+    <tr><td>`itBehavesLike`</td><td>`it_behaves_like`</td></tr>
+    <tr><td>`its`</td><td>No differences</td></tr>
+    <tr><td>`itShould`</td><td>`it_should`</td></tr>
+    <tr><td>`itsInstance`</td><td>`its_instance`</td></tr>
+    <tr><td>`itsReturn`</td><td>`its_return`</td></tr>
+    <tr><td>`match`</td><td>No differences</td></tr>
+    <tr><td>`pending`</td><td>No differences</td></tr>
+    <tr><td>`set`</td><td>No differences</td></tr>
+    <tr><td>`should`</td><td>No differences</td></tr>
+    <tr><td>`shouldnt`</td><td>No differences</td></tr>
+    <tr><td>`skip`</td><td>No differences</td></tr>
+    <tr><td>`specify`</td><td>No differences</td></tr>
+    <tr><td>`spy.argsForCall`</td><td>`spy.args_for_call`</td></tr>
+    <tr><td>`spyOn(...).andCallFake`</td><td>`spy_on(...).and_call_fake`</td></tr>
+    <tr><td>`spyOn(...).andCallThrough`</td><td>`spy_on(...).and_call_trough`</td></tr>
+    <tr><td>`spyOn(...).andReturns`</td><td>`spy_on(...).and_returns`</td></tr>
+    <tr><td>`spyOn`</td><td>`spy_on`</td></tr>
+    <tr><td>`subject`</td><td>No differences</td></tr>
+    <tr><td>`success`</td><td>No differences</td></tr>
+    <tr><td>`the`</td><td>No differences</td></tr>
+    <tr><td>`throwAnError(msg).inContext`</td><td>`throw_an_error(msg).in_context`</td></tr>
+    <tr><td>`throwAnError(msg).with`</td><td>`throw_an_error(msg).with`</td></tr>
+    <tr><td>`throwAnError`</td><td>`throw_an_error`</td></tr>
+    <tr><td>`trait`</td><td>No differences</td></tr>
+    <tr><td>`whenPass`</td><td>`when_pass`</td></tr>
+    <tr><td>`withArguments`</td><td>`with_arguments`</td></tr>
+    <tr><td>`withParameters`</td><td>`with_parameters`</td></tr>
+    <tr><td>`xcontext`</td><td>No differences</td></tr>
+    <tr><td>`xdescribe`</td><td>No differences</td></tr>
+    <tr><td>`xit`</td><td>No differences</td></tr>
+</table>
