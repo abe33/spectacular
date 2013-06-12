@@ -13,7 +13,7 @@ $ ->
     content = this.textContent
     id = content.replace /[^\w]+/g, '-'
     this.id = id
-    tocList.append "<li><a href='##{id}' class='level#{level}'>#{content}</a></li>"
+    tocList.append "<li class='level#{level}'><a href='##{id}'>#{content}</a></li>"
 
   $('hr').before toc
 

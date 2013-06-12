@@ -53,6 +53,16 @@ body
   *
     box-sizing border-box
 
+a
+  color black
+  border-bottom 1px solid #ccc
+  text-decoration none
+  transition(all 0.3s ease-in)
+
+  &:hover
+    border-color orange
+
+
 table
   border 1px solid #e4e4e4
   border-radius 3px
@@ -81,7 +91,6 @@ code
   line-height 1em
   vertical-align baseline
 
-
 header
   h1
   h2
@@ -90,6 +99,9 @@ header
 
   h1
     color #888
+
+  & + h1 + p a
+    border none
 
 p
 ul
@@ -104,6 +116,11 @@ h2
 h3
   font-weight 300
   font-size 1.6em
+
+h4
+  font-weight 100
+  font-size 1.4em
+
 
 .gutter
   margin auto
@@ -160,6 +177,11 @@ h3
 
     .lang-coffeescript
       left -100%
+
+hr
+  height 0px
+  border none
+  border-top 1px solid #ccc
 
 pre
   border 1px solid #e4e4e4
@@ -273,3 +295,13 @@ pre
 
   .char_range > .escaped
     color pink
+
+#toc
+  padding-bottom 20px
+
+  for i in 2..6
+    .level{i}
+      margin-left (i - 2) * 30px
+
+  li
+    list-style none
