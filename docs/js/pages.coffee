@@ -4,7 +4,7 @@ $ ->
   afterInstall = false
   hs = hs.filter ->
     afterInstall = true if this.textContent is 'Install'
-    return afterInstall
+    return afterInstall and $(this).parents('.caniuse_static').length is 0
 
   toc = $ '<nav id="toc"><h2>Table Of Content</h2><ul></ul></nav>'
   tocList = toc.find('ul')

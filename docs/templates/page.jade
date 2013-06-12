@@ -6,6 +6,7 @@ html(lang='en', class=slug)
     title= locals.title + " - " + page.title
 
     link(href='css/page.css', rel='stylesheet', type='text/css')
+    link(href='css/caniuse.css', rel='stylesheet', type='text/css')
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,100,300', rel='stylesheet', type='text/css')
     link(rel="stylesheet", href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css")
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', type='text/javascript')
@@ -23,3 +24,4 @@ html(lang='en', class=slug)
       h1!= page.title
       != page.html
 
+    script(src='js/caniuse.js', type='text/javascript')
