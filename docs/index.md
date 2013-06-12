@@ -75,15 +75,14 @@ Spectacular rely on some feature that may not be available in all browsers. You 
 
 <div class="caniuse_static">
   <h1>Object.defineProperty</h1>
-  <p class="status">W3C Recommendation</p>
+  <p class="status">ECMAScript 5</p>
   <p>Supported from the following versions:</p>
   <h2 id="Desktop">Desktop</h2>
   <ul class="agents">
     <li title="Chrome - Yes" class="icon-chrome y"><span class="version">5</span></li>
     <li title="Firefox - Yes" class="icon-firefox y"><span class="version">4</span></li>
     <li title="IE - Yes" class="icon-ie y"><span class="version">9</span></li>
-    <li title="Opera - Yes" class="icon-opera y"><span class="version">11
-    60</span></li>
+    <li title="Opera - Yes" class="icon-opera y"><span class="version">11.60</span></li>
     <li title="Safari - Yes" class="icon-safari y"><span class="version">5.1</span></li>
   </ul>
   <h2 id="Mobile-Tablet">Mobile / Tablet</h2>
@@ -92,7 +91,7 @@ Spectacular rely on some feature that may not be available in all browsers. You 
     <li title="Android Browser - Yes" class="icon-android y"><span class="version">0</span></li>
     <li title="Opera Mobile - Yes" class="icon-op_mob y"><span class="version">11.50</span></li>
     <li title="Chrome for Android - Yes" class="icon-and_chr y"><span class="version">0</span></li>
-    <li title="Firefox for Android - Yes" class="icon-and_ff y"><span class="version">0</span></li>
+    <li title="Firefox for Android - Yes" class="icon-and_ff y"><span class="version">4</span></li>
   </ul>
   <ul class="legend">
     <li>Supported:</li>
