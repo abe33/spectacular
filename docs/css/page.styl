@@ -1,47 +1,77 @@
 
 roboto = 'Roboto', sans-serif
 
-// dark-blue = #004358
-// blue = #1097FF
-// cyan = #1F8A70
-// green = #BEDB39
-// yellow = #FFE11A
-// orange = #FD7400
-// red = #D90B0B
-// magenta = #D90452
-// light-grey = #e4e4e4
+dark_blue_const = #0b1d26
 
-transition(trans)
-  -webkit-transition trans
-  -moz-transition trans
-  -o-transition trans
-  transition trans
+dark_blue(op)
+  rgba(22,58,76,op)
 
-box-sizing(mode)
-  -webkit-box-sizing mode
-  -moz-box-sizing mode
-  -o-box-sizing mode
-  box-sizing mode
+success(op)
+  rgba(100,180,50,op)
+
+pending(op)
+  rgba(255,200,90,op)
+
+error(op)
+  rgba(255,150,20,op)
+
+failure(op)
+  rgba(255,40,20,op)
+
+skipped(op)
+  rgba(255,20,220,op)
+
+blue_gray(op)
+  rgba(86,122,120,op)
+
+light_gray(op)
+  rgba(207,231,230,op)
+
+light_blue(op)
+  rgba(56,147,193,op)
+
+green = success(1)
+red = failure(1)
+blue = light_blue(1)
+magenta = skipped(1)
+yellow = pending(1)
+
+transition()
+  transition arguments
+  -webkit-transition arguments
+  -moz-transition arguments
+  -o-transition arguments
+
+transform()
+  transform arguments
+  -webkit-transform arguments
+  -moz-transform arguments
+  -o-transform arguments
+
+box-sizing()
+  box-sizing arguments
+  -webkit-box-sizing arguments
+  -moz-box-sizing arguments
+  -o-box-sizing arguments
 
 
-border-radius(rad)
-  -webkit-border-radius rad
-  -moz-border-radius rad
-  -o-border-radius rad
-  border-radius rad
+border-radius()
+  border-radius arguments
+  -webkit-border-radius arguments
+  -moz-border-radius arguments
+  -o-border-radius arguments
 
 box-shadow()
+  box-shadow arguments
   -webkit-box-shadow arguments
   -moz-box-shadow arguments
   -o-box-shadow arguments
-  box-shadow arguments
 
 text-shadow()
+  text-shadow arguments
   -webkit-text-shadow arguments
   -moz-text-shadow arguments
   -o-text-shadow arguments
-  text-shadow arguments
-
 
 body
   margin 0
@@ -57,10 +87,45 @@ a
   color black
   border-bottom 1px solid #ccc
   text-decoration none
-  transition(all 0.3s ease-in)
+  transition all 0.3s ease-in
 
   &:hover
     border-color orange
+
+#download
+  text-align center
+
+  a.download
+    background #e4e4e4
+    border 1px solid #efefef
+    display inline-block
+    border-radius 6px
+    width auto
+    padding 16px 24px
+    font-size 30px
+    margin auto
+    margin-top 11px
+    margin-bottom 14px
+    font-weight 100
+    text-shadow 0 1px 0 white
+    box-shadow 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3)
+    transition all 0.2s
+
+    &:hover
+      margin-top 9px
+      margin-bottom 16px
+      box-shadow 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3)
+
+    &:active
+      margin-top 13px
+      margin-bottom 12px
+      box-shadow 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3)
+
+
+    i
+      color #bbb
+      margin-right 16px
+
 
 
 table
@@ -91,17 +156,52 @@ code
   line-height 1em
   vertical-align baseline
 
-header
+body .gutter header
+  padding 20px 0
+  border-bottom 1px solid #ccc
+
   h1
   h2
     margin 0
     display inline-block
 
   h1
-    color #888
+    color #ababab
 
   & + h1 + p a
     border none
+
+  h2
+     position relative
+
+  h2:after
+    font-family FontAwesome
+    content: ''
+    background url(../img/waiting.gif) no-repeat 4px 6px
+    display block
+    position absolute
+    top 0
+    left 100%
+    width 40px
+    height 40px
+
+html.success body .gutter header
+  h2
+    color green
+
+  h2:after
+    content "\f00c"
+    color green
+    background none
+
+html.failure body .gutter header
+  h2
+    color: red
+
+  h2:after
+    content "\f00d"
+    color: red
+    background none
 
 p
 ul
@@ -121,6 +221,8 @@ h4
   font-weight 100
   font-size 1.4em
 
+#reporter
+  margin-top 60px !important
 
 .gutter
   margin auto
@@ -224,6 +326,8 @@ pre
     list-style none
     position relative
 
+  .subst
+    color #333
 
   .keyword
   .operators
@@ -248,11 +352,12 @@ pre
   //   color code_color
 
   .string
-  .heredocs
-    color green
-
   .string_begin
   .string_end
+  .heredocs
+  .value
+    color green
+
   .heredocs_begin
   .heredocs_end
   .embedded_begin
@@ -275,21 +380,22 @@ pre
   .title
   .property
   .class_end
+  .attribute
     color blue
 
   .regexp
   .hereregexp
+  .subst_begin
+  .subst_end
     color red
 
   .comment
   .embedded
   .string_quote
-    color gray
+    color #999
 
   .global
   .escaped
-  .subst_begin
-  .subst_end
   .char_range
     color orange
 

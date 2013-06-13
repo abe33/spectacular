@@ -17,24 +17,15 @@ html(lang='en', class=slug)
     if page.title == 'Introduction'
       link(href='build/css/spectacular.css', rel='stylesheet', type='text/css')
       script.
-        options = {
-          coffee: false,
+        window.options = {
           verbose: false,
-          profile: false,
           trace: true,
           longTrace: false,
           showSource: true,
           documentation: true,
-          matchersRoot: './specs/support/matchers',
-          helpersRoot: './specs/support/helpers',
           fixturesRoot: './js/fixtures',
-          noMatchers: false,
-          noHelpers: false,
-          noColors: true,
-          server: false,
-          globs: []
         }
-        paths = ['js/specs.js']
+        window.paths = ['js/specs.js']
 
       script(src='build/js/spectacular.js', type='text/javascript')
       script(src='js/specs.js', type='text/javascript')
