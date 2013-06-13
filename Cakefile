@@ -14,6 +14,7 @@ exeHandle = (p,f) ->
     f stdout
 
 run = (command) -> ->
+  console.log "  run #{command.cyan}"
   defer = Q.defer()
   exec command, exeHandle defer, -> defer.resolve()
   defer.promise
