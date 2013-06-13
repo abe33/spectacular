@@ -68,7 +68,36 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 
 ### Browser
 
-#### Browser Support
+First download Spectacular:
+
+<div id="download"><a href='build/spectacular.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
+
+Then puts Spectacular in your html file:
+
+```xml
+<link href="build/css/spectacular.css" rel="stylesheet" type="text/css"/>
+<script src="build/js/spectacular.js" type="text/javascript"/>
+```
+
+You can pass options to spectacular by defining `window.options` before the spectacular script node :
+
+```coffeescript
+window.options =
+  verbose: false
+  trace: true
+  longTrace: false
+  showSource: true
+  fixturesRoot: './js/fixtures'
+  globs: []
+```
+
+You can also pass an array containing the paths to the specs files in a `window.paths` array.
+
+```coffeescript
+window.paths = ['js/specs.js']
+```
+
+It will allow the runner to crop the stack at the point a spec file is found and display the source of the test that failed. Errored test's stack is not cropped.
 
 Spectacular rely on some feature that may not be available in all browsers. You can find below the list of features and the minimum browser version needed to use them.
 
@@ -754,3 +783,5 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`xdescribe`</td><td>No differences</td></tr>
     <tr><td>`xit`</td><td>No differences</td></tr>
 </table>
+
+## Spectacular Tests
