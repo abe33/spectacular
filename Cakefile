@@ -133,7 +133,7 @@ task 'server', 'Compiles and run the server', ->
     exe.on 'exit', (status) -> process.exit status
 
 task 'phantomjs', 'Run specs on phantomjs', ->
-  compileNode().then -->
+  compileNode().then ->
     exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.stdout.on 'data', (data) ->
