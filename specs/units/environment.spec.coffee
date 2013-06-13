@@ -178,10 +178,12 @@ describe 'expect(...).to', ->
   environmentMethod('expect').cannotBeCalledOutsideIt()
 
   runningSpecs('call with only a value')
+  .withOption('documentation', true)
   .shouldSucceedWith /10 should be equal to 10/, ->
     specify -> expect(10).to equal 10
 
   runningSpecs('call with a description and a value')
+  .withOption('documentation', true)
   .shouldSucceedWith /a number should be equal to 10/, ->
     specify -> expect('a number', 10).to equal 10
 
