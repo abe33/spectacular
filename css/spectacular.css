@@ -1,30 +1,10 @@
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-}
-body {
-  margin: 0;
-  padding: 20px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  -webkit-transition: background 0.8s ease-in;
-  -moz-transition: background 0.8s ease-in;
-  -o-transition: background 0.8s ease-in;
-  transition: background 0.8s ease-in;
-}
-html {
-  background: #163a4c;
-}
-html.success body {
+html.success body #reporter {
   background: rgba(100,180,50,0.3);
 }
 html.success body #reporter > header h2 {
   color: #64b432;
 }
-html.failure body {
+html.failure body #reporter {
   background: rgba(255,40,20,0.3);
 }
 html.failure body #reporter > header h2 {
@@ -51,25 +31,73 @@ html.failure body #reporter > header h1 {
 }
 #reporter {
   position: relative;
+  margin: 10px;
   padding: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  transition: background 0.8s ease-in;
+  -webkit-transition: background 0.8s ease-in;
+  -moz-transition: background 0.8s ease-in;
+  -o-transition: background 0.8s ease-in;
+  box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -o-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+}
+#reporter * {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+#reporter:before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: block;
+  background: #163a4c;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+#reporter pre {
+  overflow: inherit;
+  border: none;
+}
+#reporter pre a {
+  border: none;
 }
 #reporter #controls {
-  position: fixed;
-  top: 200px;
-  left: 36px;
+  position: absolute;
+  top: 150px;
+  left: 16px;
   padding: 8px;
   background: #0b1d26;
   width: 68px;
   z-index: 10;
+  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  border-radius: 3px;
   border: 1px solid rgba(22,58,76,0.5);
+  box-shadow: 0px 1px 2px #000;
   -webkit-box-shadow: 0px 1px 2px #000;
   -moz-box-shadow: 0px 1px 2px #000;
   -o-box-shadow: 0px 1px 2px #000;
-  box-shadow: 0px 1px 2px #000;
+  transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -webkit-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -moz-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -o-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
 }
 #reporter #controls button {
   cursor: pointer;
@@ -82,20 +110,20 @@ html.failure body #reporter > header h1 {
   font-weight: 500;
   font-size: 10px;
   font-family: monospace;
+  text-shadow: 0 1px 2px #163a4c;
   -webkit-text-shadow: 0 1px 2px #163a4c;
   -moz-text-shadow: 0 1px 2px #163a4c;
   -o-text-shadow: 0 1px 2px #163a4c;
-  text-shadow: 0 1px 2px #163a4c;
+  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  border-radius: 3px;
   padding: 2px 0;
   margin-top: 4px;
+  transition: background 0.5s ease-out;
   -webkit-transition: background 0.5s ease-out;
   -moz-transition: background 0.5s ease-out;
   -o-transition: background 0.5s ease-out;
-  transition: background 0.5s ease-out;
 }
 #reporter #controls button.success {
   background: #64b432;
@@ -149,10 +177,10 @@ html.failure body #reporter > header h1 {
   background: #0b1d26;
   border-left: 5px solid rgba(22,58,76,0.5);
   border-right: 5px solid rgba(22,58,76,0.5);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
   -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
   -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
   -o-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
 }
 #reporter .example {
   cursor: pointer;
@@ -170,6 +198,7 @@ html.failure body #reporter > header h1 {
 }
 #reporter .example h4 {
   margin-bottom: 4px;
+  font-size: 16px;
 }
 #reporter .example pre {
   color: #163a4c;
@@ -179,10 +208,10 @@ html.failure body #reporter > header h1 {
   background: #efefef;
   border: 1px solid #e4e4e4;
   overflow: hidden;
+  transition: all 0.25s ease-in;
   -webkit-transition: all 0.25s ease-in;
   -moz-transition: all 0.25s ease-in;
   -o-transition: all 0.25s ease-in;
-  transition: all 0.25s ease-in;
 }
 #reporter .example pre+pre {
   margin-top: 0;
@@ -203,10 +232,10 @@ html.failure body #reporter > header h1 {
 }
 #reporter .example:hover:before {
   background: rgba(255,255,255,0.1);
+  transition: all 0.15s ease-in;
   -webkit-transition: all 0.15s ease-in;
   -moz-transition: all 0.15s ease-in;
   -o-transition: all 0.15s ease-in;
-  transition: all 0.15s ease-in;
 }
 #reporter .example:before {
   content: '#' attr(data-id);
@@ -223,18 +252,18 @@ html.failure body #reporter > header h1 {
   margin-left: -78px;
   color: rgba(255,255,255,0.3);
   z-index: 1;
+  border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -o-border-radius: 4px;
-  border-radius: 4px;
+  box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
-  box-sizing: border-box;
+  transition: all 0.45s ease-in;
   -webkit-transition: all 0.45s ease-in;
   -moz-transition: all 0.45s ease-in;
   -o-transition: all 0.45s ease-in;
-  transition: all 0.45s ease-in;
 }
 #reporter .example.success.closed pre,
 #reporter .example.pending.closed pre {
@@ -331,14 +360,14 @@ html.failure body #reporter > header h1 {
   font-weight: 500;
   font-size: 10px;
   font-family: monospace;
+  text-shadow: 0 1px 2px #163a4c;
   -webkit-text-shadow: 0 1px 2px #163a4c;
   -moz-text-shadow: 0 1px 2px #163a4c;
   -o-text-shadow: 0 1px 2px #163a4c;
-  text-shadow: 0 1px 2px #163a4c;
+  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  border-radius: 3px;
 }
 #reporter .example .time {
   padding: 2px 6px 2px 18px;
@@ -349,10 +378,10 @@ html.failure body #reporter > header h1 {
   width: 64px;
   left: 8px;
   top: 30px;
+  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  border-radius: 3px;
   font-size: 0.8em;
 }
 #reporter .example .time .icon-time {
@@ -367,15 +396,18 @@ html.failure body #reporter > header h1 {
 #reporter > header h1,
 #reporter > header h2 {
   margin: 0;
-  font-weight: 300;
+  font-weight: 100;
+  font-size: 2.35em;
   display: inline-block;
+  transition: color 0.4s ease-in;
   -webkit-transition: color 0.4s ease-in;
   -moz-transition: color 0.4s ease-in;
   -o-transition: color 0.4s ease-in;
-  transition: color 0.4s ease-in;
 }
 #reporter > header h2 {
   color: #3893c1;
+  font-weight: 100;
+  font-size: 2.35em;
 }
 #reporter > header pre {
   white-space: pre-wrap;
@@ -395,10 +427,10 @@ html.failure body #reporter > header h1 {
   font-size: 14px;
   padding: 4px 6px;
   background: rgba(0,0,0,0.3);
+  border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -o-border-radius: 2px;
-  border-radius: 2px;
 }
 #reporter > header .success {
   color: #64b432;

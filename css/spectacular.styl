@@ -29,72 +29,59 @@ light_blue(op)
   rgba(56,147,193,op)
 
 transition(trans)
+  transition trans
   -webkit-transition trans
   -moz-transition trans
   -o-transition trans
-  transition trans
 
 transform(trans)
+  transform trans
   -webkit-transform trans
   -moz-transform trans
   -o-transform trans
-  transform trans
 
 box-sizing(mode)
+  box-sizing mode
   -webkit-box-sizing mode
   -moz-box-sizing mode
   -o-box-sizing mode
-  box-sizing mode
 
 
 border-radius(rad)
+  border-radius rad
   -webkit-border-radius rad
   -moz-border-radius rad
   -o-border-radius rad
-  border-radius rad
 
 box-shadow()
+  box-shadow arguments
   -webkit-box-shadow arguments
   -moz-box-shadow arguments
   -o-box-shadow arguments
-  box-shadow arguments
 
 text-shadow()
+  text-shadow arguments
   -webkit-text-shadow arguments
   -moz-text-shadow arguments
   -o-text-shadow arguments
-  text-shadow arguments
-
-*
-  box-sizing(border-box)
-  -webkit-font-smoothing antialiased
-
-body
-  margin 0
-  padding 20px
-  font-family 'Roboto', sans-serif
-  font-weight 300
-  transition(background 0.8s ease-in)
 
 html
-  background dark_blue(1)
-
   &.success body
-    background success(0.3)
-
-    #reporter > header h2
-      color success(1)
+    #reporter
+      background success(0.3)
+      & > header h2
+        color success(1)
   &.failure body
-    background failure(0.3)
+    #reporter
+      background failure(0.3)
 
-    #reporter > header h2
-      color failure(1)
+      & > header h2
+        color failure(1)
 
   &.success body
   &.failure body
     #reporter > header h1
       color light_gray(1)
-
 
 .hide-success
   .example.success
@@ -118,12 +105,43 @@ html
 
 #reporter
   position relative
+  margin 10px
   padding 10px
+  font-family 'Roboto', sans-serif
+  font-weight 300
+  border-radius 4px
+  transition(background 0.8s ease-in)
+  box-shadow(0px 6px 10px 2px rgba(0,0,0,0.5))
+
+  *
+    box-sizing(border-box)
+    -webkit-font-smoothing antialiased
+
+  &:before
+    content ''
+    position absolute
+    z-index -1
+    top 0
+    right 0
+    left 0
+    bottom 0
+    display block
+    background dark_blue(1)
+    border-radius 4px
+
+  pre
+    overflow inherit
+    border none
+
+    a
+      border none
+
+
 
   #controls
-    position fixed
-    top 200px
-    left 36px
+    position absolute
+    top 150px
+    left 16px
     padding 8px
     background dark_blue_const
     width 68px
@@ -131,6 +149,7 @@ html
     border-radius(3px)
     border 1px solid dark_blue(0.5)
     box-shadow(0px 1px 2px rgba(0,0,0,1))
+    transition(top 0.5s cubic-bezier(.59,.96,.78,1))
 
     button
       cursor pointer
@@ -209,6 +228,7 @@ html
       font-weight 300
     h4
       margin-bottom 4px
+      font-size 16px
 
     pre
       color dark_blue(1)
@@ -378,12 +398,15 @@ html
     h1
     h2
       margin 0
-      font-weight 300
+      font-weight 100
+      font-size 2.35em
       display inline-block
       transition(color 0.4s ease-in)
 
     h2
       color light_blue(1)
+      font-weight 100
+      font-size 2.35em
 
     pre
       white-space pre-wrap

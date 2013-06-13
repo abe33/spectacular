@@ -107,9 +107,27 @@ class spectacular.BrowserReporter
         toggleClass html, "hide-#{button.textContent}"
         toggleClass button, "off"
 
+
+
     @examplesContainer = @reporter.querySelector '#examples'
     @progress = @reporter.querySelector 'header pre'
     @counters = @reporter.querySelector 'header p'
+
+
+    controls = @reporter.querySelector '#controls'
+    previousOnScroll = window.onscroll
+    doc = document.documentElement
+    body = document.body
+
+    window.onscroll = =>
+      do previousOnScroll if previousOnScroll?
+
+      reporterOffset = @reporter.offsetTop
+      topMin = @examplesContainer.offsetTop
+      topMax = topMin + @examplesContainer.clientHeight - controls.clientHeight
+      top = (doc and doc.scrollTop or body and body.scrollTop or 0) - reporterOffset
+      top = Math.min(topMax, Math.max(topMin, top + 100))
+      controls.style.top = "#{top}px"
 
   onEnd: (event) =>
     html = document.querySelector 'html'
@@ -247,6 +265,7 @@ class spectacular.BrowserReporter
 
 cache = {}
 loaders = {}
+
 options.loadFile = (file) ->
 
   promise = new spectacular.Promise
