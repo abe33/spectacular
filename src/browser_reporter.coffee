@@ -266,6 +266,29 @@ class spectacular.BrowserReporter
 cache = {}
 loaders = {}
 
+window.options = window.options or {}
+
+defaults =
+  coffee: false
+  verbose: false
+  profile: false
+  trace: true
+  longTrace: false
+  showSource: true
+  documentation: false
+  matchersRoot: './specs/support/matchers'
+  helpersRoot: './specs/support/helpers'
+  fixturesRoot: './specs/support/fixtures'
+  noMatchers: false
+  noHelpers: false
+  noColors: false
+  server: false
+  globs: []
+
+window.options[k] = v for k,v of defaults when not k of window.options
+
+window.paths = window.paths or []
+
 options.loadFile = (file) ->
 
   promise = new spectacular.Promise
@@ -291,10 +314,10 @@ options.loadFile = (file) ->
 
   promise
 
-spectacular.env = new spectacular.Environment(options)
+spectacular.env = new spectacular.Environment(window.options)
 spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
-spectacular.env.runner.paths = paths
+spectacular.env.runner.paths = window.paths
 
 currentWindowOnload = window.onload
 window.onload = ->
