@@ -231,15 +231,15 @@ h4
 .code
   position relative
   overflow hidden
+  background #f8f8f8
   border 1px solid #e4e4e4
-  transition(height 0.3s ease-in)
+  transition height 0.3s ease-in
 
   pre
-    transition(left 0.5s ease-out)
+    transition left 0.5s ease-out
     border none
     position absolute
     width 100%
-
 
   .toggle
     overflow hidden
@@ -255,23 +255,44 @@ h4
     background #e4e4e4
     font-size 10px
     text-transform uppercase
-    border-radius(0 0 0 4px)
+    border-radius 0 0 0 4px
+    box-shadow 0 1px 3px rgba(0,0,0,0.2)
 
     span
-      transition(margin-top 0.2s ease-in)
       padding 4px 8px
       display block
       width 100%
       text-align center
+      position relative
+      transition all 0.2s ease-in
+
+      &:after
+        background success(0.3)
+        width 100%
+        height 100%
+        left 100%
+        top 0
+        padding 4px 8px
+        display block
+        position absolute
+        content attr(data-text)
+        transition all 0.2s ease-in
+        box-sizing border-box
+
+    &:hover
+      span
+        transform translate(-100%,0)
+
 
   .lang-coffeescript
     left 0
   .lang-javascript
     left 100%
 
+
   &.compiled
     .toggle span:first-child
-      margin-top -21px
+      margin-top -23px
 
     .lang-javascript
       display block
@@ -286,11 +307,13 @@ hr
   border-top 1px solid #ccc
 
 pre
+  background #f8f8f8
   border 1px solid #e4e4e4
   color light-grey
   background dark-blue
   overflow auto
   margin 0
+  box-shadow inset 0 1px 3px rgba(0,0,0,0.2)
 
   code
   ol
@@ -305,6 +328,7 @@ pre
     display block
 
   ol
+    box-shadow 0 1px 3px rgba(0, 0, 0, 0.2)
     padding 8px
     margin 0
     float left

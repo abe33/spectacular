@@ -30,8 +30,8 @@ $ ->
     div = pre.parent()
     div.height pre.height()
     div.prepend "<span class='toggle'>
-      <span class='coffee'>view as js</span>
-      <span class='js'>view as coffee</span>
+      <span class='coffee' data-text='view as js'>view as js</span>
+      <span class='js' data-text='view as coffee'>view as coffee</span>
     </span>"
     div.append "<pre class='lang-javascript'><code class='lang-javascript'>#{code}</code></pre>"
 
