@@ -19,3 +19,6 @@ npm-debug.log
 .DS_Store
 
 *.sublime-*
+
+docs/build
+docs/spectacular.zip
