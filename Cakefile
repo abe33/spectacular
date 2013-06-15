@@ -133,17 +133,5 @@ task 'server', 'Compiles and run the server', ->
     exe.on 'exit', (status) -> process.exit status
 
 task 'phantomjs', 'Run specs on phantomjs', ->
-  compileNode().then ->
-    exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
-    exe.stderr.on 'data', (data) -> print data.toString()
-    exe.stdout.on 'data', (data) ->
-      print data.toString()
-
-      if data.toString().indexOf('Server listening on port 5000') isnt -1
-        phantom = spawn 'phantomjs', ['./lib/spectacular_phantomjs.js']
-        phantom.stdout.on 'data', (data) -> print data.toString()
-        phantom.stderr.on 'data', (data) -> print data.toString()
-        phantom.on 'exit', (status) ->
-          exe.kill 'SIGINT'
-          process.exit status
-
+  compileNode()
+  .then(run './bin/spectacular --phantomjs --coffee --profile specs/units/**/*.spec.*')

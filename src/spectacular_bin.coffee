@@ -23,6 +23,7 @@ options =
   noHelpers: false
   noColors: false
   server: false
+  phantomjs: false
   globs: []
 
 while args.length
@@ -41,10 +42,13 @@ while args.length
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
     when '--long-trace' then options.longTrace = true
+    when '--documentation', '-d' then options.documentation = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
     when '--server', '-s' then options.server = true
-    when '--documentation', '-d' then options.documentation = true
+    when '--phantomjs'
+      options.server = true
+      options.phantomjs = true
     else options.globs.push option
 
 console.log 'options:', options if options.verbose

@@ -32,6 +32,7 @@ options = {
   noHelpers: false,
   noColors: false,
   server: false,
+  phantomjs: false,
   globs: []
 };
 
@@ -72,6 +73,10 @@ while (args.length) {
     case '--long-trace':
       options.longTrace = true;
       break;
+    case '--documentation':
+    case '-d':
+      options.documentation = true;
+      break;
     case '--verbose':
     case '-v':
       options.verbose = true;
@@ -84,9 +89,9 @@ while (args.length) {
     case '-s':
       options.server = true;
       break;
-    case '--documentation':
-    case '-d':
-      options.documentation = true;
+    case '--phantomjs':
+      options.server = true;
+      options.phantomjs = true;
       break;
     default:
       options.globs.push(option);

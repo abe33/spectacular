@@ -5,6 +5,7 @@ path = require 'path'
 express = require 'express'
 walk = require 'walkdir'
 util = require 'util'
+{spawn} = require 'child_process'
 
 SPECTACULAR_ROOT = path.resolve __dirname, '..'
 
@@ -85,6 +86,7 @@ generateSpecRunner = (options) ->
     """
 
 exports.run = (options) ->
+  defer = Q.defer()
   app = express()
 
   app.get '/', (req, res) ->
@@ -106,5 +108,13 @@ exports.run = (options) ->
   app.listen port
   console.log "Server listening on port #{port}".cyan
 
-  Q.defer().promise
+  if options.phantomjs
+    console.log "Running tests on phantomjs".cyan
+    phantom = spawn 'phantomjs', ['./lib/spectacular_phantomjs.js']
+    phantom.stdout.on 'data', (data) -> util.print data.toString()
+    phantom.stderr.on 'data', (data) -> util.print data.toString()
+    phantom.on 'exit', (status) ->
+      process.exit status
+
+  defer.promise
 
