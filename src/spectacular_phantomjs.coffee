@@ -41,6 +41,8 @@ page.open URL, (status) ->
           Object.defineProperty String.prototype, key,
             get: -> styles[key][0] + this + styles[key][1]
 
+        options.documentation = false
+
         reporter = new window.spectacular.ConsoleReporter(options)
         window.spectacular.env.runner.on 'result', reporter.onResult
         window.spectacular.env.runner.on 'end', reporter.onEnd
