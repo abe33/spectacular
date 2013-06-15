@@ -1,13 +1,4 @@
-<!DOCTYPE html><html lang="en" class="introduction"><head><meta charset="utf-8"><title>Spectacular - Introduction</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script><link href="build/css/spectacular.css" rel="stylesheet" type="text/css"><script>window.options = {
-  verbose: false,
-  trace: true,
-  longTrace: false,
-  showSource: true,
-  documentation: true,
-  fixturesRoot: './js/fixtures',
-}
-window.paths = ['js/specs.js']
-</script><script src="build/js/spectacular.js" type="text/javascript"></script><script src="js/specs.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>0.0.3</h2></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
+<!DOCTYPE html><html lang="en" class="introduction"><head><meta charset="utf-8"><title>Spectacular - Introduction</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>0.0.2</h2></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
 <a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a>
 <a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a>
 <a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></p>
@@ -31,7 +22,7 @@ window.paths = ['js/specs.js']
         expect<span class="group"><span class="group_begin">(</span><span class="property">@array</span><span class="punctuation">.</span>indexOf <span class="property">@item</span><span class="group_end">)</span></span><span class="punctuation">.</span>to equal <span class="number">0</span></code></pre>
 <h3>Features, the short tour</h3>
 <ul>
-<li>Conditioned Specs</li>
+<li>Conditionned Specs</li>
 <li>Matcher based description</li>
 <li>Implicit subjects</li>
 <li>Describe auto-subject</li>
@@ -48,62 +39,10 @@ window.paths = ['js/specs.js']
 <li>The API is provided with both camelCase and snake_case version</li>
 <li>No external dependencies in browsers</li>
 </ul>
-<hr>
 <h2>Install</h2>
-<h3>NodeJS</h3>
 <p>Spectacular is available as a <a href="http://npmjs.org/">npm</a> module, you can then install it with:</p>
 <pre><code class="lang-shell">npm install -g spectacular</code></pre>
 <p>This will install Spectacular globally and allow you to use the Spectacular command line tool.</p>
-<h3>Browser</h3>
-<p>First download Spectacular:</p>
-<div id="download"><a href='build/spectacular-0.0.3.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
-
-<p>Then puts Spectacular in your html file:</p>
-<pre><code class="lang-xml"><span class="tag"><<span class="title">link</span> <span class="attribute">href</span>=<span class="value">"build/css/spectacular.css"</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">type</span>=<span class="value">"text/css"</span>/></span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"build/js/spectacular.js"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>/></span><span class="javascript"></span></code></pre>
-<p>You can pass options to spectacular by defining <code>window.options</code> before the spectacular script node :</p>
-<pre><code class="lang-coffeescript"><span class="global">window</span><span class="punctuation">.</span>options <span class="operators">=</span>
-  <span class="property">verbose<span class='punctuation'>:</span></span> <span class="literal">false</span>
-  <span class="property">trace<span class='punctuation'>:</span></span> <span class="literal">true</span>
-  <span class="property">longTrace<span class='punctuation'>:</span></span> <span class="literal">false</span>
-  <span class="property">showSource<span class='punctuation'>:</span></span> <span class="literal">true</span>
-  <span class="property">fixturesRoot<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>./js/fixtures<span class="string_end">'</span></span>
-  <span class="property">globs<span class='punctuation'>:</span></span> <span class="punctuation">[</span><span class="punctuation">]</span></code></pre>
-<p>You can also pass an array containing the paths to the specs files in a <code>window.paths</code> array.</p>
-<pre><code class="lang-coffeescript"><span class="global">window</span><span class="punctuation">.</span>paths <span class="operators">=</span> <span class="punctuation">[</span><span class="string"><span class="string_begin">'</span>js/specs.js<span class="string_end">'</span></span><span class="punctuation">]</span></code></pre>
-<p>It will allow the runner to crop the stack at the point a spec file is found and display the source of the test that failed. Errored test&#39;s stack is not cropped.</p>
-<p>Spectacular rely on some feature that may not be available in all browsers. You can find below the list of features and the minimum browser version needed to use them.</p>
-<div class="caniuse_static">
-  <h1>Object.defineProperty</h1>
-  <p class="status">ECMAScript 5</p>
-  <p>Supported from the following versions:</p>
-  <h2 id="Desktop">Desktop</h2>
-  <ul class="agents">
-    <li title="Chrome - Yes" class="icon-chrome y"><span class="version">5</span></li>
-    <li title="Firefox - Yes" class="icon-firefox y"><span class="version">4</span></li>
-    <li title="IE - Yes" class="icon-ie y"><span class="version">9</span></li>
-    <li title="Opera - Yes" class="icon-opera y"><span class="version">11.60</span></li>
-    <li title="Safari - Yes" class="icon-safari y"><span class="version">5.1</span></li>
-  </ul>
-  <h2 id="Mobile-Tablet">Mobile / Tablet</h2>
-  <ul class="agents">
-    <li title="iOS Safari - Yes" class="icon-ios_saf y"><span class="version">0</span></li>
-    <li title="Android Browser - Yes" class="icon-android y"><span class="version">0</span></li>
-    <li title="Opera Mobile - Yes" class="icon-op_mob y"><span class="version">11.50</span></li>
-    <li title="Chrome for Android - Yes" class="icon-and_chr y"><span class="version">0</span></li>
-    <li title="Firefox for Android - Yes" class="icon-and_ff y"><span class="version">4</span></li>
-  </ul>
-  <ul class="legend">
-    <li>Supported:</li>
-    <li class="y">Yes</li>
-    <li class="n">No</li>
-    <li class="a">Partially</li>
-    <li class="p">Polyfill</li>
-  </ul>
-  <p class="stats">Stats from <a href="http://mdn.beonex.com/en/JavaScript/Reference/Global_Objects/Object/defineProperties.html" target="_blank">mdn</a></p>
-</div>
-<div class="caniuse" data-feature="querySelector"></div>
-
 <h2>Command-line</h2>
 <p>The most simple way to use the spectacular command line tool is as follow:</p>
 <pre><code class="lang-shell">spectacular specs/**/*.spec.js</code></pre>
@@ -138,14 +77,6 @@ window.paths = ['js/specs.js']
     <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: <code>http://localhost:5000</code>.</td>
   </tr>
   <tr>
-    <td><code>--phantomjs</code></td>
-    <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
-  </tr>
-  <tr>
-    <td><code>--source GLOB</code></td>
-    <td>When using the server, it allow to add files that matches the patterns as served files in the html runner. You can use this option as many times as you need.</td>
-  </tr>
-  <tr>
     <td><code>-m, --matchers PATH</code></td>
     <td>Specify the path where project matchers can be found, by default matchers are loaded from <code>./specs/support/matchers</code>.</td>
   </tr>
@@ -175,7 +106,6 @@ window.paths = ['js/specs.js']
   </tr>
 </table>
 
-<p>Options can also be defined in a <code>.spectacular</code> file at the root of your project.</p>
 <h2>Examples and ExampleGroups</h2>
 <p><code>ExampleGroups</code> are created with either the <code>describe</code> or <code>context</code> methods, new aliases can be created with <code>spectacular.env.createExampleGroupAlias(newName)</code>.</p>
 <p><code>Examples</code> are created with <code>it</code>, <code>the</code> or <code>specify</code>, and new aliases can be created with <code>spectacular.env.createExampleAlias(newName)</code>.</p>
@@ -277,7 +207,7 @@ describe <span class="string"><span class="string_begin">'</span>depending conte
       <span class="comment"># of calling new Aclass(a,b,c).someInstanceMethod('foo')</span>
       itsReturn <span class="property">with<span class='punctuation'>:</span></span> <span class="punctuation">[</span><span class="string"><span class="string_begin">'</span>foo<span class="string_end">'</span></span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="function">-></span> should equal <span class="string"><span class="string_begin">'</span>oof<span class="string_end">'</span></span></code></pre>
 <h2>Assertions</h2>
-<p>Spectacular support two types of assertions, either with the <code>should</code> function or with the <code>expect(...).to</code> syntax. As addition, the <code>Object</code>&#39;s prototype is decorated with a <code>should</code> method, allowing to write <code>10.should equal 10</code>.</p>
+<p>Spectacular support two types of assertions, either with the <code>should</code> function or with the <code>èxpect(...).to</code> syntax. As addition, the <code>Object</code>&#39;s prototype is decorated with a <code>should</code> method, allowing to write <code>10.should equal 10</code>.</p>
 <p>The global <code>should</code> function will use the current example subject as actual value to pass to the provided matcher.</p>
 <pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>a number<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
   subject <span class="function">-></span> <span class="number">10</span>
@@ -287,7 +217,7 @@ describe <span class="string"><span class="string_begin">'</span>depending conte
   it <span class="function">-></span> <span class="property">@subject</span><span class="punctuation">.</span>should equal <span class="number">10</span>
 
   it <span class="function">-></span> expect<span class="group"><span class="group_begin">(</span><span class="property">@subject</span><span class="group_end">)</span></span><span class="punctuation">.</span>to equal <span class="number">10</span></code></pre>
-<p>The matcher&#39;s description is used as part of the examples description, for instance the following example:</p>
+<p>The matchers&#39;s description is used as part of the examples description, for instance the following example:</p>
 <pre><code class="lang-coffeescript">specify <span class="string"><span class="string_begin">'</span>the value<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> should equal <span class="number">10</span></code></pre>
 <p>Will produce a description such as:</p>
 <pre><code>the value should be equal to 10</code></pre>
@@ -336,7 +266,7 @@ it <span class="function">-></span> should parameterizableMatcher<span class="gr
     <td><code>be(value)</code></td>
     <td>The <code>be</code> matcher have different behavior according to the type of the provided value.
       <ul>
-        <li>If a string is passed, the matcher will look for a property named either <code>value</code>, <code>isValue</code> or <code>is_value</code>, if the property contained a function it will call it, in the end if the value is <code>true</code> the match succeed. It is useful to test the state of an object. For instance you can test the resolution of a promise with <code>@promise.should be &#39;fulfilled&#39;</code>
+        <li>If a string is passed, the matcher will look for a property named either <code>value</code>, <code>isValue</code> or <code>is_value</code>, if the property contained a function it will call it, in the end if the value is <code>true</code> the match succeed. It is usefull to test the state of an object. For instance you can test the resolution of a promise with <code>@promise.should be &#39;fulfilled&#39;</code>
         </li>
         <li>If the value is an object or an array, the identity of the object is tested using the <code>===</code> operator.</li>
         <li>Boolean and numeric values are test by value like with the <code>equal</code> matcher.</li>
@@ -542,7 +472,7 @@ specify <span class="string"><span class="string_begin">'</span>the node<span cl
       specify <span class="string"><span class="string_begin">'</span>the collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
         <span class="property">@subject</span><span class="punctuation">[</span>plural<span class="punctuation">]</span><span class="punctuation">.</span>shouldnt contains <span class="property">@item</span>
 
-    context <span class="string"><span class="string_begin">'</span>removing an inexistent item<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+    context <span class="string"><span class="string_begin">'</span>removing an inexistant item<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
       before <span class="function">-></span> <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>remove<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span> <span class="property">@item2</span>
 
       specify <span class="string"><span class="string_begin">'</span>the collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
@@ -558,7 +488,7 @@ specify <span class="string"><span class="string_begin">'</span>the node<span cl
 <h2>Snake Case Syntax</h2>
 <p>All the exposed methods are provided both with <code>camelCase</code> and <code>snake_case</code> syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.</p>
 <p>You can define any matcher, or helper, or aliases, with either the snake case
-or camel case form, the alternative will be also added to the global object.</p>
+or camel case form, the alternative will be also added to the globale object.</p>
 <p>For instance, the <code>sharedExample</code> is also available through <code>shared_example</code>.</p>
 <p>You can find below a table with all the snake case equivalent:</p>
 <table>
@@ -612,6 +542,4 @@ or camel case form, the alternative will be also added to the global object.</p>
     <tr><td><code>xdescribe</code></td><td>No differences</td></tr>
     <tr><td><code>xit</code></td><td>No differences</td></tr>
 </table>
-
-<h2>Spectacular Tests</h2>
-</div><script src="js/caniuse.js" type="text/javascript"></script></body></html>
+</div></body></html>

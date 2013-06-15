@@ -6,29 +6,12 @@ html(lang='en', class=slug)
     title= locals.title + " - " + page.title
 
     link(href='css/page.css', rel='stylesheet', type='text/css')
-    link(href='css/caniuse.css', rel='stylesheet', type='text/css')
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,100,300', rel='stylesheet', type='text/css')
     link(rel="stylesheet", href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css")
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', type='text/javascript')
     script(src='http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js', type='text/javascript')
     script(src='http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js', type='text/javascript')
     script(src='js/pages.js', type='text/javascript')
-
-    if page.title == 'Introduction'
-      link(href='build/css/spectacular.css', rel='stylesheet', type='text/css')
-      script.
-        window.options = {
-          verbose: false,
-          trace: true,
-          longTrace: false,
-          showSource: true,
-          documentation: true,
-          fixturesRoot: './js/fixtures',
-        }
-        window.paths = ['js/specs.js']
-
-      script(src='build/js/spectacular.js', type='text/javascript')
-      script(src='js/specs.js', type='text/javascript')
 
 
   body
@@ -40,4 +23,3 @@ html(lang='en', class=slug)
       h1!= page.title
       != page.html
 
-    script(src='js/caniuse.js', type='text/javascript')

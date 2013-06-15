@@ -6,17 +6,80 @@ body {
   padding-bottom: 80px;
 }
 body * {
+  box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
-  box-sizing: border-box;
+}
+a {
+  color: #000;
+  border-bottom: 1px solid #ccc;
+  text-decoration: none;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+}
+a:hover {
+  border-color: #ffa500;
+}
+#download {
+  text-align: center;
+}
+#download a.download {
+  background: #e4e4e4;
+  border: 1px solid #efefef;
+  display: inline-block;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -o-border-radius: 6px;
+  width: auto;
+  padding: 16px 24px;
+  font-size: 30px;
+  margin: auto;
+  margin-top: 11px;
+  margin-bottom: 14px;
+  font-weight: 100;
+  text-shadow: 0 1px 0 #fff;
+  -webkit-text-shadow: 0 1px 0 #fff;
+  -moz-text-shadow: 0 1px 0 #fff;
+  -o-text-shadow: 0 1px 0 #fff;
+  box-shadow: 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3);
+  -o-box-shadow: 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3);
+  transition: all 0.2s;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+}
+#download a.download:hover {
+  margin-top: 9px;
+  margin-bottom: 16px;
+  box-shadow: 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3);
+  -o-box-shadow: 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3);
+}
+#download a.download:active {
+  margin-top: 13px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3);
+  -o-box-shadow: 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3);
+}
+#download a.download i {
+  color: #bbb;
+  margin-right: 16px;
 }
 table {
   border: 1px solid #e4e4e4;
+  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  border-radius: 3px;
 }
 table td {
   border-bottom: 1px solid #e4e4e4;
@@ -36,22 +99,59 @@ code {
   background: #efefef;
   border: 1px solid #e4e4e4;
   padding: 2px;
+  border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -o-border-radius: 2px;
-  border-radius: 2px;
   display: inline-block;
   white-space: pre;
   line-height: 1em;
   vertical-align: baseline;
 }
-header h1,
-header h2 {
+body .gutter header {
+  padding: 20px 0;
+  border-bottom: 1px solid #ccc;
+}
+body .gutter header h1,
+body .gutter header h2 {
   margin: 0;
   display: inline-block;
 }
-header h1 {
-  color: #888;
+body .gutter header h1 {
+  color: #ababab;
+}
+body .gutter header + h1 + p a {
+  border: none;
+}
+body .gutter header h2 {
+  position: relative;
+}
+body .gutter header h2:after {
+  font-family: FontAwesome;
+  content: '';
+  background: url("../img/waiting.gif") no-repeat 4px 6px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 40px;
+  height: 40px;
+}
+html.success body .gutter header h2 {
+  color: #64b432;
+}
+html.success body .gutter header h2:after {
+  content: "\f00c";
+  color: #64b432;
+  background: none;
+}
+html.failure body .gutter header h2 {
+  color: #ff2814;
+}
+html.failure body .gutter header h2:after {
+  content: "\f00d";
+  color: #ff2814;
+  background: none;
 }
 p,
 ul {
@@ -69,6 +169,13 @@ h3 {
   font-weight: 300;
   font-size: 1.6em;
 }
+h4 {
+  font-weight: 100;
+  font-size: 1.4em;
+}
+#reporter {
+  margin-top: 60px !important;
+}
 .gutter {
   margin: auto;
   width: 600px;
@@ -76,17 +183,18 @@ h3 {
 .code {
   position: relative;
   overflow: hidden;
+  background: #f8f8f8;
   border: 1px solid #e4e4e4;
+  transition: height 0.3s ease-in;
   -webkit-transition: height 0.3s ease-in;
   -moz-transition: height 0.3s ease-in;
   -o-transition: height 0.3s ease-in;
-  transition: height 0.3s ease-in;
 }
 .code pre {
+  transition: left 0.5s ease-out;
   -webkit-transition: left 0.5s ease-out;
   -moz-transition: left 0.5s ease-out;
   -o-transition: left 0.5s ease-out;
-  transition: left 0.5s ease-out;
   border: none;
   position: absolute;
   width: 100%;
@@ -105,20 +213,50 @@ h3 {
   background: #e4e4e4;
   font-size: 10px;
   text-transform: uppercase;
+  border-radius: 0 0 0 4px;
   -webkit-border-radius: 0 0 0 4px;
   -moz-border-radius: 0 0 0 4px;
   -o-border-radius: 0 0 0 4px;
-  border-radius: 0 0 0 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .code .toggle span {
-  -webkit-transition: margin-top 0.2s ease-in;
-  -moz-transition: margin-top 0.2s ease-in;
-  -o-transition: margin-top 0.2s ease-in;
-  transition: margin-top 0.2s ease-in;
   padding: 4px 8px;
   display: block;
   width: 100%;
   text-align: center;
+  position: relative;
+  transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+}
+.code .toggle span:after {
+  background: rgba(100,180,50,0.3);
+  width: 100%;
+  height: 100%;
+  left: 100%;
+  top: 0;
+  padding: 4px 8px;
+  display: block;
+  position: absolute;
+  content: attr(data-text);
+  transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+}
+.code .toggle:hover span {
+  transform: translate(-100%, 0);
+  -webkit-transform: translate(-100%, 0);
+  -moz-transform: translate(-100%, 0);
+  -o-transform: translate(-100%, 0);
 }
 .code .lang-coffeescript {
   left: 0;
@@ -127,7 +265,7 @@ h3 {
   left: 100%;
 }
 .code.compiled .toggle span:first-child {
-  margin-top: -21px;
+  margin-top: -23px;
 }
 .code.compiled .lang-javascript {
   display: block;
@@ -136,12 +274,22 @@ h3 {
 .code.compiled .lang-coffeescript {
   left: -100%;
 }
+hr {
+  height: 0px;
+  border: none;
+  border-top: 1px solid #ccc;
+}
 pre {
+  background: #f8f8f8;
   border: 1px solid #e4e4e4;
   color: light-grey;
   background: dark-blue;
   overflow: auto;
   margin: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 pre code,
 pre ol {
@@ -156,6 +304,10 @@ pre code {
   display: block;
 }
 pre ol {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   padding: 8px;
   margin: 0;
   float: left;
@@ -177,10 +329,13 @@ pre li {
   list-style: none;
   position: relative;
 }
+pre .subst {
+  color: #333;
+}
 pre .keyword,
 pre .operators,
 pre .function {
-  color: #00f;
+  color: #3893c1;
 }
 pre .punctuation,
 pre .hash_begin,
@@ -194,19 +349,20 @@ pre .group_end {
   color: light-grey;
 }
 pre .string,
-pre .heredocs {
-  color: #008000;
-}
 pre .string_begin,
 pre .string_end,
+pre .heredocs,
+pre .value {
+  color: #64b432;
+}
 pre .heredocs_begin,
 pre .heredocs_end,
 pre .embedded_begin,
 pre .embedded_end {
-  color: #f00;
+  color: #ff2814;
 }
 pre .number {
-  color: #f0f;
+  color: #ff14dc;
 }
 pre .char_range_begin,
 pre .char_range_end,
@@ -217,25 +373,47 @@ pre .regexp_operators {
 }
 pre .title,
 pre .property,
-pre .class_end {
-  color: #00f;
+pre .class_end,
+pre .attribute {
+  color: #3893c1;
 }
 pre .regexp,
-pre .hereregexp {
-  color: #f00;
+pre .hereregexp,
+pre .subst_begin,
+pre .subst_end {
+  color: #ff2814;
 }
 pre .comment,
 pre .embedded,
 pre .string_quote {
-  color: #808080;
+  color: #999;
 }
 pre .global,
 pre .escaped,
-pre .subst_begin,
-pre .subst_end,
 pre .char_range {
   color: #ffa500;
 }
 pre .char_range > .escaped {
   color: #ffc0cb;
+}
+#toc {
+  padding-bottom: 20px;
+}
+#toc .level2 {
+  margin-left: 0px;
+}
+#toc .level3 {
+  margin-left: 30px;
+}
+#toc .level4 {
+  margin-left: 60px;
+}
+#toc .level5 {
+  margin-left: 90px;
+}
+#toc .level6 {
+  margin-left: 120px;
+}
+#toc li {
+  list-style: none;
 }
