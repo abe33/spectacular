@@ -63,13 +63,13 @@ while (args.length) {
       break;
     case '--matchers':
     case '-m':
-      options.matchersRoot = options.shift();
+      options.matchersRoot = args.shift();
       break;
     case '--helpers':
-      options.helpersRoot = options.shift();
+      options.helpersRoot = args.shift();
       break;
     case '--fixtures':
-      options.fixturesRoot = options.shift();
+      options.fixturesRoot = args.shift();
       break;
     case '--trace':
     case '-t':

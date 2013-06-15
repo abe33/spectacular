@@ -46,9 +46,9 @@ while args.length
     when '--no-matchers' then options.noMatchers = true
     when '--no-helpers' then options.noHelpers = true
     when '--no-colors' then options.noColors = true
-    when '--matchers', '-m' then options.matchersRoot = options.shift()
-    when '--helpers' then options.helpersRoot = options.shift()
-    when '--fixtures' then options.fixturesRoot = options.shift()
+    when '--matchers', '-m' then options.matchersRoot = args.shift()
+    when '--helpers' then options.helpersRoot = args.shift()
+    when '--fixtures' then options.fixturesRoot = args.shift()
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
     when '--long-trace' then options.longTrace = true
