@@ -22,6 +22,7 @@ spectacular.matcher = (name, block) ->
   getter = (obj, prop, block) ->
     Object.defineProperty obj, prop, {
       get: block
+      set: ->
       enumerable: true
       configurable: true
     }
