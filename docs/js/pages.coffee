@@ -1,3 +1,4 @@
+
 $ ->
   hs = $('h2, h3, h4, h5, h6')
 
@@ -52,3 +53,26 @@ $ ->
     text = el.html()
     lines = text.split('\n')
     parent.prepend "<ol>#{lines.map((l,i) -> "<li>#{i+1}</li>").join('')}</ol>"
+
+  $('tr').each ->
+    tr = $(this)
+    tr.addClass 'no-padding'
+    tds = tr.find('td')
+    tds.each ->
+      td = $(this)
+      newContent = $("<div>#{td.html()}</div>")
+      td.html ''
+      td.append newContent
+      newContent.addClass 'ellipsis' if tr.height() - 27 > 10
+      newContent.attr 'data-min-height', 27
+      newContent.attr 'data-max-height', tr.height()
+      newContent.height 27
+
+    tr.click ->
+      tr.toggleClass 'open'
+      tr.find('td div.ellipsis').each ->
+        d = $ this
+        if d.height() is d.data('min-height')
+          d.height d.data('max-height')
+        else
+          d.height d.data('min-height')

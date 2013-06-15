@@ -36,6 +36,12 @@ blue = light_blue(1)
 magenta = skipped(1)
 yellow = pending(1)
 
+opacity()
+  opacity arguments
+  -webkit-opacity arguments
+  -moz-opacity arguments
+  -o-opacity arguments
+
 transition()
   transition arguments
   -webkit-transition arguments
@@ -72,6 +78,12 @@ text-shadow()
   -webkit-text-shadow arguments
   -moz-text-shadow arguments
   -o-text-shadow arguments
+
+text-overflow()
+  text-overflow arguments
+  -webkit-text-overflow arguments
+  -moz-text-overflow arguments
+  -o-text-overflow arguments
 
 body
   margin 0
@@ -131,14 +143,61 @@ a
 table
   border 1px solid #e4e4e4
   border-radius 3px
+  width 600px
+  cell-spacing 0
+
+  tr
+    background white
+    transition background 1s ease-out
+
+    &:hover
+      transition background 0.2s ease-in
+      background #fafafa
+
+
+  tr.no-padding
+    td
+      padding 0px
+      cursor pointer
+
+      & > div
+        width 100%
+        overflow hidden
+        position relative
+        transition all 0.3s ease-in
+        padding 3px 8px
+
+      &:last-child div
+        padding 3px 40px 3px 8px
+
+        &.ellipsis:after
+          content: '•••'
+          position absolute
+          right 8px
+          top 8px
+          font-family monospace
+          background #efefef
+          border 1px solid #e4e4e4
+          padding 2px
+          border-radius 2px
+          font-size 10px
+          line-height 12px
+          opacity 1
+          transition all 0.2s ease-out
+
+  tr.open td:last-child div.ellipsis:after
+    opacity 0
+
 
   td
     border-bottom 1px solid #e4e4e4
     vertical-align top
     padding 8px
-
-  td
     line-height 1.6em
+
+    code
+      display inline-block
+      vertical-align middle
 
   td:first-child
     text-align right

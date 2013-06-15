@@ -460,7 +460,7 @@ it -> should chainableMatcher(value1).with(value2)
 
 The following matchers are provided by Spectacular:
 
-<table>
+<table cellspacing="0">
 
   <tr>
     <td>`exist`</td>
@@ -761,7 +761,7 @@ For instance, the `sharedExample` is also available through `shared_example`.
 
 You can find below a table with all the snake case equivalent:
 
-<table>
+<table cellspacing="0">
     <tr><td>`after`</td><td>No differences</td></tr>
     <tr><td>`before`</td><td>No differences</td></tr>
     <tr><td>`contains`</td><td>No differences</td></tr>
