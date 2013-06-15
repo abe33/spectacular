@@ -9,6 +9,11 @@ Q = require 'q'
 
 version = require('./package.json').version
 
+badge = (str) -> " #{str.toUpperCase()} ".inverse
+
+done = (str) -> '\n  ' + badge('done').green + ' ' + str.yellow.bold
+fail = (str) -> '\n  ' + badge('error').red + ' ' + str
+
 exeHandle = (p,f) ->
   [p,f] = [f,p] if typeof p is 'function'
   (err, stdout, stderr) ->
@@ -116,19 +121,19 @@ compileBrowser = ->
 task 'compile', 'Compiles the project sources', ->
   compileNode()
   .then ->
-    console.log 'Nodejs files compiled'.green
+    console.log done 'Nodejs files compiled'
   .fail (err) ->
-    console.log "#{err}".red
+    console.log fail err
 
 task 'build', 'Build the project for node and the browser with docs', ->
   compileNode()
   .then ->
-    console.log 'Nodejs files compiled'.green
+    console.log done 'Nodejs files compiled'
   .then(compileBrowser)
   .then ->
-    console.log 'Documentation generated'.green
+    console.log done 'Documentation generated'
   .fail (err) ->
-    console.log "#{err}".red
+    console.log fail err
 
 task 'server', 'Compiles and run the server', ->
   compileNode()
@@ -138,10 +143,10 @@ task 'server', 'Compiles and run the server', ->
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.on 'exit', (status) -> process.exit status
   .fail (err) ->
-    console.log "#{err}".red
+    console.log fail err
 
 task 'phantomjs', 'Run specs on phantomjs', ->
   compileNode()
   .then(run './bin/spectacular --phantomjs --coffee --profile specs/units/**/*.spec.*')
   .fail (err) ->
-    console.log "#{err}".red
+    console.log fail err

@@ -46,9 +46,6 @@ spectacular.utils.uniq = (arr) ->
   newArr.push v for v in arr when v not in newArr
   newArr
 
-spectacular.utils.andOrBut = (bool) ->
-  if bool then 'and' else 'but'
-
 spectacular.utils.escapeDiff = (s) ->
   utils.escape(
     s
