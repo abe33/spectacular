@@ -1,2 +1,3 @@
 --profile
 --documentation
+--source specs/support/fixtures/*.js

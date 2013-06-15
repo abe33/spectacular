@@ -35,6 +35,7 @@ options =
   server: false
   phantomjs: false
   globs: []
+  sources: []
 
 while args.length
   option = args.shift()
@@ -56,6 +57,7 @@ while args.length
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
     when '--server', '-s' then options.server = true
+    when '--source' then options.sources.push args.shift()
     when '--phantomjs'
       options.server = true
       options.phantomjs = true

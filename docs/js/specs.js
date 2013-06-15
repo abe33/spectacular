@@ -2149,6 +2149,16 @@
     });
   });
 
+  if (typeof window !== 'undefined' && window.options.server) {
+    describe('the server', function() {
+      return describe('when the source option have been used', function() {
+        return specify('the sources content', function() {
+          return expect(window.SourceFileContent).to(exist);
+        });
+      });
+    });
+  }
+
   runningSpecs('a valid shared example').shouldSucceedWith(/3 success, 3 assertions/, function() {
     sharedExample('a shared example', function() {
       context('shared context', function() {

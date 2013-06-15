@@ -41,7 +41,8 @@ options = {
   noColors: false,
   server: false,
   phantomjs: false,
-  globs: []
+  globs: [],
+  sources: []
 };
 
 while (args.length) {
@@ -96,6 +97,9 @@ while (args.length) {
     case '--server':
     case '-s':
       options.server = true;
+      break;
+    case '--source':
+      options.sources.push(args.shift());
       break;
     case '--phantomjs':
       options.server = true;
