@@ -345,7 +345,7 @@ spectacular.matcher 'haveBeenCalled', ->
       false
 
   failureMessageForShould ->
-    if typeof actual?.spied is 'function'
+    if typeof @actual?.spied is 'function'
       if @arguments?
         "Expected #{@actual.spied} to #{@description} but was called with #{@actual.argsForCall}"
       else
@@ -353,8 +353,8 @@ spectacular.matcher 'haveBeenCalled', ->
     else
       @message = "Expected a spy but it was #{@actual}"
 
-  failureMessageForShould ->
-    if typeof actual?.spied is 'function'
+  failureMessageForShouldnt ->
+    if typeof @actual?.spied is 'function'
       if @arguments?
         "Expected #{@actual.spied} not to #{@description} but was called with #{@actual.argsForCall}"
       else
