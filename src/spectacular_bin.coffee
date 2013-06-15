@@ -8,6 +8,16 @@ ROOT = path.resolve '.'
 
 [node, binPath, args...] = process.argv
 
+existsSync = fs.existsSync or path.existsSync
+
+SPECTACULAR_CONFIG = path.resolve ROOT, '.spectacular'
+
+if existsSync SPECTACULAR_CONFIG
+  args = fs.readFileSync(SPECTACULAR_CONFIG).toString()
+  .replace(/^\s+|\s+$/g, '')
+  .split(/\s+/g)
+  .concat(args)
+
 options =
   coffee: false
   verbose: false
