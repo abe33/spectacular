@@ -1,3 +1,13 @@
+<a name="0.0.4"></a>
+# 0.0.4 (2013-06-15)
+
+
+## Bug Fixes
+
+- **$tests:** fix broken travis tests due to server tests
+  ([0f79ccd5](https://github.com/abe33/spectacular/commit/0f79ccd52c6f7f78a55392509164fe4ef8313fff))
+
+
 <a name="0.0.3"></a>
 # 0.0.3 (2013-06-15)
 

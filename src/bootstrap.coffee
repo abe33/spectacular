@@ -8,7 +8,7 @@ else
 
 exports.spectacular = spectacular
 
-spectacular.version = '0.0.3'
+spectacular.version = '0.0.4'
 spectacular.global = (->
   return window unless typeof window is 'undefined'
   return global unless typeof global is 'undefined'
