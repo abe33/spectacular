@@ -131,5 +131,8 @@ exports.run = (options) ->
       console.log reporter.errorBadge "Spectacular failed"
       reporter.formatError(reason).then (msg) ->
         console.log msg
+        process.exit 1
     else
       console.log reason.stack
+      process.exit 1
+
