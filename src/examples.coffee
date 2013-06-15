@@ -4,10 +4,11 @@
 class spectacular.Expectation
   constructor: (@example,
                 @actual,
-                @matcher,
+                matcher,
                 @not=false,
                 @callstack,
                 ownDescription) ->
+    @matcher = Object.create matcher
     @ownDescription = if ownDescription?
       "#{ownDescription} "
     else
@@ -21,12 +22,15 @@ class spectacular.Expectation
       timeout = setTimeout =>
         @success = false
         @trace = new Error 'matcher timed out'
-        @message = @matcher.message
-        @description = @matcher.description
+        if @not
+          @message = @matcher.messageForShouldnt
+        else
+          @message = @matcher.messageForShould
+        @description = "should#{if @not then ' not' else ''} #{@matcher.description}"
         promise.resolve @success
       , @matcher.timeout or 5000
 
-      @matcher.match(@actual, if @not then ' not' else '')
+      @matcher.match(@actual)
     .then (@success) =>
       clearTimeout timeout
       @success = not @success if @not
@@ -42,7 +46,10 @@ class spectacular.Expectation
     promise
 
   createMessage: =>
-    @message = @matcher.message
+    if @not
+      @message = @matcher.messageForShouldnt
+    else
+      @message = @matcher.messageForShould
     if not @success and not @trace?
       if @callstack.stack?
         stack = @callstack.stack.split('\n')
@@ -50,8 +57,8 @@ class spectacular.Expectation
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
-    @description = "#{@ownDescription}#{@matcher.description}"
-    @fullDescription = "#{@example.description} #{@ownDescription}#{@matcher.description}"
+    @description = "#{@ownDescription}should#{if @not then ' not' else ''} #{@matcher.description}"
+    @fullDescription = "#{@example.description} #{@ownDescription}should#{if @not then ' not' else ''} #{@matcher.description}"
 
 ## ExampleResult
 

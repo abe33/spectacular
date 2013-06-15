@@ -110,6 +110,24 @@ spectacular.utils.ins = (str) ->
 spectacular.utils.del = (str) ->
   utils.TAGS.delStart + str + utils.TAGS.delEnd
 
+spectacular.utils.descOfNode = (actual) ->
+  if actual?
+    if actual.length?
+      utils.inspect Array::map.call actual, (e) -> e.outerHTML
+    else
+      utils.inspect actual.outerHTML
+  else
+    actual
+
+
+# Javascript Diff Algorithm
+# By John Resig (http://ejohn.org/)
+# Modified by Chu Alan "sprite"
+#
+# Released under the MIT license.
+#
+# More Info:
+# http://ejohn.org/projects/javascript-diff-algorithm/
 spectacular.utils.diff = (o, n) ->
   ns = new Object()
   os = new Object()

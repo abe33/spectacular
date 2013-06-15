@@ -5,11 +5,72 @@ spectacular.matcher = (name, block) ->
   o = new spectacular.GlobalizableObject
   takes = null
   match = null
+  chains = {}
   timeout = null
+  description = null
+  failureMessageForShould = null
+  failureMessageForShouldnt = null
+
+  def = (obj, prop, block) ->
+    Object.defineProperty obj, prop, {
+      value: block
+      enumerable: true
+      writable: true
+      configurable: true
+    }
+
+  getter = (obj, prop, block) ->
+    Object.defineProperty obj, prop, {
+      get: block
+      enumerable: true
+      configurable: true
+    }
+
+  genChain = (matcher, key, block) ->
+    f = ->
+      o = Object.create(this)
+      block.apply(o, arguments)
+      o
+
+    def matcher, key, f
+
+  buildMatcher = (takes=[], args=[]) ->
+    matcher = {}
+    if takes[0]? and takes[0].indexOf('...') isnt -1
+      key = takes[0].replace /\.\.\./, ''
+      matcher[key] = args
+    else
+      matcher[k] = args[i] for k,i in takes
+
+    matcher.match = (@actual) -> @result = match.apply(this, arguments)
+    matcher.timeout = timeout
+
+    genChain matcher, k, v for k,v of chains
+
+    getter matcher, 'description', description if description?
+
+    if failureMessageForShould?
+      getter matcher, 'messageForShould', failureMessageForShould
+    else
+      getter matcher, 'messageForShould', -> @description
+
+    if failureMessageForShouldnt?
+      getter matcher, 'messageForShouldnt', failureMessageForShouldnt
+    else if failureMessageForShould?
+      getter matcher, 'messageForShouldnt', failureMessageForShould
+    else
+      getter matcher, 'messageForShouldnt', -> @description
+
+    utils.snakify matcher
+    matcher
 
   o.match = (value) -> match = value
   o.timeout = (value) -> timeout = value
   o.takes = (args...) -> takes = args
+  o.chain = (chain, block) -> chains[chain] = block
+  o.description = (block) -> description = block
+  o.failureMessageForShould = (block) -> failureMessageForShould = block
+  o.failureMessageForShouldnt = (block) -> failureMessageForShouldnt = block
 
   o.globalize()
   block.call(null)
@@ -19,217 +80,284 @@ spectacular.matcher = (name, block) ->
     throw new Error "can't create matcher #{name} without a match"
 
   matcher = if takes?
-    ->
-      matcher = {}
-      matcher[k] = arguments[i] for k,i in takes
-
-      matcher.match = match
-      matcher.timeout = timeout
-
-      matcher
+    -> buildMatcher takes, (a for a in arguments)
   else
-    {match, timeout}
+    buildMatcher()
 
   spectacular.matchers.set name, matcher
 
-# Javascript Diff Algorithm
-# By John Resig (http://ejohn.org/)
-# Modified by Chu Alan "sprite"
-#
-# Released under the MIT license.
-#
-# More Info:
-# http://ejohn.org/projects/javascript-diff-algorithm/
-spectacular.matchers.exist =
-  match: (actual, notText) ->
-    @description = "should#{notText} exist"
-    @message = "Expected #{actual}#{notText} to exist"
 
-    actual?
 
-spectacular.matchers.have = (count, label) ->
-  match: (actual, notText) ->
-    @description = "should#{notText} have #{count} #{label}"
 
+## Native Matchers
+
+spectacular.matcher 'exist', ->
+  match (actual, notText) -> actual?
+
+  description -> "exist"
+  failureMessageForShould -> "Expected #{@actual} to exist"
+  failureMessageForShouldnt -> "Expected #{@actual} to be undefined"
+
+
+
+
+spectacular.matcher 'have', ->
+  takes 'count', 'label'
+  description -> "have #{@count} #{@label}"
+
+  match (actual) ->
     switch typeof actual
       when 'string'
-        label ||= 'chars'
-        andOrBut = if notText.length is 0 then actual.length is count else actual.length isnt count
-        @description = "should#{notText} have #{count} #{label}"
-        @message = "Expected string #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual.length}"
-
-        actual.length is count
+        actual.length is @count
       when 'object'
         if utils.isArray actual
-          andOrBut = if notText.length is 0 then actual.length is count else actual.length isnt count
-          label ||= 'items'
-          @description = "should#{notText} have #{count} #{label}"
-          @message = "Expected array #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual.length}"
-
-          actual.length is count
+          actual.length is @count
         else
-          unless label?
+          unless @label?
             throw new Error "Undefined label in have matcher"
 
-          @description = "should#{notText} have #{count} #{label}"
-          if actual[label]
-            if utils.isArray actual[label]
-              andOrBut = if notText.length is 0 then actual[label].length is count else actual[label].length isnt count
-              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} was #{actual[label].length}"
-              actual[label].length is count
-            else
-              andOrBut = notText.length isnt 0
-              @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} #{actual[label]} wasn't an array"
-              false
-          else
-            andOrBut = notText.length isnt 0
-            @message = "Expected object #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} it didn't have a property named #{label}"
-            false
-      else
-        andOrBut = notText.length isnt 0
-        @message = "Expected #{utils.inspect actual}#{notText} to have #{count} #{label} #{utils.andOrBut andOrBut} it don't belong to a type that can be handled"
-        false
+          if actual[@label]
+            if utils.isArray actual[@label]
+              actual[@label].length is @count
+            else false
+          else false
 
-spectacular.matchers.have.selector = (selector) ->
-  match: (actual, notText) ->
-    @description = "should#{notText} have content that match '#{selector}'"
+      else false
+
+  failureMessageForShould ->
+    switch typeof @actual
+      when 'string' then "Expected string #{utils.inspect @actual} to #{@description} but was #{@actual.length}"
+      when 'object'
+        if utils.isArray @actual
+          "Expected array #{utils.inspect @actual} to #{@description} but was #{@actual.length}"
+        else
+          @message = "Expected object #{utils.inspect @actual} to #{@description}"
+      else
+        @message = "Expected #{utils.inspect @actual} to #{@description} but it don't belong to a type that can be handled"
+
+  failureMessageForShouldnt ->
+    switch typeof @actual
+      when 'string' then "Expected string #{utils.inspect @actual} not to #{@description} but was #{@actual.length}"
+      when 'object'
+        if utils.isArray @actual
+          "Expected array #{utils.inspect @actual} not to #{@description} but was #{@actual.length}"
+        else
+          @message = "Expected object #{utils.inspect @actual} not to #{@description}"
+      else
+        @message = "Expected #{utils.inspect @actual} not to #{@description} but it don't belong to a type that can be handled"
+
+
+
+
+spectacular.matcher 'haveSelector', ->
+  takes 'selector'
+  description -> "have content that match '#{@selector}'"
+
+  match (actual) ->
     if actual.length?
-      actualDesc = Array::map.call actual, (e) -> e.outerHTML
-      @message = "Expected #{utils.inspect actualDesc}#{notText} to have selector '#{selector}'"
-
-      Array::some.call actual, (e) -> e.querySelectorAll(selector).length > 0
+      Array::some.call actual, (e) => e.querySelectorAll(@selector).length > 0
     else
-      actualDesc = actual.outerHTML
-      @message = "Expected #{utils.inspect actualDesc}#{notText} to have selector '#{selector}'"
+      actual.querySelectorAll(@selector).length > 0
 
-      actual.querySelectorAll(selector).length > 0
+  failureMessageForShould ->
+    "Expected #{utils.descOfNode @actual} to have selector '#{@selector}'"
 
-spectacular.matchers.be = (desc, value=desc) ->
-  match: (actual, notText) ->
-    @description = "should#{notText} be #{desc}"
-    switch typeof value
+  failureMessageForShouldnt ->
+    "Expected #{utils.descOfNode @actual} not to have selector '#{@selector}'"
+
+
+
+
+spectacular.matcher 'be', ->
+  takes 'desc', 'value'
+  description ->
+    desc = if typeof @desc is 'string'
+      @desc
+    else
+      utils.squeeze utils.inspect @value
+
+    "be #{desc}"
+
+  failureMessageForShould ->
+    switch typeof @value
       when 'string'
-        state = utils.findStateMethodOrProperty actual, value
-
-        if state?
-          if typeof actual[state] is 'function'
-            result = actual[state]()
-            r = if notText.length is 0 then result else not result
-            @message = "Expected #{actual}.#{state}()#{notText} to be true #{utils.andOrBut r} was #{actual[state]()}"
-          else
-            result = actual[state]
-            r = if notText.length is 0 then result else not result
-            @message = "Expected #{actual}.#{state}#{notText} to be true #{utils.andOrBut r} was #{actual[state]}"
-
-        else
-          @message = "Expected #{actual} to be #{value} #{utils.andOrBut notText.length isnt 0} the state can't be found"
-          result = false
-
-        result
+        "Expected #{@actual} to #{@description} but was #{@stateValue}"
       when 'number', 'boolean'
-        @message = "Expected #{actual}#{notText} to be #{value}"
-        actual?.valueOf() is value
+        "Expected #{@actual} to #{@description}"
       else
-        desc = if typeof desc is 'string' then desc else utils.squeeze utils.inspect value
-        @description = "should#{notText} be #{desc}"
-        @message = "Expected #{utils.inspect actual}#{notText} to be #{utils.inspect value}"
-        actual is value
+        @message = "Expected #{utils.inspect @actual} to #{@description}"
 
-spectacular.matchers.equal = (value) ->
-  match: (actual, notText) ->
-    @description = "should#{notText} be equal to #{utils.squeeze utils.inspect value}"
-    @message = "Expected #{utils.inspect actual}#{notText} to be equal to #{utils.inspect value}"
-    utils.compare actual, value, this
-
-spectacular.matchers.match = (re) ->
-  match: (actual, notText) ->
-    @description = "should#{notText} match #{re}"
-    # The match matcher allow DOMExpression object as value
-    if re.match? and re.contained?
-      actualDesc = if actual.length
-        Array::map.call actual, (e) -> e.outerHTML
+  failureMessageForShouldnt ->
+    switch typeof @value
+      when 'string'
+        "Expected #{@actual} not to #{@description} but was #{@stateValue}"
+      when 'number', 'boolean'
+        "Expected #{@actual} not to #{@description}"
       else
-        actual.outerHTML
-      @message = "Expected #{utils.inspect actualDesc}#{notText} to match #{re}"
+        @message = "Expected #{utils.inspect @actual} not to #{@description}"
 
-      re.match actual
-    else
-      @message = "Expected '#{actual}'#{notText} to match #{re}"
+  match (actual) ->
+    @value = @desc unless @value?
 
-      re.test actual
+    switch typeof @value
+      when 'string'
+        @state = utils.findStateMethodOrProperty actual, @value
 
-spectacular.matchers.contains = (values...) ->
-  value = values[0]
-  match: (actual, notText) ->
-    # The contains matcher allow DOMExpression object as value
-    if value.match? and value.contained?
-      actualDesc = if actual.length
-        Array::map.call actual, (e) -> e.outerHTML
-      else
-        actual.outerHTML
-
-      @description = "should#{notText} contains #{value}"
-      @message = "Expected #{utils.inspect actualDesc}#{notText} to contains #{value}"
-
-      value.contained actual
-
-    else
-      valuesDescription = utils.literalEnumeration values.map (v) -> utils.inspect v
-      @description = "should#{notText} contains #{valuesDescription}"
-      @message = "Expected #{utils.inspect actual}#{notText} to contains #{valuesDescription}"
-
-      values.every (v) -> v in actual
-
-spectacular.matchers.throwAnError = (message) ->
-  matcher =
-    match: (actual, notText) ->
-      msg = if message? then " with message #{message}" else ''
-      msg += " with arguments #{utils.inspect @arguments}" if @arguments?
-
-      @description = "should#{notText} throw an error#{msg}"
-
-      try
-        if @arguments?
-          actual.apply @context, @arguments
+        if @state?
+          if typeof actual[@state] is 'function'
+            @stateValue = actual[@state]()
+          else
+            @stateValue = actual[@state]
         else
-          actual.call @context
-      catch error
-      result = if message?
-        error? and message.test error.message
+          @stateValue = false
+
+        @stateValue
+      when 'number', 'boolean'
+        actual?.valueOf() is @value
       else
-        error?
-      r = if notText.length is 0 then result else not result
-      @message = "Expected#{notText} to throw an error#{msg} #{utils.andOrBut r} was #{error}"
+        actual is @value
 
-      result
 
-    with: (@arguments...) -> this
-    inContext: (@context) -> this
 
-  utils.snakify matcher
-  matcher
+spectacular.matcher 'equal', ->
+  takes 'value'
+  description -> "be equal to #{utils.squeeze utils.inspect @value}"
 
-spectacular.matchers.haveBeenCalled =
-  match: (actual, notText) ->
+  match (actual) -> utils.compare actual, @value, this
+
+  failureMessageForShould ->
+    "Expected #{utils.inspect @actual} to be equal to #{utils.inspect @value}"
+
+  failureMessageForShouldnt ->
+    "Expected #{utils.inspect @actual} to be different than #{utils.inspect @value}"
+
+
+
+spectacular.matcher 'match', ->
+  takes 're'
+  description -> "match #{@re}"
+
+  match (actual) ->
+    # The match matcher allow DOMExpression object as value
+    if @re.match? and @re.contained?
+      @re.match actual
+    else
+      @re.test actual
+
+  failureMessageForShould ->
+    if @re.match? and @re.contained?
+      "Expected #{utils.descOfNode @actual} to match #{@re}"
+    else
+      @message = "Expected '#{@actual}' to match #{@re}"
+
+  failureMessageForShouldnt ->
+    if @re.match? and @re.contained?
+      "Expected #{utils.descOfNode @actual} not to match #{@re}"
+    else
+      @message = "Expected '#{@actual}' not to match #{@re}"
+
+
+
+spectacular.matcher 'contains', ->
+  takes 'values...'
+  description ->
+    if @value?.match? and @value?.contained?
+      "contains #{@value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "contains #{valuesDescription}"
+
+  match (actual) ->
+    @value = @values[0]
+    # The contains matcher allow DOMExpression object as value
+    if @value?.match? and @value?.contained?
+      @value.contained actual
+    else
+      @values.every (v) -> v in actual
+
+  failureMessageForShould ->
+    if @value?.match? and @value?.contained?
+      "Expected #{utils.descOfNode @actual} to contains #{@value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "Expected #{utils.descOfNode @actual} to contains #{valuesDescription}"
+
+  failureMessageForShouldnt ->
+    if @value?.match? and @value?.contained?
+      "Expected #{utils.descOfNode @actual} not to contains #{@value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "Expected #{utils.descOfNode @actual} not to contains #{valuesDescription}"
+
+
+
+spectacular.matcher 'throwAnError', ->
+  takes 'message'
+  description ->
+    msg = if @message? then " with message #{@message}" else ''
+    msg += " with arguments #{utils.inspect @arguments}" if @arguments?
+    msg += " in context #{utils.inspect @context}" if @context?
+
+    "throw an error#{msg}"
+
+  chain 'with', (@arguments...) ->
+  chain 'inContext', (@context) ->
+
+  match (actual) ->
+    try
+      if @arguments?
+        actual.apply @context, @arguments
+      else
+        actual.call @context
+    catch err
+
+    @error = err
+
+    result = if @message?
+      @error? and @message.test @error.message
+    else
+      @error?
+
+
+    result
+
+  failureMessageForShould -> "Expected to #{@description} but was #{@error}"
+  failureMessageForShouldnt -> "Expected not to #{@description} but was #{@error}"
+
+
+spectacular.matcher 'haveBeenCalled', ->
+  description ->
+    msg = "have been called"
+    msg += "with #{utils.inspect @arguments}" if @arguments?
+    msg
+
+  chain 'with', (@arguments...) ->
+
+  match (actual, notText) ->
     if typeof actual?.spied is 'function'
       if @arguments?
-        @description = "should have been called with #{utils.inspect @arguments}"
-        @message = "Expected #{actual.spied}#{notText} to have been called with #{utils.inspect @arguments} but was called with #{actual.argsForCall}"
-
         actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
           equal(a).match(@arguments, '')
       else
-        @description = "should have been called"
-        @message = "Expected #{actual.spied}#{notText} to have been called"
         actual.argsForCall.length > 0
     else
-      @description = "should be a spy that have been called"
-      @message = "Expected a spy but it was #{actual}"
       false
 
-  with: (args...) ->
-    m = Object.create this
-    m.arguments = args
-    m
+  failureMessageForShould ->
+    if typeof actual?.spied is 'function'
+      if @arguments?
+        "Expected #{@actual.spied} to #{@description} but was called with #{@actual.argsForCall}"
+      else
+        "Expected #{@actual.spied} to have been called"
+    else
+      @message = "Expected a spy but it was #{@actual}"
 
-utils.snakify spectacular.matchers
+  failureMessageForShould ->
+    if typeof actual?.spied is 'function'
+      if @arguments?
+        "Expected #{@actual.spied} not to #{@description} but was called with #{@actual.argsForCall}"
+      else
+        "Expected #{@actual.spied} not to have been called"
+    else
+      @message = "Expected a spy but it was #{@actual}"
+

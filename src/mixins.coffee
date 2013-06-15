@@ -48,7 +48,7 @@ class spectacular.Globalizable
     @previous[key] = _global[key] if _global[key]?
     self = this
     if typeof value is 'function'
-      value._name = key
+      value._name = key unless value._name?
       if @keepContext
         proxy = -> value.apply self, arguments
         proxy._name = key
