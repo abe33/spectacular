@@ -1,10 +1,13 @@
 require 'colors'
 
+fs = require 'fs'
 path = require 'path'
 {exec, spawn} = require 'child_process'
 {print} = require 'util'
 
 Q = require 'q'
+
+version = require('./package.json').version
 
 exeHandle = (p,f) ->
   [p,f] = [f,p] if typeof p is 'function'
@@ -108,7 +111,7 @@ compileBrowser = ->
   .then(compileTests)
   .then(run "./node_modules/.bin/stylus css/spectacular.styl")
   .then(run "cp css/spectacular.css docs/build/css/spectacular.css")
-  .then(run "cd ./docs/build; zip -r ../spectacular *")
+  .then(run "cd ./docs/build; zip -r ../spectacular-#{version}.zip *")
 
 task 'compile', 'Compiles the project sources', ->
   compileNode()
