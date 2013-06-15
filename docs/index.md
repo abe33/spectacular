@@ -408,11 +408,11 @@ Matchers are defined with the `spectacular.matcher` function. It generates an ob
 
 ```coffeescript
 spectacular.matcher 'returnSomething', ->
-  match (actual, notText) ->
-    @description = "should#{notText} return something"
-    @message = "Expected #{actual} to return something"
+  match (actual) -> actual() isnt null
 
-    actual() isnt null
+  description -> "return something"
+
+  failureMessageForShould message = "Expected #{@actual} to #{@description}"
 
 # Usage:
 it -> should returnSomething
@@ -427,17 +427,36 @@ You can create parameterizable matcher by calling the `takes` function in the ma
 ```coffeescript
 spectacular.matcher 'parameterizableMatcher', ->
   takes 'value1', 'value2'
-  match ->
-    @description = 'parameterizableMatcher description'
-    @message = 'parameterizableMatcher message'
 
-    @value1 and @value2
+  match -> @value1 and @value2
+
+  description -> 'parameterizableMatcher description'
+
+  failureMessageForShould -> 'parameterizableMatcher message'
 
 # Usage:
-it -> should parameterizableMatcher(true, true)
+it -> should parameterizableMatcher(value1, value2)
 ```
 
-The parameters defined with takes are then stored in the matcher instance with the provided names.
+The parameters defined with takes are then stored in the matcher instance with the provided names. The `takes` function accept a slat argument such as `values...`. In that case, the splat must be the sole argument.
+
+You can also add chaining methods with the `chain` function:
+
+```coffeescript
+spectacular.matcher 'chainableMatcher', ->
+  takes 'value1'
+
+  chain 'with', (@value2) ->
+
+  match -> @value1 and @value2
+
+  description -> 'chainableMatcher description'
+
+  failureMessageForShould -> 'chainableMatcher message'
+
+# Usage:
+it -> should chainableMatcher(value1).with(value2)
+```
 
 The following matchers are provided by Spectacular:
 
@@ -473,7 +492,7 @@ The following matchers are provided by Spectacular:
     </td>
   </tr>
   <tr>
-    <td>`have.selector(selector)`</td>
+    <td>`haveSelector(selector)`</td>
     <td>Will test a `Node` or a `NodeList` with the given CSS query.</td>
   </tr>
   <tr>
