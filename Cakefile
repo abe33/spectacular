@@ -117,6 +117,8 @@ task 'compile', 'Compiles the project sources', ->
   compileNode()
   .then ->
     console.log 'Nodejs files compiled'.green
+  .fail (err) ->
+    console.log "#{err}".red
 
 task 'build', 'Build the project for node and the browser with docs', ->
   compileNode()
@@ -129,12 +131,17 @@ task 'build', 'Build the project for node and the browser with docs', ->
     console.log "#{err}".red
 
 task 'server', 'Compiles and run the server', ->
-  compileNode().then ->
+  compileNode()
+  .then ->
     exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
     exe.stdout.on 'data', (data) -> print data.toString()
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.on 'exit', (status) -> process.exit status
+  .fail (err) ->
+    console.log "#{err}".red
 
 task 'phantomjs', 'Run specs on phantomjs', ->
   compileNode()
   .then(run './bin/spectacular --phantomjs --coffee --profile specs/units/**/*.spec.*')
+  .fail (err) ->
+    console.log "#{err}".red
