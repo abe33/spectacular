@@ -73,6 +73,11 @@ html.failure body #reporter > header h1 {
 #reporter pre {
   overflow: inherit;
   border: none;
+  background: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
 }
 #reporter pre a {
   border: none;
