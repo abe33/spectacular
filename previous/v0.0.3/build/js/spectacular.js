@@ -70,7 +70,7 @@
 
   exports.spectacular = spectacular;
 
-  spectacular.version = '0.0.4';
+  spectacular.version = '0.0.3';
 
   spectacular.global = (function() {
     if (typeof window !== 'undefined') {
