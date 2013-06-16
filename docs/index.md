@@ -724,14 +724,18 @@ It's also possible to test the text content of a node using quote or regex liter
       /article(\s+content)*/
 ```
 
-These expressions, when parsed, can be passed to the `match` or `contains` matchers.
+These expressions, when parsed, can be passed to the `match` or `contains` matchers and can be used with both nodes and nodes lists.
 
 ```coffeescript
 specify 'the page', ->
   document.should contains @domExpression
 
 specify 'the node', ->
-  node.should match @domExpression
+  # on node
+  document.querySelector('div').should match @domExpression
+
+  # on nodes list
+  document.querySelectorAll('div').should match @domExpression
 ```
 
 ## Shared Example
@@ -739,7 +743,7 @@ specify 'the node', ->
 Shared example are groups of tests that can be used to test similar functionalities accross several classes. For instance the following shared examples test that an object behave like a collection as defined by the `spectacular.HasCollection` mixin:
 
 ```coffeescript
-sharedExample 'a collection like object', (options) ->
+sharedExample 'a collection', (options) ->
   {singular, plural} = options
   capitalizedSingular = spectacular.utils.capitalize singular
 
@@ -780,7 +784,7 @@ The shared example can then be called with either the `itBehavesLike` or `itShou
 describe ClassWithCollection, ->
   subject -> new ClassWithCollection
 
-  itBehavesLike 'a collection like object', {
+  itBehavesLike 'a collection', {
     singular: 'child'
     plural: 'children'
   }
