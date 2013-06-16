@@ -224,13 +224,21 @@ spectacular.matcher 'equal', ->
   takes 'value'
   description -> "be equal to #{utils.squeeze utils.inspect @value}"
 
-  match (actual) -> utils.compare actual, @value, this
+  match (actual) ->
+    @diff = diff: ''
+    r = utils.compare actual, @value, @diff
+    r
 
   failureMessageForShould ->
-    "Expected #{utils.inspect @actual} to be equal to #{utils.inspect @value}"
+    msg = "Expected #{utils.inspect @actual} to be equal to #{utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0
+
+    msg
 
   failureMessageForShouldnt ->
-    "Expected #{utils.inspect @actual} to be different than #{utils.inspect @value}"
+    msg = "Expected #{utils.inspect @actual} to be different than #{utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0
+    msg
 
 
 
