@@ -60,21 +60,59 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     trait.unglobalize()
 
   build: (traits, options={}) ->
-    args = @traits[trait].arguments for trait in traits
-    args ||= @arguments or []
-    if typeof args[0] is 'function'
-      args = args[0].call(spectacular.env.currentExample.context)
+    args = @getConstructorArguments traits
 
-    instance = build @class, args
+    instance = if @parent?
+      @parent.instanciate args
+    else
+      @instanciate args
+
     @applySet instance
-    @traits[trait].applySet instance for trait in traits
+    @findTrait(trait).applySet instance for trait in traits
     instance[k] = v for k,v of options
     instance
+
+  instanciate: (args) -> build @class, args
+
+  getConstructorArguments: (traits) ->
+    args = @getFactoryConstructorArguments()
+    for trait in traits
+      traitArgs = @findTrait(trait).arguments
+      args = traitArgs if traitArgs?
+
+    if args? and typeof args[0] is 'function'
+      args = args[0].call(spectacular.env.currentExample.context)
+
+    args or []
+
+  getFactoryConstructorArguments: ->
+    @arguments or @parent?.getFactoryConstructorArguments()
+
+  findTrait: (traitName) ->
+    trait = @traits[traitName] or @parent?.findTrait traitName
+    throw new Error "unknown trait #{traitName}" unless trait?
+    trait
 
 spectacular.factoriesCache = {}
 spectacular.factories.factory = (name, options, block) ->
   cache = spectacular.factoriesCache
-  fct = cache[name] ||= new spectacular.factories.Factory name, options.class
+  [options, block] = [{}, options] if typeof options is 'function'
+
+  if options.extends?
+    parent = cache[options.extends]
+    unless parent?
+      throw new Error "parent factory '#{options.extends}' can't be found"
+
+    fct = cache[name] ||= new spectacular.factories.Factory name
+    fct.parent = parent
+
+  else if options.class?
+    fct = cache[name] ||= new spectacular.factories.Factory name, options.class
+  else
+    fct = cache[name]
+    unless fct?
+      throw new Error 'no class provided'
+
   fct.globalize()
   block.call(fct)
   fct.unglobalize()
