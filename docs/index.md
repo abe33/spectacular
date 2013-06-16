@@ -560,14 +560,15 @@ Matchers can be asynchronous, in that case they should return a promise instead 
 spectacular.matcher 'asyncMatcher', ->
   timeout 1000
   match (actual, notText) ->
-    @description = 'should match asynchronously'
-    @message = 'Expected to match asynchronously'
 
     promise = new spectacular.Promise
 
     setTimeout (-> promise.resolve actual isnt null), 100
 
     promise
+
+  description -> 'should match asynchronously'
+  failureMessageForShould -> 'Expected to match asynchronously'
 ```
 If the promise is rejected, the example is marked as `errored`.
 
@@ -578,12 +579,11 @@ The function takes a name and a value and will expose it on the global object
 through a `GlobalizableObject`.
 
 ```coffeescript
-spectacular.helper 'environmentMethod', (method) ->
-  cannotBeCalledInsideIt: ->
-    runningSpecs('call inside it')
-    .shouldFailWith /called inside a it block/, ->
-      describe 'foo', ->
-        it -> spectacular.global[method]()
+spectacular.helper 'someHelper', (params...) ->
+  # Your helper's code
+
+# Usage
+someHelper(SomeClass, someOption: 'some value')
 ```
 
 ## Before & After Hooks
