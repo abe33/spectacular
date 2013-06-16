@@ -44,7 +44,7 @@ class spectacular.SlidingObject
       topMin = @container.offsetTop
       topMax = topMin + @container.clientHeight - @target.clientHeight
       top = (doc and doc.scrollTop or body and body.scrollTop or 0)
-      top = Math.min(topMax, Math.max(topMin, top + 100))
+      top = Math.min(topMax, Math.max(topMin, top + 100)) - topMin
       @target.style.top = "#{top}px"
 
 class spectacular.BrowserStackReporter extends spectacular.StackReporter

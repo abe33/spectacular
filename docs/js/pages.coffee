@@ -54,8 +54,22 @@ $ ->
     lines = text.split('\n')
     parent.prepend "<ol>#{lines.map((l,i) -> "<li>#{i+1}</li>").join('')}</ol>"
 
+  toggleCellExpansion = (td, bool) ->
+    tr = td.parents('tr')
+    ellipsis = td.find('.ellipsis')
+    if bool
+      ellipsis.height ellipsis.data('max-height')
+      tr.addClass('open') unless tr.hasClass('open')
+    else
+      ellipsis.height ellipsis.data('min-height')
+      tr.removeClass('open') if tr.hasClass('open')
+
+  expandCell = (td) -> toggleCellExpansion(td, true)
+  collapseCell = (td) -> toggleCellExpansion(td, false)
+
   $('tr').each ->
     tr = $(this)
+    table = tr.parents('table')
     tr.addClass 'no-padding'
     tds = tr.find('td')
     tds.each ->
@@ -63,16 +77,37 @@ $ ->
       newContent = $("<div>#{td.html()}</div>")
       td.html ''
       td.append newContent
-      newContent.addClass 'ellipsis' if tr.height() - 27 > 10
+      if tr.height() - 27 > 10
+        newContent.addClass 'ellipsis'
+        table.addClass('ellipsis') unless table.hasClass('ellipsis')
       newContent.attr 'data-min-height', 27
       newContent.attr 'data-max-height', tr.height()
       newContent.height 27
 
     tr.click ->
-      tr.toggleClass 'open'
       tr.find('td div.ellipsis').each ->
-        d = $ this
+        d = $(this)
         if d.height() is d.data('min-height')
-          d.height d.data('max-height')
+          expandCell d.parents('td')
         else
-          d.height d.data('min-height')
+          collapseCell d.parents('td')
+
+  $('table').each ->
+    return if $(this).find('.ellipsis').length is 0
+    table = $(this).wrap('<div class="table-wrapper"/>').parent()
+    controls = $('<div class="table-controls"></div>')
+    table.append controls
+    expandAll = $('<button class="expand" title="expand/collapse"><i class="icon-collapse"></i><i class="icon-collapse-top"></i></button>')
+    expandAll.click ->
+      expandAll.toggleClass('expanded')
+      expanded = expandAll.hasClass('expanded')
+      table.find('.ellipsis').each ->
+        td = $(this).parents('td')
+        toggleCellExpansion(td, expanded)
+
+
+
+    controls.append expandAll
+    new spectacular.SlidingObject controls[0], table[0]
+
+
