@@ -635,10 +635,23 @@ factory 'user', class: User, ->
 user = create 'user', 'with_bike'
 ```
 
-  * The `factory` method registers a factory, it takes an option object that set the constructor function to use.
-  * The `createWith` method defines the arguments to pass to the constructor. It can be either a list of values or a function that will return these arguments. In the case a function is passed, the function will be executed in the context of the current example.
-  * The `set` method defines a value to set on the specified property, it can takes either a value or a function. In case of a function is passed, the function will be executed in the context of the instance.
-  * The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.
+<table cellspacing="0">
+  <tr>
+    <td>`factory`</td>
+    <td>The `factory` method registers a factory, it takes an option object that set the constructor function to use.</td>
+  </tr>
+  <tr>
+    <td>`createWith`</td>
+    <td>The `createWith` method defines the arguments to pass to the constructor. It can be either a list of values or a function that will return these arguments. In the case a function is passed, the function will be executed in the context of the current example. The `createWith` method can be used either in the factory block or in a trait block. When using several trait defining constructor arguments only the last trait will be effective.</td>
+  </tr>
+  <tr>
+    <td>`set`</td>
+    <td>The `set` method defines a value to set on the specified property, it can takes either a value or a function. In case of a function is passed, the function will be executed in the context of the instance.</td>
+  </tr>
+  <tr>
+    <td>`trait`</td>
+    <td>The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.</td>
+</table>
 
 ## Fixtures
 
