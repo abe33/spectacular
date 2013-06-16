@@ -11,6 +11,10 @@ describe 'matcher', ->
     it -> should exist
     it -> should chainableMatcher.chain true
 
+  describe  initializableMatcher, ->
+    it -> should exist
+    it -> should initializableMatcher
+
   runningSpecs('matcher returning timing out promise')
   .shouldStopWith /can't create matcher foo without a match/, ->
     spectacular.matcher 'foo', ->

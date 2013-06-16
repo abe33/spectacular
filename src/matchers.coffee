@@ -8,6 +8,7 @@ spectacular.matcher = (name, block) ->
   chains = {}
   timeout = null
   description = null
+  init = null
   failureMessageForShould = null
   failureMessageForShouldnt = null
 
@@ -43,6 +44,8 @@ spectacular.matcher = (name, block) ->
     else
       matcher[k] = args[i] for k,i in takes
 
+    init?.call(matcher)
+
     matcher.match = (@actual) -> @result = match.apply(this, arguments)
     matcher.timeout = timeout
 
@@ -70,6 +73,7 @@ spectacular.matcher = (name, block) ->
   o.takes = (args...) -> takes = args
   o.chain = (chain, block) -> chains[chain] = block
   o.description = (block) -> description = block
+  o.init = (block) -> init = block
   o.failureMessageForShould = (block) -> failureMessageForShould = block
   o.failureMessageForShouldnt = (block) -> failureMessageForShouldnt = block
 

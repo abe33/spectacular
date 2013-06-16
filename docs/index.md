@@ -440,6 +440,29 @@ it -> should parameterizableMatcher(value1, value2)
 
 The parameters defined with takes are then stored in the matcher instance with the provided names. The `takes` function accept a slat argument such as `values...`. In that case, the splat must be the sole argument.
 
+<aside>
+  **Note:** Matchers that doesn't takes arguments are created only once and
+  then passed to the expectation, they should never stores anything that may induce false positive.
+
+  This is not an issue with parameterizable matchers since an instance is created every time the matcher function is called.
+</aside>
+
+It's possible to run code on the initialization of a matcher:
+
+```coffeescript
+spectacular.matcher 'matcherWithInit', ->
+  init -> # do some setup such creating composed objects
+
+  match (actual) -> @composedObject.match actual
+
+  description -> 'matcher with init description'
+
+  failureMessageForShould -> 'matcher with init message'
+
+# Usage:
+it -> should matcherWithInit(value1, value2)
+```
+
 You can also add chaining methods with the `chain` function:
 
 ```coffeescript

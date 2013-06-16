@@ -14,6 +14,11 @@ spectacular.matcher 'chainableMatcher', ->
   description -> 'chain'
   chain 'chain', (@value) ->
 
+spectacular.matcher 'initializableMatcher', ->
+  init -> @value = true
+  match -> @value
+  description -> 'initalized'
+
 spectacular.matcher 'timeout', ->
   timeout 100
   description -> 'timing out promise based matcher'
