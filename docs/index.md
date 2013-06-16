@@ -633,7 +633,30 @@ factory 'user', class: User, ->
     set 'bike', -> {model: 'z750', brand: 'Kawasaki'}
 
 user = create 'user', 'with_bike'
+# {id: 12345, name: 'John Doe', bike: {model: 'z750', brand: 'Kawasaki'}}
 ```
+
+Factories can be reopened any time to add traits or new configuration:
+
+```coffeescript
+factory 'user', ->
+  set 'age', 32
+
+user = create 'user'
+# {id: 12345, name: 'John Doe', age: 32}
+```
+
+Factories can also extends another factory with the `extends` option:
+
+```coffeescript
+factory 'admin', extends: 'user', ->
+  set 'roles', -> ['admin']
+
+user = create 'admin'
+# {id: 12345, name: 'John Doe', roles: ['admin']}
+```
+
+Find below more details about the factory functions:
 
 <table cellspacing="0">
   <tr>
