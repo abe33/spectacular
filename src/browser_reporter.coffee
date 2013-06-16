@@ -32,6 +32,20 @@ fixNodeHeight = (nl) ->
   Array::forEach.call nl, (node) ->
     node.style.height = "#{node.clientHeight}px"
 
+class spectacular.SlidingObject
+  constructor: (@target, @container) ->
+    previousOnScroll = window.onscroll
+    doc = document.documentElement
+    body = document.body
+
+    window.onscroll = =>
+      do previousOnScroll if previousOnScroll?
+
+      topMin = @container.offsetTop
+      topMax = topMin + @container.clientHeight - @target.clientHeight
+      top = (doc and doc.scrollTop or body and body.scrollTop or 0)
+      top = Math.min(topMax, Math.max(topMin, top + 100))
+      @target.style.top = "#{top}px"
 
 class spectacular.BrowserStackReporter extends spectacular.StackReporter
   @reports: 0
@@ -115,19 +129,7 @@ class spectacular.BrowserReporter
 
 
     controls = @reporter.querySelector '#controls'
-    previousOnScroll = window.onscroll
-    doc = document.documentElement
-    body = document.body
-
-    window.onscroll = =>
-      do previousOnScroll if previousOnScroll?
-
-      reporterOffset = @reporter.offsetTop
-      topMin = @examplesContainer.offsetTop
-      topMax = topMin + @examplesContainer.clientHeight - controls.clientHeight
-      top = (doc and doc.scrollTop or body and body.scrollTop or 0) - reporterOffset
-      top = Math.min(topMax, Math.max(topMin, top + 100))
-      controls.style.top = "#{top}px"
+    @controlsScroller = new spectacular.SlidingObject controls, @examplesContainer
 
   onEnd: (event) =>
     html = document.querySelector 'html'
