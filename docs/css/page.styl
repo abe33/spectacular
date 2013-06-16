@@ -138,7 +138,28 @@ a
       color #bbb
       margin-right 16px
 
+aside
+  background error(0.2)
+  border 1px solid error(0.4)
+  padding 8px 8px 8px 38px
+  border-radius 3px
+  position relative
 
+  p
+    &:first-child
+      margin-top 0
+    &:last-child
+      margin-bottom 0
+
+  &:before
+    position absolute
+    left 8px
+    top 8px
+    display inline-block
+    content "\f0eb"
+    font-family FontAwesome
+    color error(0.5)
+    font-size 38px
 
 table
   border 1px solid #e4e4e4
