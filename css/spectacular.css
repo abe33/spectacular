@@ -85,7 +85,7 @@ html.failure body #reporter > header h1 {
 #reporter #controls {
   position: absolute;
   top: 150px;
-  left: 16px;
+  left: 6px;
   padding: 8px;
   background: #0b1d26;
   width: 68px;
