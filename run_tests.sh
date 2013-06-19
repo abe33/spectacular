@@ -3,11 +3,11 @@
 if [ $TRAVIS ]
   then
     echo "  Node Tests\n"
-    istanbul --hook-run-in-context cover bin/spectacular -- --coffee specs/**/*.coffee
+    istanbul --hook-run-in-context cover bin/spectacular -- --verbose --coffee specs/**/*.coffee
     node_result=$?
 
     echo "  Send coverage to coveralls.io\n"
-    # (cat coverage/lcov.info | node_modules/.bin/coveralls) > /dev/null 2>&1
+    (cat coverage/lcov.info | node_modules/.bin/coveralls) > /dev/null 2>&1
 
     echo "  PhantomJS Tests\n"
     bin/spectacular --phantomjs --coffee specs/**/*.coffee

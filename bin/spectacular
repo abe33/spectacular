@@ -110,10 +110,6 @@ while (args.length) {
   }
 }
 
-if (options.verbose) {
-  console.log('options:', options);
-}
-
 exists(path.resolve(ROOT, 'node_modules/spectacular'), function(exist) {
   var spectacular;
   if (exist) {

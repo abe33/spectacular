@@ -63,8 +63,6 @@ while args.length
       options.phantomjs = true
     else options.globs.push option
 
-console.log 'options:', options if options.verbose
-
 #### Lookup for the spectacular lib.
 #
 # When a project owns a version of Spectacular, that version is used

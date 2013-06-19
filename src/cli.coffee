@@ -9,6 +9,9 @@ walk = require 'walkdir'
 util = require 'util'
 jsdom = require 'jsdom'
 
+colorize= (str, color, options) ->
+  if str? and not options.noColors and str?[color] then str[color] else str
+
 requireFile = (file, context) ->
   try
     require file
@@ -19,6 +22,8 @@ loadSpectacular = (options) ->
   Q.fcall ->
     filename = path.resolve __dirname, "spectacular.js"
     src = fs.readFileSync(filename).toString()
+    if options.verbose
+      console.log "  #{colorize 'load spectacular', 'grey', options} #{filename}"
     vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment options
@@ -31,7 +36,10 @@ loadMatchers = (options) ->
     defer.resolve()
   else
     emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) -> requireFile path
+    emitter.on 'file', (path, stat) ->
+      if options.verbose
+        console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
+      requireFile path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
@@ -43,7 +51,10 @@ loadHelpers = (options) ->
     defer.resolve()
   else
     emitter = walk options.helpersRoot
-    emitter.on 'file', (path, stat) -> requireFile path
+    emitter.on 'file', (path, stat) ->
+      if options.verbose
+        console.log "  #{colorize 'load helper', 'grey', options} #{path}"
+      requireFile path
     emitter.on 'end', -> defer.resolve()
 
   defer.promise
@@ -63,7 +74,10 @@ globPaths= (globs) -> ->
     paths
 
 loadSpecs = (options) -> (paths) ->
-  console.log "Load specs: #{paths}\n" if options.verbose
+  if options.verbose
+    for p in paths
+      console.log "  #{colorize 'load spec', 'grey', options} #{p}"
+
   require path.resolve('.', p) for p in paths
   paths
 
@@ -99,6 +113,8 @@ loadFile = (options) ->
 exports.run = (options) ->
   loadStartedAt = null
   loadEndedAt = null
+
+  console.log colorize('  options','grey',options), options if options.verbose
 
   loadSpectacular(options)
   .then(loadDOM)
