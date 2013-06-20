@@ -18,6 +18,8 @@ requireFile = (file, context) ->
   catch err
     console.log file, err
 
+exists = fs.exists or path.exists
+
 loadSpectacular = (options) ->
   Q.fcall ->
     filename = path.resolve __dirname, "spectacular.js"
@@ -43,13 +45,17 @@ loadMatchers = (options) -> ->
   if options.noMatchers
     defer.resolve()
   else
-    emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) ->
-      if options.verbose
-        console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
-      requireFile path
+    exists options.matchersRoot, (exists) ->
+      if exists
+        emitter = walk options.matchersRoot
+        emitter.on 'file', (path, stat) ->
+          if options.verbose
+            console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
+          requireFile path
 
-    handleEmitter emitter, defer
+        handleEmitter emitter, defer
+      else
+        defer.resolve()
 
   defer.promise
 
@@ -59,13 +65,17 @@ loadHelpers = (options) -> ->
   if options.noHelpers
     defer.resolve()
   else
-    emitter = walk options.helpersRoot
-    emitter.on 'file', (path, stat) ->
-      if options.verbose
-        console.log "  #{colorize 'load helper', 'grey', options} #{path}"
-      requireFile path
+     exists options.helpersRoot, (exists) ->
+      if exists
+        emitter = walk options.helpersRoot
+        emitter.on 'file', (path, stat) ->
+          if options.verbose
+            console.log "  #{colorize 'load helper', 'grey', options} #{path}"
+          requireFile path
 
-    handleEmitter emitter, defer
+        handleEmitter emitter, defer
+      else
+        defer.resolve()
 
   defer.promise
 
