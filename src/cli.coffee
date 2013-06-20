@@ -29,7 +29,15 @@ loadSpectacular = (options) ->
     spectacular.env = new spectacular.Environment options
     spectacular.env.globalize()
 
-loadMatchers = (options) ->
+handleEmitter = (emitter, defer) ->
+  emitter.on 'end', ->
+    defer.resolve()
+  emitter.on 'error', (err) ->
+    defer.reject(err)
+  emitter.on 'fail', (err) ->
+    defer.reject(err)
+
+loadMatchers = (options) -> ->
   defer = Q.defer()
 
   if options.noMatchers
@@ -40,11 +48,12 @@ loadMatchers = (options) ->
       if options.verbose
         console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
       requireFile path
-    emitter.on 'end', -> defer.resolve()
+
+    handleEmitter emitter, defer
 
   defer.promise
 
-loadHelpers = (options) ->
+loadHelpers = (options) -> ->
   defer = Q.defer()
 
   if options.noHelpers
@@ -55,7 +64,8 @@ loadHelpers = (options) ->
       if options.verbose
         console.log "  #{colorize 'load helper', 'grey', options} #{path}"
       requireFile path
-    emitter.on 'end', -> defer.resolve()
+
+    handleEmitter emitter, defer
 
   defer.promise
 
