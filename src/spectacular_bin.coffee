@@ -2,6 +2,7 @@ fs = require 'fs'
 vm = require 'vm'
 path = require 'path'
 exists = fs.exists or path.exists
+require 'colors'
 
 SPECTACULAR = path.resolve __dirname, '..'
 ROOT = path.resolve '.'
@@ -59,6 +60,7 @@ while args.length
     when '--server', '-s' then options.server = true
     when '--source' then options.sources.push args.shift()
     when '--phantomjs'
+      options.cli = false
       options.server = true
       options.phantomjs = true
     else options.globs.push option
@@ -69,10 +71,14 @@ while args.length
 # instead of the global one.
 exists path.resolve(ROOT, 'node_modules/spectacular'), (exist) ->
   if exist
-    spectacular = require path.resolve(ROOT,
-                                       'node_modules/spectacular/lib/index')
+    spectacularPath = path.resolve(ROOT, 'node_modules/spectacular')
   else
-    spectacular = require path.resolve(SPECTACULAR,
-                                       'lib/index')
+    spectacularPath = SPECTACULAR
 
-  spectacular.run(options).then (status) -> process.exit status
+  if options.cli
+    spectacular = require("#{spectacularPath}/lib/cli")
+  else if options.server
+    spectacular = require("#{spectacularPath}/lib/server")
+
+  if spectacular?
+    spectacular.run(options).then (status) -> process.exit status

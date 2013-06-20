@@ -11,6 +11,8 @@ path = require('path');
 
 exists = fs.exists || path.exists;
 
+require('colors');
+
 SPECTACULAR = path.resolve(__dirname, '..');
 
 ROOT = path.resolve('.');
@@ -39,6 +41,7 @@ options = {
   noMatchers: false,
   noHelpers: false,
   noColors: false,
+  cli: true,
   server: false,
   phantomjs: false,
   globs: [],
@@ -111,13 +114,20 @@ while (args.length) {
 }
 
 exists(path.resolve(ROOT, 'node_modules/spectacular'), function(exist) {
-  var spectacular;
+  var spectacular, spectacularPath;
   if (exist) {
-    spectacular = require(path.resolve(ROOT, 'node_modules/spectacular/lib/index'));
+    spectacularPath = path.resolve(ROOT, 'node_modules/spectacular');
   } else {
-    spectacular = require(path.resolve(SPECTACULAR, 'lib/index'));
+    spectacularPath = SPECTACULAR;
   }
-  return spectacular.run(options).then(function(status) {
-    return process.exit(status);
-  });
+  if (options.cli) {
+    spectacular = require("" + spectacularPath + "/lib/cli");
+  } else if (options.server) {
+    spectacular = require("" + spectacularPath + "/lib/server");
+  }
+  if (spectacular != null) {
+    return spectacular.run(options).then(function(status) {
+      return process.exit(status);
+    });
+  }
 });

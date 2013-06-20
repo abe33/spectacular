@@ -60,7 +60,6 @@ compileNode = ->
       "lib/"
       "src/cli.coffee"
       "src/server.coffee"
-      "src/index.coffee"
       "src/spectacular_bin.coffee"
       "src/browser_reporter.coffee"
       "src/spectacular_phantomjs.coffee"
