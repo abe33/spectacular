@@ -7,7 +7,7 @@ spectacular.helper 'createEnv', (block, context, options) ->
   context.results = ''
 
   spyOn(env, 'globalize').andCallThrough ->
-    promise = new spectacular.Promise.unit()
+    promise = spectacular.Promise.unit()
     promise.then -> do block
 
   env

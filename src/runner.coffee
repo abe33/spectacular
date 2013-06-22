@@ -1,7 +1,4 @@
 
-nextTick = process?.setImmediate or process?.nextTick or (callback) ->
-  setTimeout callback, 0
-
 class spectacular.Runner
   @include spectacular.EventDispatcher
 
@@ -126,7 +123,7 @@ class spectacular.Runner
     promise
 
   nextExample: (defer) =>
-    nextTick =>
+    spectacular.nextTick =>
       if @stack.length is 0
         defer.resolve()
       else
