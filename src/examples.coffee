@@ -84,13 +84,16 @@ class spectacular.ExampleResult
 class spectacular.Example
   @include spectacular.HasAncestors
   @include spectacular.Describable
-  @include spectacular.FollowUpProperty('subjectBlock')
-  @include spectacular.FollowUpProperty('cascading')
-  @include spectacular.FollowUpProperty('inclusive')
-  @include spectacular.FollowUpProperty('exclusive')
-  @include spectacular.MergeUpProperty('beforeHooks')
-  @include spectacular.MergeUpProperty('afterHooks')
-  @include spectacular.MergeUpProperty('dependencies')
+  @extend spectacular.AncestorsProperties
+
+  @followUp 'subjectBlock'
+  @followUp 'cascading'
+  @followUp 'inclusive'
+  @followUp 'exclusive'
+
+  @mergeUp 'beforeHooks'
+  @mergeUp 'afterHooks'
+  @mergeUp 'dependencies'
 
   constructor: (@block, @ownDescription='', @parent) ->
     @noSpaceBeforeDescription = true if @ownDescription is ''
