@@ -1,60 +1,60 @@
-<!DOCTYPE html><html lang="en" class="features"><head><meta charset="utf-8"><title>Spectacular - Features</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>0.0.4</h2></header><h1>Features</h1><h3>Features List</h3>
+<!DOCTYPE html><html lang="en" class="features"><head><meta charset="utf-8"><title>Spectacular - Features</title><link href="css/page.css" rel="stylesheet" type="text/css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>1.0.0</h2></header><h1>Features</h1><h3>Features List</h3>
 <ol>
 <li><p>Priorized specs: Some specs may run before others and prevent the following specs to run if one failure arise:</p>
-<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>dependency example<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">id<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>dependency<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- it <span class="function">-></span> fail<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+<pre><code class="lang-coffeescript">describe <span class="string">'dependency example'</span>, id: <span class="string">'dependency'</span>, -&gt;
+ it -&gt; fail()
 
-describe <span class="string"><span class="string_begin">'</span>dependent<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+describe <span class="string">'dependent'</span>, -&gt;
  <span class="comment"># Run only if the specs in 'dependency' all passed</span>
  <span class="comment"># By default the runner will lookup for specs in the same file, and</span>
  <span class="comment"># raise an issue if the spec can't be found.</span>
- dependsOn <span class="string"><span class="string_begin">'</span>dependency<span class="string_end">'</span></span>
+ dependsOn <span class="string">'dependency'</span>
 
- it <span class="string"><span class="string_begin">'</span>will be marked as skipped<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+ it <span class="string">'will be marked as skipped'</span>, -&gt;
    <span class="comment"># ...</span></code></pre>
 <p>This feature allow to fail fast when lower level specs fails such as with Models &gt; Controllers &gt; Views. If models specs fails the controllers and views specs aren&#39;t run.</p>
 </li>
 <li><p>Cascading specs: Prevent deeper specs from being executed if any of the specs in the parent level fails:</p>
-<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>Top level specs<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- it <span class="function">-></span> fail<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+<pre><code class="lang-coffeescript">describe <span class="string">'Top level specs'</span>, -&gt;
+ it -&gt; fail()
 
- context <span class="string"><span class="string_begin">'</span>deeper specs running whatever the results of top level<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+ context <span class="string">'deeper specs running whatever the results of top level'</span>, -&gt;
    <span class="comment"># ...</span>
 
- whenPass <span class="function">-></span>
-   context <span class="string"><span class="string_begin">'</span>deeper specs that will run only if top level is green<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+ whenPass -&gt;
+   context <span class="string">'deeper specs that will run only if top level is green'</span>, -&gt;
      <span class="comment"># ...</span></code></pre>
 <p>This feature allow to fail fast in <em>scenario</em> specs. Each nested describe block is a new branch of the testing process. And each branch&#39;s steps are only tested if the previous step was resolved with a success. As in:</p>
-<pre><code class="lang-coffeescript">context <span class="string"><span class="string_begin">'</span>when clicking on the submit button<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- given <span class="string"><span class="string_begin">'</span>results<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="property">data<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>value<span class="string_end">'</span></span>
- given <span class="string"><span class="string_begin">'</span>formURL<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="string"><span class="string_begin">'</span>/my/api/url<span class="string_end">'</span></span>
- before <span class="string"><span class="string_begin">'</span>each<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-   spyOn<span class="group"><span class="group_begin">(</span><span class="punctuation">$</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>ajax<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andCallFake <span class="group"><span class="group_begin">(</span>url<span class="punctuation">,</span> opts<span class="group_end">)</span></span> <span class="function">=></span> opts<span class="punctuation">.</span>success<span class="operators">?</span> <span class="property">@results</span>
-   spyOn<span class="group"><span class="group_begin">(</span><span class="property">@formHandler</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>handleResults<span class="string_end">'</span></span><span class="group_end">)</span></span>
-   <span class="property">@button</span><span class="punctuation">.</span>click<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+<pre><code class="lang-coffeescript">context <span class="string">'when clicking on the submit button'</span>, -&gt;
+ given <span class="string">'results'</span>, -&gt; data: <span class="string">'value'</span>
+ given <span class="string">'formURL'</span>, -&gt; <span class="string">'/my/api/url'</span>
+ before <span class="string">'each'</span>, -&gt;
+   spyOn($, <span class="string">'ajax'</span>).andCallFake (url, opts) =&gt; opts.success? <span class="property">@results</span>
+   spyOn(<span class="property">@formHandler</span>, <span class="string">'handleResults'</span>)
+   <span class="property">@button</span>.click()
 
- it <span class="string"><span class="string_begin">'</span>should have performed an ajax request<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-   <span class="punctuation">$</span><span class="punctuation">.</span>ajax<span class="punctuation">.</span>should haveBeenCalled<span class="punctuation">.</span><span class="reserved">with</span> <span class="property">@formURL</span>
+ it <span class="string">'should have performed an ajax request'</span>, -&gt;
+   $.ajax.should haveBeenCalled.<span class="reserved">with</span> <span class="property">@formURL</span>
 
- it <span class="string"><span class="string_begin">'</span>should have registered the results handler<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-   <span class="property">@formHandler</span><span class="punctuation">.</span>handleResults<span class="punctuation">.</span>should haveBeenCalled
+ it <span class="string">'should have registered the results handler'</span>, -&gt;
+   <span class="property">@formHandler</span>.handleResults.should haveBeenCalled
 
- whenPass <span class="function">-></span>
-   context <span class="string"><span class="string_begin">'</span>after having received the request response<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-     it <span class="string"><span class="string_begin">'</span>should display the results on the page<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+ whenPass -&gt;
+   context <span class="string">'after having received the request response'</span>, -&gt;
+     it <span class="string">'should display the results on the page'</span>, -&gt;
        <span class="comment"># ...</span></code></pre>
 </li>
 <li><p>Implicit subjects: It&#39;s possible to express expectations without specifying the subject explicitely in the expectation block. Such as:</p>
-<pre><code class="lang-coffeescript">subject <span class="string"><span class="string_begin">'</span>namedSubject<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="hash"><span class="hash_begin">{</span><span class="property">elements<span class='punctuation'>:</span></span> <span class="punctuation">[</span><span class="number">0</span><span class="punctuation">,</span><span class="number">1</span><span class="punctuation">,</span><span class="number">2</span><span class="punctuation">]</span><span class="hash_end">}</span></span>
+<pre><code class="lang-coffeescript">subject <span class="string">'namedSubject'</span>, -&gt; {elements: [<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]}
 
-it <span class="function">-></span> should have <span class="number">2</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>elements<span class="string_end">'</span></span>
-its <span class="string"><span class="string_begin">'</span>elements<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> shouldnt be <span class="string"><span class="string_begin">'</span>empty<span class="string_end">'</span></span>
+it -&gt; should have <span class="number">2</span>, <span class="string">'elements'</span>
+its <span class="string">'elements'</span>, -&gt; shouldnt be <span class="string">'empty'</span>
 
-it <span class="string"><span class="string_begin">'</span>should be accessible through the provided name<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- <span class="property">@namedSubject</span><span class="punctuation">.</span>should have <span class="number">2</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>elements<span class="string_end">'</span></span>
+it <span class="string">'should be accessible through the provided name'</span>, -&gt;
+ <span class="property">@namedSubject</span>.should have <span class="number">2</span>, <span class="string">'elements'</span>
 
-it <span class="string"><span class="string_begin">'</span>should be accessible through subject<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- <span class="property">@subject</span><span class="punctuation">.</span>should have <span class="number">2</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>elements<span class="string_end">'</span></span></code></pre>
+it <span class="string">'should be accessible through subject'</span>, -&gt;
+ <span class="property">@subject</span>.should have <span class="number">2</span>, <span class="string">'elements'</span></code></pre>
 </li>
 <li><p>Smart describe:</p>
 <ul>
@@ -62,97 +62,97 @@ it <span class="string"><span class="string_begin">'</span>should be accessible 
 <li>When a string starting with <code>.</code> is passed as the first argument, it defines the subject with the results of calling the corresponding class method.</li>
 <li>When a string starting with <code>::</code> is passed as the first argument, it defines the subject with the results of calling the corresponding instance method.</li>
 </ul>
-<pre><code class="lang-coffeescript">describe <span class="constant">AClass</span><span class="punctuation">,</span> <span class="function">-></span>
- withArguments a<span class="punctuation">,</span> b<span class="punctuation">,</span> c
+<pre><code class="lang-coffeescript">describe AClass, -&gt;
+ withArguments a, b, c
 
  <span class="comment"># subject here is the class constructor function</span>
- it <span class="function">-></span> should exist
+ it -&gt; should exist
 
- whenPass <span class="function">-></span>
-   describe <span class="string"><span class="string_begin">'</span>.someClassMethod<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-     context <span class="string"><span class="string_begin">'</span>called with some parameters<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+ whenPass -&gt;
+   describe <span class="string">'.someClassMethod'</span>, -&gt;
+     context <span class="string">'called with some parameters'</span>, -&gt;
        <span class="comment"># subject is now the result</span>
        <span class="comment"># of calling AClass.someMethod(10)</span>
-       itsReturn <span class="property">with<span class='punctuation'>:</span></span> <span class="punctuation">[</span><span class="number">10</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="function">-></span> should equal <span class="number">20</span>
+       itsReturn <span class="reserved">with</span>: [<span class="number">10</span>], -&gt; should equal <span class="number">20</span>
 
    <span class="comment"># Automatically create an instance with</span>
    <span class="comment"># the provided parameters as subject</span>
-   itsInstance <span class="function">-></span> should exist
+   itsInstance -&gt; should exist
 
-   whenPass <span class="function">-></span>
-     describe <span class="string"><span class="string_begin">'</span>::someInstanceMethod<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-       context <span class="string"><span class="string_begin">'</span>called with some parameters<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+   whenPass -&gt;
+     describe <span class="string">'::someInstanceMethod'</span>, -&gt;
+       context <span class="string">'called with some parameters'</span>, -&gt;
          <span class="comment"># subject is now the result</span>
          <span class="comment"># of calling new Aclass(a,b,c).someInstanceMethod('foo')</span>
-         itsReturn <span class="property">with<span class='punctuation'>:</span></span> <span class="punctuation">[</span><span class="string"><span class="string_begin">'</span>foo<span class="string_end">'</span></span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="function">-></span> should equal <span class="string"><span class="string_begin">'</span>oof<span class="string_end">'</span></span></code></pre>
+         itsReturn <span class="reserved">with</span>: [<span class="string">'foo'</span>], -&gt; should equal <span class="string">'oof'</span></code></pre>
 <p>The <code>context</code> method is just an alias of the <code>describe</code> method used to make explicit that the block describe a specific context and not the subject.</p>
 </li>
 <li><p>Built-in spies and mocks (jasmine style):</p>
-<pre><code class="lang-coffeescript">before <span class="function">-></span>
+<pre><code class="lang-coffeescript">before -&gt;
  <span class="comment"># Intercepts the returned value of the spied method call and passed</span>
  <span class="comment"># it to the provided method</span>
- spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andCallThrough <span class="group"><span class="group_begin">(</span>result<span class="group_end">)</span></span> <span class="function">-></span> result
+ spy = spyOn(object, <span class="string">'method'</span>).andCallThrough (result) -&gt; result
 
  <span class="comment"># Mock the call to the method with another one.</span>
- spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andCallFake <span class="function">-></span>
+ spy = spyOn(object, <span class="string">'method'</span>).andCallFake -&gt;
 
  <span class="comment"># Mock the call to the method by returning the given value</span>
- spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andReturns<span class="group"><span class="group_begin">(</span>value<span class="group_end">)</span></span></code></pre>
+ spy = spyOn(object, <span class="string">'method'</span>).andReturns(value)</code></pre>
 </li>
 <li><p>Built-in promise based asynchronous specs, setup and teardown:</p>
-<pre><code class="lang-coffeescript">before <span class="group"><span class="group_begin">(</span>async<span class="group_end">)</span></span> <span class="function">-></span>
- async<span class="punctuation">.</span>rejectAfter <span class="number">1000</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>timeout message<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">before (async) -&gt;
+ async.rejectAfter <span class="number">1000</span>, <span class="string">'timeout message'</span>
 
- runAsyncSetup <span class="function">-></span>
-   async<span class="punctuation">.</span>resolve<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+ runAsyncSetup -&gt;
+   async.resolve()
 
-after <span class="group"><span class="group_begin">(</span>async<span class="group_end">)</span></span> <span class="function">-></span>
- async<span class="punctuation">.</span>rejectAfter <span class="number">1000</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>timeout message<span class="string_end">'</span></span>
+after (async) -&gt;
+ async.rejectAfter <span class="number">1000</span>, <span class="string">'timeout message'</span>
 
- runAsyncTeardown <span class="function">-></span>
-   async<span class="punctuation">.</span>resolve<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+ runAsyncTeardown -&gt;
+   async.resolve()
 
-it <span class="string"><span class="string_begin">'</span>should run asynchronous specs<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>async<span class="group_end">)</span></span> <span class="function">-></span>
- async<span class="punctuation">.</span>rejectAfter <span class="number">1000</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>timeout message<span class="string_end">'</span></span>
+it <span class="string">'should run asynchronous specs'</span>, (async) -&gt;
+ async.rejectAfter <span class="number">1000</span>, <span class="string">'timeout message'</span>
 
- runAsyncFunction <span class="function">-></span>
+ runAsyncFunction -&gt;
    <span class="comment"># expectations here</span>
-   async<span class="punctuation">.</span>resolve<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span></code></pre>
+   async.resolve()</code></pre>
 <p>Every it block defining an argument will receive a deferred promise to resolve. The promise define automatically a timeout of 5s but can be changed with <code>rejectAfter</code>. If the promise passed to the block is rejected, either by a timout or a call to <code>async.reject</code>, the examples wil be flagged as errored.</p>
 </li>
 <li><p>Matcher based spec description:</p>
-<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>an array<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- it <span class="function">-></span> should have <span class="number">2</span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>elements<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">describe <span class="string">'an array'</span>, -&gt;
+ it -&gt; should have <span class="number">2</span>, <span class="string">'elements'</span>
  <span class="comment"># 'an array should have 2 elements'</span></code></pre>
 <p>When <code>should</code> is called the description of the expectation is retrieved from the passed-in matcher.</p>
 </li>
 <li><p><code>Object.prototype</code> decoration (HERESY!):</p>
-<pre><code class="lang-coffeescript">it <span class="string"><span class="string_begin">'</span>should do something<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- <span class="property">@subject</span><span class="punctuation">.</span>should equal <span class="number">10</span>
- <span class="string"><span class="string_begin">'</span>string<span class="string_end">'</span></span><span class="punctuation">.</span>shouldnt match <span class="regexp">/foo/</span></code></pre>
+<pre><code class="lang-coffeescript">it <span class="string">'should do something'</span>, -&gt;
+ <span class="property">@subject</span>.should equal <span class="number">10</span>
+ <span class="string">'string'</span>.shouldnt match <span class="regexp">/foo/</span></code></pre>
 </li>
 <li><p>Native objects factory:</p>
-<pre><code class="lang-coffeescript">given <span class="string"><span class="string_begin">'</span>someObject<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  create <span class="string"><span class="string_begin">'</span>myFactory<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>trait1<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>trait2<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">property<span class='punctuation'>:</span></span> value</code></pre>
+<pre><code class="lang-coffeescript">given <span class="string">'someObject'</span>, -&gt;
+  create <span class="string">'myFactory'</span>, <span class="string">'trait1'</span>, <span class="string">'trait2'</span>, property: value</code></pre>
 <p>The factory being defined with:</p>
-<pre><code class="lang-coffeescript">factory <span class="string"><span class="string_begin">'</span>myFactory<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
- set <span class="string"><span class="string_begin">'</span>property<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="string"><span class="string_begin">'</span>value<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">factory <span class="string">'myFactory'</span>, -&gt;
+ set <span class="string">'property'</span>, -&gt; <span class="string">'value'</span>
 
- trait <span class="string"><span class="string_begin">'</span>trait<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-   set <span class="string"><span class="string_begin">'</span>otherProperty<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>other value<span class="string_end">'</span></span></code></pre>
+ trait <span class="string">'trait'</span>, -&gt;
+   set <span class="string">'otherProperty'</span>, <span class="string">'other value'</span></code></pre>
 </li>
 <li><p>Native fixtures</p>
-<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>a spec with fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-fixture <span class="string"><span class="string_begin">'</span>fixture.json<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">describe <span class="string">'a spec with fixture'</span>, -&gt;
+fixture <span class="string">'fixture.json'</span>
 
-it <span class="string"><span class="string_begin">'</span>should match the fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  <span class="property">@subject</span><span class="punctuation">.</span>should equal <span class="property">@fixture</span>
+it <span class="string">'should match the fixture'</span>, -&gt;
+  <span class="property">@subject</span>.should equal <span class="property">@fixture</span>
 
-describe <span class="string"><span class="string_begin">'</span>a spec with a named fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-fixture <span class="string"><span class="string_begin">'</span>fixture.json<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">as<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>myFixture<span class="string_end">'</span></span>
+describe <span class="string">'a spec with a named fixture'</span>, -&gt;
+fixture <span class="string">'fixture.json'</span>, as: <span class="string">'myFixture'</span>
 
-it <span class="string"><span class="string_begin">'</span>should match the fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  <span class="property">@subject</span><span class="punctuation">.</span>should equal <span class="property">@myFixture</span></code></pre>
+it <span class="string">'should match the fixture'</span>, -&gt;
+  <span class="property">@subject</span>.should equal <span class="property">@myFixture</span></code></pre>
 <p>Fixtures are defined as an asynchronous before.</p>
 <p>According to the file extension the <code>fixture</code> helper will perform differently:</p>
 <ul>
@@ -173,13 +173,13 @@ form
     /paragraph\s+(content)/</code></pre>
 <p>Writing this in a file and loading it through the <code>fixture</code> function will create a <code>DomExpression</code> object
 that can be passed to the <code>match</code> and <code>contains</code> matchers:</p>
-<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>a test with a dom fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-fixture <span class="string"><span class="string_begin">'</span>my_dom_expression.dom<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">as<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>myExpression<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">describe <span class="string">'a test with a dom fixture'</span>, -&gt;
+fixture <span class="string">'my_dom_expression.dom'</span>, as: <span class="string">'myExpression'</span>
 
-subject <span class="function">-></span> <span class="global">document</span><span class="punctuation">.</span>getElementById <span class="string"><span class="string_begin">'</span>container<span class="string_end">'</span></span>
+subject -&gt; document.getElementById <span class="string">'container'</span>
 
-it <span class="function">-></span> should match <span class="property">@myExpression</span>
-it <span class="function">-></span> shouldnt contains <span class="property">@myExpression</span></code></pre>
+it -&gt; should match <span class="property">@myExpression</span>
+it -&gt; shouldnt contains <span class="property">@myExpression</span></code></pre>
 </li>
 <li><p><code>xdescribe</code>, <code>xcontext</code>, <code>xit</code>, <code>fail</code>, <code>skip</code> and <code>pending</code> methods</p>
 <ul>
@@ -195,11 +195,11 @@ it <span class="function">-></span> shouldnt contains <span class="property">@my
 <li><code>only</code> : when at leat one test was flagged using the <code>only</code> function, only these tests will be run.</li>
 <li><code>except</code>: all tests flagged using the <code>except</code> function will not be executed, unlike pending and skipped examples the inclusive aren&#39;t reported in the final results.</li>
 </ul>
-<pre><code class="lang-coffeescript">only describe <span class="string"><span class="string_begin">'</span>a test suite<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="comment"># exclusive test suite</span>
-only it <span class="string"><span class="string_begin">'</span>should do something<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="comment"># exclusive test</span>
+<pre><code class="lang-coffeescript">only describe <span class="string">'a test suite'</span>, -&gt; <span class="comment"># exclusive test suite</span>
+only it <span class="string">'should do something'</span>, -&gt; <span class="comment"># exclusive test</span>
 
-except describe <span class="string"><span class="string_begin">'</span>a test suite<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="comment"># inclusive test suite</span>
-except it <span class="string"><span class="string_begin">'</span>should not do something<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="comment"># inclusive test</span></code></pre>
+except describe <span class="string">'a test suite'</span>, -&gt; <span class="comment"># inclusive test suite</span>
+except it <span class="string">'should not do something'</span>, -&gt; <span class="comment"># inclusive test</span></code></pre>
 </li>
 </ol>
 </div><script src="js/caniuse.js" type="text/javascript"></script></body></html>

@@ -74,187 +74,23 @@ a:hover {
   color: #bbb;
   margin-right: 16px;
 }
-aside {
-  background: rgba(255,150,20,0.2);
-  border: 1px solid rgba(255,150,20,0.4);
-  padding: 8px 8px 8px 38px;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  position: relative;
-}
-aside p:first-child {
-  margin-top: 0;
-}
-aside p:last-child {
-  margin-bottom: 0;
-}
-aside:before {
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  display: inline-block;
-  content: "\f0eb";
-  font-family: FontAwesome;
-  color: rgba(255,150,20,0.5);
-  font-size: 38px;
-}
-.table-wrapper {
-  position: relative;
-}
-.table-wrapper .table-controls {
-  position: absolute;
-  background: #efefef;
-  border: 1px solid #e4e4e4;
-  border-left: none;
-  top: 0;
-  left: 100%;
-  padding: 4px;
-  border-radius: 0 4px 4px 0;
-  -webkit-border-radius: 0 4px 4px 0;
-  -moz-border-radius: 0 4px 4px 0;
-  -o-border-radius: 0 4px 4px 0;
-  transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
-  -webkit-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
-  -moz-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
-  -o-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
-}
-.table-wrapper .table-controls button {
-  background: #f8f8f8;
-  border: 1px dashed #e4e4e4;
-  position: relative;
-  display: block;
-  width: 25px;
-  height: 25px;
-  overflow: hidden;
-  cursor: pointer;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-}
-.table-wrapper .table-controls button:focus {
-  outline: none;
-}
-.table-wrapper .table-controls button::-moz-focus-inner {
-  border: none;
-}
-.table-wrapper .table-controls button:hover {
-  background: #fff;
-}
-.table-wrapper .table-controls button i[class^="icon-"] {
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 4px;
-  left: 0px;
-}
-.table-wrapper .table-controls button.expand i {
-  transition: margin-top 0.2s ease-in;
-  -webkit-transition: margin-top 0.2s ease-in;
-  -moz-transition: margin-top 0.2s ease-in;
-  -o-transition: margin-top 0.2s ease-in;
-}
-.table-wrapper .table-controls button.expand .icon-collapse {
-  margin-top: 0px;
-}
-.table-wrapper .table-controls button.expand .icon-collapse-top {
-  margin-top: -24px;
-}
-.table-wrapper .table-controls button.expand.expanded .icon-collapse {
-  margin-top: 24px;
-}
-.table-wrapper .table-controls button.expand.expanded .icon-collapse-top {
-  margin-top: 0px;
-}
 table {
   border: 1px solid #e4e4e4;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -o-border-radius: 3px;
-  width: 600px;
-  margin-top: 16px;
-}
-table tr {
-  background: #fff;
-  transition: background 1s ease-out;
-  -webkit-transition: background 1s ease-out;
-  -moz-transition: background 1s ease-out;
-  -o-transition: background 1s ease-out;
-}
-table tr:hover {
-  transition: background 0.2s ease-in;
-  -webkit-transition: background 0.2s ease-in;
-  -moz-transition: background 0.2s ease-in;
-  -o-transition: background 0.2s ease-in;
-  background: #fafafa;
-}
-table tr.no-padding td {
-  padding: 0px;
-  cursor: pointer;
-}
-table tr.no-padding td > div {
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  transition: all 0.3s ease-in;
-  -webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  padding: 3px 8px;
-}
-table tr.no-padding td:last-child div {
-  padding: 3px 40px 3px 8px;
-}
-table tr.no-padding td:last-child div.ellipsis:after {
-  content: '•••';
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  font-family: monospace;
-  background: #efefef;
-  border: 1px solid #e4e4e4;
-  padding: 2px;
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -o-border-radius: 2px;
-  font-size: 10px;
-  line-height: 12px;
-  opacity: 1;
-  -webkit-opacity: 1;
-  -moz-opacity: 1;
-  -o-opacity: 1;
-  transition: all 0.2s ease-out;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-}
-table tr.open td:last-child div.ellipsis:after {
-  opacity: 0;
-  -webkit-opacity: 0;
-  -moz-opacity: 0;
-  -o-opacity: 0;
 }
 table td {
   border-bottom: 1px solid #e4e4e4;
   vertical-align: top;
   padding: 8px;
-  line-height: 1.6em;
 }
-table td code {
-  display: inline-block;
-  vertical-align: middle;
+table td {
+  line-height: 1.6em;
 }
 table td:first-child {
   text-align: right;
-}
-table td:first-child code {
-  background: rgba(255,150,20,0.2);
-  border: 1px solid rgba(255,150,20,0.4);
 }
 table tr:last-child td {
   border: none;
@@ -381,6 +217,10 @@ h4 {
   -webkit-border-radius: 0 0 0 4px;
   -moz-border-radius: 0 0 0 4px;
   -o-border-radius: 0 0 0 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .code .toggle span {
   padding: 4px 8px;
@@ -446,6 +286,10 @@ pre {
   background: dark-blue;
   overflow: auto;
   margin: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 pre code,
 pre ol {
@@ -460,14 +304,17 @@ pre code {
   display: block;
 }
 pre ol {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  -o-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   padding: 8px;
   margin: 0;
   float: left;
   top: 0;
   left: 0;
   border: 0;
-  background: #efefef;
-  border-right: 1px solid #e4e4e4;
+  background: #e4e4e4;
   height: 100%;
 }
 pre li {
