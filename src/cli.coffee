@@ -9,42 +9,73 @@ walk = require 'walkdir'
 util = require 'util'
 jsdom = require 'jsdom'
 
+colorize= (str, color, options) ->
+  if str? and not options.noColors and str?[color] then str[color] else str
+
 requireFile = (file, context) ->
   try
     require file
   catch err
     console.log file, err
 
+exists = fs.exists or path.exists
+
 loadSpectacular = (options) ->
   Q.fcall ->
     filename = path.resolve __dirname, "spectacular.js"
     src = fs.readFileSync(filename).toString()
+    if options.verbose
+      console.log "  #{colorize 'load spectacular', 'grey', options} #{filename}"
     vm.runInThisContext src, filename
 
     spectacular.env = new spectacular.Environment options
     spectacular.env.globalize()
 
-loadMatchers = (options) ->
+handleEmitter = (emitter, defer) ->
+  emitter.on 'end', ->
+    defer.resolve()
+  emitter.on 'error', (err) ->
+    defer.reject(err)
+  emitter.on 'fail', (err) ->
+    defer.reject(err)
+
+loadMatchers = (options) -> ->
   defer = Q.defer()
 
   if options.noMatchers
     defer.resolve()
   else
-    emitter = walk options.matchersRoot
-    emitter.on 'file', (path, stat) -> requireFile path
-    emitter.on 'end', -> defer.resolve()
+    exists options.matchersRoot, (exists) ->
+      if exists
+        emitter = walk options.matchersRoot
+        emitter.on 'file', (path, stat) ->
+          if options.verbose
+            console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
+          requireFile path
+
+        handleEmitter emitter, defer
+      else
+        defer.resolve()
 
   defer.promise
 
-loadHelpers = (options) ->
+loadHelpers = (options) -> ->
   defer = Q.defer()
 
   if options.noHelpers
     defer.resolve()
   else
-    emitter = walk options.helpersRoot
-    emitter.on 'file', (path, stat) -> requireFile path
-    emitter.on 'end', -> defer.resolve()
+     exists options.helpersRoot, (exists) ->
+      if exists
+        emitter = walk options.helpersRoot
+        emitter.on 'file', (path, stat) ->
+          if options.verbose
+            console.log "  #{colorize 'load helper', 'grey', options} #{path}"
+          requireFile path
+
+        handleEmitter emitter, defer
+      else
+        defer.resolve()
 
   defer.promise
 
@@ -63,7 +94,10 @@ globPaths= (globs) -> ->
     paths
 
 loadSpecs = (options) -> (paths) ->
-  console.log "Load specs: #{paths}\n" if options.verbose
+  if options.verbose
+    for p in paths
+      console.log "  #{colorize 'load spec', 'grey', options} #{p}"
+
   require path.resolve('.', p) for p in paths
   paths
 
@@ -100,6 +134,8 @@ exports.run = (options) ->
   loadStartedAt = null
   loadEndedAt = null
 
+  console.log colorize('  options','grey',options), options if options.verbose
+
   loadSpectacular(options)
   .then(loadDOM)
   .then (window) ->
@@ -131,5 +167,8 @@ exports.run = (options) ->
       console.log reporter.errorBadge "Spectacular failed"
       reporter.formatError(reason).then (msg) ->
         console.log msg
+        process.exit 1
     else
       console.log reason.stack
+      process.exit 1
+

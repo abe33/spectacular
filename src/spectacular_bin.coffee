@@ -2,6 +2,7 @@ fs = require 'fs'
 vm = require 'vm'
 path = require 'path'
 exists = fs.exists or path.exists
+require 'colors'
 
 SPECTACULAR = path.resolve __dirname, '..'
 ROOT = path.resolve '.'
@@ -11,6 +12,8 @@ ROOT = path.resolve '.'
 existsSync = fs.existsSync or path.existsSync
 
 SPECTACULAR_CONFIG = path.resolve ROOT, '.spectacular'
+
+args.push '-h' if args.length is 0
 
 if existsSync SPECTACULAR_CONFIG
   args = fs.readFileSync(SPECTACULAR_CONFIG).toString()
@@ -32,6 +35,7 @@ options =
   noMatchers: false
   noHelpers: false
   noColors: false
+  cli: true
   server: false
   phantomjs: false
   globs: []
@@ -58,12 +62,47 @@ while args.length
     when '--profile', '-p' then options.profile = true
     when '--server', '-s' then options.server = true
     when '--source' then options.sources.push args.shift()
+    when '--version'
+      options.cli = false
+      console.log require("#{ROOT}/package.json").version
+    when '-h', '--help'
+      options.cli = false
+      console.log '''
+
+# Spectacular Help
+
+  Usage:
+
+    spectacular [options] [globs...]
+
+  Options:
+
+    -c, --coffee         Add support for CoffeeScript files.
+    -d, --documentation  Enable the documentation format in the output.
+    -h, --help           Display this message.
+    -m, --matchers PATH  Specify the path where project matchers can be found.
+    -p, --profile        Add a report with the 10 slowest examples.
+    -s, --server         Starts a server.
+    -t, --trace          Enable stack trace report for failures.
+    -v, --verbose        Enable verbose output.
+    --fixtures PATH      Specify the path where project fixtures can be found.
+    --helpers PATH       Specify the path where project helpers can be found.
+    --long-trace         Display the full stack trace.
+    --no-colors          Remove coloring from the output.
+    --no-helpers         Disable the loading of project helpers.
+    --no-matchers        Disable the loading of project matchers.
+    --no-trace           Remove stack trace from failures reports.
+    --phantomjs          Starts a server and run the test on phantomjs.
+    --source GLOB        Source files for the server.
+    --version            Display the Spectacular version.
+
+'''
+
     when '--phantomjs'
+      options.cli = false
       options.server = true
       options.phantomjs = true
     else options.globs.push option
-
-console.log 'options:', options if options.verbose
 
 #### Lookup for the spectacular lib.
 #
@@ -71,10 +110,14 @@ console.log 'options:', options if options.verbose
 # instead of the global one.
 exists path.resolve(ROOT, 'node_modules/spectacular'), (exist) ->
   if exist
-    spectacular = require path.resolve(ROOT,
-                                       'node_modules/spectacular/lib/index')
+    spectacularPath = path.resolve(ROOT, 'node_modules/spectacular')
   else
-    spectacular = require path.resolve(SPECTACULAR,
-                                       'lib/index')
+    spectacularPath = SPECTACULAR
 
-  spectacular.run(options).then (status) -> process.exit status
+  if options.cli
+    spectacular = require("#{spectacularPath}/lib/cli")
+  else if options.server
+    spectacular = require("#{spectacularPath}/lib/server")
+
+  if spectacular?
+    spectacular.run(options).then (status) -> process.exit status

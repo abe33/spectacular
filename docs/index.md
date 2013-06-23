@@ -408,11 +408,11 @@ Matchers are defined with the `spectacular.matcher` function. It generates an ob
 
 ```coffeescript
 spectacular.matcher 'returnSomething', ->
-  match (actual, notText) ->
-    @description = "should#{notText} return something"
-    @message = "Expected #{actual} to return something"
+  match (actual) -> actual() isnt null
 
-    actual() isnt null
+  description -> "return something"
+
+  failureMessageForShould message = "Expected #{@actual} to #{@description}"
 
 # Usage:
 it -> should returnSomething
@@ -427,21 +427,62 @@ You can create parameterizable matcher by calling the `takes` function in the ma
 ```coffeescript
 spectacular.matcher 'parameterizableMatcher', ->
   takes 'value1', 'value2'
-  match ->
-    @description = 'parameterizableMatcher description'
-    @message = 'parameterizableMatcher message'
 
-    @value1 and @value2
+  match -> @value1 and @value2
+
+  description -> 'parameterizableMatcher description'
+
+  failureMessageForShould -> 'parameterizableMatcher message'
 
 # Usage:
-it -> should parameterizableMatcher(true, true)
+it -> should parameterizableMatcher(value1, value2)
 ```
 
-The parameters defined with takes are then stored in the matcher instance with the provided names.
+The parameters defined with takes are then stored in the matcher instance with the provided names. The `takes` function accept a slat argument such as `values...`. In that case, the splat must be the sole argument.
+
+<aside>
+  <p>**Note:** Matchers that doesn't takes arguments are created only once and
+  then passed to the expectation, they should never stores anything that may induce false positive in later tests.</p>
+  <p>This is not an issue with parameterizable matchers since an instance is created every time the matcher function is called.</p>
+</aside>
+
+It's possible to run code on the initialization of a matcher:
+
+```coffeescript
+spectacular.matcher 'matcherWithInit', ->
+  init -> # do some setup such creating composed objects
+
+  match (actual) -> @composedObject.match actual
+
+  description -> 'matcher with init description'
+
+  failureMessageForShould -> 'matcher with init message'
+
+# Usage:
+it -> should matcherWithInit(value1, value2)
+```
+
+You can also add chaining methods with the `chain` function:
+
+```coffeescript
+spectacular.matcher 'chainableMatcher', ->
+  takes 'value1'
+
+  chain 'with', (@value2) ->
+
+  match -> @value1 and @value2
+
+  description -> 'chainableMatcher description'
+
+  failureMessageForShould -> 'chainableMatcher message'
+
+# Usage:
+it -> should chainableMatcher(value1).with(value2)
+```
 
 The following matchers are provided by Spectacular:
 
-<table>
+<table cellspacing="0">
 
   <tr>
     <td>`exist`</td>
@@ -473,7 +514,7 @@ The following matchers are provided by Spectacular:
     </td>
   </tr>
   <tr>
-    <td>`have.selector(selector)`</td>
+    <td>`haveSelector(selector)`</td>
     <td>Will test a `Node` or a `NodeList` with the given CSS query.</td>
   </tr>
   <tr>
@@ -519,14 +560,15 @@ Matchers can be asynchronous, in that case they should return a promise instead 
 spectacular.matcher 'asyncMatcher', ->
   timeout 1000
   match (actual, notText) ->
-    @description = 'should match asynchronously'
-    @message = 'Expected to match asynchronously'
 
     promise = new spectacular.Promise
 
     setTimeout (-> promise.resolve actual isnt null), 100
 
     promise
+
+  description -> 'should match asynchronously'
+  failureMessageForShould -> 'Expected to match asynchronously'
 ```
 If the promise is rejected, the example is marked as `errored`.
 
@@ -537,12 +579,11 @@ The function takes a name and a value and will expose it on the global object
 through a `GlobalizableObject`.
 
 ```coffeescript
-spectacular.helper 'environmentMethod', (method) ->
-  cannotBeCalledInsideIt: ->
-    runningSpecs('call inside it')
-    .shouldFailWith /called inside a it block/, ->
-      describe 'foo', ->
-        it -> spectacular.global[method]()
+spectacular.helper 'someHelper', (params...) ->
+  # Your helper's code
+
+# Usage
+someHelper(SomeClass, someOption: 'some value')
 ```
 
 ## Before & After Hooks
@@ -614,12 +655,48 @@ factory 'user', class: User, ->
     set 'bike', -> {model: 'z750', brand: 'Kawasaki'}
 
 user = create 'user', 'with_bike'
+# {id: 12345, name: 'John Doe', bike: {model: 'z750', brand: 'Kawasaki'}}
 ```
 
-  * The `factory` method registers a factory, it takes an option object that set the constructor function to use.
-  * The `createWith` method defines the arguments to pass to the constructor. It can be either a list of values or a function that will return these arguments. In the case a function is passed, the function will be executed in the context of the current example.
-  * The `set` method defines a value to set on the specified property, it can takes either a value or a function. In case of a function is passed, the function will be executed in the context of the instance.
-  * The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.
+Factories can be reopened any time to add traits or new configuration:
+
+```coffeescript
+factory 'user', ->
+  set 'age', 32
+
+user = create 'user'
+# {id: 12345, name: 'John Doe', age: 32}
+```
+
+Factories can also extends another factory with the `extends` option:
+
+```coffeescript
+factory 'admin', extends: 'user', ->
+  set 'roles', -> ['admin']
+
+user = create 'admin'
+# {id: 12345, name: 'John Doe', roles: ['admin']}
+```
+
+Find below more details about the factory functions:
+
+<table cellspacing="0">
+  <tr>
+    <td>`factory`</td>
+    <td>The `factory` method registers a factory, it takes an option object that set the constructor function to use.</td>
+  </tr>
+  <tr>
+    <td>`createWith`</td>
+    <td>The `createWith` method defines the arguments to pass to the constructor. It can be either a list of values or a function that will return these arguments. In the case a function is passed, the function will be executed in the context of the current example. The `createWith` method can be used either in the factory block or in a trait block. When using several trait defining constructor arguments only the last trait will be effective.</td>
+  </tr>
+  <tr>
+    <td>`set`</td>
+    <td>The `set` method defines a value to set on the specified property, it can takes either a value or a function. In case of a function is passed, the function will be executed in the context of the instance.</td>
+  </tr>
+  <tr>
+    <td>`trait`</td>
+    <td>The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.</td>
+</table>
 
 ## Fixtures
 
@@ -669,14 +746,18 @@ It's also possible to test the text content of a node using quote or regex liter
       /article(\s+content)*/
 ```
 
-These expressions, when parsed, can be passed to the `match` or `contains` matchers.
+These expressions, when parsed, can be passed to the `match` or `contains` matchers and can be used with both nodes and nodes lists.
 
 ```coffeescript
 specify 'the page', ->
   document.should contains @domExpression
 
 specify 'the node', ->
-  node.should match @domExpression
+  # on node
+  document.querySelector('div').should match @domExpression
+
+  # on nodes list
+  document.querySelectorAll('div').should match @domExpression
 ```
 
 ## Shared Example
@@ -684,7 +765,7 @@ specify 'the node', ->
 Shared example are groups of tests that can be used to test similar functionalities accross several classes. For instance the following shared examples test that an object behave like a collection as defined by the `spectacular.HasCollection` mixin:
 
 ```coffeescript
-sharedExample 'a collection like object', (options) ->
+sharedExample 'a collection', (options) ->
   {singular, plural} = options
   capitalizedSingular = spectacular.utils.capitalize singular
 
@@ -725,7 +806,7 @@ The shared example can then be called with either the `itBehavesLike` or `itShou
 describe ClassWithCollection, ->
   subject -> new ClassWithCollection
 
-  itBehavesLike 'a collection like object', {
+  itBehavesLike 'a collection', {
     singular: 'child'
     plural: 'children'
   }
@@ -742,7 +823,7 @@ For instance, the `sharedExample` is also available through `shared_example`.
 
 You can find below a table with all the snake case equivalent:
 
-<table>
+<table cellspacing="0">
     <tr><td>`after`</td><td>No differences</td></tr>
     <tr><td>`before`</td><td>No differences</td></tr>
     <tr><td>`contains`</td><td>No differences</td></tr>

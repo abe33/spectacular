@@ -9,6 +9,14 @@ Function::include = (mixins...) ->
 
   this
 
+Function::extend = (mixins...) ->
+  excluded = ['extended']
+  for mixin in mixins
+    @[k] = v for k,v of mixin when k not in excluded
+    mixin.extended? this
+
+  this
+
 Function::signature = ->
   re = ///
     ^function

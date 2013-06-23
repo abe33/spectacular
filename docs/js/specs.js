@@ -4,28 +4,64 @@
     __slice = [].slice;
 
   spectacular.matcher('sample', function() {
-    return match(function() {
-      this.description = 'sample description';
-      this.message = 'sample message';
+    description(function() {
+      return 'sample description';
+    });
+    match(function() {
       return true;
+    });
+    return failureMessageForShould(function() {
+      return 'sample message';
     });
   });
 
   spectacular.matcher('parameterizableMatcher', function() {
     takes('value1', 'value2');
-    return match(function() {
-      this.description = 'parameterizableMatcher description';
-      this.message = 'parameterizableMatcher message';
+    description(function() {
+      return 'parameterizableMatcher description';
+    });
+    match(function() {
       return this.value1 && this.value2;
+    });
+    return failureMessageForShould(function() {
+      return 'parameterizableMatcher message';
+    });
+  });
+
+  spectacular.matcher('chainableMatcher', function() {
+    match(function() {
+      return this.value;
+    });
+    description(function() {
+      return 'chain';
+    });
+    return chain('chain', function(value) {
+      this.value = value;
+    });
+  });
+
+  spectacular.matcher('initializableMatcher', function() {
+    init(function() {
+      return this.value = true;
+    });
+    match(function() {
+      return this.value;
+    });
+    return description(function() {
+      return 'initalized';
     });
   });
 
   spectacular.matcher('timeout', function() {
     timeout(100);
-    return match(function() {
-      this.description = 'timing out promise based matcher';
-      this.message = 'matcher message';
+    description(function() {
+      return 'timing out promise based matcher';
+    });
+    match(function() {
       return new spectacular.Promise;
+    });
+    return failureMessageForShould(function() {
+      return 'matcher message';
     });
   });
 
@@ -488,32 +524,47 @@
     });
   });
 
-  describe(sample, function() {
-    it(function() {
-      return should(exist);
-    });
-    return it(function() {
-      return should(sample);
-    });
-  });
-
-  describe(parameterizableMatcher, function() {
-    it(function() {
-      return should(exist);
-    });
-    return it(function() {
-      return should(parameterizableMatcher(true, true));
-    });
-  });
-
-  runningSpecs('matcher returning timing out promise').shouldStopWith(/can't create matcher foo without a match/, function() {
-    return spectacular.matcher('foo', function() {});
-  });
-
-  runningSpecs('matcher returning timing out promise').shouldFailWith(/1 failure/, function() {
-    return describe(timeout, function() {
+  describe('matcher', function() {
+    describe(sample, function() {
+      it(function() {
+        return should(exist);
+      });
       return it(function() {
-        return should(timeout);
+        return should(sample);
+      });
+    });
+    describe(parameterizableMatcher, function() {
+      it(function() {
+        return should(exist);
+      });
+      return it(function() {
+        return should(parameterizableMatcher(true, true));
+      });
+    });
+    describe(chainableMatcher, function() {
+      it(function() {
+        return should(exist);
+      });
+      return it(function() {
+        return should(chainableMatcher.chain(true));
+      });
+    });
+    describe(initializableMatcher, function() {
+      it(function() {
+        return should(exist);
+      });
+      return it(function() {
+        return should(initializableMatcher);
+      });
+    });
+    runningSpecs('matcher returning timing out promise').shouldStopWith(/can't create matcher foo without a match/, function() {
+      return spectacular.matcher('foo', function() {});
+    });
+    return runningSpecs('matcher returning timing out promise').shouldFailWith(/1 failure/, function() {
+      return describe(timeout, function() {
+        return it(function() {
+          return should(timeout);
+        });
       });
     });
   });
@@ -1228,6 +1279,21 @@
     });
   });
 
+  factory('dummy', function() {
+    return trait('reopened factory', function() {
+      return set('reopened', true);
+    });
+  });
+
+  factory('dummy2', {
+    "extends": 'dummy'
+  }, function() {
+    createWith('oof', 'rab');
+    return set('baz', function() {
+      return 42;
+    });
+  });
+
   describe(create, function() {
     context('called with nothing', function() {
       return it(function() {
@@ -1237,6 +1303,11 @@
     context('called with inexistant factory', function() {
       return it(function() {
         return should(throwAnError(/missing factory foo/)["with"]('foo'));
+      });
+    });
+    context('called with inexistant trait', function() {
+      return it(function() {
+        return should(throwAnError(/unknown trait foo/)["with"]('dummy', 'foo'));
       });
     });
     context('called with only a factory', function() {
@@ -1276,7 +1347,7 @@
         }));
       });
     });
-    return context('called with a trait', function() {
+    context('called with a trait', function() {
       context('that defines constructor arguments', function() {
         withArguments('dummy', 'with createWith');
         return itsReturn(function() {
@@ -1296,6 +1367,46 @@
         });
       });
     });
+    return context('called with a trait from a trait defined in a reopened factory', function() {
+      withArguments('dummy', 'reopened factory');
+      return itsReturn(function() {
+        return should(equal({
+          property: 'value',
+          args: ['foo', 'bar'],
+          reopened: true
+        }));
+      });
+    });
+  });
+
+  describe(factory, function() {
+    return context('when using the extends option', function() {
+      return context('the created object', function() {
+        subject(function() {
+          return create('dummy2');
+        });
+        it(function() {
+          return should(exist);
+        });
+        return it('inherit from the parent factory', function() {
+          return should(equal({
+            property: 'value',
+            args: ['oof', 'rab'],
+            baz: 42
+          }));
+        });
+      });
+    });
+  });
+
+  runningSpecs('a factory without a class').shouldStopWith(/no class provided/, function() {
+    return factory('foo', function() {});
+  });
+
+  runningSpecs('a factory extending an unexistant factory').shouldStopWith(/parent factory 'bar' can't be found/, function() {
+    return factory('foo', {
+      "extends": 'bar'
+    }, function() {});
   });
 
   describe(fixture, function() {
@@ -1353,11 +1464,11 @@
     context('for an html file', function() {
       fixture('sample.html');
       specify('the dom', function() {
-        return document.querySelector('body').should(have.selector('#section'));
+        return document.querySelector('body').should(haveSelector('#section'));
       });
       return specify('the fixture', function() {
         this.fixture.should(exist);
-        return this.fixture.should(have.selector('article'));
+        return this.fixture.should(haveSelector('article'));
       });
     });
     context('for a dom file', function() {

@@ -1,26 +1,29 @@
 spectacular.matcher 'sample', ->
-  match ->
-    @description = 'sample description'
-    @message = 'sample message'
-
-    true
+  description -> 'sample description'
+  match -> true
+  failureMessageForShould -> 'sample message'
 
 spectacular.matcher 'parameterizableMatcher', ->
   takes 'value1', 'value2'
-  match ->
-    @description = 'parameterizableMatcher description'
-    @message = 'parameterizableMatcher message'
+  description  -> 'parameterizableMatcher description'
+  match -> @value1 and @value2
+  failureMessageForShould -> 'parameterizableMatcher message'
 
-    @value1 and @value2
+spectacular.matcher 'chainableMatcher', ->
+  match -> @value
+  description -> 'chain'
+  chain 'chain', (@value) ->
+
+spectacular.matcher 'initializableMatcher', ->
+  init -> @value = true
+  match -> @value
+  description -> 'initalized'
 
 spectacular.matcher 'timeout', ->
   timeout 100
-  match ->
-    @description = 'timing out promise based matcher'
-    @message = 'matcher message'
-
-    new spectacular.Promise
+  description -> 'timing out promise based matcher'
+  match -> new spectacular.Promise
+  failureMessageForShould -> 'matcher message'
 
 spectacular.matcher 'throwing', ->
-  match ->
-    throw new Error 'foo'
+  match -> throw new Error 'foo'

@@ -36,6 +36,12 @@ blue = light_blue(1)
 magenta = skipped(1)
 yellow = pending(1)
 
+opacity()
+  opacity arguments
+  -webkit-opacity arguments
+  -moz-opacity arguments
+  -o-opacity arguments
+
 transition()
   transition arguments
   -webkit-transition arguments
@@ -72,6 +78,12 @@ text-shadow()
   -webkit-text-shadow arguments
   -moz-text-shadow arguments
   -o-text-shadow arguments
+
+text-overflow()
+  text-overflow arguments
+  -webkit-text-overflow arguments
+  -moz-text-overflow arguments
+  -o-text-overflow arguments
 
 body
   margin 0
@@ -126,22 +138,152 @@ a
       color #bbb
       margin-right 16px
 
+aside
+  background error(0.2)
+  border 1px solid error(0.4)
+  padding 8px 8px 8px 38px
+  border-radius 3px
+  position relative
+
+  p
+    &:first-child
+      margin-top 0
+    &:last-child
+      margin-bottom 0
+
+  &:before
+    position absolute
+    left 8px
+    top 8px
+    display inline-block
+    content "\f0eb"
+    font-family FontAwesome
+    color error(0.5)
+    font-size 38px
+
+.table-wrapper
+  position relative
+
+  .table-controls
+    position absolute
+    background #efefef
+    border 1px solid #e4e4e4
+    border-left none
+    top 0
+    left 100%
+    padding 4px
+    border-radius 0 4px 4px 0
+    transition(top 0.5s cubic-bezier(.59,.96,.78,1))
+
+    button
+      background #f8f8f8
+      border 1px dashed #e4e4e4
+      position relative
+      display block
+      width 25px
+      height 25px
+      overflow hidden
+      cursor pointer
+      border-radius 3px
+
+      &:focus
+        outline none
+
+      &::-moz-focus-inner
+        border none
+
+      &:hover
+        background white
+
+      i[class^="icon-"]
+        display block
+        width 100%
+        height 100%
+        position absolute
+        top 4px
+        left 0px
+
+      &.expand
+        i
+          transition margin-top 0.2s ease-in
+
+        .icon-collapse
+          margin-top 0px
+        .icon-collapse-top
+          margin-top -24px
+
+      &.expand.expanded
+        .icon-collapse
+          margin-top 24px
+        .icon-collapse-top
+          margin-top 0px
 
 
 table
   border 1px solid #e4e4e4
   border-radius 3px
+  width 600px
+  margin-top 16px
+
+  tr
+    background white
+    transition background 1s ease-out
+
+    &:hover
+      transition background 0.2s ease-in
+      background #fafafa
+
+
+  tr.no-padding
+    td
+      padding 0px
+      cursor pointer
+
+      & > div
+        width 100%
+        overflow hidden
+        position relative
+        transition all 0.3s ease-in
+        padding 3px 8px
+
+      &:last-child div
+        padding 3px 40px 3px 8px
+
+        &.ellipsis:after
+          content: '•••'
+          position absolute
+          right 8px
+          top 8px
+          font-family monospace
+          background #efefef
+          border 1px solid #e4e4e4
+          padding 2px
+          border-radius 2px
+          font-size 10px
+          line-height 12px
+          opacity 1
+          transition all 0.2s ease-out
+
+  tr.open td:last-child div.ellipsis:after
+    opacity 0
+
 
   td
     border-bottom 1px solid #e4e4e4
     vertical-align top
     padding 8px
-
-  td
     line-height 1.6em
+
+    code
+      display inline-block
+      vertical-align middle
 
   td:first-child
     text-align right
+
+    code
+      background error(0.2)
+      border 1px solid error(0.4)
 
   tr:last-child td
     border none
@@ -256,7 +398,7 @@ h4
     font-size 10px
     text-transform uppercase
     border-radius 0 0 0 4px
-    box-shadow 0 1px 3px rgba(0,0,0,0.2)
+    // box-shadow 0 1px 3px rgba(0,0,0,0.2)
 
     span
       padding 4px 8px
@@ -313,7 +455,7 @@ pre
   background dark-blue
   overflow auto
   margin 0
-  box-shadow inset 0 1px 3px rgba(0,0,0,0.2)
+  // box-shadow inset 0 1px 3px rgba(0,0,0,0.2)
 
   code
   ol
@@ -328,14 +470,15 @@ pre
     display block
 
   ol
-    box-shadow 0 1px 3px rgba(0, 0, 0, 0.2)
+    // box-shadow 0 1px 3px rgba(0, 0, 0, 0.2)
     padding 8px
     margin 0
     float left
     top 0
     left 0
     border 0
-    background #e4e4e4
+    background #efefef
+    border-right 1px solid #e4e4e4
     height 100%
 
   li

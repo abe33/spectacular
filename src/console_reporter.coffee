@@ -291,7 +291,7 @@ class spectacular.ConsoleReporter
     topSlowest = sortedExamples.reduce ((a,b) -> a + b.duration), 0
     rate = Math.floor(topSlowest / totalDuration * 10000) / 100
 
-    res = "Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
+    res = "  Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
     for example in sortedExamples
       duration = "#{Math.floor(example.duration) / 1000} seconds"
       res += "    #{
@@ -314,8 +314,8 @@ class spectacular.ConsoleReporter
     specsDuration = @formatDuration specsStartedAt, specsEndedAt
 
     res = ''
-    res += "Specs loaded in #{loadDuration}\n" if loadDuration?
-    res += "Finished in #{specsDuration}\n\n"
+    res += "  Specs loaded in #{loadDuration}\n" if loadDuration?
+    res += "  Finished in #{specsDuration}\n\n"
 
   formatCounters: ->
     failures = @failures.length
@@ -329,7 +329,7 @@ class spectacular.ConsoleReporter
   formatResults: (s, f, e, sk, p, a) ->
     toggle = utils.toggle
     he = f + e
-    utils.squeeze("#{@formatCount s, 'success', 'success', toggle he, 'green'},
+    "  " + utils.squeeze("#{@formatCount s, 'success', 'success', toggle he, 'green'},
     #{@formatCount a, 'assertion', 'assertions', toggle he, 'green'},
     #{@formatCount f, 'failure', 'failures', toggle he, 'green', 'red'},
     #{@formatCount e, 'error', 'errors', toggle e, 'green', 'yellow'},

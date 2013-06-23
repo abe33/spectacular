@@ -32,6 +32,24 @@ fixNodeHeight = (nl) ->
   Array::forEach.call nl, (node) ->
     node.style.height = "#{node.clientHeight}px"
 
+class spectacular.SlidingObject
+  constructor: (@target, @container) ->
+    previousOnScroll = window.onscroll
+    doc = document.documentElement
+    body = document.body
+
+    window.onscroll = =>
+      do previousOnScroll if previousOnScroll?
+
+      topMin = @getOffset @container
+      topMax = topMin + @container.clientHeight - @target.clientHeight
+      top = (doc and doc.scrollTop or body and body.scrollTop or 0)
+      top = Math.min(topMax, Math.max(topMin, top + 100)) - topMin
+      @target.style.top = "#{top}px"
+
+  getOffset: (node) ->
+    return node.offsetTop if node.nodeName.toLowerCase() is 'body'
+    node.offsetTop + @getOffset node.parentNode
 
 class spectacular.BrowserStackReporter extends spectacular.StackReporter
   @reports: 0
@@ -91,13 +109,14 @@ class spectacular.BrowserReporter
         <pre></pre>
         <p></p>
       </header>
-      <section id="controls">#{
-        ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
-          "<button class='toggle #{k}'>#{k}</button>"
-        ).join '\n'
-        }
+      <section id="examples">
+        <section id="controls">#{
+          ['success', 'pending', 'errored', 'failure', 'skipped'].map((k) ->
+            "<button class='toggle #{k}'>#{k}</button>"
+          ).join '\n'
+          }
+        </section>
       </section>
-      <section id="examples"></section>
       <footer></footer>
     """
     html = document.querySelector('html')
@@ -115,19 +134,7 @@ class spectacular.BrowserReporter
 
 
     controls = @reporter.querySelector '#controls'
-    previousOnScroll = window.onscroll
-    doc = document.documentElement
-    body = document.body
-
-    window.onscroll = =>
-      do previousOnScroll if previousOnScroll?
-
-      reporterOffset = @reporter.offsetTop
-      topMin = @examplesContainer.offsetTop
-      topMax = topMin + @examplesContainer.clientHeight - controls.clientHeight
-      top = (doc and doc.scrollTop or body and body.scrollTop or 0) - reporterOffset
-      top = Math.min(topMax, Math.max(topMin, top + 100))
-      controls.style.top = "#{top}px"
+    @controlsScroller = new spectacular.SlidingObject controls, @examplesContainer
 
   onEnd: (event) =>
     html = document.querySelector 'html'

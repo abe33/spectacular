@@ -38,11 +38,11 @@ describe fixture, ->
     fixture 'sample.html'
 
     specify 'the dom', ->
-      document.querySelector('body').should have.selector '#section'
+      document.querySelector('body').should haveSelector '#section'
 
     specify 'the fixture', ->
       @fixture.should exist
-      @fixture.should have.selector 'article'
+      @fixture.should haveSelector 'article'
 
   context 'for a dom file', ->
     fixture 'sample.html'

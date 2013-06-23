@@ -20,7 +20,11 @@ spectacular.utils.camelize = (s) ->
 
 spectacular.utils.snakify = (o) ->
   for k,v of o
-    o[utils.underscore k] = v
+    descriptor = Object.getOwnPropertyDescriptor o, k
+    if descriptor?
+      Object.defineProperty o, utils.underscore(k), descriptor
+    else
+      o[utils.underscore k] = v
 
 spectacular.utils.keys = (o) -> k for k of o
 
@@ -45,9 +49,6 @@ spectacular.utils.uniq = (arr) ->
   newArr = []
   newArr.push v for v in arr when v not in newArr
   newArr
-
-spectacular.utils.andOrBut = (bool) ->
-  if bool then 'and' else 'but'
 
 spectacular.utils.escapeDiff = (s) ->
   utils.escape(
@@ -110,6 +111,24 @@ spectacular.utils.ins = (str) ->
 spectacular.utils.del = (str) ->
   utils.TAGS.delStart + str + utils.TAGS.delEnd
 
+spectacular.utils.descOfNode = (actual) ->
+  if actual?
+    if actual.length?
+      utils.inspect Array::map.call actual, (e) -> e.outerHTML
+    else
+      utils.inspect actual.outerHTML
+  else
+    actual
+
+
+# Javascript Diff Algorithm
+# By John Resig (http://ejohn.org/)
+# Modified by Chu Alan "sprite"
+#
+# Released under the MIT license.
+#
+# More Info:
+# http://ejohn.org/projects/javascript-diff-algorithm/
 spectacular.utils.diff = (o, n) ->
   ns = new Object()
   os = new Object()
@@ -286,30 +305,30 @@ spectacular.utils.objectDiff = (left, right, depth=1) ->
           '\n' + ind + p
         s += a.join(',') + "\n#{prevInd}}"
 
-spectacular.utils.compare = (actual, value, matcher, noMessage=false) ->
+spectacular.utils.compare = (actual, value, diff, noMessage=false) ->
   switch typeof value
     when 'object'
       if utils.isArray actual
         unless noMessage
-          matcher.message = "#{matcher.message}\n\n#{utils.objectDiff actual, value}"
+          diff.diff = "#{diff.diff}\n\n#{utils.objectDiff actual, value}"
         return false if actual.length isnt value.length
 
         for v,i in value
-          unless utils.compare actual[i], v, matcher, true
+          unless utils.compare actual[i], v, diff, true
             return false
         return true
       else
         unless noMessage
-          matcher.message = "#{matcher.message}\n\n#{utils.objectDiff actual, value}"
+          diff.diff = "#{diff.diff}\n\n#{utils.objectDiff actual, value}"
         return false if utils.keys(actual).length isnt utils.keys(value).length
 
         for k,v of value
-          unless utils.compare actual[k], v, matcher, true
+          unless utils.compare actual[k], v, diff, true
             return false
         return true
     when 'string'
       unless noMessage
-        matcher.message = "#{matcher.message}\n\n'#{utils.stringDiff actual, value}'"
+        diff.diff = "#{diff.diff}\n\n'#{utils.stringDiff actual, value}'"
       actual is value
     else
       actual is value

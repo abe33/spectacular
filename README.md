@@ -100,6 +100,14 @@ spectacular specs/**/*.spec.js
     <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`.</td>
   </tr>
   <tr>
+    <td>`--phantomjs`</td>
+    <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
+  </tr>
+  <tr>
+    <td>`--source GLOB`</td>
+    <td>When using the server, it allow to add files that matches the patterns as served files in the html runner. You can use this option as many times as you need.</td>
+  </tr>
+  <tr>
     <td>`-m, --matchers PATH`</td>
     <td>Specify the path where project matchers can be found, by default matchers are loaded from `./specs/support/matchers`.</td>
   </tr>

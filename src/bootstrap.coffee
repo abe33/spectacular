@@ -14,3 +14,7 @@ spectacular.global = (->
   return global unless typeof global is 'undefined'
   {}
 )()
+
+spectacular.nextTick = process?.setImmediate or
+                       process?.nextTick or
+                       (callback) -> setTimeout callback, 0

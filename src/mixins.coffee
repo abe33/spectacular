@@ -48,7 +48,7 @@ class spectacular.Globalizable
     @previous[key] = _global[key] if _global[key]?
     self = this
     if typeof value is 'function'
-      value._name = key
+      value._name = key unless value._name?
       if @keepContext
         proxy = -> value.apply self, arguments
         proxy._name = key
@@ -150,28 +150,25 @@ spectacular.HasNestedCollection = (name, options={}) ->
 
   mixin
 
-spectacular.FollowUpProperty = (property) ->
-  capitalizedProperty = utils.capitalize property
-  privateProperty = "own#{capitalizedProperty}"
-  class ConcreteFollowUpProperty
-    @included: (ctor) ->
-      ctor.accessor property, {
-        get: -> @[privateProperty] or @parent?[property]
-        set: (value) -> @[privateProperty] = value
-      }
+class spectacular.AncestorsProperties
+  @followUp: (property) ->
+    capitalizedProperty = utils.capitalize property
+    privateProperty = "own#{capitalizedProperty}"
+    @accessor property, {
+      get: -> @[privateProperty] or @parent?[property]
+      set: (value) -> @[privateProperty] = value
+    }
 
-spectacular.MergeUpProperty = (property) ->
-  capitalizedProperty = utils.capitalize property
-  privateProperty = "own#{capitalizedProperty}"
-  class ConcreteMergeUpProperty
-    @included: (ctor) ->
-      ctor.accessor property, {
-        get: ->
-          a = @[privateProperty]
-          a = @parent[property].concat a if @parent?
-          a
-        set: (value) -> @[privateProperty] = value
-      }
+  @mergeUp: (property) ->
+    capitalizedProperty = utils.capitalize property
+    privateProperty = "own#{capitalizedProperty}"
+    @accessor property, {
+      get: ->
+        a = @[privateProperty]
+        a = @parent[property].concat a if @parent?
+        a
+      set: (value) -> @[privateProperty] = value
+    }
 
 class spectacular.Describable
   @included: (ctor) ->
