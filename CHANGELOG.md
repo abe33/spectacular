@@ -40,20 +40,22 @@
 
     To migrate the code follow the example below:
 
+    ```coffeescript
     exports.myMatcher = (value) ->
       match: (actual) ->
         @description = '...'
         @message = '...'
         actual is value
-
+    ```
     After:
 
+    ```coffeescript
     spectacular.matcher 'myMatcher', ->
       takes 'value'
       description -> '...'
       failureMessageForShould -> '...'
       match (actual) -> actual is @value
-
+    ```
 
 <a name="0.0.4"></a>
 # 0.0.4 (2013-06-15)
