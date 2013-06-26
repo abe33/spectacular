@@ -1,3 +1,14 @@
+<a name="1.0.2"></a>
+# 1.0.2 (2013-06-26)
+
+
+## Bug Fixes
+
+- **server:** fix broken walkdir in server when directories don't exists
+  ([0e642d4a](https://github.com/abe33/spectacular/commit/0e642d4a62dd1d1ea6295f835cb4b81100f654bb))
+
+
+
 <a name="1.0.1"></a>
 # 1.0.1 (2013-06-26)
 
