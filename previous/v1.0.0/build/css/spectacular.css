@@ -1,0 +1,458 @@
+html.success body #reporter {
+  background: rgba(100,180,50,0.3);
+}
+html.success body #reporter > header h2 {
+  color: #64b432;
+}
+html.failure body #reporter {
+  background: rgba(255,40,20,0.3);
+}
+html.failure body #reporter > header h2 {
+  color: #ff2814;
+}
+html.success body #reporter > header h1,
+html.failure body #reporter > header h1 {
+  color: #cfe7e6;
+}
+.hide-success .example.success {
+  display: none !important;
+}
+.hide-pending .example.pending {
+  display: none !important;
+}
+.hide-skipped .example.skipped {
+  display: none !important;
+}
+.hide-failure .example.failure {
+  display: none !important;
+}
+.hide-errored .example.errored {
+  display: none !important;
+}
+#reporter {
+  position: relative;
+  margin: 10px;
+  padding: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  transition: background 0.8s ease-in;
+  -webkit-transition: background 0.8s ease-in;
+  -moz-transition: background 0.8s ease-in;
+  -o-transition: background 0.8s ease-in;
+  box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  -o-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+}
+#reporter * {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+#reporter:before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: block;
+  background: #163a4c;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+#reporter pre {
+  overflow: inherit;
+  border: none;
+  background: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+}
+#reporter pre a {
+  border: none;
+}
+#reporter #controls {
+  position: absolute;
+  top: 150px;
+  left: 6px;
+  padding: 8px;
+  background: #0b1d26;
+  width: 68px;
+  z-index: 10;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border: 1px solid rgba(22,58,76,0.5);
+  box-shadow: 0px 1px 2px #000;
+  -webkit-box-shadow: 0px 1px 2px #000;
+  -moz-box-shadow: 0px 1px 2px #000;
+  -o-box-shadow: 0px 1px 2px #000;
+  transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -webkit-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -moz-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -o-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+}
+#reporter #controls button {
+  cursor: pointer;
+  outline: 0 !important;
+  width: 100%;
+  border: none;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 10px;
+  font-family: monospace;
+  text-shadow: 0 1px 2px #163a4c;
+  -webkit-text-shadow: 0 1px 2px #163a4c;
+  -moz-text-shadow: 0 1px 2px #163a4c;
+  -o-text-shadow: 0 1px 2px #163a4c;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  padding: 2px 0;
+  margin-top: 4px;
+  transition: background 0.5s ease-out;
+  -webkit-transition: background 0.5s ease-out;
+  -moz-transition: background 0.5s ease-out;
+  -o-transition: background 0.5s ease-out;
+}
+#reporter #controls button.success {
+  background: #64b432;
+}
+#reporter #controls button.success.off {
+  background: rgba(100,180,50,0.4);
+}
+#reporter #controls button.pending {
+  background: #ffc85a;
+}
+#reporter #controls button.pending.off {
+  background: rgba(255,200,90,0.4);
+}
+#reporter #controls button.errored {
+  background: #ff9614;
+}
+#reporter #controls button.errored.off {
+  background: rgba(255,150,20,0.4);
+}
+#reporter #controls button.skipped {
+  background: #ff14dc;
+}
+#reporter #controls button.skipped.off {
+  background: rgba(255,20,220,0.4);
+}
+#reporter #controls button.failure {
+  background: #ff2814;
+}
+#reporter #controls button.failure.off {
+  background: rgba(255,40,20,0.4);
+}
+#reporter #examples {
+  position: relative;
+  background: #efefef;
+  padding-left: 80px;
+  min-height: 400px;
+}
+#reporter #examples:before,
+#reporter #examples:after {
+  content: '';
+  height: 100%;
+  width: 80px;
+  left: 0;
+  top: 0;
+  display: block;
+  position: absolute;
+  background: #000;
+}
+#reporter #examples:after {
+  width: 70px;
+  background: #0b1d26;
+  border-left: 5px solid rgba(22,58,76,0.5);
+  border-right: 5px solid rgba(22,58,76,0.5);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -o-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+}
+#reporter .example {
+  cursor: pointer;
+  min-height: 58px;
+  position: relative;
+  padding: 8px 8px 8px 80px;
+  border-bottom: 1px solid rgba(86,122,120,0.1);
+  counter-increment: example;
+}
+#reporter .example h4,
+#reporter .example h5 {
+  color: #163a4c;
+  margin: 0;
+  font-weight: 300;
+}
+#reporter .example h4 {
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+#reporter .example pre {
+  color: #163a4c;
+  margin: 0;
+  margin-top: 6px;
+  padding: 8px;
+  background: #efefef;
+  border: 1px solid #e4e4e4;
+  overflow: hidden;
+  transition: all 0.25s ease-in;
+  -webkit-transition: all 0.25s ease-in;
+  -moz-transition: all 0.25s ease-in;
+  -o-transition: all 0.25s ease-in;
+}
+#reporter .example pre+pre {
+  margin-top: 0;
+  border-top: 0;
+}
+#reporter .example pre ins,
+#reporter .example pre del {
+  display: inline;
+  text-decoration: none;
+}
+#reporter .example pre ins {
+  background: rgba(100,180,50,0.2);
+  border: 1px solid rgba(100,180,50,0.6);
+}
+#reporter .example pre del {
+  background: rgba(255,40,20,0.2);
+  border: 1px solid rgba(255,40,20,0.6);
+}
+#reporter .example:hover:before {
+  background: rgba(255,255,255,0.1);
+  transition: all 0.15s ease-in;
+  -webkit-transition: all 0.15s ease-in;
+  -moz-transition: all 0.15s ease-in;
+  -o-transition: all 0.15s ease-in;
+}
+#reporter .example:before {
+  content: '#' attr(data-id);
+  position: absolute;
+  font-weight: bold;
+  display: block;
+  width: 68px;
+  height: 100%;
+  padding: 8px 8px;
+  top: 0;
+  left: 0;
+  text-align: right;
+  font-size: 1.1em;
+  margin-left: -78px;
+  color: rgba(255,255,255,0.3);
+  z-index: 1;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  transition: all 0.45s ease-in;
+  -webkit-transition: all 0.45s ease-in;
+  -moz-transition: all 0.45s ease-in;
+  -o-transition: all 0.45s ease-in;
+}
+#reporter .example.success.closed pre,
+#reporter .example.pending.closed pre {
+  height: 0 !important;
+  padding: 0 8px;
+  border-top: 0px solid rgba(86,122,120,0.1);
+  border-bottom: 0px solid rgba(86,122,120,0.1);
+  margin-top: 0;
+}
+#reporter .example.failure .expectation.success pre,
+#reporter .example.error .expectation.success pre,
+#reporter .example.skipped .expectation.success pre {
+  display: none;
+}
+#reporter .example .expectation.success h5 {
+  color: #64b432;
+}
+#reporter .example .expectation.failure h5 {
+  color: #ff2814;
+}
+#reporter .example.success pre,
+#reporter .example.pending pre {
+  display: block;
+}
+#reporter .example.skipped pre + pre {
+  display: none;
+}
+#reporter .example.success {
+  background: rgba(100,180,50,0.2);
+  border-left: 4px solid #64b432;
+}
+#reporter .example.success .line {
+  background: rgba(100,180,50,0.2);
+}
+#reporter .example.success h4 {
+  color: #64b432;
+}
+#reporter .example.success .result {
+  background: #64b432;
+}
+#reporter .example.failure {
+  background: rgba(255,40,20,0.2);
+  border-left: 4px solid #ff2814;
+}
+#reporter .example.failure .line {
+  background: rgba(255,40,20,0.2);
+}
+#reporter .example.failure .result {
+  background: #ff2814;
+}
+#reporter .example.skipped {
+  background: rgba(255,20,220,0.2);
+  border-left: 4px solid #ff14dc;
+}
+#reporter .example.skipped .line {
+  background: rgba(255,20,220,0.2);
+}
+#reporter .example.skipped .result {
+  background: #ff14dc;
+}
+#reporter .example.errored {
+  background: rgba(255,150,20,0.2);
+  border-left: 4px solid #ff9614;
+}
+#reporter .example.errored .line {
+  background: rgba(255,150,20,0.2);
+}
+#reporter .example.errored .result {
+  background: #ff9614;
+}
+#reporter .example.pending {
+  background: rgba(255,200,90,0.2);
+  border-left: 4px solid #ffc85a;
+}
+#reporter .example.pending .line {
+  background: rgba(255,200,90,0.2);
+}
+#reporter .example.pending .result {
+  background: #ffc85a;
+}
+#reporter .example .expectation + .expectation {
+  margin-top: 4px;
+}
+#reporter .example .result {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 4px 0;
+  width: 64px;
+  height: 20px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 10px;
+  font-family: monospace;
+  text-shadow: 0 1px 2px #163a4c;
+  -webkit-text-shadow: 0 1px 2px #163a4c;
+  -moz-text-shadow: 0 1px 2px #163a4c;
+  -o-text-shadow: 0 1px 2px #163a4c;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+}
+#reporter .example .time {
+  padding: 2px 6px 2px 18px;
+  background: #163a4c;
+  color: #cfe7e6;
+  position: absolute;
+  display: block;
+  width: 64px;
+  left: 8px;
+  top: 30px;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  font-size: 0.8em;
+}
+#reporter .example .time .icon-time {
+  position: absolute;
+  color: #567a78;
+  left: 4px;
+  top: 4px;
+}
+#reporter > header {
+  color: #567a78;
+}
+#reporter > header h1,
+#reporter > header h2 {
+  margin: 0;
+  font-weight: 100;
+  font-size: 2.35em;
+  display: inline-block;
+  transition: color 0.4s ease-in;
+  -webkit-transition: color 0.4s ease-in;
+  -moz-transition: color 0.4s ease-in;
+  -o-transition: color 0.4s ease-in;
+}
+#reporter > header h2 {
+  color: #3893c1;
+  font-weight: 100;
+  font-size: 2.35em;
+}
+#reporter > header pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+}
+#reporter > header pre a,
+#reporter > header pre a,
+#reporter > header pre a:hover {
+  text-decoration: none;
+}
+#reporter > header p {
+  line-height: 1.2em;
+}
+#reporter > header span span {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+#reporter > header .success {
+  color: #64b432;
+}
+#reporter > header .errored {
+  color: #ff9614;
+}
+#reporter > header .pending,
+#reporter > header .yellow {
+  color: #ffc85a;
+}
+#reporter > header .failure {
+  color: #ff2814;
+}
+#reporter > header .skipped {
+  color: #ff14dc;
+}
+#reporter > header p {
+  color: #cfe7e6;
+}

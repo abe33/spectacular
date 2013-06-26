@@ -89,7 +89,7 @@
 
   exports.spectacular = spectacular;
 
-  spectacular.version = '1.0.1';
+  spectacular.version = '1.0.0';
 
   spectacular.global = (function() {
     if (typeof window !== 'undefined') {
