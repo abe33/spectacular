@@ -1,3 +1,14 @@
+<a name="1.0.1"></a>
+# 1.0.1 (2013-06-26)
+
+
+## Bug Fixes
+
+- **$bin:** server option didn't turn cli off
+  ([087dbf06](https://github.com/abe33/spectacular/commit/087dbf06d3b45320ccae211e51e8cb192a5b3db6))
+
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2013-06-23)
 
