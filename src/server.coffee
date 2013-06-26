@@ -24,7 +24,7 @@ findMatchers = (options) ->
         emitter.on 'file', (p, stat) -> res.push path.relative '.', p
         emitter.on 'end', -> defer.resolve res
       else
-        defer.resolve()
+        defer.resolve([])
 
   defer.promise
 
@@ -41,7 +41,7 @@ findHelpers = (options) ->
         emitter.on 'file', (p, stat) -> res.push path.relative '.', p
         emitter.on 'end', -> defer.resolve res
       else
-        defer.resolve()
+        defer.resolve([])
 
   defer.promise
 
