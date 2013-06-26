@@ -1,0 +1,15 @@
+{
+  "string": "irrelevant",
+  "object": {
+    "a": "aaa",
+    "b": "bbb",
+    "c": "ccc"
+  },
+  "array": [
+    10,
+    "foo",
+    true
+  ],
+  "number": 10,
+  "boolean": true
+}
