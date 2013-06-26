@@ -7,6 +7,8 @@ walk = require 'walkdir'
 util = require 'util'
 {spawn} = require 'child_process'
 
+exists = fs.exists or path.exists
+
 SPECTACULAR_ROOT = path.resolve __dirname, '..'
 
 findMatchers = (options) ->
@@ -16,9 +18,13 @@ findMatchers = (options) ->
   if options.noMatchers
     defer.resolve()
   else
-    emitter = walk options.matchersRoot
-    emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-    emitter.on 'end', -> defer.resolve res
+    exists options.matchersRoot, (exist) ->
+      if exist
+        emitter = walk options.matchersRoot
+        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
+        emitter.on 'end', -> defer.resolve res
+      else
+        defer.resolve()
 
   defer.promise
 
@@ -29,9 +35,13 @@ findHelpers = (options) ->
   if options.noHelpers
     defer.resolve()
   else
-    emitter = walk options.helpersRoot
-    emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-    emitter.on 'end', -> defer.resolve res
+    exists options.helpersRoot, (exist) ->
+      if exist
+        emitter = walk options.helpersRoot
+        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
+        emitter.on 'end', -> defer.resolve res
+      else
+        defer.resolve()
 
   defer.promise
 
