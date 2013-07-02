@@ -76,6 +76,9 @@ generateSpecRunner = (options) ->
     globPaths options.globs
   .then (specs) ->
     paths = paths.concat specs
+    uniq = []
+    uniq.push v for v in paths when v not in uniq
+    paths = uniq
   .then ->
     globPaths options.sources
   .then (sources) ->
