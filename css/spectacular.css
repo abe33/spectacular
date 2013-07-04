@@ -1,18 +1,20 @@
 html.success body #reporter {
   background: rgba(100,180,50,0.3);
 }
+html.success body #reporter:before {
+  border: 1px solid rgba(255,255,255,0.45);
+}
 html.success body #reporter > header h2 {
   color: #64b432;
 }
 html.failure body #reporter {
   background: rgba(255,40,20,0.3);
 }
+html.failure body #reporter:before {
+  border: 1px solid rgba(255,255,255,0.45);
+}
 html.failure body #reporter > header h2 {
   color: #ff2814;
-}
-html.success body #reporter > header h1,
-html.failure body #reporter > header h1 {
-  color: #cfe7e6;
 }
 .hide-success .example.success {
   display: none !important;
@@ -58,10 +60,10 @@ html.failure body #reporter > header h1 {
   -webkit-transition: background 0.8s ease-in;
   -moz-transition: background 0.8s ease-in;
   -o-transition: background 0.8s ease-in;
-  box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -webkit-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -o-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  box-shadow: 0px 6px 10px 2px rgba(22,58,76,0.5);
+  -webkit-box-shadow: 0px 6px 10px 2px rgba(22,58,76,0.5);
+  -moz-box-shadow: 0px 6px 10px 2px rgba(22,58,76,0.5);
+  -o-box-shadow: 0px 6px 10px 2px rgba(22,58,76,0.5);
 }
 #reporter * {
   box-sizing: border-box;
@@ -79,11 +81,16 @@ html.failure body #reporter > header h1 {
   left: 0;
   bottom: 0;
   display: block;
-  background: #163a4c;
+  background: #d4d4d4;
+  border: 1px solid #fff;
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -o-border-radius: 4px;
+  box-shadow: inset 0 0 100px 10px #f4f4f4;
+  -webkit-box-shadow: inset 0 0 100px 10px #f4f4f4;
+  -moz-box-shadow: inset 0 0 100px 10px #f4f4f4;
+  -o-box-shadow: inset 0 0 100px 10px #f4f4f4;
 }
 #reporter pre {
   overflow: inherit;
@@ -165,6 +172,10 @@ html.failure body #reporter > header h1 {
   background: #efefef;
   padding-left: 80px;
   min-height: 400px;
+  box-shadow: inset 0px 1px 2px rgba(22,58,76,0.4);
+  -webkit-box-shadow: inset 0px 1px 2px rgba(22,58,76,0.4);
+  -moz-box-shadow: inset 0px 1px 2px rgba(22,58,76,0.4);
+  -o-box-shadow: inset 0px 1px 2px rgba(22,58,76,0.4);
 }
 #reporter #examples:before,
 #reporter #examples:after {
@@ -182,10 +193,10 @@ html.failure body #reporter > header h1 {
   background: #0b1d26;
   border-left: 5px solid rgba(22,58,76,0.5);
   border-right: 5px solid rgba(22,58,76,0.5);
-  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -o-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -moz-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -o-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
 }
 #reporter .example {
   cursor: pointer;
@@ -408,6 +419,10 @@ html.failure body #reporter > header h1 {
   -webkit-transition: color 0.4s ease-in;
   -moz-transition: color 0.4s ease-in;
   -o-transition: color 0.4s ease-in;
+  text-shadow: 0 1px 1px #fff;
+  -webkit-text-shadow: 0 1px 1px #fff;
+  -moz-text-shadow: 0 1px 1px #fff;
+  -o-text-shadow: 0 1px 1px #fff;
 }
 #reporter > header h2 {
   color: #3893c1;
@@ -426,16 +441,21 @@ html.failure body #reporter > header h1 {
 }
 #reporter > header p {
   line-height: 1.2em;
+  color: #163a4c;
 }
 #reporter > header span span {
   font-weight: 700;
   font-size: 14px;
-  padding: 4px 6px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -o-border-radius: 2px;
+  padding: 4px 6px 3px 6px;
+  background: rgba(22,58,76,0.7);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  text-shadow: 0 0 1px #163a4c;
+  -webkit-text-shadow: 0 0 1px #163a4c;
+  -moz-text-shadow: 0 0 1px #163a4c;
+  -o-text-shadow: 0 0 1px #163a4c;
 }
 #reporter > header .success {
   color: #64b432;
@@ -452,7 +472,4 @@ html.failure body #reporter > header h1 {
 }
 #reporter > header .skipped {
   color: #ff14dc;
-}
-#reporter > header p {
-  color: #cfe7e6;
 }
