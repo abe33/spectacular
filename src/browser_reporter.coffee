@@ -7,7 +7,7 @@ wrapNode = (node) ->
 hasClass = (nl, cls) ->
   nl = wrapNode nl
 
-  Array::every.call nl, (n) -> n.className.indexOf(cls) isnt -1
+  Array::every.call nl, (n) -> ///(\s|^)#{cls}(\s|$)///.test n.className
 
 addClass = (nl, cls) ->
   nl = wrapNode nl
