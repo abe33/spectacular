@@ -160,6 +160,8 @@ class spectacular.BrowserReporter
   stateChar: (state) -> STATE_CHARS[state]
 
   onResult: (event) =>
+    html = document.querySelector 'html'
+
     example = event.target
     @results.push example.result
     @examples.push example
@@ -168,9 +170,12 @@ class spectacular.BrowserReporter
     switch example.result.state
       when 'pending' then @pending.push example
       when 'skipped' then @skipped.push example
-      when 'errored' then @errors.push example
-      when 'failure' then @failures.push example
-
+      when 'errored'
+        @errors.push example
+        addClass html, 'hide-success'
+      when 'failure'
+        @failures.push example
+        addClass html, 'hide-success'
 
     id = @examples.length
     ex = document.createElement 'article'

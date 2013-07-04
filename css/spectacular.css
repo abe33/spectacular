@@ -17,17 +17,32 @@ html.failure body #reporter > header h1 {
 .hide-success .example.success {
   display: none !important;
 }
+.hide-success #reporter #controls button.success {
+  background: rgba(100,180,50,0.4);
+}
 .hide-pending .example.pending {
   display: none !important;
+}
+.hide-pending #reporter #controls button.pending {
+  background: rgba(255,200,90,0.4);
 }
 .hide-skipped .example.skipped {
   display: none !important;
 }
+.hide-skipped #reporter #controls button.skipped {
+  background: rgba(255,150,20,0.4);
+}
 .hide-failure .example.failure {
   display: none !important;
 }
+.hide-failure #reporter #controls button.failure {
+  background: rgba(255,20,220,0.4);
+}
 .hide-errored .example.errored {
   display: none !important;
+}
+.hide-errored #reporter #controls button.errored {
+  background: rgba(255,40,20,0.4);
 }
 #reporter {
   position: relative;
@@ -133,32 +148,17 @@ html.failure body #reporter > header h1 {
 #reporter #controls button.success {
   background: #64b432;
 }
-#reporter #controls button.success.off {
-  background: rgba(100,180,50,0.4);
-}
 #reporter #controls button.pending {
   background: #ffc85a;
-}
-#reporter #controls button.pending.off {
-  background: rgba(255,200,90,0.4);
 }
 #reporter #controls button.errored {
   background: #ff9614;
 }
-#reporter #controls button.errored.off {
-  background: rgba(255,150,20,0.4);
-}
 #reporter #controls button.skipped {
   background: #ff14dc;
 }
-#reporter #controls button.skipped.off {
-  background: rgba(255,20,220,0.4);
-}
 #reporter #controls button.failure {
   background: #ff2814;
-}
-#reporter #controls button.failure.off {
-  background: rgba(255,40,20,0.4);
 }
 #reporter #examples {
   position: relative;
