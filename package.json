@@ -1,6 +1,6 @@
 {
   "name": "spectacular",
-  "version": "0.0.4",
+  "version": "1.0.2",
   "description": "Advanced BDD framework for CoffeeScript and JavaScript",
   "author": "Cédric Néhémie <cedric.nehemie@gmail.com>",
   "license": "MIT",
@@ -32,8 +32,8 @@
     "colors": "~0.6.0-1",
     "walkdir": "0.0.7",
     "istanbul": "~0.1.35",
-    "express": "~3.2.4",
-    "stylus": "~0.32.1",
+    "express": "~3.3.0",
+    "stylus": "~0.33.1",
     "jsdom": "~0.6.5",
     "wintersmith": "~2.0.5",
     "wintersmith-stylus": "~0.3.0",

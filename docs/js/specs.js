@@ -83,7 +83,7 @@
     context.results = '';
     spyOn(env, 'globalize').andCallThrough(function() {
       var promise;
-      promise = new spectacular.Promise.unit();
+      promise = spectacular.Promise.unit();
       return promise.then(function() {
         return block();
       });

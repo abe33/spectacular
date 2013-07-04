@@ -103,6 +103,7 @@ while (args.length) {
       break;
     case '--server':
     case '-s':
+      options.cli = false;
       options.server = true;
       break;
     case '--source':

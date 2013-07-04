@@ -60,7 +60,9 @@ while args.length
     when '--documentation', '-d' then options.documentation = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
-    when '--server', '-s' then options.server = true
+    when '--server', '-s'
+      options.cli = false
+      options.server = true
     when '--source' then options.sources.push args.shift()
     when '--version'
       options.cli = false

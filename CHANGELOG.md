@@ -1,3 +1,84 @@
+<a name="1.0.2"></a>
+# 1.0.2 (2013-06-26)
+
+
+## Bug Fixes
+
+- **server:** fix broken walkdir in server when directories don't exists
+  ([0e642d4a](https://github.com/abe33/spectacular/commit/0e642d4a62dd1d1ea6295f835cb4b81100f654bb))
+
+
+
+<a name="1.0.1"></a>
+# 1.0.1 (2013-06-26)
+
+
+## Bug Fixes
+
+- **$bin:** server option didn't turn cli off
+  ([087dbf06](https://github.com/abe33/spectacular/commit/087dbf06d3b45320ccae211e51e8cb192a5b3db6))
+
+
+
+<a name="1.0.0"></a>
+# 1.0.0 (2013-06-23)
+
+
+## Bug Fixes
+
+- **$tests:**
+  - tests broken on node v0.10.9
+  ([cf3e1c61](https://github.com/abe33/spectacular/commit/cf3e1c611cc3d660badf497ff12a5841de345987))
+  - fix false positive on travis with failure only in node
+  ([23b32f0a](https://github.com/abe33/spectacular/commit/23b32f0a29ed558a8ed61f2ea05dad779d6ce6db))
+- **cli:** fix broken walkdir call if path doesn't exist
+  ([1d2d30e5](https://github.com/abe33/spectacular/commit/1d2d30e52a371f70e88eb5744b8026f48348d888))
+- **matchers:**
+  - fix missing diff in equal message
+  ([5242a363](https://github.com/abe33/spectacular/commit/5242a363c33da1144b6bee678f5661d71f5f3e8c))
+  - fix invalid message for haveBeenCalled
+  ([e92d8355](https://github.com/abe33/spectacular/commit/e92d83558fce4f0a0e28252ccabe9cb515b9c402))
+- **phantomjs:** defining a property without a setter on an object failed
+  ([7025b979](https://github.com/abe33/spectacular/commit/7025b979052bbdd68e211d32e81dd75941036efd))
+
+
+## Features
+
+- **$bin:** add help and version options
+  ([36b80595](https://github.com/abe33/spectacular/commit/36b80595332f4e84198914c5d6ae06729c837625))
+- **factories:** implements factory inheritance
+  ([19e19039](https://github.com/abe33/spectacular/commit/19e19039ed68e2ed058ce119e04d3d168d965816))
+- **matchers:**
+  - implements init hooks on matcher creation
+  ([80ee4a9d](https://github.com/abe33/spectacular/commit/80ee4a9dbc2186b21b4227ddbb5ab0dad71ca3bf))
+  - implements support for full rspec syntax
+  ([62460189](https://github.com/abe33/spectacular/commit/62460189bb9772917a0551260ea389eb28fff32c))
+
+
+## Breaking Changes
+
+- **matchers:** due to [62460189](https://github.com/abe33/spectacular/commit/62460189bb9772917a0551260ea389eb28fff32c),
+  matchers no longer can be defined as an object, the use of the spectacular helper is mandatory.
+
+    To migrate the code follow the example below:
+
+    ```coffeescript
+    exports.myMatcher = (value) ->
+      match: (actual) ->
+        @description = '...'
+        @message = '...'
+        actual is value
+    ```
+    After:
+
+    ```coffeescript
+    spectacular.matcher 'myMatcher', ->
+      takes 'value'
+      description -> '...'
+      failureMessageForShould -> '...'
+      match (actual) -> actual is @value
+    ```
+
 <a name="0.0.4"></a>
 # 0.0.4 (2013-06-15)
 

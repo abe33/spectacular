@@ -103,6 +103,8 @@ class spectacular.ConsoleReporter
     @results = []
     @examples = []
 
+  onMessage: (event) => @dispatch event
+
   onResult: (event) =>
     example = event.target
     @printExampleResult example
