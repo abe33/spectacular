@@ -1,6 +1,6 @@
 
 runningSpecs('missing dependency')
-.shouldStopWith /unmet dependency foo/, ->
+.shouldSucceedWith /Warning: unmet dependency foo/, ->
   describe 'dependent', ->
     dependsOn 'foo'
 

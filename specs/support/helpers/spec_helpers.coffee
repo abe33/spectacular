@@ -26,6 +26,7 @@ spectacular.helper 'createReporter', (env, context, async) ->
 
     context.ended = true
 
+  env.runner.on 'message', reporter.onMessage
   env.runner.on 'result', reporter.onResult
   env.runner.on 'end', reporter.onEnd
   reporter
