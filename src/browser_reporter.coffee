@@ -288,7 +288,8 @@ defaults =
   fixturesRoot: './specs/support/fixtures'
   noMatchers: false
   noHelpers: false
-  noColors: false
+  colors: true
+  random: true
   server: false
   globs: []
 

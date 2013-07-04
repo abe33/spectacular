@@ -38,6 +38,7 @@ options =
   cli: true
   server: false
   phantomjs: false
+  random: true
   globs: []
   sources: []
 
@@ -60,6 +61,8 @@ while args.length
     when '--documentation', '-d' then options.documentation = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
+    when '--random' then options.random = true
+    when '--no-random' then options.random = false
     when '--server', '-s'
       options.cli = false
       options.server = true
@@ -93,6 +96,8 @@ while args.length
     --no-colors          Remove coloring from the output.
     --no-helpers         Disable the loading of project helpers.
     --no-matchers        Disable the loading of project matchers.
+    --no-random          Disable the randomness of test execution.
+    --random             Enable the randomness of test execution
     --no-trace           Remove stack trace from failures reports.
     --phantomjs          Starts a server and run the test on phantomjs.
     --source GLOB        Source files for the server.

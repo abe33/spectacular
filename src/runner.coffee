@@ -1,5 +1,8 @@
 
 class spectacular.Runner
+  RANDOM_SORT = -> Math.round 1 - Math.random() * 2
+
+
   @include spectacular.EventDispatcher
 
   constructor: (@root, @options, @env) ->
@@ -26,7 +29,9 @@ class spectacular.Runner
     -1
 
   registerSpecs: =>
-    for example in @root.children
+    set = @root.children
+    set = set.sort(RANDOM_SORT) if @options.random
+    for example in set
       @register example, @root.hasExclusiveExamples()
 
   register: (child, exclusiveOnly=false) ->
@@ -36,14 +41,18 @@ class spectacular.Runner
           for c in child.allExclusiveExamplesWithDependecies
             @registerDependencies c, exclusiveOnly
 
-        @register c, exclusiveOnly for c in child.allExclusiveExamples
+        set = child.allExclusiveExamples
+        set = set.sort(RANDOM_SORT) if @options.random
+        @register c, exclusiveOnly for c in set
 
       else
         if child.hasExamplesWithDependencies()
           for c in child.allExamplesWithDependecies
             @registerDependencies c, exclusiveOnly
 
-        @register c, exclusiveOnly for c in child.allExamples
+        set = child.allExamples
+        set = set.sort(RANDOM_SORT) if @options.random
+        @register c, exclusiveOnly for c in set
 
     else
       return if exclusiveOnly and not child.exclusive
