@@ -87,7 +87,7 @@ class spectacular.Runner
           dependencies.push dependency
         else
           msg = "Warning: unmet dependency #{dep} for example #{example}"
-          msg = msg.yellow unless @options.noColors
+          msg = msg.yellow if @options.colors
           @dispatch new spectacular.Event 'message', msg
 
       dependenciesSucceed = -> dependencies.every (e) -> e.succeed

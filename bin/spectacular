@@ -44,7 +44,7 @@ options = {
   fixturesRoot: './specs/support/fixtures',
   noMatchers: false,
   noHelpers: false,
-  noColors: false,
+  colors: true,
   cli: true,
   server: false,
   phantomjs: false,
@@ -67,8 +67,11 @@ while (args.length) {
     case '--no-helpers':
       options.noHelpers = true;
       break;
+    case '--colors':
+      options.colors = true;
+      break;
     case '--no-colors':
-      options.noColors = true;
+      options.colors = false;
       break;
     case '--matchers':
     case '-m':
@@ -123,7 +126,7 @@ while (args.length) {
     case '-h':
     case '--help':
       options.cli = false;
-      console.log('\n# Spectacular Help\n\n  Usage:\n\n    spectacular [options] [globs...]\n\n  Options:\n\n    -c, --coffee         Add support for CoffeeScript files.\n    -d, --documentation  Enable the documentation format in the output.\n    -h, --help           Display this message.\n    -m, --matchers PATH  Specify the path where project matchers can be found.\n    -p, --profile        Add a report with the 10 slowest examples.\n    -s, --server         Starts a server.\n    -t, --trace          Enable stack trace report for failures.\n    -v, --verbose        Enable verbose output.\n    --fixtures PATH      Specify the path where project fixtures can be found.\n    --helpers PATH       Specify the path where project helpers can be found.\n    --long-trace         Display the full stack trace.\n    --no-colors          Remove coloring from the output.\n    --no-helpers         Disable the loading of project helpers.\n    --no-matchers        Disable the loading of project matchers.\n    --no-random          Disable the randomness of test execution.\n    --random             Enable the randomness of test execution\n    --no-trace           Remove stack trace from failures reports.\n    --phantomjs          Starts a server and run the test on phantomjs.\n    --source GLOB        Source files for the server.\n    --version            Display the Spectacular version.\n');
+      console.log('\n# Spectacular Help\n\n  Usage:\n\n    spectacular [options] [globs...]\n\n  Options:\n\n    -c, --coffee         Add support for CoffeeScript files.\n    -d, --documentation  Enable the documentation format in the output.\n    -h, --help           Display this message.\n    -m, --matchers PATH  Specify the path where project matchers can be found.\n    -p, --profile        Add a report with the 10 slowest examples.\n    -s, --server         Starts a server.\n    -t, --trace          Enable stack trace report for failures.\n    -v, --verbose        Enable verbose output.\n    --fixtures PATH      Specify the path where project fixtures can be found.\n    --helpers PATH       Specify the path where project helpers can be found.\n    --long-trace         Display the full stack trace.\n    --colors             Enable coloring from the output.\n    --no-colors          Disable coloring from the output.\n    --random             Enable the randomness of test execution\n    --no-random          Disable the randomness of test execution.\n    --no-helpers         Disable the loading of project helpers.\n    --no-matchers        Disable the loading of project matchers.\n    --no-trace           Remove stack trace from failures reports.\n    --phantomjs          Starts a server and run the test on phantomjs.\n    --source GLOB        Source files for the server.\n    --version            Display the Spectacular version.\n');
       break;
     case '--phantomjs':
       options.cli = false;

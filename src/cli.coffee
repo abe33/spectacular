@@ -10,7 +10,7 @@ util = require 'util'
 jsdom = require 'jsdom'
 
 colorize= (str, color, options) ->
-  if str? and not options.noColors and str?[color] then str[color] else str
+  if str? and options.colors and str[color] then str[color] else str
 
 requireFile = (file, context) ->
   try
