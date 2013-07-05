@@ -289,7 +289,7 @@ class spectacular.ExampleGroup extends spectacular.Example
   @getter 'succeed', -> not @failed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
-  constructor: (block, desc='', @parent, @options={}) ->
+  constructor: (block, desc, @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
