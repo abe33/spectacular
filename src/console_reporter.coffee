@@ -307,7 +307,7 @@ class spectacular.ConsoleReporter
     res += array.map((e, i) ->
       "      #{i + 1}. #{e.fullDescription}"
     ).join('\n')
-    res = res[color] unless @options.colors
+    res = res[color] if @options.colors
     "#{res}\n\n"
 
   formatTimers: (loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt) ->
