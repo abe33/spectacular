@@ -83,7 +83,7 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
 
 
 class spectacular.BrowserReporter
-  STATE_CHARS =
+  STATE_CHARS = # •✕✱ⒺⒻ
     pending: '*'
     skipped: 'x'
     failure: 'F'
@@ -106,8 +106,10 @@ class spectacular.BrowserReporter
       <header>
         <h1>Spectacular</h1>
         <h2>#{spectacular.version}</h2>
-        <pre></pre>
-        <p></p>
+        <aside>
+          <pre></pre>
+          <p></p>
+        </aside>
       </header>
       <section id="examples">
         <section id="controls">#{
@@ -216,6 +218,7 @@ class spectacular.BrowserReporter
     pres = ex.querySelectorAll('pre:not([id])')
     Array::forEach.call pres, (node) -> fixNodeHeight node
     addClass ex, 'closed'
+    setTimeout (-> addClass ex, 'animate'), 100
     removeClass ex, 'preload'
 
   formatExpectation: (expectation) ->

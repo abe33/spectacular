@@ -28,59 +28,67 @@ light_gray(op)
 light_blue(op)
   rgba(56,147,193,op)
 
+vendor(prop, args)
+  -webkit-{prop} args
+  -moz-{prop} args
+  -ms-{prop} args
+  -o-{prop} args
+  {prop} args
+
 transition()
-  transition arguments
-  -webkit-transition arguments
-  -moz-transition arguments
-  -o-transition arguments
+  vendor('transition', arguments)
 
 transform()
-  transform arguments
-  -webkit-transform arguments
-  -moz-transform arguments
-  -o-transform arguments
+  vendor('transform', arguments)
 
 box-sizing()
-  box-sizing arguments
-  -webkit-box-sizing arguments
-  -moz-box-sizing arguments
-  -o-box-sizing arguments
+  vendor('box-sizing', arguments)
 
 
 border-radius()
-  border-radius arguments
-  -webkit-border-radius arguments
-  -moz-border-radius arguments
-  -o-border-radius arguments
+  vendor('border-radius', arguments)
 
 box-shadow()
-  box-shadow arguments
-  -webkit-box-shadow arguments
-  -moz-box-shadow arguments
-  -o-box-shadow arguments
+  vendor('box-shadow', arguments)
 
 text-shadow()
-  text-shadow arguments
-  -webkit-text-shadow arguments
-  -moz-text-shadow arguments
-  -o-text-shadow arguments
+  vendor('text-shadow', arguments)
+
+background-linear-gradient(startPoint, startColor, startInterval, endColor, endInterval)
+  background-image -webkit-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+  background-image -moz-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+  background-image -ms-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+  background-image -o-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+  background-image linear-gradient(startPoint, startColor startInterval, endColor endInterval)
 
 html
   &.success body
     #reporter
       background success(0.3)
       &:before
-        border 1px solid rgba(255, 255, 255, .45)
+        border 1px solid success(0.3)
       & > header h2
         color success(1)
+
+        &:after
+          content "\f00c"
+          color success(1)
+          background none
+
   &.failure body
     #reporter
       background failure(0.3)
       &:before
-        border 1px solid rgba(255, 255, 255, .45)
+        border 1px solid failure(0.3)
 
       & > header h2
         color failure(1)
+
+        &:after
+          content "\f00d"
+          color: failure(1)
+          background none
+
 
 .hide-success
   .example.success
@@ -120,12 +128,11 @@ html
 #reporter
   position relative
   margin 10px
-  padding 10px
+  padding 20px
   font-family 'Roboto', sans-serif
   font-weight 300
   border-radius 4px
   transition background 0.8s ease-in
-  box-shadow 0px 6px 10px 2px dark_blue(0.5)
 
   *
     box-sizing border-box
@@ -140,11 +147,20 @@ html
     left 0
     bottom 0
     display block
-    background #d4d4d4
-    border 1px solid white
+    background dark_blue(0.1)
+    border 1px solid dark_blue(0.1)
     border-radius 4px
-    box-shadow inset 0 0 100px 10px #f4f4f4
 
+  &:after
+    content ''
+    position absolute
+    z-index -1
+    top 2px
+    right 2px
+    left 2px
+    border-radius 3px
+    height 100px
+    background-linear-gradient top, dark_blue(0.2), 0, dark_blue(0), 100%
   pre
     overflow inherit
     border none
@@ -205,7 +221,7 @@ html
     background #efefef
     padding-left 80px
     min-height 400px
-    box-shadow inset 0px 1px 2px dark_blue(0.4)
+    border 1px solid dark_blue(0.2)
 
     &:before
     &:after
@@ -250,7 +266,6 @@ html
       background #efefef
       border 1px solid #e4e4e4
       overflow hidden
-      transition all 0.25s ease-in
 
       &+pre
         margin-top 0
@@ -292,6 +307,10 @@ html
       box-sizing border-box
       transition all 0.45s ease-in
 
+    &.animate
+      pre
+        transition all 0.2s ease-in
+
     &.success.closed
     &.pending.closed
       pre
@@ -300,6 +319,7 @@ html
         border-top 0px solid blue_gray(0.1)
         border-bottom 0px solid blue_gray(0.1)
         margin-top 0
+
 
     &.failure
     &.error
@@ -410,6 +430,7 @@ html
     h1
     h2
       margin 0
+      margin-bottom 14px
       font-weight 100
       font-size 2.35em
       display inline-block
@@ -418,30 +439,54 @@ html
 
     h2
       color light_blue(1)
-      font-weight 100
-      font-size 2.35em
+      font-weight 500
+      font-size 1.9em
+      position relative
+
+      &:after
+        font-family FontAwesome
+        content: '\f110'
+        display block
+        font-size 0.8em
+        position absolute
+        margin-left 4px
+        top 7px
+        left 100%
+        width 40px
+        height 40px
+
+    aside
+      padding 1px 8px 11px
+      background dark_blue(0.85)
+      border-radius 3px
+      text-shadow 0 0 1px dark_blue(1)
+      box-shadow inset 0 0 5px dark_blue(1)
+      margin-bottom 20px
 
     pre
       white-space pre-wrap
       word-break break-all
       font-family monospace
-      a
+      margin 0
 
-      a
-      a:hover
+      a, a:hover
         text-decoration none
 
     p
       line-height 1.2em
-      color dark_blue(1)
+      margin 0
+      margin-top 10px
+      color light_gray(1)
 
     span span
+      color white
       font-weight 700
       font-size 14px
-      padding 4px 6px 3px 6px
-      background dark_blue(0.7)
+      padding 5px 6px 3px 6px
+      background dark_blue(0.85)
       border-radius 3px
       text-shadow 0 0 1px dark_blue(1)
+      box-shadow inset 0 0 5px dark_blue(1)
 
     .success
       color success(1)
