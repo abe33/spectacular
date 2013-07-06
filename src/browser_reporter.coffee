@@ -349,10 +349,12 @@ window.onload = ->
   if options.verbose
     console.log utils.indent utils.inspect window.options
     console.log utils.indent utils.inspect window.paths
-    console.log '  Scripts loaded:\n'
-    scripts = document.querySelectorAll('script')
+    console.log '\n  Scripts loaded:'
+    scripts = document.querySelectorAll('script[src]')
     for s in scripts
       console.log "    #{s.attributes.getNamedItem("src")?.value}"
+
+    console.log ''
 
   reporter = new spectacular.BrowserReporter(options)
   reporter.appendToBody()
