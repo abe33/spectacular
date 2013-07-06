@@ -35,6 +35,12 @@ vendor(prop, args)
   -o-{prop} args
   {prop} args
 
+animation()
+  vendor('animation', arguments)
+
+opacity()
+  vendor('opacity', arguments)
+
 transition()
   vendor('transition', arguments)
 
@@ -61,6 +67,16 @@ background-linear-gradient(startPoint, startColor, startInterval, endColor, endI
   background-image -o-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
   background-image linear-gradient(startPoint, startColor startInterval, endColor endInterval)
 
+@keyframes rotate {
+  from {
+    transform rotate(0deg)
+  }
+
+  to {
+    transform rotate(360deg)
+  }
+}
+
 html
   &.success body
     #reporter
@@ -71,6 +87,7 @@ html
         color success(1)
 
         &:after
+          animation none
           content "\f00c"
           color success(1)
           background none
@@ -85,6 +102,7 @@ html
         color failure(1)
 
         &:after
+          animation none
           content "\f00d"
           color: failure(1)
           background none
@@ -445,15 +463,19 @@ html
 
       &:after
         font-family FontAwesome
+        box-sizing border-box
         content: '\f110'
         display block
+        padding 8px 7px 8px 8px
+        padding-top: 7px
         font-size 0.8em
         position absolute
-        margin-left 4px
-        top 7px
+        margin-left -4px
+        top 0px
         left 100%
         width 40px
         height 40px
+        animation rotate 1s linear 0s infinite
 
     aside
       padding 1px 8px 11px
@@ -477,6 +499,7 @@ html
       margin 0
       margin-top 10px
       color light_gray(1)
+      font-variant small-caps
 
     span span
       color white
