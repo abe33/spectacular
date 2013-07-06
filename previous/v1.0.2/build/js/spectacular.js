@@ -7,30 +7,16 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  Object.getPropertyDescriptor = function(o, name) {
-    var descriptor, proto;
-    proto = o;
-    descriptor = void 0;
-    while (proto && !(descriptor = Object.getOwnPropertyDescriptor(proto, name))) {
-      proto = proto.__proto__;
-    }
-    return descriptor;
-  };
-
   Function.prototype.include = function() {
-    var excl, excluded, k, mixin, mixins, v, _i, _len, _ref;
+    var excluded, k, mixin, mixins, v, _i, _len, _ref;
     mixins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    excluded = ['constructor', 'excluded'];
+    excluded = ['constructor'];
     for (_i = 0, _len = mixins.length; _i < _len; _i++) {
       mixin = mixins[_i];
-      excl = excluded.concat();
-      if (mixin.prototype.excluded != null) {
-        excl = excl.concat(mixin.prototype.excluded);
-      }
       _ref = mixin.prototype;
       for (k in _ref) {
         v = _ref[k];
-        if (__indexOf.call(excl, k) < 0) {
+        if (__indexOf.call(excluded, k) < 0) {
           this.prototype[k] = v;
         }
       }
@@ -42,18 +28,14 @@
   };
 
   Function.prototype.extend = function() {
-    var excl, excluded, k, mixin, mixins, v, _i, _len;
+    var excluded, k, mixin, mixins, v, _i, _len;
     mixins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    excluded = ['extended', 'excluded', 'included'];
+    excluded = ['extended'];
     for (_i = 0, _len = mixins.length; _i < _len; _i++) {
       mixin = mixins[_i];
-      excl = excluded.concat();
-      if (mixin.excluded != null) {
-        excl = excl.concat(mixin.excluded);
-      }
       for (k in mixin) {
         v = mixin[k];
-        if (__indexOf.call(excl, k) < 0) {
+        if (__indexOf.call(excluded, k) < 0) {
           this[k] = v;
         }
       }
@@ -64,41 +46,26 @@
     return this;
   };
 
-  Function.prototype.concern = function() {
-    var mixins;
-    mixins = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    this.include.apply(this, mixins);
-    return this.extend.apply(this, mixins);
+  Function.prototype.signature = function() {
+    var re, _ref;
+    re = /^function(\s+[a-zA-Z_][a-zA-Z0-9_]*)*\s*\(([^\)]+)\)/;
+    return ((_ref = re.exec(this.toString())) != null ? _ref[2].split(/\s*,\s*/) : void 0) || [];
   };
 
   Function.prototype.getter = function(name, block) {
-    var oldDescriptor, set;
-    oldDescriptor = Object.getPropertyDescriptor(this.prototype, name);
-    if (oldDescriptor != null) {
-      set = oldDescriptor.set;
-    }
-    Object.defineProperty(this.prototype, name, {
+    return Object.defineProperty(this.prototype, name, {
       get: block,
-      set: set,
       configurable: true,
       enumerable: true
     });
-    return this;
   };
 
   Function.prototype.setter = function(name, block) {
-    var get, oldDescriptor;
-    oldDescriptor = Object.getPropertyDescriptor(this.prototype, name);
-    if (oldDescriptor != null) {
-      get = oldDescriptor.get;
-    }
-    Object.defineProperty(this.prototype, name, {
+    return Object.defineProperty(this.prototype, name, {
       set: block,
-      get: get,
       configurable: true,
       enumerable: true
     });
-    return this;
   };
 
   Function.prototype.accessor = function(name, options) {
@@ -108,12 +75,6 @@
       configurable: true,
       enumerable: true
     });
-  };
-
-  Function.prototype.signature = function() {
-    var re, _ref;
-    re = /^function(\s+[a-zA-Z_][a-zA-Z0-9_]*)*\s*\(([^\)]+)\)/;
-    return ((_ref = re.exec(this.toString())) != null ? _ref[2].split(/\s*,\s*/) : void 0) || [];
   };
 
   spectacular = {};
@@ -696,7 +657,7 @@
   spectacular.Globalizable = (function() {
     function Globalizable() {}
 
-    Globalizable.unglobalizable = ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized', 'alternate', 'previous'];
+    Globalizable.excluded = ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized', 'alternate', 'previous'];
 
     Globalizable.prototype.keepContext = true;
 
@@ -704,7 +665,7 @@
       var _this = this;
       this.previous || (this.previous = {});
       this.globalizable.forEach(function(k) {
-        if (__indexOf.call(_this.constructor.unglobalizable || Globalizable.unglobalizable, k) < 0) {
+        if (__indexOf.call(_this.constructor.excluded || Globalizable.excluded, k) < 0) {
           return _this.globalizeMember(k, _this[k]);
         }
       });
@@ -714,7 +675,7 @@
     Globalizable.prototype.unglobalize = function() {
       var _this = this;
       this.globalizable.forEach(function(k) {
-        if (__indexOf.call(_this.constructor.unglobalizable || Globalizable.unglobalizable, k) < 0) {
+        if (__indexOf.call(_this.constructor.excluded || Globalizable.excluded, k) < 0) {
           return _this.unglobalizeMember(k, _this[k]);
         }
       });
@@ -789,7 +750,7 @@
   spectacular.GlobalizableObject = (function() {
     GlobalizableObject.include(spectacular.Globalizable);
 
-    GlobalizableObject.unglobalizable = spectacular.Globalizable.unglobalizable.concat('set');
+    GlobalizableObject.excluded = spectacular.Globalizable.excluded.concat('set');
 
     function GlobalizableObject() {
       var __globalizable;
@@ -1889,6 +1850,9 @@
     function ExampleGroup(block, desc, parent, options) {
       var original, owner, subject, type,
         _this = this;
+      if (desc == null) {
+        desc = '';
+      }
       this.parent = parent;
       this.options = options != null ? options : {};
       subject = null;
@@ -1951,12 +1915,7 @@
           return pending();
         });
       }
-      this.block.call(this);
-      if (this.allExamples.length === 0) {
-        return it(function() {
-          return pending();
-        });
-      }
+      return this.block.call(this);
     };
 
     ExampleGroup.prototype.hasExclusiveExamples = function() {
@@ -2151,26 +2110,10 @@
 
   })();
 
-  spectacular.Random = (function() {
-    function Random(seed) {
-      this.seed = seed;
-    }
-
-    Random.prototype.get = function() {
-      this.seed = (this.seed * 9301 + 49297) % 233280;
-      return this.seed / 233280.0;
-    };
-
-    return Random;
-
-  })();
-
   spectacular.Runner = (function() {
     Runner.include(spectacular.EventDispatcher);
 
     function Runner(root, options, env) {
-      var seed,
-        _this = this;
       this.root = root;
       this.options = options;
       this.env = env;
@@ -2182,12 +2125,6 @@
       this.results = [];
       this.examples = [];
       this.stack = [];
-      seed = this.options.seed != null ? this.options.seed : Math.round(Math.random() * 99999999);
-      this.options.seed = seed;
-      this.random = new spectacular.Random(seed);
-      this.randomSort = function() {
-        return Math.round(1 - _this.random.get() * 2);
-      };
     }
 
     Runner.prototype.run = function() {
@@ -2222,21 +2159,18 @@
     };
 
     Runner.prototype.registerSpecs = function() {
-      var example, set, _i, _len, _results;
-      set = this.root.children;
-      if (this.options.random) {
-        set = set.sort(this.randomSort);
-      }
+      var example, _i, _len, _ref, _results;
+      _ref = this.root.children;
       _results = [];
-      for (_i = 0, _len = set.length; _i < _len; _i++) {
-        example = set[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        example = _ref[_i];
         _results.push(this.register(example, this.root.hasExclusiveExamples()));
       }
       return _results;
     };
 
     Runner.prototype.register = function(child, exclusiveOnly) {
-      var c, set, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _results, _results1;
+      var c, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results, _results1;
       if (exclusiveOnly == null) {
         exclusiveOnly = false;
       }
@@ -2249,31 +2183,25 @@
               this.registerDependencies(c, exclusiveOnly);
             }
           }
-          set = child.allExclusiveExamples;
-          if (this.options.random) {
-            set = set.sort(this.randomSort);
-          }
+          _ref1 = child.allExclusiveExamples;
           _results = [];
-          for (_j = 0, _len1 = set.length; _j < _len1; _j++) {
-            c = set[_j];
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            c = _ref1[_j];
             _results.push(this.register(c, exclusiveOnly));
           }
           return _results;
         } else {
           if (child.hasExamplesWithDependencies()) {
-            _ref1 = child.allExamplesWithDependecies;
-            for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-              c = _ref1[_k];
+            _ref2 = child.allExamplesWithDependecies;
+            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+              c = _ref2[_k];
               this.registerDependencies(c, exclusiveOnly);
             }
           }
-          set = child.allExamples;
-          if (this.options.random) {
-            set = set.sort(this.randomSort);
-          }
+          _ref3 = child.allExamples;
           _results1 = [];
-          for (_l = 0, _len3 = set.length; _l < _len3; _l++) {
-            c = set[_l];
+          for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+            c = _ref3[_l];
             _results1.push(this.register(c, exclusiveOnly));
           }
           return _results1;
@@ -2317,7 +2245,7 @@
     };
 
     Runner.prototype.handleDependencies = function(example) {
-      var cascading, cascadingSucceed, dep, dependencies, dependenciesSucceed, dependency, msg, s, _i, _j, _len, _len1, _ref, _ref1;
+      var cascading, cascadingSucceed, dep, dependencies, dependenciesSucceed, dependency, s, _i, _j, _len, _len1, _ref, _ref1;
       if (__indexOf.call(this.stack, example) >= 0) {
         return;
       }
@@ -2333,11 +2261,7 @@
           if (dependency != null) {
             dependencies.push(dependency);
           } else {
-            msg = "Warning: unmet dependency " + dep + " for example " + example;
-            if (this.options.colors) {
-              msg = msg.yellow;
-            }
-            this.dispatch(new spectacular.Event('message', msg));
+            throw new Error("unmet dependency " + dep + " for example " + example);
           }
         }
         dependenciesSucceed = function() {
@@ -2466,7 +2390,7 @@
       withParameters fail pending success skip should shouldnt\
       dependsOn spyOn whenPass fixture except only sharedExample\
       itBehavesLike'.split(/\s+/g);
-      this.rootExampleGroup = new spectacular.ExampleGroup(null, '');
+      this.rootExampleGroup = new spectacular.ExampleGroup;
       this.currentExampleGroup = this.rootExampleGroup;
       this.currentExample = null;
       this.runner = new spectacular.Runner(this.rootExampleGroup, this.options, this);
@@ -2675,7 +2599,7 @@
       }
       parentSubjectBlock = this.currentExampleGroup.subjectBlock;
       if (parentSubjectBlock == null) {
-        throw new Error('itsInstance called in context without a previous subject');
+        throw new Error('itsReturn called in context without a previous subject');
       }
       return this.context('instance', function() {
         _this.subject('instance', function() {
@@ -3531,7 +3455,7 @@
     };
 
     StackReporter.prototype.colorize = function(str, color) {
-      if ((str != null) && this.options.colors && (str != null ? str[color] : void 0)) {
+      if ((str != null) && !this.options.noColors && (str != null ? str[color] : void 0)) {
         return str[color];
       } else {
         return str;
@@ -3614,7 +3538,6 @@
       this.formatResult = __bind(this.formatResult, this);
       this.onEnd = __bind(this.onEnd, this);
       this.onResult = __bind(this.onResult, this);
-      this.onMessage = __bind(this.onMessage, this);
       this.errorsCounter = 1;
       this.failuresCounter = 1;
       this.errors = [];
@@ -3624,10 +3547,6 @@
       this.results = [];
       this.examples = [];
     }
-
-    ConsoleReporter.prototype.onMessage = function(event) {
-      return this.dispatch(event);
-    };
 
     ConsoleReporter.prototype.onResult = function(event) {
       var example;
@@ -3679,7 +3598,6 @@
           res += _this.formatProfile(sstart, send);
         }
         res += _this.formatTimers(lstart, lend, sstart, send);
-        res += "  Seed " + (_this.colorize(_this.options.seed.toString(), 'cyan')) + "\n\n";
         res += _this.formatCounters();
         res += '\n\n';
         return promise.resolve(res);
@@ -3782,7 +3700,7 @@
     };
 
     ConsoleReporter.prototype.colorize = function(str, color) {
-      if ((str != null) && this.options.colors && (str != null ? str[color] : void 0)) {
+      if ((str != null) && !this.options.noColors && (str != null ? str[color] : void 0)) {
         return str[color];
       } else {
         return str;
@@ -3850,20 +3768,20 @@
     ConsoleReporter.prototype.failureBadge = function(message) {
       var badge;
       badge = ' FAIL ';
-      if (this.options.colors) {
-        return this.colorize("" + (this.colorize(this.colorize(badge, 'inverse'), 'bold')) + " " + (this.failuresCounter++) + " " + (this.colorize(' ', 'inverse')) + " " + message + "\n", 'red');
-      } else {
+      if (this.options.noColors) {
         return "" + badge + " - " + (this.failuresCounter++) + " - " + message + "\n";
+      } else {
+        return this.colorize("" + (this.colorize(this.colorize(badge, 'inverse'), 'bold')) + " " + (this.failuresCounter++) + " " + (this.colorize(' ', 'inverse')) + " " + message + "\n", 'red');
       }
     };
 
     ConsoleReporter.prototype.errorBadge = function(message) {
       var badge;
       badge = ' ERROR ';
-      if (this.options.colors) {
-        return this.colorize("" + (this.colorize(this.colorize(badge, 'inverse'), 'bold')) + " " + (this.errorsCounter++) + " " + (this.colorize(' ', 'inverse')) + " " + message + "\n", 'yellow');
-      } else {
+      if (this.options.noColors) {
         return "" + badge + " - " + (this.errorsCounter++) + " - " + message + "\n";
+      } else {
+        return this.colorize("" + (this.colorize(this.colorize(badge, 'inverse'), 'bold')) + " " + (this.errorsCounter++) + " " + (this.colorize(' ', 'inverse')) + " " + message + "\n", 'yellow');
       }
     };
 
@@ -3903,7 +3821,7 @@
       for (_i = 0, _len = sortedExamples.length; _i < _len; _i++) {
         example = sortedExamples[_i];
         duration = "" + (Math.floor(example.duration) / 1000) + " seconds";
-        res += "    " + (this.options.colors ? duration.red : duration) + " " + example.fullDescription + "\n";
+        res += "    " + (this.options.noColors ? duration : duration.red) + " " + example.fullDescription + "\n";
       }
       return "" + res + "\n";
     };
@@ -3914,7 +3832,7 @@
       res += array.map(function(e, i) {
         return "      " + (i + 1) + ". " + e.fullDescription;
       }).join('\n');
-      if (this.options.colors) {
+      if (!this.options.noColors) {
         res = res[color];
       }
       return "" + res + "\n\n";
@@ -3957,7 +3875,7 @@
       var duration;
       duration = (end.getTime() - start.getTime()) / 1000;
       duration = "" + (Math.max(0, duration)) + "s";
-      if (this.options.colors) {
+      if (!this.options.noColors) {
         duration = duration.yellow;
       }
       return duration;
@@ -3989,7 +3907,7 @@
   hasClass = function(nl, cls) {
     nl = wrapNode(nl);
     return Array.prototype.every.call(nl, function(n) {
-      return RegExp("(\\s|^)" + cls + "(\\s|$)").test(n.className);
+      return n.className.indexOf(cls) !== -1;
     });
   };
 
@@ -4127,7 +4045,7 @@
       this.examples = [];
       this.reporter = document.createElement('div');
       this.reporter.id = 'reporter';
-      this.reporter.innerHTML = "<header>\n  <h1>Spectacular</h1>\n  <h2>" + spectacular.version + "</h2>\n  <aside>\n    <pre></pre>\n    <p></p>\n  </aside>\n</header>\n<section id=\"examples\">\n  <section id=\"controls\">" + (['success', 'pending', 'errored', 'failure', 'skipped'].map(function(k) {
+      this.reporter.innerHTML = "<header>\n  <h1>Spectacular</h1>\n  <h2>" + spectacular.version + "</h2>\n  <pre></pre>\n  <p></p>\n</header>\n<section id=\"examples\">\n  <section id=\"controls\">" + (['success', 'pending', 'errored', 'failure', 'skipped'].map(function(k) {
         return "<button class='toggle " + k + "'>" + k + "</button>";
       }).join('\n')) + "\n  </section>\n</section>\n<footer></footer>";
       html = document.querySelector('html');
@@ -4175,8 +4093,7 @@
     };
 
     BrowserReporter.prototype.onResult = function(event) {
-      var e, ex, example, html, id, pres;
-      html = document.querySelector('html');
+      var e, ex, example, id, pres;
       example = event.target;
       this.results.push(example.result);
       this.examples.push(example);
@@ -4191,14 +4108,9 @@
           break;
         case 'errored':
           this.errors.push(example);
-          addClass(html, 'hide-success');
           break;
         case 'failure':
           this.failures.push(example);
-          addClass(html, 'hide-success');
-      }
-      if (this.options.verbose) {
-        console.log("  test " + example.description + " > " + example.result.state);
       }
       id = this.examples.length;
       ex = document.createElement('article');
@@ -4228,9 +4140,6 @@
         return fixNodeHeight(node);
       });
       addClass(ex, 'closed');
-      setTimeout((function() {
-        return addClass(ex, 'animate');
-      }), 100);
       return removeClass(ex, 'preload');
     };
 
@@ -4321,9 +4230,7 @@
     fixturesRoot: './specs/support/fixtures',
     noMatchers: false,
     noHelpers: false,
-    colors: true,
-    random: true,
-    seed: null,
+    noColors: false,
     server: false,
     globs: []
   };
@@ -4377,26 +4284,12 @@
 
   spectacular.env.runner.paths = window.paths;
 
-  window.env = spectacular.env;
-
   currentWindowOnload = window.onload;
 
   window.onload = function() {
-    var reporter, s, scripts, _i, _len, _ref;
+    var reporter;
     if (currentWindowOnload != null) {
       currentWindowOnload();
-    }
-    utils = spectacular.utils;
-    if (options.verbose) {
-      console.log(utils.indent(utils.inspect(window.options)));
-      console.log(utils.indent(utils.inspect(window.paths)));
-      console.log('\n  Scripts loaded:');
-      scripts = document.querySelectorAll('script[src]');
-      for (_i = 0, _len = scripts.length; _i < _len; _i++) {
-        s = scripts[_i];
-        console.log("    " + ((_ref = s.attributes.getNamedItem("src")) != null ? _ref.value : void 0));
-      }
-      console.log('');
     }
     reporter = new spectacular.BrowserReporter(options);
     reporter.appendToBody();

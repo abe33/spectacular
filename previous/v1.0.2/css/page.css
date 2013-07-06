@@ -100,9 +100,6 @@ aside:before {
   color: rgba(255,150,20,0.5);
   font-size: 38px;
 }
-#reporter aside:before {
-  content: inherit;
-}
 .table-wrapper {
   position: relative;
 }
