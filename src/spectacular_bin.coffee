@@ -39,6 +39,7 @@ options =
   server: false
   phantomjs: false
   random: true
+  seed: null
   globs: []
   sources: []
 
@@ -64,6 +65,7 @@ while args.length
     when '--profile', '-p' then options.profile = true
     when '--random' then options.random = true
     when '--no-random' then options.random = false
+    when '--seed' then options.seed = parseInt args.shift()
     when '--server', '-s'
       options.cli = false
       options.server = true
@@ -96,6 +98,7 @@ while args.length
     --long-trace         Display the full stack trace.
     --colors             Enable coloring from the output.
     --no-colors          Disable coloring from the output.
+    --seed               Set the seed of the test ranomizer.
     --random             Enable the randomness of test execution
     --no-random          Disable the randomness of test execution.
     --no-helpers         Disable the loading of project helpers.

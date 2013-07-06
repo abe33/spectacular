@@ -136,6 +136,7 @@ class spectacular.ConsoleReporter
       res += @formatResume()
       res += @formatProfile(sstart, send) if @options.profile
       res += @formatTimers(lstart, lend, sstart, send)
+      res += "  Seed #{@colorize @options.seed.toString(), 'cyan'}\n\n"
       res += @formatCounters()
       res += '\n\n'
 

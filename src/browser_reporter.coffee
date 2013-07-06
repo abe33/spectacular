@@ -298,6 +298,7 @@ defaults =
   noHelpers: false
   colors: true
   random: true
+  seed: null
   server: false
   globs: []
 

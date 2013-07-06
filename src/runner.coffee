@@ -1,7 +1,11 @@
 
-class spectacular.Runner
-  RANDOM_SORT = -> Math.round 1 - Math.random() * 2
+class spectacular.Random
+  constructor: (@seed) ->
+  get: ->
+    @seed = (@seed * 9301 + 49297) % 233280
+    @seed / 233280.0
 
+class spectacular.Runner
 
   @include spectacular.EventDispatcher
 
@@ -9,6 +13,16 @@ class spectacular.Runner
     @results = []
     @examples = []
     @stack = []
+
+    seed = if @options.seed?
+      @options.seed
+    else
+      Math.round(Math.random() * 99999999)
+
+    @options.seed = seed
+
+    @random = new spectacular.Random seed
+    @randomSort = => Math.round 1 - @random.get() * 2
 
   run: () =>
     promise = spectacular.Promise.unit()
@@ -30,7 +44,7 @@ class spectacular.Runner
 
   registerSpecs: =>
     set = @root.children
-    set = set.sort(RANDOM_SORT) if @options.random
+    set = set.sort(@randomSort) if @options.random
     for example in set
       @register example, @root.hasExclusiveExamples()
 
@@ -42,7 +56,7 @@ class spectacular.Runner
             @registerDependencies c, exclusiveOnly
 
         set = child.allExclusiveExamples
-        set = set.sort(RANDOM_SORT) if @options.random
+        set = set.sort(@randomSort) if @options.random
         @register c, exclusiveOnly for c in set
 
       else
@@ -51,7 +65,7 @@ class spectacular.Runner
             @registerDependencies c, exclusiveOnly
 
         set = child.allExamples
-        set = set.sort(RANDOM_SORT) if @options.random
+        set = set.sort(@randomSort) if @options.random
         @register c, exclusiveOnly for c in set
 
     else
