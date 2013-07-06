@@ -197,8 +197,24 @@ spectacular specs/**/*.spec.js
     <td>Remove stack trace from failures reports.</td>
   </tr>
   <tr>
+    <td>`--random`</td>
+    <td>Enable tests randomization.</td>
+  </tr>
+  <tr>
+    <td>`--no-random`</td>
+    <td>Disable tests randomization.</td>
+  </tr>
+  <tr>
+    <td>`--seed INT`</td>
+    <td>Sets the seed for the tests randomization.</td>
+  </tr>
+  <tr>
+    <td>`--colors`</td>
+    <td>Enable coloring of the output.</td>
+  </tr>
+  <tr>
     <td>`--no-colors`</td>
-    <td>Remove coloring from the output.</td>
+    <td>Disable coloring of the output.</td>
   </tr>
   <tr>
     <td>`--no-matchers`</td>
@@ -241,12 +257,12 @@ it 'is pending', -> pending()
 xit 'is pending', -> [1,2,3].should contains 1
 ```
 
-Example groups without block are also considered as pending.
-It's also possible to use either `xdescribe` or `xcontext` to mark a group as
-pending.
+Example groups without block or without examples are also considered as pending. It's also possible to use either `xdescribe` or `xcontext` to mark a group as pending.
 
 ```coffeescript
 describe 'a pending group'
+
+describe 'a pending group', ->
 
 xdescribe 'a pending group', ->
   # ...
