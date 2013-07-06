@@ -1,3 +1,53 @@
+<a name="1.1.0"></a>
+# 1.1.0 (2013-07-06)
+
+
+## Bug Fixes
+
+- **$browser:** fix invalid lookup in hasClass
+  ([4b71516f](https://github.com/abe33/spectacular/commit/4b71516f741442cd314e745e7491d0f2c57c42ec))
+- **examples:**
+  - passing `undefined` to `describe` is now a valid subject
+  ([47a3d691](https://github.com/abe33/spectacular/commit/47a3d6912fb63f923e78a52253f8980a30eb54c4))
+  - examples groups without examples are now pending
+  ([2730c459](https://github.com/abe33/spectacular/commit/2730c459aa7e843a73da54d639430e10308aee16))
+- **server:**
+  - make sure that paths only contains unique entries
+  ([5855a220](https://github.com/abe33/spectacular/commit/5855a220b6be0fcf7456d81b32527cb95fdc3eca))
+  - the paths was sliced one item too early
+  ([1d08c578](https://github.com/abe33/spectacular/commit/1d08c5785b0d32928dc97febbb042b67737a5570))
+  - fix undefined present in paths array
+  ([384358f6](https://github.com/abe33/spectacular/commit/384358f6e1aefa57a94fba9e7fa8ebf6b158ced7))
+
+
+## Features
+
+- **$browser:**
+  - add verbose output through console.log
+  ([ecdc0c89](https://github.com/abe33/spectacular/commit/ecdc0c89fdedb8547f8305f4f90ed517b6a14dbd))
+  - automatically hide success on the first failure
+  ([f19fab78](https://github.com/abe33/spectacular/commit/f19fab78e38e18c76d3c412b13bae35e56d950a8))
+- **$cli:** add --colors options that forces the coloring
+  ([79c9b334](https://github.com/abe33/spectacular/commit/79c9b334835e5c61ca4ac6128e7c1b58ce3ecd8b))
+- **$core:** unmet dependencies no longer raise an exception
+  ([3ac6d55f](https://github.com/abe33/spectacular/commit/3ac6d55fb8c6dcbbebefd4391387a95c82c1c70d))
+- **mixins:** add proper mixins methods
+  ([d37e24c2](https://github.com/abe33/spectacular/commit/d37e24c22cad31b782edf519f6911bd75a0c43e1))
+- **runner:**
+  - add seeded random for tests
+  ([03f2aca1](https://github.com/abe33/spectacular/commit/03f2aca130cb39c6590ed7c4061fae18e421d0b0))
+  - add random execution as default behavior
+  ([ddbe3bdb](https://github.com/abe33/spectacular/commit/ddbe3bdbf9223d79e94667523aac486265eb5664))
+
+
+## Breaking Changes
+
+- **mixins:** due to [d37e24c2](https://github.com/abe33/spectacular/commit/d37e24c22cad31b782edf519f6911bd75a0c43e1),
+  the `Globalizable` mixin can no longer define and use
+  an `excluded` static property, then it was renamed as `unglobalizable`.
+
+
+
 <a name="1.0.2"></a>
 # 1.0.2 (2013-06-26)
 
