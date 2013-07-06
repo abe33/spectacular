@@ -24,21 +24,21 @@ class spectacular.HasAncestors
     parent
 
 class spectacular.Globalizable
-  @excluded: ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized', 'alternate', 'previous']
+  @unglobalizable: ['globalize', 'unglobalize', 'keepContext', 'globalizeMember', 'unglobalizeMember', 'globalizable', 'globalized', 'alternate', 'previous']
 
   keepContext: true
 
   globalize: ->
     @previous ||= {}
     @globalizable.forEach (k) =>
-      unless k in (@constructor.excluded or Globalizable.excluded)
+      unless k in (@constructor.unglobalizable or Globalizable.unglobalizable)
         @globalizeMember k, @[k]
 
     @globalized = true
 
   unglobalize: ->
     @globalizable.forEach (k) =>
-      unless k in (@constructor.excluded or Globalizable.excluded)
+      unless k in (@constructor.unglobalizable or Globalizable.unglobalizable)
         @unglobalizeMember k, @[k]
 
     @globalized = false
@@ -82,7 +82,7 @@ class spectacular.Globalizable
 
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable
-  @excluded = spectacular.Globalizable.excluded.concat 'set'
+  @unglobalizable = spectacular.Globalizable.unglobalizable.concat 'set'
 
   constructor: (@__globalizable...) ->
 

@@ -37,7 +37,7 @@ class spectacular.StackReporter
     promise
 
   colorize: (str, color) ->
-    if str? and not @options.noColors and str?[color] then str[color] else str
+    if str? and @options.colors and str?[color] then str[color] else str
 
   formatStack: (stack) ->
     if @options.longTrace
@@ -136,6 +136,7 @@ class spectacular.ConsoleReporter
       res += @formatResume()
       res += @formatProfile(sstart, send) if @options.profile
       res += @formatTimers(lstart, lend, sstart, send)
+      res += "  Seed #{@colorize @options.seed.toString(), 'cyan'}\n\n"
       res += @formatCounters()
       res += '\n\n'
 
@@ -210,7 +211,7 @@ class spectacular.ConsoleReporter
     a
 
   colorize: (str, color) ->
-    if str? and not @options.noColors and str?[color] then str[color] else str
+    if str? and @options.colors and str?[color] then str[color] else str
 
   formatStack: (e) ->
     new spectacular.StackReporter(e, @options).format()
@@ -264,17 +265,17 @@ class spectacular.ConsoleReporter
 
   failureBadge: (message) ->
     badge = ' FAIL '
-    if @options.noColors
-      "#{badge} - #{@failuresCounter++} - #{message}\n"
-    else
+    if @options.colors
       @colorize "#{@colorize(@colorize(badge,'inverse'), 'bold')} #{@failuresCounter++} #{@colorize ' ', 'inverse'} #{message}\n", 'red'
+    else
+      "#{badge} - #{@failuresCounter++} - #{message}\n"
 
   errorBadge: (message) ->
     badge = ' ERROR '
-    if @options.noColors
-      "#{badge} - #{@errorsCounter++} - #{message}\n"
-    else
+    if @options.colors
       @colorize "#{@colorize(@colorize(badge,'inverse'), 'bold')} #{@errorsCounter++} #{@colorize ' ', 'inverse'} #{message}\n", 'yellow'
+    else
+      "#{badge} - #{@errorsCounter++} - #{message}\n"
 
   formatMessage: (message) -> "\n#{utils.indent message or ''}"
 
@@ -297,7 +298,7 @@ class spectacular.ConsoleReporter
     for example in sortedExamples
       duration = "#{Math.floor(example.duration) / 1000} seconds"
       res += "    #{
-        if @options.noColors then duration else duration.red
+        if @options.colors then duration.red else duration
       } #{example.fullDescription}\n"
 
     "#{res}\n"
@@ -307,7 +308,7 @@ class spectacular.ConsoleReporter
     res += array.map((e, i) ->
       "      #{i + 1}. #{e.fullDescription}"
     ).join('\n')
-    res = res[color] unless @options.noColors
+    res = res[color] if @options.colors
     "#{res}\n\n"
 
   formatTimers: (loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt) ->
@@ -341,7 +342,7 @@ class spectacular.ConsoleReporter
   formatDuration: (start, end) ->
     duration = (end.getTime() - start.getTime()) / 1000
     duration = "#{Math.max 0, duration}s"
-    duration = duration.yellow unless @options.noColors
+    duration = duration.yellow if @options.colors
     duration
 
   formatCount: (value, singular, plural, color) ->

@@ -1,58 +1,94 @@
 html.success body #reporter {
   background: rgba(100,180,50,0.3);
 }
+html.success body #reporter:before {
+  border: 1px solid rgba(100,180,50,0.3);
+}
 html.success body #reporter > header h2 {
   color: #64b432;
+}
+html.success body #reporter > header h2:after {
+  -webkit-animation: none;
+  -moz-animation: none;
+  -ms-animation: none;
+  -o-animation: none;
+  animation: none;
+  content: "\f00c";
+  color: #64b432;
+  background: none;
 }
 html.failure body #reporter {
   background: rgba(255,40,20,0.3);
 }
+html.failure body #reporter:before {
+  border: 1px solid rgba(255,40,20,0.3);
+}
 html.failure body #reporter > header h2 {
   color: #ff2814;
 }
-html.success body #reporter > header h1,
-html.failure body #reporter > header h1 {
-  color: #cfe7e6;
+html.failure body #reporter > header h2:after {
+  -webkit-animation: none;
+  -moz-animation: none;
+  -ms-animation: none;
+  -o-animation: none;
+  animation: none;
+  content: "\f00d";
+  color: #ff2814;
+  background: none;
 }
 .hide-success .example.success {
   display: none !important;
 }
+.hide-success #reporter #controls button.success {
+  background: rgba(100,180,50,0.4);
+}
 .hide-pending .example.pending {
   display: none !important;
+}
+.hide-pending #reporter #controls button.pending {
+  background: rgba(255,200,90,0.4);
 }
 .hide-skipped .example.skipped {
   display: none !important;
 }
+.hide-skipped #reporter #controls button.skipped {
+  background: rgba(255,150,20,0.4);
+}
 .hide-failure .example.failure {
   display: none !important;
+}
+.hide-failure #reporter #controls button.failure {
+  background: rgba(255,20,220,0.4);
 }
 .hide-errored .example.errored {
   display: none !important;
 }
+.hide-errored #reporter #controls button.errored {
+  background: rgba(255,40,20,0.4);
+}
 #reporter {
   position: relative;
   margin: 10px;
-  padding: 10px;
+  padding: 20px;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
   -o-border-radius: 4px;
-  transition: background 0.8s ease-in;
+  border-radius: 4px;
   -webkit-transition: background 0.8s ease-in;
   -moz-transition: background 0.8s ease-in;
+  -ms-transition: background 0.8s ease-in;
   -o-transition: background 0.8s ease-in;
-  box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -webkit-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
-  -o-box-shadow: 0px 6px 10px 2px rgba(0,0,0,0.5);
+  transition: background 0.8s ease-in;
 }
 #reporter * {
-  box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
+  box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
 }
 #reporter:before {
@@ -64,20 +100,42 @@ html.failure body #reporter > header h1 {
   left: 0;
   bottom: 0;
   display: block;
-  background: #163a4c;
-  border-radius: 4px;
+  background: rgba(22,58,76,0.1);
+  border: 1px solid rgba(22,58,76,0.1);
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
   -o-border-radius: 4px;
+  border-radius: 4px;
+}
+#reporter:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 2px;
+  left: 2px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  height: 100px;
+  background-image: -webkit-linear-gradient(top, rgba(22,58,76,0.2) 0, rgba(22,58,76,0) 100%);
+  background-image: -moz-linear-gradient(top, rgba(22,58,76,0.2) 0, rgba(22,58,76,0) 100%);
+  background-image: -ms-linear-gradient(top, rgba(22,58,76,0.2) 0, rgba(22,58,76,0) 100%);
+  background-image: -o-linear-gradient(top, rgba(22,58,76,0.2) 0, rgba(22,58,76,0) 100%);
+  background-image: linear-gradient(top, rgba(22,58,76,0.2) 0, rgba(22,58,76,0) 100%);
 }
 #reporter pre {
   overflow: inherit;
   border: none;
   background: none;
-  box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
+  -ms-box-shadow: none;
   -o-box-shadow: none;
+  box-shadow: none;
 }
 #reporter pre a {
   border: none;
@@ -90,19 +148,22 @@ html.failure body #reporter > header h1 {
   background: #0b1d26;
   width: 68px;
   z-index: 10;
-  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
   -o-border-radius: 3px;
+  border-radius: 3px;
   border: 1px solid rgba(22,58,76,0.5);
-  box-shadow: 0px 1px 2px #000;
   -webkit-box-shadow: 0px 1px 2px #000;
   -moz-box-shadow: 0px 1px 2px #000;
+  -ms-box-shadow: 0px 1px 2px #000;
   -o-box-shadow: 0px 1px 2px #000;
-  transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  box-shadow: 0px 1px 2px #000;
   -webkit-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
   -moz-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  -ms-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
   -o-transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
+  transition: top 0.5s cubic-bezier(0.59, 0.96, 0.78, 1);
 }
 #reporter #controls button {
   cursor: pointer;
@@ -115,56 +176,45 @@ html.failure body #reporter > header h1 {
   font-weight: 500;
   font-size: 10px;
   font-family: monospace;
-  text-shadow: 0 1px 2px #163a4c;
   -webkit-text-shadow: 0 1px 2px #163a4c;
   -moz-text-shadow: 0 1px 2px #163a4c;
+  -ms-text-shadow: 0 1px 2px #163a4c;
   -o-text-shadow: 0 1px 2px #163a4c;
-  border-radius: 3px;
+  text-shadow: 0 1px 2px #163a4c;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
   -o-border-radius: 3px;
+  border-radius: 3px;
   padding: 2px 0;
   margin-top: 4px;
-  transition: background 0.5s ease-out;
   -webkit-transition: background 0.5s ease-out;
   -moz-transition: background 0.5s ease-out;
+  -ms-transition: background 0.5s ease-out;
   -o-transition: background 0.5s ease-out;
+  transition: background 0.5s ease-out;
 }
 #reporter #controls button.success {
   background: #64b432;
 }
-#reporter #controls button.success.off {
-  background: rgba(100,180,50,0.4);
-}
 #reporter #controls button.pending {
   background: #ffc85a;
-}
-#reporter #controls button.pending.off {
-  background: rgba(255,200,90,0.4);
 }
 #reporter #controls button.errored {
   background: #ff9614;
 }
-#reporter #controls button.errored.off {
-  background: rgba(255,150,20,0.4);
-}
 #reporter #controls button.skipped {
   background: #ff14dc;
 }
-#reporter #controls button.skipped.off {
-  background: rgba(255,20,220,0.4);
-}
 #reporter #controls button.failure {
   background: #ff2814;
-}
-#reporter #controls button.failure.off {
-  background: rgba(255,40,20,0.4);
 }
 #reporter #examples {
   position: relative;
   background: #efefef;
   padding-left: 80px;
   min-height: 400px;
+  border: 1px solid rgba(22,58,76,0.2);
 }
 #reporter #examples:before,
 #reporter #examples:after {
@@ -182,10 +232,11 @@ html.failure body #reporter > header h1 {
   background: #0b1d26;
   border-left: 5px solid rgba(22,58,76,0.5);
   border-right: 5px solid rgba(22,58,76,0.5);
-  box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
-  -o-box-shadow: 0 1px 5px rgba(0,0,0,0.5) inset;
+  -webkit-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -moz-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -ms-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  -o-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+  box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
 }
 #reporter .example {
   cursor: pointer;
@@ -213,10 +264,6 @@ html.failure body #reporter > header h1 {
   background: #efefef;
   border: 1px solid #e4e4e4;
   overflow: hidden;
-  transition: all 0.25s ease-in;
-  -webkit-transition: all 0.25s ease-in;
-  -moz-transition: all 0.25s ease-in;
-  -o-transition: all 0.25s ease-in;
 }
 #reporter .example pre+pre {
   margin-top: 0;
@@ -237,10 +284,11 @@ html.failure body #reporter > header h1 {
 }
 #reporter .example:hover:before {
   background: rgba(255,255,255,0.1);
-  transition: all 0.15s ease-in;
   -webkit-transition: all 0.15s ease-in;
   -moz-transition: all 0.15s ease-in;
+  -ms-transition: all 0.15s ease-in;
   -o-transition: all 0.15s ease-in;
+  transition: all 0.15s ease-in;
 }
 #reporter .example:before {
   content: '#' attr(data-id);
@@ -257,18 +305,28 @@ html.failure body #reporter > header h1 {
   margin-left: -78px;
   color: rgba(255,255,255,0.3);
   z-index: 1;
-  border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
   -o-border-radius: 4px;
-  box-sizing: border-box;
+  border-radius: 4px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
-  transition: all 0.45s ease-in;
+  box-sizing: border-box;
   -webkit-transition: all 0.45s ease-in;
   -moz-transition: all 0.45s ease-in;
+  -ms-transition: all 0.45s ease-in;
   -o-transition: all 0.45s ease-in;
+  transition: all 0.45s ease-in;
+}
+#reporter .example.animate pre {
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 #reporter .example.success.closed pre,
 #reporter .example.pending.closed pre {
@@ -365,14 +423,16 @@ html.failure body #reporter > header h1 {
   font-weight: 500;
   font-size: 10px;
   font-family: monospace;
-  text-shadow: 0 1px 2px #163a4c;
   -webkit-text-shadow: 0 1px 2px #163a4c;
   -moz-text-shadow: 0 1px 2px #163a4c;
+  -ms-text-shadow: 0 1px 2px #163a4c;
   -o-text-shadow: 0 1px 2px #163a4c;
-  border-radius: 3px;
+  text-shadow: 0 1px 2px #163a4c;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
   -o-border-radius: 3px;
+  border-radius: 3px;
 }
 #reporter .example .time {
   padding: 2px 6px 2px 18px;
@@ -383,10 +443,11 @@ html.failure body #reporter > header h1 {
   width: 64px;
   left: 8px;
   top: 30px;
-  border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
   -o-border-radius: 3px;
+  border-radius: 3px;
   font-size: 0.8em;
 }
 #reporter .example .time .icon-time {
@@ -401,41 +462,109 @@ html.failure body #reporter > header h1 {
 #reporter > header h1,
 #reporter > header h2 {
   margin: 0;
+  margin-bottom: 14px;
   font-weight: 100;
   font-size: 2.35em;
   display: inline-block;
-  transition: color 0.4s ease-in;
   -webkit-transition: color 0.4s ease-in;
   -moz-transition: color 0.4s ease-in;
+  -ms-transition: color 0.4s ease-in;
   -o-transition: color 0.4s ease-in;
+  transition: color 0.4s ease-in;
+  -webkit-text-shadow: 0 1px 1px #fff;
+  -moz-text-shadow: 0 1px 1px #fff;
+  -ms-text-shadow: 0 1px 1px #fff;
+  -o-text-shadow: 0 1px 1px #fff;
+  text-shadow: 0 1px 1px #fff;
 }
 #reporter > header h2 {
   color: #3893c1;
-  font-weight: 100;
-  font-size: 2.35em;
+  font-weight: 500;
+  font-size: 1.9em;
+  position: relative;
+}
+#reporter > header h2:after {
+  font-family: FontAwesome;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  content: '\f110';
+  display: block;
+  padding: 8px 7px 8px 8px;
+  padding-top: 7px;
+  font-size: 0.8em;
+  position: absolute;
+  margin-left: -4px;
+  top: 0px;
+  left: 100%;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: rotate 1s linear 0s infinite;
+  -moz-animation: rotate 1s linear 0s infinite;
+  -ms-animation: rotate 1s linear 0s infinite;
+  -o-animation: rotate 1s linear 0s infinite;
+  animation: rotate 1s linear 0s infinite;
+}
+#reporter > header aside {
+  padding: 1px 8px 11px;
+  background: rgba(22,58,76,0.85);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-text-shadow: 0 0 1px #163a4c;
+  -moz-text-shadow: 0 0 1px #163a4c;
+  -ms-text-shadow: 0 0 1px #163a4c;
+  -o-text-shadow: 0 0 1px #163a4c;
+  text-shadow: 0 0 1px #163a4c;
+  -webkit-box-shadow: inset 0 0 5px #163a4c;
+  -moz-box-shadow: inset 0 0 5px #163a4c;
+  -ms-box-shadow: inset 0 0 5px #163a4c;
+  -o-box-shadow: inset 0 0 5px #163a4c;
+  box-shadow: inset 0 0 5px #163a4c;
+  margin-bottom: 20px;
 }
 #reporter > header pre {
   white-space: pre-wrap;
   word-break: break-all;
   font-family: monospace;
+  margin: 0;
 }
-#reporter > header pre a,
 #reporter > header pre a,
 #reporter > header pre a:hover {
   text-decoration: none;
 }
 #reporter > header p {
   line-height: 1.2em;
+  margin: 0;
+  margin-top: 10px;
+  color: #cfe7e6;
+  font-variant: small-caps;
 }
 #reporter > header span span {
+  color: #fff;
   font-weight: 700;
   font-size: 14px;
-  padding: 4px 6px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -o-border-radius: 2px;
+  padding: 5px 6px 3px 6px;
+  background: rgba(22,58,76,0.85);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-text-shadow: 0 0 1px #163a4c;
+  -moz-text-shadow: 0 0 1px #163a4c;
+  -ms-text-shadow: 0 0 1px #163a4c;
+  -o-text-shadow: 0 0 1px #163a4c;
+  text-shadow: 0 0 1px #163a4c;
+  -webkit-box-shadow: inset 0 0 5px #163a4c;
+  -moz-box-shadow: inset 0 0 5px #163a4c;
+  -ms-box-shadow: inset 0 0 5px #163a4c;
+  -o-box-shadow: inset 0 0 5px #163a4c;
+  box-shadow: inset 0 0 5px #163a4c;
 }
 #reporter > header .success {
   color: #64b432;
@@ -453,6 +582,88 @@ html.failure body #reporter > header h1 {
 #reporter > header .skipped {
   color: #ff14dc;
 }
-#reporter > header p {
-  color: #cfe7e6;
+@-moz-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-ms-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

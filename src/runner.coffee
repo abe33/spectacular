@@ -1,11 +1,28 @@
 
+class spectacular.Random
+  constructor: (@seed) ->
+  get: ->
+    @seed = (@seed * 9301 + 49297) % 233280
+    @seed / 233280.0
+
 class spectacular.Runner
+
   @include spectacular.EventDispatcher
 
   constructor: (@root, @options, @env) ->
     @results = []
     @examples = []
     @stack = []
+
+    seed = if @options.seed?
+      @options.seed
+    else
+      Math.round(Math.random() * 99999999)
+
+    @options.seed = seed
+
+    @random = new spectacular.Random seed
+    @randomSort = => Math.round 1 - @random.get() * 2
 
   run: () =>
     promise = spectacular.Promise.unit()
@@ -26,7 +43,9 @@ class spectacular.Runner
     -1
 
   registerSpecs: =>
-    for example in @root.children
+    set = @root.children
+    set = set.sort(@randomSort) if @options.random
+    for example in set
       @register example, @root.hasExclusiveExamples()
 
   register: (child, exclusiveOnly=false) ->
@@ -36,14 +55,18 @@ class spectacular.Runner
           for c in child.allExclusiveExamplesWithDependecies
             @registerDependencies c, exclusiveOnly
 
-        @register c, exclusiveOnly for c in child.allExclusiveExamples
+        set = child.allExclusiveExamples
+        set = set.sort(@randomSort) if @options.random
+        @register c, exclusiveOnly for c in set
 
       else
         if child.hasExamplesWithDependencies()
           for c in child.allExamplesWithDependecies
             @registerDependencies c, exclusiveOnly
 
-        @register c, exclusiveOnly for c in child.allExamples
+        set = child.allExamples
+        set = set.sort(@randomSort) if @options.random
+        @register c, exclusiveOnly for c in set
 
     else
       return if exclusiveOnly and not child.exclusive
@@ -78,7 +101,7 @@ class spectacular.Runner
           dependencies.push dependency
         else
           msg = "Warning: unmet dependency #{dep} for example #{example}"
-          msg = msg.yellow unless @options.noColors
+          msg = msg.yellow if @options.colors
           @dispatch new spectacular.Event 'message', msg
 
       dependenciesSucceed = -> dependencies.every (e) -> e.succeed

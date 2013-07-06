@@ -119,13 +119,17 @@ runningSpecs('cascading successful examples')
           it -> true.should be true
 
 runningSpecs('cascading failing examples')
-.shouldFailWith /0 success, 1 assertion, 1 failure, (.*), 1 skipped/, ->
-  describe 'parent group', ->
-    it -> true.should be false
+.shouldFailWith /0 success, 1 assertion, 1 failure, (.*), 2 skipped/, ->
+  describe null, ->
+    it -> should exist
 
     whenPass ->
       context 'skipped', ->
         it -> true.should be true
+
+        whenPass ->
+          context 'skipped', ->
+            it -> true.should be true
 
 runningSpecs('cascading & depenpent failing examples')
 .shouldFailWith /1 success, 2 assertions, 1 failure, (.*), 1 skipped/, ->

@@ -12,7 +12,7 @@ class spectacular.Environment
       dependsOn spyOn whenPass fixture except only sharedExample
       itBehavesLike'.split(/\s+/g)
 
-    @rootExampleGroup = new spectacular.ExampleGroup
+    @rootExampleGroup = new spectacular.ExampleGroup null, ''
     @currentExampleGroup = @rootExampleGroup
     @currentExample = null
     @runner = new spectacular.Runner(@rootExampleGroup, @options, this)
@@ -170,7 +170,7 @@ class spectacular.Environment
 
     parentSubjectBlock = @currentExampleGroup.subjectBlock
     unless parentSubjectBlock?
-      throw new Error 'itsReturn called in context without a previous subject'
+      throw new Error 'itsInstance called in context without a previous subject'
 
     @context 'instance', =>
       @subject 'instance', ->

@@ -7,6 +7,10 @@ describe describe, ->
         subject -> true
         it -> should be true
 
+  runningSpecs('without examples')
+  .shouldSucceedWith /1 pending/, ->
+    describe 'foo', ->
+
   environmentMethod('describe').cannotBeCalledInsideIt()
 
 describe context, ->
@@ -128,15 +132,6 @@ describe before, ->
   environmentMethod('before').cannotBeCalledInsideIt()
 
 describe after, ->
-  afterCalled = false
-  runningSpecs('call in describe')
-  .shouldSucceedWith /1 success/, ->
-    describe 'foo', ->
-      after -> afterCalled = true
-      the -> true.should be true
-
-  the -> afterCalled.should be true
-
   environmentMethod('after').cannotBeCalledInsideIt()
 
 describe withParameters, ->

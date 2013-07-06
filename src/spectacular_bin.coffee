@@ -34,10 +34,12 @@ options =
   fixturesRoot: './specs/support/fixtures'
   noMatchers: false
   noHelpers: false
-  noColors: false
+  colors: true
   cli: true
   server: false
   phantomjs: false
+  random: true
+  seed: null
   globs: []
   sources: []
 
@@ -50,7 +52,8 @@ while args.length
       require 'coffee-script'
     when '--no-matchers' then options.noMatchers = true
     when '--no-helpers' then options.noHelpers = true
-    when '--no-colors' then options.noColors = true
+    when '--colors' then options.colors = true
+    when '--no-colors' then options.colors = false
     when '--matchers', '-m' then options.matchersRoot = args.shift()
     when '--helpers' then options.helpersRoot = args.shift()
     when '--fixtures' then options.fixturesRoot = args.shift()
@@ -60,6 +63,9 @@ while args.length
     when '--documentation', '-d' then options.documentation = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
+    when '--random' then options.random = true
+    when '--no-random' then options.random = false
+    when '--seed' then options.seed = parseInt args.shift()
     when '--server', '-s'
       options.cli = false
       options.server = true
@@ -90,7 +96,11 @@ while args.length
     --fixtures PATH      Specify the path where project fixtures can be found.
     --helpers PATH       Specify the path where project helpers can be found.
     --long-trace         Display the full stack trace.
-    --no-colors          Remove coloring from the output.
+    --colors             Enable coloring from the output.
+    --no-colors          Disable coloring from the output.
+    --seed               Set the seed of the test ranomizer.
+    --random             Enable the randomness of test execution
+    --no-random          Disable the randomness of test execution.
     --no-helpers         Disable the loading of project helpers.
     --no-matchers        Disable the loading of project matchers.
     --no-trace           Remove stack trace from failures reports.

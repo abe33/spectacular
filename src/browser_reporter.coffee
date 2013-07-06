@@ -7,7 +7,7 @@ wrapNode = (node) ->
 hasClass = (nl, cls) ->
   nl = wrapNode nl
 
-  Array::every.call nl, (n) -> n.className.indexOf(cls) isnt -1
+  Array::every.call nl, (n) -> ///(\s|^)#{cls}(\s|$)///.test n.className
 
 addClass = (nl, cls) ->
   nl = wrapNode nl
@@ -83,7 +83,7 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
 
 
 class spectacular.BrowserReporter
-  STATE_CHARS =
+  STATE_CHARS = # •✕✱ⒺⒻ
     pending: '*'
     skipped: 'x'
     failure: 'F'
@@ -106,8 +106,10 @@ class spectacular.BrowserReporter
       <header>
         <h1>Spectacular</h1>
         <h2>#{spectacular.version}</h2>
-        <pre></pre>
-        <p></p>
+        <aside>
+          <pre></pre>
+          <p></p>
+        </aside>
       </header>
       <section id="examples">
         <section id="controls">#{
@@ -160,6 +162,8 @@ class spectacular.BrowserReporter
   stateChar: (state) -> STATE_CHARS[state]
 
   onResult: (event) =>
+    html = document.querySelector 'html'
+
     example = event.target
     @results.push example.result
     @examples.push example
@@ -168,9 +172,15 @@ class spectacular.BrowserReporter
     switch example.result.state
       when 'pending' then @pending.push example
       when 'skipped' then @skipped.push example
-      when 'errored' then @errors.push example
-      when 'failure' then @failures.push example
+      when 'errored'
+        @errors.push example
+        addClass html, 'hide-success'
+      when 'failure'
+        @failures.push example
+        addClass html, 'hide-success'
 
+    if @options.verbose
+      console.log "  test #{example.description} > #{example.result.state}"
 
     id = @examples.length
     ex = document.createElement 'article'
@@ -211,6 +221,7 @@ class spectacular.BrowserReporter
     pres = ex.querySelectorAll('pre:not([id])')
     Array::forEach.call pres, (node) -> fixNodeHeight node
     addClass ex, 'closed'
+    setTimeout (-> addClass ex, 'animate'), 100
     removeClass ex, 'preload'
 
   formatExpectation: (expectation) ->
@@ -288,7 +299,9 @@ defaults =
   fixturesRoot: './specs/support/fixtures'
   noMatchers: false
   noHelpers: false
-  noColors: false
+  colors: true
+  random: true
+  seed: null
   server: false
   globs: []
 
@@ -326,9 +339,22 @@ spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
 spectacular.env.runner.paths = window.paths
 
+window.env = spectacular.env
+
 currentWindowOnload = window.onload
 window.onload = ->
   do currentWindowOnload if currentWindowOnload?
+  utils = spectacular.utils
+
+  if options.verbose
+    console.log utils.indent utils.inspect window.options
+    console.log utils.indent utils.inspect window.paths
+    console.log '\n  Scripts loaded:'
+    scripts = document.querySelectorAll('script[src]')
+    for s in scripts
+      console.log "    #{s.attributes.getNamedItem("src")?.value}"
+
+    console.log ''
 
   reporter = new spectacular.BrowserReporter(options)
   reporter.appendToBody()
