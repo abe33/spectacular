@@ -179,6 +179,9 @@ class spectacular.BrowserReporter
         @failures.push example
         addClass html, 'hide-success'
 
+    if @options.verbose
+      console.log "  test #{example.description} > #{example.result.state}"
+
     id = @examples.length
     ex = document.createElement 'article'
     ex.id = "example_#{id}"
@@ -341,6 +344,15 @@ window.env = spectacular.env
 currentWindowOnload = window.onload
 window.onload = ->
   do currentWindowOnload if currentWindowOnload?
+  utils = spectacular.utils
+
+  if options.verbose
+    console.log utils.indent utils.inspect window.options
+    console.log utils.indent utils.inspect window.paths
+    console.log '  Scripts loaded:\n'
+    scripts = document.querySelectorAll('script')
+    for s in scripts
+      console.log "    #{s.attributes.getNamedItem("src")?.value}"
 
   reporter = new spectacular.BrowserReporter(options)
   reporter.appendToBody()
