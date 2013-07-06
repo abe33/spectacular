@@ -1,6 +1,6 @@
 {
   "name": "spectacular",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Advanced BDD framework for CoffeeScript and JavaScript",
   "author": "Cédric Néhémie <cedric.nehemie@gmail.com>",
   "license": "MIT",
