@@ -336,6 +336,8 @@ spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
 spectacular.env.runner.paths = window.paths
 
+window.env = spectacular.env
+
 currentWindowOnload = window.onload
 window.onload = ->
   do currentWindowOnload if currentWindowOnload?

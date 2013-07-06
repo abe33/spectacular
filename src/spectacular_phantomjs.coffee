@@ -44,8 +44,8 @@ page.open URL, (status) ->
         options.documentation = false
 
         reporter = new window.spectacular.ConsoleReporter(options)
-        window.spectacular.env.runner.on 'result', reporter.onResult
-        window.spectacular.env.runner.on 'end', reporter.onEnd
+        window.env.runner.on 'result', reporter.onResult
+        window.env.runner.on 'end', reporter.onEnd
         reporter.on 'report', (msg) -> window.consoleResults = msg.target
         reporter.on 'message', (msg) ->
           window.consoleProgress ||= ''
