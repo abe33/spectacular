@@ -79,6 +79,8 @@ Then puts Spectacular in your html file:
 <script src="build/js/spectacular.js" type="text/javascript"/>
 ```
 
+You can see the runner live at the bottom of this page in the [Spectacular Tests](/#Spectacular-Tests) section.
+
 You can pass options to spectacular by defining `window.options` before the spectacular script node :
 
 ```coffeescript

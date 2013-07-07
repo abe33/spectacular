@@ -303,6 +303,7 @@ code
 
 body .gutter header
   padding 20px 0
+  position relative
   border-bottom 1px solid #ccc
 
   h1
@@ -317,8 +318,27 @@ body .gutter header
     border none
 
   h2
-     position relative
+    position relative
 
+  nav
+    position absolute
+    top 24px
+    right 0
+    ul
+      li
+        list-style none
+        display inline-block
+
+        a
+          border none
+          padding 6px 8px
+          transition background 0.2s linear
+          background white
+          border-radius 4px
+          &:hover
+            background #e4e4e4
+
+.introduction body .gutter header
   h2:after
     font-family FontAwesome
     content: ''
