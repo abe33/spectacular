@@ -893,4 +893,28 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`xit`</td><td>No differences</td></tr>
 </table>
 
+You can also snakify your own objects using the `utils.snakify` method:
+
+```coffeescript
+myObject =
+  someMethod: ->
+  someOtherMethod: ->
+
+utils.snakify myObject
+```
+
+Will gives you an object such as:
+
+```coffeescript
+myObject =
+  someMethod: ->
+  someOtherMethod: ->
+  some_method: ->
+  some_other_method: ->
+```
+
+<aside>
+  <p>Note that when using the `spectacular.matcher` and `spectacular.helper` methods the defined matcher/helper is automatically converted to either its camel or snake case alternative.</p>
+</aside>
+
 ## Spectacular Tests
