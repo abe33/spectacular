@@ -11,6 +11,8 @@ exists = fs.exists or path.exists
 
 SPECTACULAR_ROOT = path.resolve __dirname, '..'
 
+colorize = null
+
 findMatchers = (options) ->
   defer = Q.defer()
   res = []
@@ -63,6 +65,7 @@ scriptNode = (path) ->
   "<script type='text/javascript' src='#{path}'></script>"
 
 generateSpecRunner = (options) ->
+  console.log "  #{colorize 'options', 'grey'} #{util.inspect options}" if options.verbose
   paths = [
     'assets/js/spectacular.js'
     'assets/js/browser_reporter.js'
@@ -70,11 +73,14 @@ generateSpecRunner = (options) ->
   findHelpers(options)
   .then (helpers) ->
     paths = paths.concat helpers
+    console.log "  #{colorize 'helper', 'grey'} #{h}" for h in helpers if options.verbose
     findMatchers options
   .then (matchers) ->
+    console.log "  #{colorize 'matcher', 'grey'} #{m}" for m in matchers if options.verbose
     paths = paths.concat matchers
     globPaths options.globs
   .then (specs) ->
+    console.log "  #{colorize 'spec', 'grey'} #{f}" for f in specs if options.verbose
     paths = paths.concat specs
     uniq = []
     uniq.push v for v in paths when v not in uniq
@@ -82,6 +88,7 @@ generateSpecRunner = (options) ->
   .then ->
     globPaths options.sources
   .then (sources) ->
+    console.log "  #{colorize 'source', 'grey'} #{f}" for f in sources if options.verbose
     """
       <!doctype html>
       <html>
@@ -101,22 +108,25 @@ generateSpecRunner = (options) ->
     """
 
 exports.run = (options) ->
+  colorize = (str, color) -> if options.colors then str[color] else str
   defer = Q.defer()
   app = express()
 
   app.get '/', (req, res) ->
     generateSpecRunner(options).then (html) ->
+      console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} /"
       res.send html
 
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
   app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/', (req, res, next) ->
-    content = fs.readFileSync(path.resolve "./#{req.url}").toString()
+    content = fs.readFileSync(path.resolve ".#{req.url}").toString()
 
     if /\.coffee$/.test(req.url) and options.coffee
       {compile} = require 'coffee-script'
       content = compile content
 
+    console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} #{req.url}"
     res.send content
 
   port = process.env.PORT or 5000
