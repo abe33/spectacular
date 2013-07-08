@@ -138,12 +138,13 @@ a
       color #bbb
       margin-right 16px
 
-aside
+.gutter aside
   background error(0.2)
   border 1px solid error(0.4)
   padding 8px 8px 8px 38px
   border-radius 3px
   position relative
+  margin-top 20px
 
   p
     &:first-child
@@ -421,7 +422,7 @@ h4
     font-size 10px
     text-transform uppercase
     border-radius 0 0 0 4px
-    // box-shadow 0 1px 3px rgba(0,0,0,0.2)
+    box-shadow 0 1px 3px rgba(0,0,0,1)
 
     span
       padding 4px 8px
@@ -472,13 +473,13 @@ hr
   border-top 1px solid #ccc
 
 pre
-  background #f8f8f8
+  background dark_blue(0.9)
   border 1px solid #e4e4e4
-  color light-grey
+  color light_gray(1)
   background dark-blue
   overflow auto
   margin 0
-  // box-shadow inset 0 1px 3px rgba(0,0,0,0.2)
+  box-shadow inset 0 1px 3px rgba(0,0,0,1)
 
   code
   ol
@@ -491,9 +492,10 @@ pre
     padding 8px
     padding-left 46px
     display block
+    text-shadow 0 0 3px rgba(0,0,0,1)
 
   ol
-    // box-shadow 0 1px 3px rgba(0, 0, 0, 0.2)
+    box-shadow 1px 1px 3px rgba(0,0,0,1)
     padding 8px
     margin 0
     float left
@@ -506,7 +508,7 @@ pre
 
   li
     width 22px
-    color dark-blue
+    color dark_blue(1)
     margin 0
     padding 2px 4px
     text-align right
@@ -517,12 +519,12 @@ pre
     position relative
 
   .subst
-    color #333
+    color light_gray(1)
 
   .keyword
   .operators
   .function
-    color blue
+    color greenyellow
 
   .punctuation
   .hash_begin
@@ -542,12 +544,12 @@ pre
   //   color code_color
 
   .string
-  .string_begin
-  .string_end
   .heredocs
   .value
-    color green
+    color yellowgreen
 
+  .string_begin
+  .string_end
   .heredocs_begin
   .heredocs_end
   .embedded_begin
@@ -557,9 +559,9 @@ pre
   .number
     color magenta
 
-  // .literal
-  // .top_level
-  // .constant
+  .literal
+  .top_level
+  .constant
   .char_range_begin
   .char_range_end
   .range_begin
@@ -571,7 +573,7 @@ pre
   .property
   .class_end
   .attribute
-    color blue
+    color DeepSkyBlue
 
   .regexp
   .hereregexp
@@ -587,7 +589,7 @@ pre
   .global
   .escaped
   .char_range
-    color orange
+    color
 
   .char_range > .escaped
     color pink
