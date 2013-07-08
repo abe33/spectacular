@@ -857,16 +857,20 @@ You can find below a table with all the snake case equivalent:
 <table cellspacing="0">
     <tr><td>`after`</td><td>No differences</td></tr>
     <tr><td>`before`</td><td>No differences</td></tr>
+    <tr><td>`chain`</td><td>No differences</td></tr>
     <tr><td>`contains`</td><td>No differences</td></tr>
     <tr><td>`context`</td><td>No differences</td></tr>
     <tr><td>`createWith`</td><td>`create_with`</td></tr>
     <tr><td>`dependsOn`</td><td>`depends_on`</td></tr>
     <tr><td>`describe`</td><td>No differences</td></tr>
+    <tr><td>`description`</td><td>No differences</td></tr>
     <tr><td>`equal`</td><td>No differences</td></tr>
     <tr><td>`exist`</td><td>No differences</td></tr>
     <tr><td>`expect`</td><td>No differences</td></tr>
     <tr><td>`factory`</td><td>No differences</td></tr>
     <tr><td>`fail`</td><td>No differences</td></tr>
+    <tr><td>`failureMessageForShould`</td><td>`failure_message_for_should`</td></tr>
+    <tr><td>`failureMessageForShouldnt`</td><td>`failure_message_for_shouldnt`</td></tr>
     <tr><td>`fixtures`</td><td>No differences</td></tr>
     <tr><td>`given`</td><td>No differences</td></tr>
     <tr><td>`have.selector`</td><td>No differences</td></tr>
@@ -879,6 +883,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`itShould`</td><td>`it_should`</td></tr>
     <tr><td>`itsInstance`</td><td>`its_instance`</td></tr>
     <tr><td>`itsReturn`</td><td>`its_return`</td></tr>
+    <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`pending`</td><td>No differences</td></tr>
     <tr><td>`set`</td><td>No differences</td></tr>
@@ -893,6 +898,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`spyOn`</td><td>`spy_on`</td></tr>
     <tr><td>`subject`</td><td>No differences</td></tr>
     <tr><td>`success`</td><td>No differences</td></tr>
+    <tr><td>`takes`</td><td>No differences</td></tr>
     <tr><td>`the`</td><td>No differences</td></tr>
     <tr><td>`throwAnError(msg).inContext`</td><td>`throw_an_error(msg).in_context`</td></tr>
     <tr><td>`throwAnError(msg).with`</td><td>`throw_an_error(msg).with`</td></tr>
