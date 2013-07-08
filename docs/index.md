@@ -590,6 +590,17 @@ spectacular.matcher 'asyncMatcher', ->
 ```
 If the promise is rejected, the example is marked as `errored`.
 
+<aside>
+  <p>**Note:** Asynchronous matcher should be used carefully and never meddled with synchronous code, a good example of case to avoid can be found below</p>
+
+<pre class='coffeescript'>`specify 'several assertions in an example', ->
+  expect(object).to anAsynchronousMatcher 'foo', 'bar'
+  object.foo = 'baz'
+  expect(object).to anAsynchronousMatcher 'foo', 'baz'`</pre>
+
+  <p>In that case the object property's value may have changed when the test is performed by the matcher.</p>
+</aside>
+
 ## Tests Helpers
 
 Helpers can be created and exposed with the `spectacular.helper` function.
