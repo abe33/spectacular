@@ -376,6 +376,8 @@ describe AClass, ->
       itsReturn with: ['foo'], -> should equal 'oof'
 ```
 
+Instance members can also be accessed with a `#` instead of `::`.
+
 ## Assertions
 
 Spectacular support two types of assertions, either with the `should` function or with the `expect(...).to` syntax. As addition, the `Object`'s prototype is decorated with a `should` method, allowing to write `10.should equal 10`.

@@ -289,36 +289,25 @@ class spectacular.ExampleGroup extends spectacular.Example
   @getter 'succeed', -> not @failed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
+  @SUBJECTS_MAP = {
+    '::': 'instanceMemberAsSubject'
+    '#' : 'instanceMemberAsSubject'
+    '.' : 'classMemberAsSubject'
+  }
+
+
   constructor: (block, desc, @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
-        if desc.indexOf('.') is 0
-          @noSpaceBeforeDescription = true
-          owner = @subject
-          subject = owner?[desc.replace '.', '']
-          if typeof subject is 'function'
-            original = subject
-            subject = -> original.apply owner, arguments
+        tokenNotFound = true
+        for token, method of ExampleGroup.SUBJECTS_MAP
+          if desc.indexOf(token) is 0
+            @[method].call this, desc, token
+            tokenNotFound = false
 
-          @subjectBlock = -> subject
-        else if desc.indexOf('::') is 0
+        if tokenNotFound and not @parent? or @parent.description is ''
           @noSpaceBeforeDescription = true
-          type = @subject
-          @subjectBlock = ->
-            subject = null
-            if type
-              owner = build type, @parameters or []
-              subject = owner[desc.replace '::', '']
-              @owner = owner
-              if typeof subject is 'function'
-                original = subject
-                subject = -> original.apply owner, arguments
-            subject
-        else
-          if not @parent? or @parent.description is ''
-            @noSpaceBeforeDescription = true
-
       else
         @noSpaceBeforeDescription = true
         subject = desc
@@ -330,6 +319,30 @@ class spectacular.ExampleGroup extends spectacular.Example
     @children = []
 
   run: ->
+
+  classMemberAsSubject: (desc, token) ->
+    @noSpaceBeforeDescription = true
+    owner = @subject
+    subject = owner?[desc.replace '.', '']
+    if typeof subject is 'function'
+      original = subject
+      subject = -> original.apply owner, arguments
+
+    @subjectBlock = -> subject
+
+  instanceMemberAsSubject: (desc, token) ->
+    @noSpaceBeforeDescription = true
+    type = @subject
+    @subjectBlock = ->
+      subject = null
+      if type
+        owner = build type, @parameters or []
+        subject = owner[desc.replace token, '']
+        @owner = owner
+        if typeof subject is 'function'
+          original = subject
+          subject = -> original.apply owner, arguments
+      subject
 
   executeBlock: ->
     return it(-> pending()) unless @block?
