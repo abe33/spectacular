@@ -298,6 +298,10 @@ html.failure body #reporter > header h2:after {
   margin: 0;
   font-weight: 300;
 }
+#reporter #examples .example-group h5,
+#reporter #examples .example h5 {
+  font-size: 16px;
+}
 #reporter #examples .example-group h4,
 #reporter #examples .example h4 {
   margin-bottom: 4px;
@@ -391,6 +395,15 @@ html.failure body #reporter > header h2:after {
 #reporter #examples .example.error .expectation.success pre,
 #reporter #examples .example.skipped .expectation.success pre {
   display: none;
+}
+#reporter #examples .example .expectation {
+  padding-left: 24px;
+}
+#reporter #examples .example .expectation.success h5 {
+  color: DarkGreen;
+}
+#reporter #examples .example .expectation.failure h5 {
+  color: DarkRed;
 }
 #reporter #examples .example.success pre,
 #reporter #examples .example.pending pre {

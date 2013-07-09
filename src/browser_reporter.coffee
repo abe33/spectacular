@@ -209,7 +209,7 @@ class spectacular.BrowserReporter
         node.id = id
         node.className = "example-group #{if ancestor.failed then 'failure' else 'success'} level#{n}"
         node.innerHTML = """
-          <header>
+          <header title='#{ancestor.description}'>
             <h3>#{ancestor.ownDescription}</h3>
           </header>
         """
@@ -225,8 +225,8 @@ class spectacular.BrowserReporter
 
     if example.result.expectations.length > 0
       ex.innerHTML = """
-        <header>
-          <h4>#{example.description}</h4>
+        <header title='#{example.description}'>
+          <h4>#{example.ownDescription}</h4>
           <span class='result'>#{example.result.state}</span>
           <span class='time'><span class='icon-time'></span>#{example.duration / 1000}s</span>
         </header>
@@ -236,8 +236,8 @@ class spectacular.BrowserReporter
       """
     else
       ex.innerHTML = """
-        <header>
-          <h4>#{example.description}</h4>
+        <header title='#{example.description}'>
+          <h4>#{example.ownDescription}</h4>
           <span class='result'>#{example.result.state}</span>
           <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
         </header>
@@ -302,7 +302,7 @@ class spectacular.BrowserReporter
 
   formatExpectation: (expectation) ->
     """
-    <div class="expectation #{if expectation.success then 'success' else 'failure'}">
+    <div class="expectation #{if expectation.success then 'success' else 'failure'}" title="#{expectation.example.description} #{expectation.description}">
       <h5>#{expectation.description}</h5>
       <pre>#{utils.escapeDiff expectation.message}</pre>
       #{ if expectation.trace? then @traceSource expectation.trace else ''}
