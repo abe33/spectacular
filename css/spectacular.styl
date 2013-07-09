@@ -109,7 +109,7 @@ html
 
 
 .hide-success
-  .example.success
+  .example.success, .example-group.success
     display none !important
 
   #reporter #controls button.success
@@ -142,6 +142,11 @@ html
 
   #reporter #controls button.errored
     background failure(0.4)
+
+.hide-errored.hide-failure.hide-skipped
+  .example-group.failure
+    display none !important
+
 
 #reporter
   position relative
@@ -259,188 +264,279 @@ html
       border-right 5px solid dark_blue(0.5)
       box-shadow inset 0 1px 5px rgba(0,0,0,0.5)
 
-  .example
-    cursor: pointer
-    min-height 58px
-    position relative
-    padding 8px 8px 8px 80px
-    border-bottom 1px solid blue_gray(0.1)
-    counter-increment example
+    // .example-group + .example-group
+    //   border-top 1px solid dark_blue(0.1)
 
-    h4
-    h5
-      color dark_blue(1)
-      margin 0
-      font-weight 300
-    h4
-      margin-bottom 4px
-      font-size 16px
+    .example-group, .example
 
-    pre
-      color dark_blue(1)
-      margin 0
-      margin-top 6px
-      padding 8px
-      background #efefef
-      border 1px solid #e4e4e4
-      overflow hidden
+      &:hover:before
+        background rgba(255,255,255,0.1)
+        transition all 0.15s ease-in
 
-      &+pre
-        margin-top 0
-        border-top 0
+      &:before
+        content ''
+        position absolute
+        font-weight bold
+        display block
+        width 68px
+        height 100%
+        padding 8px 8px
+        top 0
+        left 4px
+        text-align right
+        font-size 1.1em
+        margin-left: -78px
+        color rgba(255,255,255,0.3)
+        z-index 1
+        border-radius 4px
+        box-sizing border-box
+        text-shadow 0 0 4px rgba(0,0,0,0.6)
+        transition all 0.45s ease-in
 
-      ins
-      del
-        display inline
-        text-decoration none
+      h3
+      h4
+      h5
+        color dark_blue(1)
+        margin 0
+        font-weight 300
+      h4
+        margin-bottom 4px
+        font-size 16px
 
-      ins
-        background success(0.2)
-        border 1px solid success(0.6)
+      h3
+        margin-bottom 4px
+        font-size 18px
 
-      del
+    .example-group
+      &.success
+        background success(0.3)
+
+      &.failure
         background failure(0.2)
-        border 1px solid failure(0.6)
 
-    &:hover:before
-      background rgba(255,255,255,0.1)
-      transition all 0.15s ease-in
+      h3
+        padding 8px 0
 
-    &:before
-      content '#' attr(data-id)
-      position absolute
-      font-weight bold
-      display block
-      width 68px
-      height 100%
-      padding 8px 8px
-      top 0
-      left 0
-      text-align right
-      font-size 1.1em
-      margin-left: -78px
-      color rgba(255,255,255,0.3)
-      z-index 1
-      border-radius 4px
-      box-sizing border-box
-      transition all 0.45s ease-in
+    .example
+      cursor pointer
+      padding 8px 0
 
-    &.animate
+      h4
+        display inline-block
       pre
-        transition all 0.2s ease-in
+        color dark_blue(1)
+        margin 0
+        margin-top 6px
+        margin-right 8px
+        padding 8px
+        background #efefef
+        border 1px solid #e4e4e4
+        overflow hidden
 
-    &.success.closed
-    &.pending.closed
-      pre
-        height 0 !important
-        padding 0 8px
-        border-top 0px solid blue_gray(0.1)
-        border-bottom 0px solid blue_gray(0.1)
-        margin-top 0
+        &+pre
+          margin-top 0
+          border-top 0
+
+        ins
+        del
+          display inline
+          text-decoration none
+
+        ins
+          background success(0.2)
+          border 1px solid success(0.6)
+
+        del
+          background failure(0.2)
+          border 1px solid failure(0.6)
+
+      & + .example
+        border-top 1px solid dark_blue(0.1)
+
+      &:before
+        content '#' attr(data-id)
+
+      &.success:hover:before
+        color success(1)
+
+      &.failure:hover:before
+        color failure(1)
+
+      &.skipped:hover:before
+        color skipped(1)
+
+      &.errored:hover:before
+        color error(1)
+
+      &.pending:hover:before
+        color pending(1)
 
 
-    &.failure
-    &.error
-    &.skipped
-      .expectation.success pre
+      &.animate
+        pre
+          transition all 0.2s ease-in
+
+      &.success.closed
+      &.pending.closed
+        pre
+          height 0 !important
+          padding 0 8px
+          border-top 0px solid blue_gray(0.1)
+          border-bottom 0px solid blue_gray(0.1)
+          margin-top 0
+
+
+      &.failure
+      &.error
+      &.skipped
+        .expectation.success pre
+          display none
+
+      // .expectation
+      //   &.success
+      //     h5
+      //       color success(1)
+      //   &.failure
+      //     h5
+      //         color failure(1)
+      &.success
+      &.pending
+        pre
+          display block
+
+
+      &.skipped pre + pre
         display none
 
-    .expectation
       &.success
-        h5
-          color success(1)
-      &.failure
-        h5
-            color failure(1)
-    &.success
-    &.pending
-      pre
-        display block
+        .line
+          background success(0.2)
 
-
-    &.skipped pre + pre
-      display none
-
-    &.success
-      .line
         background success(0.2)
+        // h4
+        //   color success(1)
+        .result
+          background success(1)
 
-      background success(0.2)
-      border-left 4px solid success(1)
-      h4
-        color success(1)
-      .result
-        background success(1)
-    &.failure
-      .line
+      &.failure
+        .line
+          background failure(0.2)
+
         background failure(0.2)
+        .result
+          background failure(1)
 
-      background failure(0.2)
-      border-left 4px solid failure(1)
-      .result
-        background failure(1)
-    &.skipped
-      .line
+      &.skipped
+        .line
+          background skipped(0.2)
+
         background skipped(0.2)
+        .result
+          background skipped(1)
 
-      background skipped(0.2)
-      border-left 4px solid skipped(1)
-      .result
-        background skipped(1)
-    &.errored
-      .line
+      &.errored
+        .line
+          background error(0.2)
+
         background error(0.2)
+        .result
+          background error(1)
 
-      background error(0.2)
-      border-left 4px solid error(1)
-      .result
-        background error(1)
+      &.pending
+        .line
+          background pending(0.2)
 
-    &.pending
-      .line
         background pending(0.2)
+        .result
+          background pending(1)
 
-      background pending(0.2)
-      border-left 4px solid pending(1)
+      .expectation + .expectation
+        margin-top 4px
+
       .result
-        background pending(1)
+        color white
+        text-align center
+        text-transform uppercase
+        font-weight 500
+        display inline-block
+        font-size 10px
+        font-family monospace
+        text-shadow 0 1px 2px dark_blue(1)
+        border-radius 3px
+        padding 5px 8px 3px
+        vertical-align middle
 
-    .expectation + .expectation
-      margin-top 4px
+      .time
+        position relative
+        background dark_blue(1)
+        color light_gray(1)
+        display inline-block
+        border-radius 3px
+        font-size 0.8em
+        padding 1px 8px 3px 20px
+        vertical-align middle
 
-    .result
-      position absolute
-      left 8px
-      top 8px
-      padding 4px 0
-      width 64px
-      height 20px
-      color white
-      text-align center
-      text-transform uppercase
-      font-weight 500
-      font-size 10px
-      font-family monospace
-      text-shadow 0 1px 2px dark_blue(1)
-      border-radius 3px
+        .icon-time
+          position absolute
+          color blue_gray(1)
+          left 7px
+          top 4px
 
-    .time
-      padding 2px 6px 2px 18px
-      background dark_blue(1)
-      color light_gray(1)
-      position absolute
-      display block
-      width 64px
-      left 8px
-      top 30px
-      border-radius 3px
-      font-size 0.8em
+  &.documentation #examples
 
-      .icon-time
+    .example-group, .example
+      position relative
+
+    .example-group
+      for num in (0..10)
+        &.level{num}
+          h3, h4, h5
+            padding-left 8px + num * 24px
+
+    .example
+      for num in (0..10)
+        &.level{num}
+          padding-left 8px + num * 24px
+
+          h3, h4, h5
+            padding-left 0
+
+  &.progress #examples
+
+    .example
+      cursor: pointer
+      min-height 58px
+      position relative
+      padding 8px 8px 8px 80px
+      border-bottom 1px solid blue_gray(0.1)
+
+      &.success
+        border-left 4px solid success(1)
+      &.failure
+        border-left 4px solid failure(1)
+      &.skipped
+        border-left 4px solid skipped(1)
+      &.errored
+        border-left 4px solid error(1)
+      &.pending
+        border-left 4px solid pending(1)
+
+
+      .result
+        padding 4px 4px 3px
         position absolute
-        color blue_gray(1)
-        left 4px
-        top 4px
+        left 8px
+        top 8px
+        width 64px
+        height 20px
+
+      .time
+        padding 1px 6px 3px 18px
+        position absolute
+        left 8px
+        top 30px
+        width 64px
+        height 20px
 
   > header
     color blue_gray(1)
