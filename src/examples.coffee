@@ -105,8 +105,8 @@ class spectacular.Example
     @exclusive = false
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
-  @getter 'failed', -> @examplePromise?.isRejected()
-  @getter 'succeed', -> @examplePromise?.isFulfilled()
+  @getter 'failed', -> @result?.state in ['skipped', 'errored', 'failure']
+  @getter 'succeed', -> @result?.state is 'success'
   @getter 'reason', -> @afterReason or @examplePromise?.reason
   @getter 'duration', ->
     if @runEndedAt? and @runStartedAt?
@@ -286,7 +286,7 @@ class spectacular.ExampleGroup extends spectacular.Example
     res[e.options.id] = e for e in @identifiedExamples
     res
   @getter 'failed', -> @allExamples.some (e) -> e.failed
-  @getter 'succeed', -> not @failed
+  @getter 'succeed', -> @allExamples.every (e) -> e.succeed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
 
   @SUBJECTS_MAP = {
