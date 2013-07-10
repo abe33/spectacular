@@ -3,6 +3,12 @@ class Dummy
   constructor: (@args...) ->
     @property = 'value'
 
+class DummyWithCustomBuild
+  @new: ->
+    instance = new DummyWithCustomBuild
+    instance.property = 'value'
+    instance
+
 factory 'object', class: Object, ->
   set 'property', -> 16
 
@@ -26,6 +32,15 @@ factory 'dummy', ->
 factory 'dummy2', extends: 'dummy', ->
   createWith 'oof', 'rab'
   set 'baz', -> 42
+
+factory 'dummy_with_custom_build', class: DummyWithCustomBuild, ->
+  build (cls, args) -> cls.new.apply(cls, args)
+
+  trait 'trait', ->
+    build (cls, args) ->
+      instance = new cls
+      instance.foo = 'bar'
+      instance
 
 describe create, ->
   context 'called with nothing', ->
@@ -68,10 +83,20 @@ describe create, ->
 
       itsReturn -> should equal property: 'value', args: ['bar', 'foo']
 
-  context 'called with a trait from a trait defined in a reopened factory', ->
+  context 'called with a trait defined in a reopened factory', ->
     withArguments 'dummy', 'reopened factory'
 
     itsReturn -> should equal property: 'value', args: ['foo', 'bar'], reopened: true
+
+  context 'called on a factory that defines a custom build', ->
+    withArguments 'dummy_with_custom_build'
+
+    itsReturn -> should equal property: 'value'
+
+    context 'with a trait that override the custom build', ->
+      withArguments 'dummy_with_custom_build', 'trait'
+
+      itsReturn -> should equal foo: 'bar'
 
 describe factory, ->
   context 'when using the extends option', ->

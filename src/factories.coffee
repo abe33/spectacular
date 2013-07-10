@@ -31,8 +31,13 @@ class spectacular.factories.Set
 
 class spectacular.factories.Trait
   @include spectacular.Globalizable
+  @include spectacular.HasAncestors
+  @extend spectacular.AncestorsProperties
 
-  globalizable: 'set createWith'.split(/\s+/g)
+  @followUp 'arguments'
+  @followUp 'buildBlock'
+
+  globalizable: 'set createWith build'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
@@ -41,13 +46,15 @@ class spectacular.factories.Trait
   set: (property, value) ->
     @setters.push new spectacular.factories.Set property, value
 
-  createWith: (@arguments...) ->
+  build: (@ownBuildBlock) ->
+  createWith: (@ownArguments...) ->
 
   applySet: (instance) ->
     @setters.forEach (setter) -> setter.apply instance
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
-  globalizable: 'set trait createWith'.split(/\s+/g)
+
+  globalizable: 'set trait createWith build'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name
@@ -59,34 +66,41 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     block.call(trait)
     trait.unglobalize()
 
-  build: (traits, options={}) ->
+  buildInstance: (traits, options={}) ->
     args = @getConstructorArguments traits
 
     instance = if @parent?
-      @parent.instanciate args
+      @parent.instanciate args, traits
     else
-      @instanciate args
+      @instanciate args, traits
 
     @applySet instance
     @findTrait(trait).applySet instance for trait in traits
     instance[k] = v for k,v of options
     instance
 
-  instanciate: (args) -> build @class, args
+  instanciate: (args, traits) ->
+    buildBlock = @fromTraitOrThis 'buildBlock', traits
+    if buildBlock?
+      buildBlock.apply this, [@class].concat(args)
+    else
+      build @class, args
+
+  fromTraitOrThis: (property, traits) ->
+    value = @[property]
+    for trait in traits
+      traitValue = @findTrait(trait)[property]
+      value = traitValue if traitValue?
+
+    value
 
   getConstructorArguments: (traits) ->
-    args = @getFactoryConstructorArguments()
-    for trait in traits
-      traitArgs = @findTrait(trait).arguments
-      args = traitArgs if traitArgs?
+    args = @fromTraitOrThis 'arguments', traits
 
     if args? and typeof args[0] is 'function'
       args = args[0].call(spectacular.env.currentExample.context)
 
     args or []
-
-  getFactoryConstructorArguments: ->
-    @arguments or @parent?.getFactoryConstructorArguments()
 
   findTrait: (traitName) ->
     trait = @traits[traitName] or @parent?.findTrait traitName
@@ -125,5 +139,5 @@ spectacular.factories.create = (name, traits..., options) ->
 
   fct = spectacular.factoriesCache[name]
   throw new Error "missing factory #{name}" unless fct?
-  fct.build(traits, options)
+  fct.buildInstance(traits, options)
 
