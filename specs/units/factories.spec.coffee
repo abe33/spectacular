@@ -137,13 +137,13 @@ describe factory, ->
 
 runningSpecs('a factory without a class')
 .shouldStopWith /no class provided/, ->
-  factory 'foo', ->
+  factory 'no_class', ->
 
 runningSpecs('a factory extending an unexistant factory')
 .shouldStopWith /parent factory 'bar' can't be found/, ->
-  factory 'foo', extends: 'bar', ->
+  factory 'no_parent', extends: 'bar', ->
 
 runningSpecs('a factory including an unexistant mixin')
 .shouldStopWith /mixin 'bar' can't be found/, ->
-  factory 'foo', class: Object, ->
+  factory 'undefined_mixin', class: Object, ->
     include 'bar'
