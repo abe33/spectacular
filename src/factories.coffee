@@ -1,6 +1,7 @@
 spectacular.factories ||= new spectacular.GlobalizableObject 'build',
                                                              'create',
-                                                             'factory'
+                                                             'factory',
+                                                             'factoryMixin'
 spectacular.factories.keepContext = false
 
 spectacular.factories.buildMethodsCache = {}
@@ -54,7 +55,7 @@ class spectacular.factories.Trait
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
 
-  globalizable: 'set trait createWith build'.split(/\s+/g)
+  globalizable: 'set trait createWith build include'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name
@@ -94,6 +95,12 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
 
     value
 
+  include: (mixins...) ->
+    for mixinName in mixins
+      mixin = spectacular.factories.mixins[mixinName]
+      throw new Error "mixin '#{mixinName}' can't be found" unless mixin?
+      mixin.call this, this
+
   getConstructorArguments: (traits) ->
     args = @fromTraitOrThis 'arguments', traits
 
@@ -130,6 +137,10 @@ spectacular.factories.factory = (name, options, block) ->
   fct.globalize()
   block.call(fct)
   fct.unglobalize()
+
+spectacular.factories.mixins = {}
+spectacular.factories.factoryMixin = (name, block) ->
+  spectacular.factories.mixins[name] = block
 
 spectacular.factories.create = (name, traits..., options) ->
   throw new Error 'no factory name provided' unless name?
