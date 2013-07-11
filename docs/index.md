@@ -709,12 +709,61 @@ user = create 'admin'
 # {id: 12345, name: 'John Doe', roles: ['admin']}
 ```
 
+### Factory Mixins
+
+Factories, as classes, can includes mixins. In that context a mixin is a function executed on a given factory to defines traits and property for this factory.
+
+```coffeescript
+factoryMixin 'has parent', (factory) ->
+  set 'parent', null
+
+  trait 'with parent', ->
+    set 'parent', -> create factory.name
+
+factory 'category', class: Object, ->
+  include 'has parent'
+
+  set 'name', -> Faker.Lorem.sentence()
+
+category = create 'category', 'with parent'
+# {
+#   name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
+#   parent: {
+#     name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
+#   }
+# }
+```
+
+### Customize Factory Builds
+
+If you're not happy with the way Spectacular instanciate objects, or that what you're building can't be instanciated through the `new` operator, you can override the factory build process using the `build` function.
+
+For instance, given that we have models that may be created through a `create` method, wa can construct a factory as such:
+
+```coffeescript
+factory 'my_model', class: MyModel, ->
+  build (cls, args) -> cls.create.apply cls, args
+
+  # ...
+```
+
+In that case the create method will use the provided build block instead of
+the global `spectacular.factories.build` method.
+
+Build blocks are inherited from a parent factory and can be overriden in traits or in child factories.
+
+### Factory Functions
+
 Find below more details about the factory functions:
 
 <table cellspacing="0">
   <tr>
     <td>`factory`</td>
     <td>The `factory` method registers a factory, it takes an option object that set the constructor function to use.</td>
+  </tr>
+  <tr>
+    <td>`factoryMixin`</td>
+    <td>The `factoryMixin` method registers a factory mixin, it takes the mixin name and a block to execute when included in a factory.</td>
   </tr>
   <tr>
     <td>`createWith`</td>
@@ -727,6 +776,15 @@ Find below more details about the factory functions:
   <tr>
     <td>`trait`</td>
     <td>The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.</td>
+  <tr>
+    <td>`build`</td>
+    <td>The `build` method allow to redefine the build function for this factory.</td>
+  </tr>
+
+  <tr>
+    <td>`include`</td>
+    <td>The `include` method takes one or more string containing mixins's names.</td>
+  </tr>
 </table>
 
 ## Fixtures
@@ -868,6 +926,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`exist`</td><td>No differences</td></tr>
     <tr><td>`expect`</td><td>No differences</td></tr>
     <tr><td>`factory`</td><td>No differences</td></tr>
+    <tr><td>`factoryMixin`</td><td>`factory_mixin`</td></tr>
     <tr><td>`fail`</td><td>No differences</td></tr>
     <tr><td>`failureMessageForShould`</td><td>`failure_message_for_should`</td></tr>
     <tr><td>`failureMessageForShouldnt`</td><td>`failure_message_for_shouldnt`</td></tr>
