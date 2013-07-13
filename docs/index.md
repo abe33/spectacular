@@ -140,8 +140,26 @@ Spectacular rely on some feature that may not be available in all browsers. You 
 The most simple way to use the spectacular command line tool is as follow:
 
 ```shell
-spectacular specs/**/*.spec.js
+spectacular test specs/**/*.spec.js
 ```
+### Commands
+
+<table cellspacing="0">
+  <tr>
+    <td>`test`</td>
+    <td>Runs the tests on NodeJS.</td>
+  </tr>
+
+  <tr>
+    <td>`server`</td>
+    <td>Starts a server. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`. The default port can be changed by setting the `PORT` environment variable.</td>
+  </tr>
+
+  <tr>
+    <td>`phantomjs`</td>
+    <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
+  </tr>
+</table>
 
 ### Options
 
@@ -170,13 +188,17 @@ spectacular specs/**/*.spec.js
     <td>`-d, --documentation`</td>
     <td>Enable the documentation format in the output.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`-s, --server`</td>
     <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`--phantomjs`</td>
     <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
+  </tr>
+  <tr>
+    <td>`--phantomjs-bin PATH`</td>
+    <td>Pass the path to the PhantomJS binary.</td>
   </tr>
   <tr>
     <td>`--source GLOB`</td>
@@ -793,6 +815,11 @@ Find below more details about the factory functions:
   <tr>
     <td>`build`</td>
     <td>The `build` method allow to redefine the build function for this factory.</td>
+  </tr>
+
+  <tr>
+    <td>`after`</td>
+    <td>The `after` method takes the name of a hook and a block to execute during that hook. Currently only the </td>
   </tr>
 
   <tr>
