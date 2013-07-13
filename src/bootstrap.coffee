@@ -17,4 +17,6 @@ spectacular.global = (->
 
 spectacular.nextTick = process?.setImmediate or
                        process?.nextTick or
+                       window?.setImmediate or
+                       window?.nextTick or
                        (callback) -> setTimeout callback, 0
