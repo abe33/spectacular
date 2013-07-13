@@ -36,6 +36,7 @@ options =
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
   fixturesRoot: './specs/support/fixtures'
+  phantomjsExecutable: 'phantomjs'
   noMatchers: false
   noHelpers: false
   colors: true
@@ -84,6 +85,7 @@ while args.length
     when '--random' then options.random = true
     when '--no-random' then options.random = false
     when '--seed' then options.seed = parseInt args.shift()
+    when '--phantomjs-bin' then options.phantomjsExecutable = args.shift()
     when '--server', '-s'
       deprecated '--server and -s options are deprecated and may be removed in future release, use `spectacular server` or `spectacular s` instead.'
       options.cli = false

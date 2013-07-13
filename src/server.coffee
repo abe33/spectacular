@@ -135,7 +135,7 @@ exports.run = (options) ->
 
   if options.phantomjs
     console.log "  running tests on phantomjs"
-    phantom = spawn 'phantomjs', ['./lib/spectacular_phantomjs.js']
+    phantom = spawn options.phantomjsExecutable, ['./lib/spectacular_phantomjs.js']
     phantom.stdout.on 'data', (data) -> util.print data.toString()
     phantom.stderr.on 'data', (data) -> util.print data.toString()
     phantom.on 'exit', (status) ->

@@ -48,6 +48,7 @@ options = {
   matchersRoot: './specs/support/matchers',
   helpersRoot: './specs/support/helpers',
   fixturesRoot: './specs/support/fixtures',
+  phantomjsExecutable: 'phantomjs',
   noMatchers: false,
   noHelpers: false,
   colors: true,
@@ -135,6 +136,9 @@ while (args.length) {
       break;
     case '--seed':
       options.seed = parseInt(args.shift());
+      break;
+    case '--phantomjs-bin':
+      options.phantomjsExecutable = args.shift();
       break;
     case '--server':
     case '-s':
