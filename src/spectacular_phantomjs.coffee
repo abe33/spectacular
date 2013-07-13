@@ -1,6 +1,9 @@
 page = require('webpage').create()
+system = require('system')
 
-URL = 'http://localhost:5000'
+PORT = system.args[1] or 5000
+
+URL = "http://localhost:#{PORT}"
 
 page.onConsoleMessage = (msg, line, source) ->
   console.log msg
