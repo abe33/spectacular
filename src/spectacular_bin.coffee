@@ -13,13 +13,17 @@ existsSync = fs.existsSync or path.existsSync
 
 SPECTACULAR_CONFIG = path.resolve ROOT, '.spectacular'
 
-args.push '-h' if args.length is 0
+if args.length is 0 or not args.some((e) -> e in ['test','server','phantomjs'])
+  args.push '-h'
 
 if existsSync SPECTACULAR_CONFIG
   args = fs.readFileSync(SPECTACULAR_CONFIG).toString()
   .replace(/^\s+|\s+$/g, '')
   .split(/\s+/g)
   .concat(args)
+
+
+deprecated = (message) -> console.log "DEPRECATION WARNING: #{message}"
 
 options =
   coffee: false
@@ -35,7 +39,7 @@ options =
   noMatchers: false
   noHelpers: false
   colors: true
-  cli: true
+  cli: false
   server: false
   phantomjs: false
   random: true
@@ -47,6 +51,20 @@ while args.length
   option = args.shift()
 
   switch option
+    # Commands
+    when 'test'
+      options.cli = true
+      options.server = false
+      options.phantomjs = false
+    when 'server', 's'
+      options.cli = false
+      options.server = true
+    when 'phantomjs'
+      options.cli = false
+      options.server = true
+      options.phantomjs = true
+
+    # Options
     when '--coffee', '-c'
       options.coffee = true
       require 'coffee-script'
@@ -67,8 +85,14 @@ while args.length
     when '--no-random' then options.random = false
     when '--seed' then options.seed = parseInt args.shift()
     when '--server', '-s'
+      deprecated '--server and -s options are deprecated and may be removed in future release, use `spectacular server` or `spectacular s` instead.'
       options.cli = false
       options.server = true
+    when '--phantomjs'
+      deprecated '--phantomjs option is deprecated and may be removed in future release, use `spectacular phantomjs` instead.'
+      options.cli = false
+      options.server = true
+      options.phantomjs = true
     when '--source' then options.sources.push args.shift()
     when '--version'
       options.cli = false
@@ -81,7 +105,13 @@ while args.length
 
   Usage:
 
-    spectacular [options] [globs...]
+    spectacular [command] [options] [globs...]
+
+  Commands:
+
+    test        Run tests on NodeJS.
+    server      Start the Spectacular server.
+    phantomjs   Stats the Spectacular server and run tests in phantomjs.
 
   Options:
 
@@ -90,7 +120,6 @@ while args.length
     -h, --help           Display this message.
     -m, --matchers PATH  Specify the path where project matchers can be found.
     -p, --profile        Add a report with the 10 slowest examples.
-    -s, --server         Starts a server.
     -t, --trace          Enable stack trace report for failures.
     -v, --verbose        Enable verbose output.
     --fixtures PATH      Specify the path where project fixtures can be found.
@@ -104,16 +133,10 @@ while args.length
     --no-helpers         Disable the loading of project helpers.
     --no-matchers        Disable the loading of project matchers.
     --no-trace           Remove stack trace from failures reports.
-    --phantomjs          Starts a server and run the test on phantomjs.
     --source GLOB        Source files for the server.
     --version            Display the Spectacular version.
 
 '''
-
-    when '--phantomjs'
-      options.cli = false
-      options.server = true
-      options.phantomjs = true
     else options.globs.push option
 
 #### Lookup for the spectacular lib.
