@@ -15,6 +15,33 @@ spectacular.global = (->
   {}
 )()
 
+spectacular.deprecated = (message) ->
+  parseLine = (line) ->
+    if line.indexOf('@') > 0
+      [m, o, f] = /<\/([^@]+)@(.)+$/.exec line
+    else
+      if line.indexOf('(') > 0
+        [m, o, f] = /at\s+([^\s]+)\s*\(([^\)])+/.exec line
+      else
+        [m, f] = /at\s+([^\s]+)/.exec line
+
+    [o,f]
+
+  e = new Error()
+  s = e.stack.split('\n')
+
+  [deprecatedMethodName, deprecatedMethodFile] = parseLine s[2]
+  [deprecatedMethodCallerName, deprecatedMethodCallerFile] = parseLine s[3]
+
+  caller = if deprecatedMethodCallerName
+    "(called from #{deprecatedMethodCallerName} at #{deprecatedMethodCallerFile})"
+  else
+    "(called from #{deprecatedMethodCallerFile})"
+
+  console.log "DEPRECATION WARNING: #{message} #{caller}"
+
+spectacular.deprecated._name = 'deprecated'
+
 spectacular.nextTick = process?.setImmediate or
                        process?.nextTick or
                        window?.setImmediate or
