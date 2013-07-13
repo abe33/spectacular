@@ -28,17 +28,17 @@ spectacular.deprecated = (message) ->
     [o,f]
 
   e = new Error()
-  s = e.stack.split('\n')
+  caller = ''
+  if e.stack?
+    s = e.stack.split('\n')
+    [deprecatedMethodCallerName, deprecatedMethodCallerFile] = parseLine s[3]
 
-  [deprecatedMethodName, deprecatedMethodFile] = parseLine s[2]
-  [deprecatedMethodCallerName, deprecatedMethodCallerFile] = parseLine s[3]
+    caller = if deprecatedMethodCallerName
+      " (called from #{deprecatedMethodCallerName} at #{deprecatedMethodCallerFile})"
+    else
+       "(called from #{deprecatedMethodCallerFile})"
 
-  caller = if deprecatedMethodCallerName
-    "(called from #{deprecatedMethodCallerName} at #{deprecatedMethodCallerFile})"
-  else
-    "(called from #{deprecatedMethodCallerFile})"
-
-  console.log "DEPRECATION WARNING: #{message} #{caller}"
+  console.log "DEPRECATION WARNING: #{message}#{caller}"
 
 spectacular.deprecated._name = 'deprecated'
 
