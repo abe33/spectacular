@@ -31,6 +31,7 @@ class spectacular.factories.Set
       instance[@property] = @value
 
 class spectacular.factories.Trait
+  @concern spectacular.Hookable
   @include spectacular.Globalizable
   @include spectacular.HasAncestors
   @extend spectacular.AncestorsProperties
@@ -38,7 +39,9 @@ class spectacular.factories.Trait
   @followUp 'arguments'
   @followUp 'buildBlock'
 
-  globalizable: 'set createWith build'.split(/\s+/g)
+  @hook 'build'
+
+  globalizable: 'set createWith build after'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
@@ -49,13 +52,14 @@ class spectacular.factories.Trait
 
   build: (@ownBuildBlock) ->
   createWith: (@ownArguments...) ->
+  after: (hook, block) -> @registerHook hook, block
 
   applySet: (instance) ->
     @setters.forEach (setter) -> setter.apply instance
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
 
-  globalizable: 'set trait createWith build include'.split(/\s+/g)
+  globalizable: 'set trait createWith build include after'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name
@@ -78,6 +82,9 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     @applySet instance
     @findTrait(trait).applySet instance for trait in traits
     instance[k] = v for k,v of options
+
+    hooks = @fromTraitAndThis 'buildHooks', traits
+    hook.call(instance, instance) for hook in hooks
     instance
 
   instanciate: (args, traits) ->
@@ -92,6 +99,14 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     for trait in traits
       traitValue = @findTrait(trait)[property]
       value = traitValue if traitValue?
+
+    value
+
+  fromTraitAndThis: (property, traits) ->
+    value = @[property]
+    for trait in traits
+      traitValue = @findTrait(trait)[property]
+      value = value.concat traitValue if traitValue?
 
     value
 

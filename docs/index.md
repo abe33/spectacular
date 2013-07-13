@@ -734,6 +734,20 @@ category = create 'category', 'with parent'
 # }
 ```
 
+### Factory Hooks
+
+Using the `after` method you can  set a block to be executed after the object was instanciated and all traits have been applied:
+
+```coffeescript
+factory 'object', class: Object, ->
+  set 'field', 'value'
+
+  after 'build', (object) ->
+    object.propertiesCount = Object.keys(object).length
+```
+
+Currently `build` is the only hook available on a factory.
+
 ### Customize Factory Builds
 
 If you're not happy with the way Spectacular instanciate objects, or that what you're building can't be instanciated through the `new` operator, you can override the factory build process using the `build` function.

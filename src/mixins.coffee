@@ -80,6 +80,19 @@ class spectacular.Globalizable
     else
       utils.camelize key
 
+class spectacular.Hookable
+  @hook: (name) ->
+    capitalizedName = utils.capitalize name
+    @mergeUp "#{name}Hooks"
+    @accessor "own#{capitalizedName}Hooks", {
+      get: -> @["__own#{capitalizedName}Hooks"] ||= []
+      set: (v) -> @["__own#{capitalizedName}Hooks"] = v
+    }
+
+  registerHook: (name, block) ->
+    capitalizedName = utils.capitalize name
+    @["own#{capitalizedName}Hooks"].push block
+
 class spectacular.GlobalizableObject
   @include spectacular.Globalizable
   @unglobalizable = spectacular.Globalizable.unglobalizable.concat 'set'

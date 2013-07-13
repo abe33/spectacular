@@ -24,6 +24,16 @@ factory 'object', class: Object, ->
     set 'property', -> 20
     set 'name', 'irrelevant'
 
+factory 'object with hooks', class: Object, ->
+  set 'field', 'value'
+
+  after 'build', (obj) ->
+    obj.field = 'another value'
+
+  trait 'trait with hook', ->
+    after 'build', (obj) ->
+      obj.field = 'a last value'
+
 factory 'dummy', class: Dummy, ->
   include 'has parent'
 
@@ -122,7 +132,15 @@ describe create, ->
 
       its 'parent', -> should exist
 
+  context 'on a factory that defines hooks', ->
+    withArguments 'object with hooks'
 
+    itsReturn -> should equal field: 'another value'
+
+    context 'with a trait that defines hook', ->
+      withArguments 'object with hooks', 'trait with hook'
+
+      itsReturn -> should equal field: 'a last value'
 
 
 describe factory, ->
