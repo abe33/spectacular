@@ -70,7 +70,7 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 
 First download Spectacular:
 
-<div id="download"><a href='spectacular-1.1.0.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
+<div id="download"><a href='spectacular-1.2.1.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
 
 Then puts Spectacular in your html file:
 
@@ -159,6 +159,11 @@ spectacular test specs/**/*.spec.js
     <td>`phantomjs`</td>
     <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
   </tr>
+
+  <tr>
+    <td>`slimerjs`</td>
+    <td>Assuming you have SlimerJS installed, it will starts a server and run the test on SlimerJS.</td>
+  </tr>
 </table>
 
 ### Options
@@ -190,15 +195,19 @@ spectacular test specs/**/*.spec.js
   </tr>
   <tr class='deprecated'>
     <td>`-s, --server`</td>
-    <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`.</td>
+    <td>Use the `server` command instead.</td>
   </tr>
   <tr class='deprecated'>
     <td>`--phantomjs`</td>
-    <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
+    <td>Use the `phantomjs` command instead.</td>
   </tr>
   <tr>
     <td>`--phantomjs-bin PATH`</td>
     <td>Pass the path to the PhantomJS binary.</td>
+  </tr>
+  <tr>
+    <td>`--slimerjs-bin PATH`</td>
+    <td>Pass the path to the SlimerJS binary.</td>
   </tr>
   <tr>
     <td>`--source GLOB`</td>
@@ -751,7 +760,7 @@ category = create 'category', 'with parent'
 # {
 #   name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
 #   parent: {
-#     name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
+#     name: 'Sunt vitae maiores sit.'
 #   }
 # }
 ```
