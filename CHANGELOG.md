@@ -1,3 +1,63 @@
+<a name="1.2.0"></a>
+# 1.2.0 (2013-07-14)
+
+
+## Bug Fixes
+
+- **$core:** retrieve nextTick or setImmediate from window if available
+  ([47e5c1e1](https://github.com/abe33/spectacular/commit/47e5c1e167758525d32ccadf00fad4ea2bf395d7))
+- **browser:** fix hidden errors when the parent group already had success
+  ([edfbc739](https://github.com/abe33/spectacular/commit/edfbc7390fec147cbfd278f4186ada92ed0ba732))
+- **examples:** fix false positive with ExampleGroup::failed
+  ([f0f965bf](https://github.com/abe33/spectacular/commit/f0f965bf2bef414e9b204c66be8cab50eeeef77f))
+- **phantomjs:**
+  - fix server port never passed to phantomjs script
+  ([0c653fe2](https://github.com/abe33/spectacular/commit/0c653fe2b145bf5dad83aa8f7d9533e3ca7af08d))
+- **promises:** fix value changed after a second resolve call
+  ([f7a4c134](https://github.com/abe33/spectacular/commit/f7a4c1349680ceba292f99081c413edee70cd886))
+
+
+## Features
+
+- **$bin:**
+  - add a --phantom-bin option to pass the path to phantomjs
+  ([9a745114](https://github.com/abe33/spectacular/commit/9a745114cb6c161f21d7ce7a02b1b44615dd5021))
+  - use command like arguments for run mode
+  ([2769b92a](https://github.com/abe33/spectacular/commit/2769b92a012a80ae2fdd9191e7e58dcba685e0d9))
+- **$core:**
+  - add support for SlimerJS
+  ([eec62aa2](https://github.com/abe33/spectacular/commit/eec62aa2f89e65ab6ecebe1c445a0c481b2d8c31))
+  - add a deprecated method to offer proper deprecation messages
+  ([87c68336](https://github.com/abe33/spectacular/commit/87c6833675d6ebd13fc669f937c22ee20b8ae78e))
+- **browser:**
+  - clicking on an error stack line will load the source
+  ([fe5991d9](https://github.com/abe33/spectacular/commit/fe5991d973284cda7e8c23a01d556d2be2cbc94e))
+  - add documentation format for browser runner
+  ([d1aff64c](https://github.com/abe33/spectacular/commit/d1aff64c1fe7e8ad281654b1382b2164299c8fef))
+- **examples:** add support of `#` as instance member descriptor
+  ([ca9fdf69](https://github.com/abe33/spectacular/commit/ca9fdf699eecf9ed9a6acaf8a54f497f1ce33cb1))
+- **factories:**
+  - add factory build hooks
+  ([19046214](https://github.com/abe33/spectacular/commit/19046214b2b636a3cda3e96f7716de1bbdee58bd))
+  - add support for factory mixin
+  ([61ba355d](https://github.com/abe33/spectacular/commit/61ba355d768d9da44df013f55e26bed0ad94fbfd))
+  - add support for custom build in factories
+  ([e7daeb3c](https://github.com/abe33/spectacular/commit/e7daeb3ceda4d18f3191eede8d736bbfb72e3aea))
+- **server:** add logs and verbose outputs to the server
+  ([6633138b](https://github.com/abe33/spectacular/commit/6633138b7426b2078ca7f11234ac65435a4c50e8))
+
+
+## Breaking Changes
+
+- **$bin:** due to [2769b92a](https://github.com/abe33/spectacular/commit/2769b92a012a80ae2fdd9191e7e58dcba685e0d9),
+  running the spectacular bin without a command will only
+  display the help message
+
+  To run the test you must you the `test` command such :
+
+    `spectacular test`
+
+
 <a name="1.1.0"></a>
 # 1.1.0 (2013-07-06)
 
