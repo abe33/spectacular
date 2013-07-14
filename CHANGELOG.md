@@ -1,3 +1,14 @@
+<a name="1.2.1"></a>
+# 1.2.1 (2013-07-14)
+
+
+## Bug Fixes
+
+- **documentation:** update documentation with latest options and commands
+  ([4d281ea1](https://github.com/abe33/spectacular/commit/4d281ea19e8e3afae2b1e4225411ba2418b7e55d))
+
+
+
 <a name="1.2.0"></a>
 # 1.2.0 (2013-07-14)
 
