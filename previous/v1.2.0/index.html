@@ -7,7 +7,7 @@
   fixturesRoot: './js/fixtures',
 }
 window.paths = ['js/specs.js']
-</script><script src="build/js/spectacular.js" type="text/javascript"></script><script src="js/specs.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>1.2.1</h2><nav><ul><li><a href="/">Home</a></li><li><a href="/#download">Download</a></li><li><a href="/previous.html">Archives</a></li></ul></nav></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
+</script><script src="build/js/spectacular.js" type="text/javascript"></script><script src="js/specs.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></head><body><div class="gutter"><header><h1>Spectacular</h1><h2>1.2.0</h2><nav><ul><li><a href="/">Home</a></li><li><a href="/#download">Download</a></li><li><a href="/previous.html">Archives</a></li></ul></nav></header><h1>Introduction</h1><p><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a>
 <a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a>
 <a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a>
 <a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></p>
@@ -56,7 +56,7 @@ window.paths = ['js/specs.js']
 <p>This will install Spectacular globally and allow you to use the Spectacular command line tool.</p>
 <h3>Browser</h3>
 <p>First download Spectacular:</p>
-<div id="download"><a href='spectacular-1.2.1.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
+<div id="download"><a href='spectacular-1.2.0.zip' class='download' target='_blank'><i class='icon-download-alt'></i>Download</a></div>
 
 <p>Then puts Spectacular in your html file:</p>
 <pre><code class="lang-xml"><span class="tag"><<span class="title">link</span> <span class="attribute">href</span>=<span class="value">"build/css/spectacular.css"</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">type</span>=<span class="value">"text/css"</span>/></span>
@@ -124,11 +124,6 @@ window.paths = ['js/specs.js']
     <td><code>phantomjs</code></td>
     <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
   </tr>
-
-  <tr>
-    <td><code>slimerjs</code></td>
-    <td>Assuming you have SlimerJS installed, it will starts a server and run the test on SlimerJS.</td>
-  </tr>
 </table>
 
 <h3>Options</h3>
@@ -159,19 +154,15 @@ window.paths = ['js/specs.js']
   </tr>
   <tr class='deprecated'>
     <td><code>-s, --server</code></td>
-    <td>Use the <code>server</code> command instead.</td>
+    <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: <code>http://localhost:5000</code>.</td>
   </tr>
   <tr class='deprecated'>
     <td><code>--phantomjs</code></td>
-    <td>Use the <code>phantomjs</code> command instead.</td>
+    <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
   </tr>
   <tr>
     <td><code>--phantomjs-bin PATH</code></td>
     <td>Pass the path to the PhantomJS binary.</td>
-  </tr>
-  <tr>
-    <td><code>--slimerjs-bin PATH</code></td>
-    <td>Pass the path to the SlimerJS binary.</td>
   </tr>
   <tr>
     <td><code>--source GLOB</code></td>
@@ -591,7 +582,7 @@ category <span class="operators">=</span> create <span class="string"><span clas
 <span class="comment"># {</span>
 <span class="comment">#   name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'</span>
 <span class="comment">#   parent: {</span>
-<span class="comment">#     name: 'Sunt vitae maiores sit.'</span>
+<span class="comment">#     name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'</span>
 <span class="comment">#   }</span>
 <span class="comment"># }</span></code></pre>
 <h3>Factory Hooks</h3>

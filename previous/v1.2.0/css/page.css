@@ -189,23 +189,6 @@ table tr {
   -moz-transition: background 1s ease-out;
   -o-transition: background 1s ease-out;
 }
-table tr.deprecated td:last-child div:before {
-  content: 'deprecated';
-  text-transform: uppercase;
-  font-size: 0.7em;
-  background: rgba(255,40,20,0.4);
-  line-height: 10px;
-  padding: 3px;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -o-border-radius: 3px;
-  margin-right: 4px;
-  font-weight: bold;
-  display: inline-block;
-  vertical-align: middle;
-  color: #fff;
-}
 table tr:hover {
   transition: background 0.2s ease-in;
   -webkit-transition: background 0.2s ease-in;
