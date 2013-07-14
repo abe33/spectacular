@@ -37,7 +37,7 @@ spectacular.matcher = (name, block) ->
     def matcher, key, f
 
   buildMatcher = (takes=[], args=[]) ->
-    matcher = {}
+    matcher = {name}
     if takes[0]? and takes[0].indexOf('...') isnt -1
       key = takes[0].replace /\.\.\./, ''
       matcher[key] = args
