@@ -99,3 +99,8 @@ describe GlobalizableClass, ->
     ].forEach (method) ->
       specify "the globalizable", ->
         expect(method, spectacular.global[method]).to exist
+
+describe spectacular.HasNestedCollection, ->
+  context 'when called without options', ->
+    it -> should throwAnError().with 'foo'
+    it -> should throwAnError().with 'foo', {}
