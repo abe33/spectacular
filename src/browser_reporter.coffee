@@ -1,5 +1,11 @@
 utils = spectacular.utils
 
+ancestors = (node, block) ->
+  parent = node.parentNode
+
+  if hasClass parent, 'example-group'
+    block.call this, parent
+    ancestors parent, block
 
 wrapNode = (node) ->
   if node.length? then node else [node]
@@ -189,11 +195,11 @@ class spectacular.BrowserReporter
       @formatProgressExample example
 
   formatDocumentationExample: (example) ->
-    ancestors = example.ancestors
-    ancestors.pop()
+    elders = example.ancestors
+    elders.pop()
 
     reversed = []
-    reversed.unshift a for a in ancestors
+    reversed.unshift a for a in elders
 
     node = @examplesContainer
     n = 0
@@ -251,12 +257,22 @@ class spectacular.BrowserReporter
         }
       """
 
+
     ex.onclick = -> toggleClass ex, 'closed'
+
     node.appendChild ex
+    if example.failed
+      ancestors ex, (node) ->
+        if hasClass node, 'success'
+          removeClass node, 'success'
+          addClass node, 'failure'
+
     pres = ex.querySelectorAll('pre:not([id])')
     Array::forEach.call pres, (node) -> fixNodeHeight node
     addClass ex, 'closed'
     setTimeout (-> addClass ex, 'animate'), 100
+
+
 
   formatProgressExample: (example) ->
     id = @examples.length
