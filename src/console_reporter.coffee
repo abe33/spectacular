@@ -44,7 +44,7 @@ class spectacular.StackReporter
       s = "\n\n#{stack.join '\n'}\n"
       s = utils.indent s if /@/.test s
     else
-      s = "\n#{stack[0..5].join '\n'}"
+      s = "\n#{stack[0..Math.min(5, stack.length-1)].join '\n'}"
       s = utils.indent s if /@/.test s
       s += "\n    ...\n\n    use --long-trace option to view the #{stack.length - 6} remaining lines" if stack.length > 6
       s += "\n\n"

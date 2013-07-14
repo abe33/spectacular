@@ -342,6 +342,9 @@ html.failure body #reporter > header h2:after {
   margin-top: 0;
   border-top: 0;
 }
+#reporter #examples .example pre .hidden {
+  display: none;
+}
 #reporter #examples .example pre ins,
 #reporter #examples .example pre del {
   display: inline;

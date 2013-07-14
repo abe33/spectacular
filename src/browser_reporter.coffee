@@ -38,6 +38,8 @@ fixNodeHeight = (nl) ->
   Array::forEach.call nl, (node) ->
     node.style.height = "#{node.clientHeight}px"
 
+FILE_RE = -> /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g
+
 class spectacular.SlidingObject
   constructor: (@target, @container) ->
     previousOnScroll = window.onscroll
@@ -72,21 +74,42 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
 
     pre = """
       <pre id='pre_#{@id}_source' class='loading'></pre>
-      <pre id='pre_#{@id}_stack'>#{utils.escape @formatStack stack}</pre>
+      <pre id='pre_#{@id}_stack'>#{@prepareStack stack}</pre>
     """
 
-    [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
-
-    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
-
-    @getLines(url, parseInt(line), parseInt(column)).then (msg) =>
+    @loadSource(line).then (msg) =>
       source = document.getElementById "pre_#{@id}_source"
       source.innerHTML = msg
       removeClass source, 'loading'
       fixNodeHeight source
 
+      stackLinks = document.getElementById("pre_#{@id}_stack").querySelectorAll('a')
+      Array::forEach.call stackLinks, (link) =>
+        link.onclick = (e) =>
+          e.preventDefault()
+          e.stopImmediatePropagation()
+          linkPre = link.parentNode.querySelector 'pre'
+          if linkPre?
+            toggleClass linkPre, 'hidden'
+          else
+            linkLine = link.textContent
+            @loadSource(linkLine).then (msg) ->
+              linkPre = document.createElement 'pre'
+              linkPre.innerHTML = msg
+              link.parentNode.appendChild linkPre
+
     pre
 
+  prepareStack: (stack) ->
+    stack = stack.map (s) -> "<span><a href='#' rel='stack'>#{utils.escape s}</a></span>"
+    @formatStack stack
+
+  loadSource: (stackLine) ->
+    [match, url, e, line, c, column] = FILE_RE().exec stackLine
+
+    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
+
+    @getLines(url, parseInt(line), parseInt(column))
 
 class spectacular.BrowserReporter
   STATE_CHARS =
