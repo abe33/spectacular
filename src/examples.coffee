@@ -105,8 +105,8 @@ class spectacular.Example
     @exclusive = false
 
   @getter 'subject', -> @__subject ||= @subjectBlock?.call(@context)
-  @getter 'failed', -> @examplePromise?.isRejected()
-  @getter 'succeed', -> @examplePromise?.isFulfilled()
+  @getter 'failed', -> @result?.state in ['skipped', 'errored', 'failure']
+  @getter 'succeed', -> @result?.state is 'success'
   @getter 'reason', -> @afterReason or @examplePromise?.reason
   @getter 'duration', ->
     if @runEndedAt? and @runStartedAt?
@@ -286,39 +286,28 @@ class spectacular.ExampleGroup extends spectacular.Example
     res[e.options.id] = e for e in @identifiedExamples
     res
   @getter 'failed', -> @allExamples.some (e) -> e.failed
-  @getter 'succeed', -> not @failed
+  @getter 'succeed', -> @allExamples.every (e) -> e.succeed
   @getter 'examplesSuceed', -> @examples.every (e) -> e.succeed
+
+  @SUBJECTS_MAP = {
+    '::': 'instanceMemberAsSubject'
+    '#' : 'instanceMemberAsSubject'
+    '.' : 'classMemberAsSubject'
+  }
+
 
   constructor: (block, desc, @parent, @options={}) ->
     subject = null
     switch typeof desc
       when 'string'
-        if desc.indexOf('.') is 0
-          @noSpaceBeforeDescription = true
-          owner = @subject
-          subject = owner?[desc.replace '.', '']
-          if typeof subject is 'function'
-            original = subject
-            subject = -> original.apply owner, arguments
+        tokenNotFound = true
+        for token, method of ExampleGroup.SUBJECTS_MAP
+          if desc.indexOf(token) is 0
+            @[method].call this, desc, token
+            tokenNotFound = false
 
-          @subjectBlock = -> subject
-        else if desc.indexOf('::') is 0
+        if tokenNotFound and not @parent? or @parent.description is ''
           @noSpaceBeforeDescription = true
-          type = @subject
-          @subjectBlock = ->
-            subject = null
-            if type
-              owner = build type, @parameters or []
-              subject = owner[desc.replace '::', '']
-              @owner = owner
-              if typeof subject is 'function'
-                original = subject
-                subject = -> original.apply owner, arguments
-            subject
-        else
-          if not @parent? or @parent.description is ''
-            @noSpaceBeforeDescription = true
-
       else
         @noSpaceBeforeDescription = true
         subject = desc
@@ -330,6 +319,30 @@ class spectacular.ExampleGroup extends spectacular.Example
     @children = []
 
   run: ->
+
+  classMemberAsSubject: (desc, token) ->
+    @noSpaceBeforeDescription = true
+    owner = @subject
+    subject = owner?[desc.replace '.', '']
+    if typeof subject is 'function'
+      original = subject
+      subject = -> original.apply owner, arguments
+
+    @subjectBlock = -> subject
+
+  instanceMemberAsSubject: (desc, token) ->
+    @noSpaceBeforeDescription = true
+    type = @subject
+    @subjectBlock = ->
+      subject = null
+      if type
+        owner = build type, @parameters or []
+        subject = owner[desc.replace token, '']
+        @owner = owner
+        if typeof subject is 'function'
+          original = subject
+          subject = -> original.apply owner, arguments
+      subject
 
   executeBlock: ->
     return it(-> pending()) unless @block?

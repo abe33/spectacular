@@ -36,7 +36,8 @@ html.failure body #reporter > header h2:after {
   color: #ff2814;
   background: none;
 }
-.hide-success .example.success {
+.hide-success .example.success,
+.hide-success .example-group.success {
   display: none !important;
 }
 .hide-success #reporter #controls button.success {
@@ -65,6 +66,9 @@ html.failure body #reporter > header h2:after {
 }
 .hide-errored #reporter #controls button.errored {
   background: rgba(255,40,20,0.4);
+}
+.hide-errored.hide-failure.hide-skipped .example-group.failure {
+  display: none !important;
 }
 #reporter {
   position: relative;
@@ -238,51 +242,8 @@ html.failure body #reporter > header h2:after {
   -o-box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
   box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
 }
-#reporter .example {
-  cursor: pointer;
-  min-height: 58px;
-  position: relative;
-  padding: 8px 8px 8px 80px;
-  border-bottom: 1px solid rgba(86,122,120,0.1);
-  counter-increment: example;
-}
-#reporter .example h4,
-#reporter .example h5 {
-  color: #163a4c;
-  margin: 0;
-  font-weight: 300;
-}
-#reporter .example h4 {
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-#reporter .example pre {
-  color: #163a4c;
-  margin: 0;
-  margin-top: 6px;
-  padding: 8px;
-  background: #efefef;
-  border: 1px solid #e4e4e4;
-  overflow: hidden;
-}
-#reporter .example pre+pre {
-  margin-top: 0;
-  border-top: 0;
-}
-#reporter .example pre ins,
-#reporter .example pre del {
-  display: inline;
-  text-decoration: none;
-}
-#reporter .example pre ins {
-  background: rgba(100,180,50,0.2);
-  border: 1px solid rgba(100,180,50,0.6);
-}
-#reporter .example pre del {
-  background: rgba(255,40,20,0.2);
-  border: 1px solid rgba(255,40,20,0.6);
-}
-#reporter .example:hover:before {
+#reporter #examples .example-group:hover:before,
+#reporter #examples .example:hover:before {
   background: rgba(255,255,255,0.1);
   -webkit-transition: all 0.15s ease-in;
   -moz-transition: all 0.15s ease-in;
@@ -290,8 +251,9 @@ html.failure body #reporter > header h2:after {
   -o-transition: all 0.15s ease-in;
   transition: all 0.15s ease-in;
 }
-#reporter .example:before {
-  content: '#' attr(data-id);
+#reporter #examples .example-group:before,
+#reporter #examples .example:before {
+  content: '';
   position: absolute;
   font-weight: bold;
   display: block;
@@ -299,7 +261,7 @@ html.failure body #reporter > header h2:after {
   height: 100%;
   padding: 8px 8px;
   top: 0;
-  left: 0;
+  left: 4px;
   text-align: right;
   font-size: 1.1em;
   margin-left: -78px;
@@ -315,112 +277,198 @@ html.failure body #reporter > header h2:after {
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  -moz-text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  -ms-text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  -o-text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  text-shadow: 0 0 4px rgba(0,0,0,0.6);
   -webkit-transition: all 0.45s ease-in;
   -moz-transition: all 0.45s ease-in;
   -ms-transition: all 0.45s ease-in;
   -o-transition: all 0.45s ease-in;
   transition: all 0.45s ease-in;
 }
-#reporter .example.animate pre {
+#reporter #examples .example-group h3,
+#reporter #examples .example h3,
+#reporter #examples .example-group h4,
+#reporter #examples .example h4,
+#reporter #examples .example-group h5,
+#reporter #examples .example h5 {
+  color: #163a4c;
+  margin: 0;
+  font-weight: 300;
+}
+#reporter #examples .example-group h5,
+#reporter #examples .example h5 {
+  font-size: 16px;
+}
+#reporter #examples .example-group h4,
+#reporter #examples .example h4 {
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+#reporter #examples .example-group h3,
+#reporter #examples .example h3 {
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+#reporter #examples .example-group.success {
+  background: rgba(100,180,50,0.3);
+}
+#reporter #examples .example-group.failure {
+  background: rgba(255,40,20,0.2);
+}
+#reporter #examples .example-group h3 {
+  padding: 8px 0;
+}
+#reporter #examples .example {
+  cursor: pointer;
+  padding: 8px 0;
+}
+#reporter #examples .example h4 {
+  display: inline-block;
+}
+#reporter #examples .example pre {
+  color: #163a4c;
+  margin: 0;
+  margin-top: 6px;
+  margin-right: 8px;
+  padding: 8px;
+  background: #efefef;
+  border: 1px solid #e4e4e4;
+  overflow: hidden;
+}
+#reporter #examples .example pre+pre {
+  margin-top: 0;
+  border-top: 0;
+}
+#reporter #examples .example pre .hidden {
+  display: none;
+}
+#reporter #examples .example pre ins,
+#reporter #examples .example pre del {
+  display: inline;
+  text-decoration: none;
+}
+#reporter #examples .example pre ins {
+  background: rgba(100,180,50,0.2);
+  border: 1px solid rgba(100,180,50,0.6);
+}
+#reporter #examples .example pre del {
+  background: rgba(255,40,20,0.2);
+  border: 1px solid rgba(255,40,20,0.6);
+}
+#reporter #examples .example + .example {
+  border-top: 1px solid rgba(22,58,76,0.1);
+}
+#reporter #examples .example:before {
+  content: '#' attr(data-id);
+}
+#reporter #examples .example.success:hover:before {
+  color: #64b432;
+}
+#reporter #examples .example.failure:hover:before {
+  color: #ff2814;
+}
+#reporter #examples .example.skipped:hover:before {
+  color: #ff14dc;
+}
+#reporter #examples .example.errored:hover:before {
+  color: #ff9614;
+}
+#reporter #examples .example.pending:hover:before {
+  color: #ffc85a;
+}
+#reporter #examples .example.animate pre {
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   -ms-transition: all 0.2s ease-in;
   -o-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
 }
-#reporter .example.success.closed pre,
-#reporter .example.pending.closed pre {
+#reporter #examples .example.success.closed pre,
+#reporter #examples .example.pending.closed pre {
   height: 0 !important;
   padding: 0 8px;
   border-top: 0px solid rgba(86,122,120,0.1);
   border-bottom: 0px solid rgba(86,122,120,0.1);
   margin-top: 0;
 }
-#reporter .example.failure .expectation.success pre,
-#reporter .example.error .expectation.success pre,
-#reporter .example.skipped .expectation.success pre {
+#reporter #examples .example.failure .expectation.success pre,
+#reporter #examples .example.error .expectation.success pre,
+#reporter #examples .example.skipped .expectation.success pre {
   display: none;
 }
-#reporter .example .expectation.success h5 {
-  color: #64b432;
+#reporter #examples .example .expectation {
+  padding-left: 24px;
 }
-#reporter .example .expectation.failure h5 {
-  color: #ff2814;
+#reporter #examples .example .expectation.success h5 {
+  color: DarkGreen;
 }
-#reporter .example.success pre,
-#reporter .example.pending pre {
+#reporter #examples .example .expectation.failure h5 {
+  color: DarkRed;
+}
+#reporter #examples .example.success pre,
+#reporter #examples .example.pending pre {
   display: block;
 }
-#reporter .example.skipped pre + pre {
+#reporter #examples .example.skipped pre + pre {
   display: none;
 }
-#reporter .example.success {
-  background: rgba(100,180,50,0.2);
-  border-left: 4px solid #64b432;
-}
-#reporter .example.success .line {
+#reporter #examples .example.success {
   background: rgba(100,180,50,0.2);
 }
-#reporter .example.success h4 {
-  color: #64b432;
+#reporter #examples .example.success .line {
+  background: rgba(100,180,50,0.2);
 }
-#reporter .example.success .result {
+#reporter #examples .example.success .result {
   background: #64b432;
 }
-#reporter .example.failure {
-  background: rgba(255,40,20,0.2);
-  border-left: 4px solid #ff2814;
-}
-#reporter .example.failure .line {
+#reporter #examples .example.failure {
   background: rgba(255,40,20,0.2);
 }
-#reporter .example.failure .result {
+#reporter #examples .example.failure .line {
+  background: rgba(255,40,20,0.2);
+}
+#reporter #examples .example.failure .result {
   background: #ff2814;
 }
-#reporter .example.skipped {
-  background: rgba(255,20,220,0.2);
-  border-left: 4px solid #ff14dc;
-}
-#reporter .example.skipped .line {
+#reporter #examples .example.skipped {
   background: rgba(255,20,220,0.2);
 }
-#reporter .example.skipped .result {
+#reporter #examples .example.skipped .line {
+  background: rgba(255,20,220,0.2);
+}
+#reporter #examples .example.skipped .result {
   background: #ff14dc;
 }
-#reporter .example.errored {
-  background: rgba(255,150,20,0.2);
-  border-left: 4px solid #ff9614;
-}
-#reporter .example.errored .line {
+#reporter #examples .example.errored {
   background: rgba(255,150,20,0.2);
 }
-#reporter .example.errored .result {
+#reporter #examples .example.errored .line {
+  background: rgba(255,150,20,0.2);
+}
+#reporter #examples .example.errored .result {
   background: #ff9614;
 }
-#reporter .example.pending {
-  background: rgba(255,200,90,0.2);
-  border-left: 4px solid #ffc85a;
-}
-#reporter .example.pending .line {
+#reporter #examples .example.pending {
   background: rgba(255,200,90,0.2);
 }
-#reporter .example.pending .result {
+#reporter #examples .example.pending .line {
+  background: rgba(255,200,90,0.2);
+}
+#reporter #examples .example.pending .result {
   background: #ffc85a;
 }
-#reporter .example .expectation + .expectation {
+#reporter #examples .example .expectation + .expectation {
   margin-top: 4px;
 }
-#reporter .example .result {
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  padding: 4px 0;
-  width: 64px;
-  height: 20px;
+#reporter #examples .example .result {
   color: #fff;
   text-align: center;
   text-transform: uppercase;
   font-weight: 500;
+  display: inline-block;
   font-size: 10px;
   font-family: monospace;
   -webkit-text-shadow: 0 1px 2px #163a4c;
@@ -433,28 +481,213 @@ html.failure body #reporter > header h2:after {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
+  padding: 5px 8px 3px;
+  vertical-align: middle;
 }
-#reporter .example .time {
-  padding: 2px 6px 2px 18px;
+#reporter #examples .example .time {
+  position: relative;
   background: #163a4c;
   color: #cfe7e6;
-  position: absolute;
-  display: block;
-  width: 64px;
-  left: 8px;
-  top: 30px;
+  display: inline-block;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
   font-size: 0.8em;
+  padding: 1px 8px 3px 20px;
+  vertical-align: middle;
 }
-#reporter .example .time .icon-time {
+#reporter #examples .example .time .icon-time {
   position: absolute;
   color: #567a78;
-  left: 4px;
+  left: 7px;
   top: 4px;
+}
+#reporter.documentation #examples .example-group,
+#reporter.documentation #examples .example {
+  position: relative;
+}
+#reporter.documentation #examples .example-group.level0 h3,
+#reporter.documentation #examples .example-group.level0 h4,
+#reporter.documentation #examples .example-group.level0 h5 {
+  padding-left: 8px;
+}
+#reporter.documentation #examples .example-group.level1 h3,
+#reporter.documentation #examples .example-group.level1 h4,
+#reporter.documentation #examples .example-group.level1 h5 {
+  padding-left: 32px;
+}
+#reporter.documentation #examples .example-group.level2 h3,
+#reporter.documentation #examples .example-group.level2 h4,
+#reporter.documentation #examples .example-group.level2 h5 {
+  padding-left: 56px;
+}
+#reporter.documentation #examples .example-group.level3 h3,
+#reporter.documentation #examples .example-group.level3 h4,
+#reporter.documentation #examples .example-group.level3 h5 {
+  padding-left: 80px;
+}
+#reporter.documentation #examples .example-group.level4 h3,
+#reporter.documentation #examples .example-group.level4 h4,
+#reporter.documentation #examples .example-group.level4 h5 {
+  padding-left: 104px;
+}
+#reporter.documentation #examples .example-group.level5 h3,
+#reporter.documentation #examples .example-group.level5 h4,
+#reporter.documentation #examples .example-group.level5 h5 {
+  padding-left: 128px;
+}
+#reporter.documentation #examples .example-group.level6 h3,
+#reporter.documentation #examples .example-group.level6 h4,
+#reporter.documentation #examples .example-group.level6 h5 {
+  padding-left: 152px;
+}
+#reporter.documentation #examples .example-group.level7 h3,
+#reporter.documentation #examples .example-group.level7 h4,
+#reporter.documentation #examples .example-group.level7 h5 {
+  padding-left: 176px;
+}
+#reporter.documentation #examples .example-group.level8 h3,
+#reporter.documentation #examples .example-group.level8 h4,
+#reporter.documentation #examples .example-group.level8 h5 {
+  padding-left: 200px;
+}
+#reporter.documentation #examples .example-group.level9 h3,
+#reporter.documentation #examples .example-group.level9 h4,
+#reporter.documentation #examples .example-group.level9 h5 {
+  padding-left: 224px;
+}
+#reporter.documentation #examples .example-group.level10 h3,
+#reporter.documentation #examples .example-group.level10 h4,
+#reporter.documentation #examples .example-group.level10 h5 {
+  padding-left: 248px;
+}
+#reporter.documentation #examples .example.level0 {
+  padding-left: 8px;
+}
+#reporter.documentation #examples .example.level0 h3,
+#reporter.documentation #examples .example.level0 h4,
+#reporter.documentation #examples .example.level0 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level1 {
+  padding-left: 32px;
+}
+#reporter.documentation #examples .example.level1 h3,
+#reporter.documentation #examples .example.level1 h4,
+#reporter.documentation #examples .example.level1 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level2 {
+  padding-left: 56px;
+}
+#reporter.documentation #examples .example.level2 h3,
+#reporter.documentation #examples .example.level2 h4,
+#reporter.documentation #examples .example.level2 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level3 {
+  padding-left: 80px;
+}
+#reporter.documentation #examples .example.level3 h3,
+#reporter.documentation #examples .example.level3 h4,
+#reporter.documentation #examples .example.level3 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level4 {
+  padding-left: 104px;
+}
+#reporter.documentation #examples .example.level4 h3,
+#reporter.documentation #examples .example.level4 h4,
+#reporter.documentation #examples .example.level4 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level5 {
+  padding-left: 128px;
+}
+#reporter.documentation #examples .example.level5 h3,
+#reporter.documentation #examples .example.level5 h4,
+#reporter.documentation #examples .example.level5 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level6 {
+  padding-left: 152px;
+}
+#reporter.documentation #examples .example.level6 h3,
+#reporter.documentation #examples .example.level6 h4,
+#reporter.documentation #examples .example.level6 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level7 {
+  padding-left: 176px;
+}
+#reporter.documentation #examples .example.level7 h3,
+#reporter.documentation #examples .example.level7 h4,
+#reporter.documentation #examples .example.level7 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level8 {
+  padding-left: 200px;
+}
+#reporter.documentation #examples .example.level8 h3,
+#reporter.documentation #examples .example.level8 h4,
+#reporter.documentation #examples .example.level8 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level9 {
+  padding-left: 224px;
+}
+#reporter.documentation #examples .example.level9 h3,
+#reporter.documentation #examples .example.level9 h4,
+#reporter.documentation #examples .example.level9 h5 {
+  padding-left: 0;
+}
+#reporter.documentation #examples .example.level10 {
+  padding-left: 248px;
+}
+#reporter.documentation #examples .example.level10 h3,
+#reporter.documentation #examples .example.level10 h4,
+#reporter.documentation #examples .example.level10 h5 {
+  padding-left: 0;
+}
+#reporter.progress #examples .example {
+  cursor: pointer;
+  min-height: 58px;
+  position: relative;
+  padding: 8px 8px 8px 80px;
+  border-bottom: 1px solid rgba(86,122,120,0.1);
+}
+#reporter.progress #examples .example.success {
+  border-left: 4px solid #64b432;
+}
+#reporter.progress #examples .example.failure {
+  border-left: 4px solid #ff2814;
+}
+#reporter.progress #examples .example.skipped {
+  border-left: 4px solid #ff14dc;
+}
+#reporter.progress #examples .example.errored {
+  border-left: 4px solid #ff9614;
+}
+#reporter.progress #examples .example.pending {
+  border-left: 4px solid #ffc85a;
+}
+#reporter.progress #examples .example .result {
+  padding: 4px 4px 3px;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 64px;
+  height: 20px;
+}
+#reporter.progress #examples .example .time {
+  padding: 1px 6px 3px 18px;
+  position: absolute;
+  left: 8px;
+  top: 30px;
+  width: 64px;
+  height: 20px;
 }
 #reporter > header {
   color: #567a78;

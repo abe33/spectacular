@@ -74,9 +74,10 @@ class spectacular.Promise
 
   fail: (errorHandler) -> @then (->), errorHandler
 
-  resolve: (@value) ->
+  resolve: (value) ->
     return unless @pending
 
+    @value = value
     @fulfilled = true
     @notifyHandlers()
     @pending = false
@@ -96,6 +97,8 @@ class spectacular.Promise
       handler @value for handler in @fulfilledHandlers
     else
       handler @reason for handler in @errorHandlers
+
+    this
 
 class spectacular.AsyncPromise extends spectacular.Promise
   constructor: ->

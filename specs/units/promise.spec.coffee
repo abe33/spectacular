@@ -13,6 +13,7 @@ describe spectacular.Promise, ->
           subject 'promise', -> spectacular.Promise.unit()
 
           it -> should be 'fulfilled'
+          it -> should be 'resolved'
           its 'value', -> should equal 0
 
         context 'when called with a value', ->
@@ -36,9 +37,53 @@ describe spectacular.Promise, ->
           itsReturn -> should exist
           itsReturn -> should be 'fulfilled'
 
+        context 'with a failing promise', ->
+          given 'failedPromise', ->
+            promise = new spectacular.Promise
+            promise.reject()
+            promise
+
+          withParameters ->
+            [[
+              spectacular.Promise.unit()
+              spectacular.Promise.unit()
+              @failedPromise
+            ]]
+
+          itsReturn -> should be 'rejected'
+
     describe '::isPending', ->
       itsReturn -> should equal true
 
+    context 'when resolved', ->
+      subject ->
+        promise = spectacular.Promise.unit('a value')
+        promise
+
+      context 'trying to resolve the promise a second time', ->
+        before -> @subject.resolve 'another value'
+
+        specify 'the promise value', -> @subject.value.should equal 'a value'
+
+      context 'trying to notify handlers a second time', ->
+        before ->
+          @notified = false
+          @subject.fulfilledHandlers.push => @notified = true
+          @subject.notifyHandlers()
+
+        specify 'the handler shouldnt have been called', ->
+          expect(@notified).to be false
+
+    context 'when rejected', ->
+      subject ->
+        promise = new spectacular.Promise
+        promise.reject 'a reason'
+        promise
+
+      context 'trying to reject the promise a second time', ->
+        before -> @subject.reject 'another reason'
+
+        specify 'the promise reason', -> @subject.reason.should equal 'a reason'
     context 'when chained using then', ->
       given 'firstPromise', -> new spectacular.Promise
       given 'secondPromise', -> @firstPromise.then ->

@@ -65,8 +65,27 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 The most simple way to use the spectacular command line tool is as follow:
 
 ```shell
-spectacular specs/**/*.spec.js
+spectacular test specs/**/*.spec.js
 ```
+
+### Commands
+
+<table cellspacing="0">
+  <tr>
+    <td>`test`</td>
+    <td>Runs the tests on NodeJS.</td>
+  </tr>
+
+  <tr>
+    <td>`server`</td>
+    <td>Starts a server. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`. The default port can be changed by setting the `PORT` environment variable.</td>
+  </tr>
+
+  <tr>
+    <td>`phantomjs`</td>
+    <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
+  </tr>
+</table>
 
 ### Options
 
@@ -95,13 +114,17 @@ spectacular specs/**/*.spec.js
     <td>`-d, --documentation`</td>
     <td>Enable the documentation format in the output.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`-s, --server`</td>
     <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`--phantomjs`</td>
     <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
+  </tr>
+  <tr>
+    <td>`--phantomjs-bin PATH`</td>
+    <td>Pass the path to the PhantomJS binary.</td>
   </tr>
   <tr>
     <td>`--source GLOB`</td>
@@ -152,6 +175,8 @@ spectacular specs/**/*.spec.js
     <td>Disable the loading of project helpers.</td>
   </tr>
 </table>
+
+Options can also be defined in a `.spectacular` file at the root of your project.
 
 ## Contributing
 

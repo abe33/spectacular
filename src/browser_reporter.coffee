@@ -1,5 +1,11 @@
 utils = spectacular.utils
 
+ancestors = (node, block) ->
+  parent = node.parentNode
+
+  if hasClass parent, 'example-group'
+    block.call this, parent
+    ancestors parent, block
 
 wrapNode = (node) ->
   if node.length? then node else [node]
@@ -31,6 +37,8 @@ fixNodeHeight = (nl) ->
   nl = wrapNode nl
   Array::forEach.call nl, (node) ->
     node.style.height = "#{node.clientHeight}px"
+
+FILE_RE = -> /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g
 
 class spectacular.SlidingObject
   constructor: (@target, @container) ->
@@ -66,24 +74,45 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
 
     pre = """
       <pre id='pre_#{@id}_source' class='loading'></pre>
-      <pre id='pre_#{@id}_stack'>#{utils.escape @formatStack stack}</pre>
+      <pre id='pre_#{@id}_stack'>#{@prepareStack stack}</pre>
     """
 
-    [match, url, e, line, c, column] = /(http:\/\/.*\.(js|coffee)):(\d+)(:(\d+))*/g.exec line
-
-    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
-
-    @getLines(url, parseInt(line), parseInt(column)).then (msg) =>
+    @loadSource(line).then (msg) =>
       source = document.getElementById "pre_#{@id}_source"
       source.innerHTML = msg
       removeClass source, 'loading'
       fixNodeHeight source
 
+      stackLinks = document.getElementById("pre_#{@id}_stack").querySelectorAll('a')
+      Array::forEach.call stackLinks, (link) =>
+        link.onclick = (e) =>
+          e.preventDefault()
+          e.stopImmediatePropagation()
+          linkPre = link.parentNode.querySelector 'pre'
+          if linkPre?
+            toggleClass linkPre, 'hidden'
+          else
+            linkLine = link.textContent
+            @loadSource(linkLine).then (msg) ->
+              linkPre = document.createElement 'pre'
+              linkPre.innerHTML = msg
+              link.parentNode.appendChild linkPre
+
     pre
 
+  prepareStack: (stack) ->
+    stack = stack.map (s) -> "<span><a href='#' rel='stack'>#{utils.escape s}</a></span>"
+    @formatStack stack
+
+  loadSource: (stackLine) ->
+    [match, url, e, line, c, column] = FILE_RE().exec stackLine
+
+    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
+
+    @getLines(url, parseInt(line), parseInt(column))
 
 class spectacular.BrowserReporter
-  STATE_CHARS = # •✕✱ⒺⒻ
+  STATE_CHARS =
     pending: '*'
     skipped: 'x'
     failure: 'F'
@@ -102,6 +131,7 @@ class spectacular.BrowserReporter
 
     @reporter = document.createElement('div')
     @reporter.id = 'reporter'
+    addClass @reporter, if @options.documentation then 'documentation' else 'progress'
     @reporter.innerHTML = """
       <header>
         <h1>Spectacular</h1>
@@ -155,7 +185,7 @@ class spectacular.BrowserReporter
     link = document.createElement 'a'
     link.className = example.result.state
     link.setAttribute 'href', "#example_#{id}"
-    link.setAttribute 'title', example.description
+    link.setAttribute 'title', "##{id} #{example.fullDescription}"
     link.innerHTML = @stateChar example.result.state
     link
 
@@ -182,10 +212,96 @@ class spectacular.BrowserReporter
     if @options.verbose
       console.log "  test #{example.description} > #{example.result.state}"
 
+    if @options.documentation
+      @formatDocumentationExample example
+    else
+      @formatProgressExample example
+
+  formatDocumentationExample: (example) ->
+    elders = example.ancestors
+    elders.pop()
+
+    reversed = []
+    reversed.unshift a for a in elders
+
+    node = @examplesContainer
+    n = 0
+    for ancestor in reversed
+
+      id = ancestor.ownDescription.replace(/^[\s\W]+|[\s\W]+$/g, '').replace(/[^\w\d]+/g, '-').toLowerCase()
+      continue if id is ''
+
+      parent = node
+      node = node.querySelector "##{id}"
+      unless node?
+        node = document.createElement 'section'
+        node.id = id
+        node.className = "example-group #{if ancestor.failed then 'failure' else 'success'} level#{n}"
+        node.innerHTML = """
+          <header title='#{ancestor.description}'>
+            <h3>#{ancestor.ownDescription}</h3>
+          </header>
+        """
+        parent.appendChild node
+
+      n++
+
     id = @examples.length
     ex = document.createElement 'article'
     ex.id = "example_#{id}"
-    ex.className = "example preload #{example.result.state}"
+    ex.className = "example #{example.result.state} level#{n}"
+    ex.dataset.id = id
+
+    if example.result.expectations.length > 0
+      ex.innerHTML = """
+        <header title='#{example.description}'>
+          <h4>#{example.ownDescription}</h4>
+          <span class='result'>#{example.result.state}</span>
+          <span class='time'><span class='icon-time'></span>#{example.duration / 1000}s</span>
+        </header>
+        <div class="expectations">
+          #{(@formatExpectation e for e in example.result.expectations).join('')}
+        </div>
+      """
+    else
+      ex.innerHTML = """
+        <header title='#{example.description}'>
+          <h4>#{example.ownDescription}</h4>
+          <span class='result'>#{example.result.state}</span>
+          <span class='time'><span class='icon-time'></span>#{example.duration}s</span>
+        </header>
+        #{
+          if example.reason?
+            "<aside>
+              <pre>#{utils.escapeDiff example.reason.message}</pre>
+              #{ if example.reason? then @traceSource example.reason else ''}
+            </aside>"
+          else ''
+        }
+      """
+
+
+    ex.onclick = -> toggleClass ex, 'closed'
+
+    node.appendChild ex
+    if example.failed
+      ancestors ex, (node) ->
+        if hasClass node, 'success'
+          removeClass node, 'success'
+          addClass node, 'failure'
+
+    pres = ex.querySelectorAll('pre:not([id])')
+    Array::forEach.call pres, (node) -> fixNodeHeight node
+    addClass ex, 'closed'
+    setTimeout (-> addClass ex, 'animate'), 100
+
+
+
+  formatProgressExample: (example) ->
+    id = @examples.length
+    ex = document.createElement 'article'
+    ex.id = "example_#{id}"
+    ex.className = "example #{example.result.state}"
     ex.dataset.id = id
 
     if example.result.expectations.length > 0
@@ -222,11 +338,10 @@ class spectacular.BrowserReporter
     Array::forEach.call pres, (node) -> fixNodeHeight node
     addClass ex, 'closed'
     setTimeout (-> addClass ex, 'animate'), 100
-    removeClass ex, 'preload'
 
   formatExpectation: (expectation) ->
     """
-    <div class="expectation #{if expectation.success then 'success' else 'failure'}">
+    <div class="expectation #{if expectation.success then 'success' else 'failure'}" title="#{expectation.example.description} #{expectation.description}">
       <h5>#{expectation.description}</h5>
       <pre>#{utils.escapeDiff expectation.message}</pre>
       #{ if expectation.trace? then @traceSource expectation.trace else ''}

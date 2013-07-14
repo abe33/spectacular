@@ -63,6 +63,7 @@ compileNode = ->
       "src/spectacular_bin.coffee"
       "src/browser_reporter.coffee"
       "src/spectacular_phantomjs.coffee"
+      "src/spectacular_slimerjs.coffee"
     ]
 
     run("./node_modules/.bin/coffee #{options.join ' '}")()
@@ -137,7 +138,7 @@ task 'build', 'Build the project for node and the browser with docs', ->
 task 'server', 'Compiles and run the server', ->
   compileNode()
   .then ->
-    exe = spawn './bin/spectacular', ['--server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
+    exe = spawn './bin/spectacular', ['server', '--profile', '--coffee', 'specs/units/**/*.spec.*']
     exe.stdout.on 'data', (data) -> print data.toString()
     exe.stderr.on 'data', (data) -> print data.toString()
     exe.on 'exit', (status) -> process.exit status
@@ -146,6 +147,12 @@ task 'server', 'Compiles and run the server', ->
 
 task 'phantomjs', 'Run specs on phantomjs', ->
   compileNode()
-  .then(run './bin/spectacular --phantomjs --coffee --profile specs/units/**/*.spec.*')
+  .then(run './bin/spectacular phantomjs --coffee --profile specs/units/**/*.spec.*')
+  .fail (err) ->
+    console.log fail err
+
+task 'slimerjs', 'Run specs on slimerjs', ->
+  compileNode()
+  .then(run './bin/spectacular slimerjs --coffee --profile specs/units/**/*.spec.*')
   .fail (err) ->
     console.log fail err

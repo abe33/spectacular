@@ -1,3 +1,13 @@
+describe spectacular.deprecated, ->
+  before -> spyOn(console, 'log').andCallFake (@message) =>
+
+  context 'when called with a message', ->
+    before -> spectacular.deprecated 'message'
+
+    specify 'the logged message', ->
+      @message.should match /DEPRECATION WARNING: message/
+
+
 describe spectacular.utils.escape, ->
   context 'called with html content', ->
     withArguments '<tag>content</tag>'

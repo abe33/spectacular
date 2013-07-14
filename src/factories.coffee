@@ -1,6 +1,7 @@
 spectacular.factories ||= new spectacular.GlobalizableObject 'build',
                                                              'create',
-                                                             'factory'
+                                                             'factory',
+                                                             'factoryMixin'
 spectacular.factories.keepContext = false
 
 spectacular.factories.buildMethodsCache = {}
@@ -30,9 +31,17 @@ class spectacular.factories.Set
       instance[@property] = @value
 
 class spectacular.factories.Trait
+  @concern spectacular.Hookable
   @include spectacular.Globalizable
+  @include spectacular.HasAncestors
+  @extend spectacular.AncestorsProperties
 
-  globalizable: 'set createWith'.split(/\s+/g)
+  @followUp 'arguments'
+  @followUp 'buildBlock'
+
+  @hook 'build'
+
+  globalizable: 'set createWith build after'.split(/\s+/g)
 
   constructor: (@name) ->
     @previous = {}
@@ -41,13 +50,16 @@ class spectacular.factories.Trait
   set: (property, value) ->
     @setters.push new spectacular.factories.Set property, value
 
-  createWith: (@arguments...) ->
+  build: (@ownBuildBlock) ->
+  createWith: (@ownArguments...) ->
+  after: (hook, block) -> @registerHook hook, block
 
   applySet: (instance) ->
     @setters.forEach (setter) -> setter.apply instance
 
 class spectacular.factories.Factory extends spectacular.factories.Trait
-  globalizable: 'set trait createWith'.split(/\s+/g)
+
+  globalizable: 'set trait createWith build include after'.split(/\s+/g)
 
   constructor: (name, @class) ->
     super name
@@ -59,34 +71,58 @@ class spectacular.factories.Factory extends spectacular.factories.Trait
     block.call(trait)
     trait.unglobalize()
 
-  build: (traits, options={}) ->
+  buildInstance: (traits, options={}) ->
     args = @getConstructorArguments traits
 
     instance = if @parent?
-      @parent.instanciate args
+      @parent.instanciate args, traits
     else
-      @instanciate args
+      @instanciate args, traits
 
     @applySet instance
     @findTrait(trait).applySet instance for trait in traits
     instance[k] = v for k,v of options
+
+    hooks = @fromTraitAndThis 'buildHooks', traits
+    hook.call(instance, instance) for hook in hooks
     instance
 
-  instanciate: (args) -> build @class, args
+  instanciate: (args, traits) ->
+    buildBlock = @fromTraitOrThis 'buildBlock', traits
+    if buildBlock?
+      buildBlock.apply this, [@class].concat(args)
+    else
+      build @class, args
+
+  fromTraitOrThis: (property, traits) ->
+    value = @[property]
+    for trait in traits
+      traitValue = @findTrait(trait)[property]
+      value = traitValue if traitValue?
+
+    value
+
+  fromTraitAndThis: (property, traits) ->
+    value = @[property]
+    for trait in traits
+      traitValue = @findTrait(trait)[property]
+      value = value.concat traitValue if traitValue?
+
+    value
+
+  include: (mixins...) ->
+    for mixinName in mixins
+      mixin = spectacular.factories.mixins[mixinName]
+      throw new Error "mixin '#{mixinName}' can't be found" unless mixin?
+      mixin.call this, this
 
   getConstructorArguments: (traits) ->
-    args = @getFactoryConstructorArguments()
-    for trait in traits
-      traitArgs = @findTrait(trait).arguments
-      args = traitArgs if traitArgs?
+    args = @fromTraitOrThis 'arguments', traits
 
     if args? and typeof args[0] is 'function'
       args = args[0].call(spectacular.env.currentExample.context)
 
     args or []
-
-  getFactoryConstructorArguments: ->
-    @arguments or @parent?.getFactoryConstructorArguments()
 
   findTrait: (traitName) ->
     trait = @traits[traitName] or @parent?.findTrait traitName
@@ -117,6 +153,10 @@ spectacular.factories.factory = (name, options, block) ->
   block.call(fct)
   fct.unglobalize()
 
+spectacular.factories.mixins = {}
+spectacular.factories.factoryMixin = (name, block) ->
+  spectacular.factories.mixins[name] = block
+
 spectacular.factories.create = (name, traits..., options) ->
   throw new Error 'no factory name provided' unless name?
   if typeof options is 'string'
@@ -125,5 +165,5 @@ spectacular.factories.create = (name, traits..., options) ->
 
   fct = spectacular.factoriesCache[name]
   throw new Error "missing factory #{name}" unless fct?
-  fct.build(traits, options)
+  fct.buildInstance(traits, options)
 

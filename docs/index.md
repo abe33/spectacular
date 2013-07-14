@@ -79,6 +79,8 @@ Then puts Spectacular in your html file:
 <script src="build/js/spectacular.js" type="text/javascript"/>
 ```
 
+You can see the runner live at the bottom of this page in the [Spectacular Tests](/#Spectacular-Tests) section.
+
 You can pass options to spectacular by defining `window.options` before the spectacular script node :
 
 ```coffeescript
@@ -138,8 +140,26 @@ Spectacular rely on some feature that may not be available in all browsers. You 
 The most simple way to use the spectacular command line tool is as follow:
 
 ```shell
-spectacular specs/**/*.spec.js
+spectacular test specs/**/*.spec.js
 ```
+### Commands
+
+<table cellspacing="0">
+  <tr>
+    <td>`test`</td>
+    <td>Runs the tests on NodeJS.</td>
+  </tr>
+
+  <tr>
+    <td>`server`</td>
+    <td>Starts a server. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`. The default port can be changed by setting the `PORT` environment variable.</td>
+  </tr>
+
+  <tr>
+    <td>`phantomjs`</td>
+    <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
+  </tr>
+</table>
 
 ### Options
 
@@ -168,13 +188,17 @@ spectacular specs/**/*.spec.js
     <td>`-d, --documentation`</td>
     <td>Enable the documentation format in the output.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`-s, --server`</td>
     <td>Starts a server instead of running the specs. The specs can then be accessed from a browser at the the following address: `http://localhost:5000`.</td>
   </tr>
-  <tr>
+  <tr class='deprecated'>
     <td>`--phantomjs`</td>
     <td>Assuming you have phantomjs installed, it will starts a server and run the test on phantomjs.</td>
+  </tr>
+  <tr>
+    <td>`--phantomjs-bin PATH`</td>
+    <td>Pass the path to the PhantomJS binary.</td>
   </tr>
   <tr>
     <td>`--source GLOB`</td>
@@ -373,6 +397,8 @@ describe AClass, ->
       # of calling new Aclass(a,b,c).someInstanceMethod('foo')
       itsReturn with: ['foo'], -> should equal 'oof'
 ```
+
+Instance members can also be accessed with a `#` instead of `::`.
 
 ## Assertions
 
@@ -588,6 +614,17 @@ spectacular.matcher 'asyncMatcher', ->
 ```
 If the promise is rejected, the example is marked as `errored`.
 
+<aside>
+  <p>**Note:** Asynchronous matcher should be used carefully and never meddled with synchronous code, a good example of case to avoid can be found below</p>
+
+<pre class='coffeescript'>`specify 'several assertions in an example', ->
+  expect(object).to anAsynchronousMatcher 'foo', 'bar'
+  object.foo = 'baz'
+  expect(object).to anAsynchronousMatcher 'foo', 'baz'`</pre>
+
+  <p>In that case the object property's value may have changed when the test is performed by the matcher.</p>
+</aside>
+
 ## Tests Helpers
 
 Helpers can be created and exposed with the `spectacular.helper` function.
@@ -694,12 +731,75 @@ user = create 'admin'
 # {id: 12345, name: 'John Doe', roles: ['admin']}
 ```
 
+### Factory Mixins
+
+Factories, as classes, can includes mixins. In that context a mixin is a function executed on a given factory to defines traits and property for this factory.
+
+```coffeescript
+factoryMixin 'has parent', (factory) ->
+  set 'parent', null
+
+  trait 'with parent', ->
+    set 'parent', -> create factory.name
+
+factory 'category', class: Object, ->
+  include 'has parent'
+
+  set 'name', -> Faker.Lorem.sentence()
+
+category = create 'category', 'with parent'
+# {
+#   name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
+#   parent: {
+#     name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'
+#   }
+# }
+```
+
+### Factory Hooks
+
+Using the `after` method you can  set a block to be executed after the object was instanciated and all traits have been applied:
+
+```coffeescript
+factory 'object', class: Object, ->
+  set 'field', 'value'
+
+  after 'build', (object) ->
+    object.propertiesCount = Object.keys(object).length
+```
+
+Currently `build` is the only hook available on a factory.
+
+### Customize Factory Builds
+
+If you're not happy with the way Spectacular instanciate objects, or that what you're building can't be instanciated through the `new` operator, you can override the factory build process using the `build` function.
+
+For instance, given that we have models that may be created through a `create` method, wa can construct a factory as such:
+
+```coffeescript
+factory 'my_model', class: MyModel, ->
+  build (cls, args) -> cls.create.apply cls, args
+
+  # ...
+```
+
+In that case the create method will use the provided build block instead of
+the global `spectacular.factories.build` method.
+
+Build blocks are inherited from a parent factory and can be overriden in traits or in child factories.
+
+### Factory Functions
+
 Find below more details about the factory functions:
 
 <table cellspacing="0">
   <tr>
     <td>`factory`</td>
     <td>The `factory` method registers a factory, it takes an option object that set the constructor function to use.</td>
+  </tr>
+  <tr>
+    <td>`factoryMixin`</td>
+    <td>The `factoryMixin` method registers a factory mixin, it takes the mixin name and a block to execute when included in a factory.</td>
   </tr>
   <tr>
     <td>`createWith`</td>
@@ -712,6 +812,20 @@ Find below more details about the factory functions:
   <tr>
     <td>`trait`</td>
     <td>The `trait` method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.</td>
+  <tr>
+    <td>`build`</td>
+    <td>The `build` method allow to redefine the build function for this factory.</td>
+  </tr>
+
+  <tr>
+    <td>`after`</td>
+    <td>The `after` method takes the name of a hook and a block to execute during that hook. Currently only the </td>
+  </tr>
+
+  <tr>
+    <td>`include`</td>
+    <td>The `include` method takes one or more string containing mixins's names.</td>
+  </tr>
 </table>
 
 ## Fixtures
@@ -842,16 +956,21 @@ You can find below a table with all the snake case equivalent:
 <table cellspacing="0">
     <tr><td>`after`</td><td>No differences</td></tr>
     <tr><td>`before`</td><td>No differences</td></tr>
+    <tr><td>`chain`</td><td>No differences</td></tr>
     <tr><td>`contains`</td><td>No differences</td></tr>
     <tr><td>`context`</td><td>No differences</td></tr>
     <tr><td>`createWith`</td><td>`create_with`</td></tr>
     <tr><td>`dependsOn`</td><td>`depends_on`</td></tr>
     <tr><td>`describe`</td><td>No differences</td></tr>
+    <tr><td>`description`</td><td>No differences</td></tr>
     <tr><td>`equal`</td><td>No differences</td></tr>
     <tr><td>`exist`</td><td>No differences</td></tr>
     <tr><td>`expect`</td><td>No differences</td></tr>
     <tr><td>`factory`</td><td>No differences</td></tr>
+    <tr><td>`factoryMixin`</td><td>`factory_mixin`</td></tr>
     <tr><td>`fail`</td><td>No differences</td></tr>
+    <tr><td>`failureMessageForShould`</td><td>`failure_message_for_should`</td></tr>
+    <tr><td>`failureMessageForShouldnt`</td><td>`failure_message_for_shouldnt`</td></tr>
     <tr><td>`fixtures`</td><td>No differences</td></tr>
     <tr><td>`given`</td><td>No differences</td></tr>
     <tr><td>`have.selector`</td><td>No differences</td></tr>
@@ -864,6 +983,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`itShould`</td><td>`it_should`</td></tr>
     <tr><td>`itsInstance`</td><td>`its_instance`</td></tr>
     <tr><td>`itsReturn`</td><td>`its_return`</td></tr>
+    <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`pending`</td><td>No differences</td></tr>
     <tr><td>`set`</td><td>No differences</td></tr>
@@ -878,6 +998,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`spyOn`</td><td>`spy_on`</td></tr>
     <tr><td>`subject`</td><td>No differences</td></tr>
     <tr><td>`success`</td><td>No differences</td></tr>
+    <tr><td>`takes`</td><td>No differences</td></tr>
     <tr><td>`the`</td><td>No differences</td></tr>
     <tr><td>`throwAnError(msg).inContext`</td><td>`throw_an_error(msg).in_context`</td></tr>
     <tr><td>`throwAnError(msg).with`</td><td>`throw_an_error(msg).with`</td></tr>
@@ -890,5 +1011,29 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`xdescribe`</td><td>No differences</td></tr>
     <tr><td>`xit`</td><td>No differences</td></tr>
 </table>
+
+You can also snakify your own objects using the `utils.snakify` method:
+
+```coffeescript
+myObject =
+  someMethod: ->
+  someOtherMethod: ->
+
+utils.snakify myObject
+```
+
+Will gives you an object such as:
+
+```coffeescript
+myObject =
+  someMethod: ->
+  someOtherMethod: ->
+  some_method: ->
+  some_other_method: ->
+```
+
+<aside>
+  <p>Note that when using the `spectacular.matcher` and `spectacular.helper` methods the defined matcher/helper is automatically converted to either its camel or snake case alternative.</p>
+</aside>
 
 ## Spectacular Tests

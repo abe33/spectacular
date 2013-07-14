@@ -44,7 +44,7 @@ class spectacular.StackReporter
       s = "\n\n#{stack.join '\n'}\n"
       s = utils.indent s if /@/.test s
     else
-      s = "\n#{stack[0..5].join '\n'}"
+      s = "\n#{stack[0..Math.min(5, stack.length-1)].join '\n'}"
       s = utils.indent s if /@/.test s
       s += "\n    ...\n\n    use --long-trace option to view the #{stack.length - 6} remaining lines" if stack.length > 6
       s += "\n\n"
@@ -297,9 +297,7 @@ class spectacular.ConsoleReporter
     res = "  Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
     for example in sortedExamples
       duration = "#{Math.floor(example.duration) / 1000} seconds"
-      res += "    #{
-        if @options.colors then duration.red else duration
-      } #{example.fullDescription}\n"
+      res += "    #{@colorize duration, 'red'} #{example.fullDescription}\n"
 
     "#{res}\n"
 
@@ -341,9 +339,7 @@ class spectacular.ConsoleReporter
 
   formatDuration: (start, end) ->
     duration = (end.getTime() - start.getTime()) / 1000
-    duration = "#{Math.max 0, duration}s"
-    duration = duration.yellow if @options.colors
-    duration
+    @colorize "#{Math.max 0, duration}s", 'yellow'
 
   formatCount: (value, singular, plural, color) ->
     s = ("#{value} #{

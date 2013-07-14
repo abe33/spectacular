@@ -18,6 +18,14 @@ $ ->
 
   $('hr').before toc
 
+  $('pre.coffeescript code').each ->
+    pre = $(this).parent()
+    coffee = pre.text()
+    code = hljs.highlight('ruby', coffee).value
+    pre.removeClass 'coffeescript'
+    $(this).addClass 'lang-coffeescript'
+    $(this).html code
+
   $('.lang-coffeescript').each ->
     pre = $(this).parent()
     coffee = pre.text()
