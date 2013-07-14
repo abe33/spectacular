@@ -20,15 +20,6 @@
       return tocList.append("<li class='level" + level + "'><a href='#" + id + "'>" + content + "</a></li>");
     });
     $('hr').before(toc);
-    $('pre.coffeescript code').each(function() {
-      var code, coffee, pre;
-      pre = $(this).parent();
-      coffee = pre.text();
-      code = hljs.highlight('ruby', coffee).value;
-      pre.removeClass('coffeescript');
-      $(this).addClass('lang-coffeescript');
-      return $(this).html(code);
-    });
     $('.lang-coffeescript').each(function() {
       var code, coffee, div, js, pre, toggle;
       pre = $(this).parent();
