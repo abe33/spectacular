@@ -2,19 +2,19 @@ page = require('webpage').create()
 system = require('system')
 
 PORT = system.args[1] or 5000
-
 URL = "http://localhost:#{PORT}"
-
-page.onConsoleMessage = (msg, line, source) -> console.log msg
 
 squeeze = (str) -> str.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')
 
-page.open URL, (status) ->
-  page.onLoadFinished = ->
+page.onConsoleMessage = (msg, line, source) -> console.log msg
 
+page.open(URL)
+.then (status) ->
   if status isnt 'success'
     console.log JSON.stringify({ error: "Unable to access Spectacular specs at #{URL}" })
-    phantom.exit()
+
+    page.close()
+    slimer.exit()
   else
     runnerAvailable = page.evaluate -> window.spectacular
 
@@ -39,12 +39,16 @@ page.open URL, (status) ->
           red: ['\x1B[31m', '\x1B[39m']
           yellow: ['\x1B[33m', '\x1B[39m']
         }
-        (k for k of styles).forEach (key) ->
-          Object.defineProperty String.prototype, key,
-            get: -> styles[key][0] + this + styles[key][1]
+
+        spectacular.StackReporter::colorize =
+        spectacular.ConsoleReporter::colorize = (str, color) ->
+          if @options.colors
+            styles[color][0] + str + styles[color][1]
+          else
+            str
+
 
         options.documentation = false
-
         reporter = new window.spectacular.ConsoleReporter(options)
         window.env.runner.on 'result', reporter.onResult
         window.env.runner.on 'end', reporter.onEnd
@@ -60,13 +64,13 @@ page.open URL, (status) ->
         console.log page.evaluate -> window.consoleResults
 
         if result
-          phantom.exit(0)
+          slimer.exit()
         else
-          phantom.exit(1)
+          slimer.exit()
 
       waitFor specsReady, done
     else
-      phantom.exit(1)
+      slimer.exit()
 
 specsReady = ->
   page.evaluate -> window.resultReceived and window.consoleResults?
@@ -86,11 +90,13 @@ waitFor = (test, ready, timeout = 60000) ->
         condition = test()
       else
         if condition
-          ready()
           clearInterval interval
+          ready()
 
         else
           console.log 'error with timeout'
-          phantom.exit(1)
+          slimer.exit()
+
 
     interval = setInterval wait, 250
+

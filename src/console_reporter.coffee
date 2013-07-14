@@ -297,9 +297,7 @@ class spectacular.ConsoleReporter
     res = "  Top 10 slowest examples (#{topSlowest / 1000} seconds, #{rate}% of total time)\n\n"
     for example in sortedExamples
       duration = "#{Math.floor(example.duration) / 1000} seconds"
-      res += "    #{
-        if @options.colors then duration.red else duration
-      } #{example.fullDescription}\n"
+      res += "    #{@colorize duration, 'red'} #{example.fullDescription}\n"
 
     "#{res}\n"
 
@@ -341,9 +339,7 @@ class spectacular.ConsoleReporter
 
   formatDuration: (start, end) ->
     duration = (end.getTime() - start.getTime()) / 1000
-    duration = "#{Math.max 0, duration}s"
-    duration = duration.yellow if @options.colors
-    duration
+    @colorize "#{Math.max 0, duration}s", 'yellow'
 
   formatCount: (value, singular, plural, color) ->
     s = ("#{value} #{

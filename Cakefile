@@ -63,6 +63,7 @@ compileNode = ->
       "src/spectacular_bin.coffee"
       "src/browser_reporter.coffee"
       "src/spectacular_phantomjs.coffee"
+      "src/spectacular_slimerjs.coffee"
     ]
 
     run("./node_modules/.bin/coffee #{options.join ' '}")()
@@ -147,5 +148,11 @@ task 'server', 'Compiles and run the server', ->
 task 'phantomjs', 'Run specs on phantomjs', ->
   compileNode()
   .then(run './bin/spectacular phantomjs --coffee --profile specs/units/**/*.spec.*')
+  .fail (err) ->
+    console.log fail err
+
+task 'slimerjs', 'Run specs on slimerjs', ->
+  compileNode()
+  .then(run './bin/spectacular slimerjs --coffee --profile specs/units/**/*.spec.*')
   .fail (err) ->
     console.log fail err

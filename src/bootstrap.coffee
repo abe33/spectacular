@@ -18,7 +18,10 @@ spectacular.global = (->
 spectacular.deprecated = (message) ->
   parseLine = (line) ->
     if line.indexOf('@') > 0
-      [m, o, f] = /<\/([^@]+)@(.)+$/.exec line
+      if line.indexOf('</') > 0
+        [m, o, f] = /<\/([^@]+)@(.)+$/.exec line
+      else
+        [m, f] = /@(.)+$/.exec line
     else
       if line.indexOf('(') > 0
         [m, o, f] = /at\s+([^\s]+)\s*\(([^\)])+/.exec line

@@ -141,5 +141,13 @@ exports.run = (options) ->
     phantom.on 'exit', (status) ->
       process.exit status
 
+  if options.slimerjs
+    console.log "  running tests on slimerjs"
+    phantom = spawn options.slimerjsExecutable, ['./src/spectacular_slimerjs.coffee', port]
+    phantom.stdout.on 'data', (data) -> util.print data.toString()
+    phantom.stderr.on 'data', (data) -> util.print data.toString()
+    phantom.on 'exit', (status) ->
+      process.exit status
+
   defer.promise
 

@@ -24,7 +24,7 @@ existsSync = fs.existsSync || path.existsSync;
 SPECTACULAR_CONFIG = path.resolve(ROOT, '.spectacular');
 
 if (args.length === 0 || !args.some(function(e) {
-  return e === 'test' || e === 'server' || e === 'phantomjs';
+  return e === 'test' || e === 'server' || e === 'phantomjs' || e === 'slimerjs';
 })) {
   args.push('-h');
 }
@@ -49,12 +49,14 @@ options = {
   helpersRoot: './specs/support/helpers',
   fixturesRoot: './specs/support/fixtures',
   phantomjsExecutable: 'phantomjs',
+  slimerjsExecutable: 'slimerjs',
   noMatchers: false,
   noHelpers: false,
   colors: true,
   cli: false,
   server: false,
   phantomjs: false,
+  slimerjs: false,
   random: true,
   seed: null,
   globs: [],
@@ -68,6 +70,7 @@ while (args.length) {
       options.cli = true;
       options.server = false;
       options.phantomjs = false;
+      options.slimerjs = false;
       break;
     case 'server':
     case 's':
@@ -78,6 +81,13 @@ while (args.length) {
       options.cli = false;
       options.server = true;
       options.phantomjs = true;
+      options.slimerjs = false;
+      break;
+    case 'slimerjs':
+      options.cli = false;
+      options.server = true;
+      options.slimerjs = true;
+      options.phantomjs = false;
       break;
     case '--coffee':
     case '-c':
@@ -140,6 +150,9 @@ while (args.length) {
     case '--phantomjs-bin':
       options.phantomjsExecutable = args.shift();
       break;
+    case '--slimerjs-bin':
+      options.slimerjsExecutable = args.shift();
+      break;
     case '--server':
     case '-s':
       deprecated('--server and -s options are deprecated and may be removed in future release, use `spectacular server` or `spectacular s` instead.');
@@ -151,6 +164,7 @@ while (args.length) {
       options.cli = false;
       options.server = true;
       options.phantomjs = true;
+      options.slimerjs = false;
       break;
     case '--source':
       options.sources.push(args.shift());
@@ -162,7 +176,7 @@ while (args.length) {
     case '-h':
     case '--help':
       options.cli = false;
-      console.log('\n# Spectacular Help\n\n  Usage:\n\n    spectacular [command] [options] [globs...]\n\n  Commands:\n\n    test        Run tests on NodeJS.\n    server      Start the Spectacular server.\n    phantomjs   Stats the Spectacular server and run tests in phantomjs.\n\n  Options:\n\n    -c, --coffee         Add support for CoffeeScript files.\n    -d, --documentation  Enable the documentation format in the output.\n    -h, --help           Display this message.\n    -m, --matchers PATH  Specify the path where project matchers can be found.\n    -p, --profile        Add a report with the 10 slowest examples.\n    -t, --trace          Enable stack trace report for failures.\n    -v, --verbose        Enable verbose output.\n    --fixtures PATH      Specify the path where project fixtures can be found.\n    --helpers PATH       Specify the path where project helpers can be found.\n    --long-trace         Display the full stack trace.\n    --colors             Enable coloring from the output.\n    --no-colors          Disable coloring from the output.\n    --seed               Set the seed of the test ranomizer.\n    --random             Enable the randomness of test execution\n    --no-random          Disable the randomness of test execution.\n    --no-helpers         Disable the loading of project helpers.\n    --no-matchers        Disable the loading of project matchers.\n    --no-trace           Remove stack trace from failures reports.\n    --source GLOB        Source files for the server.\n    --version            Display the Spectacular version.\n');
+      console.log('\n# Spectacular Help\n\n  Usage:\n\n    spectacular [command] [options] [globs...]\n\n  Commands:\n\n    test        Run tests on NodeJS.\n    server      Start the Spectacular server.\n    phantomjs   Stats the Spectacular server and run tests in phantomjs.\n\n  Options:\n\n    -c, --coffee          Add support for CoffeeScript files.\n    -d, --documentation   Enable the documentation format in the output.\n    -h, --help            Display this message.\n    -m, --matchers PATH   Specify the path where project matchers can be found.\n    -p, --profile         Add a report with the 10 slowest examples.\n    -t, --trace           Enable stack trace report for failures.\n    -v, --verbose         Enable verbose output.\n    --phantomjs-bin PATH  Sets the path to the PhantomJS binary.\n    --slimerjs-bin PATH   Sets the path to the SlimerJS binary.\n    --fixtures PATH       Specify the path where project fixtures can be found.\n    --helpers PATH        Specify the path where project helpers can be found.\n    --long-trace          Display the full stack trace.\n    --colors              Enable coloring from the output.\n    --no-colors           Disable coloring from the output.\n    --seed                Set the seed of the test ranomizer.\n    --random              Enable the randomness of test execution\n    --no-random           Disable the randomness of test execution.\n    --no-helpers          Disable the loading of project helpers.\n    --no-matchers         Disable the loading of project matchers.\n    --no-trace            Remove stack trace from failures reports.\n    --source GLOB         Source files for the server.\n    --version             Display the Spectacular version.\n');
       break;
     default:
       options.globs.push(option);
