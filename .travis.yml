@@ -12,7 +12,7 @@ before_install:
   - echo "Installing slimer"
   - wget http://download.slimerjs.org/v0.8/slimerjs-0.8.zip
   - unzip slimerjs-0.8.zip
-  - sudo mv slimerjs-0.8/slimerjs bin/slimerjs08
+  - sudo mv slimerjs-0.8 bin/slimerjs08
   - ls -lisa bin/slimerjs08
 
 before_script:
