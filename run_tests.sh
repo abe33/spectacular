@@ -3,7 +3,7 @@
 if [ $TRAVIS ]
   then
     echo "  Node Tests\n"
-    istanbul --hook-run-in-context cover bin/spectacular test -- specs/**/*.coffee
+    istanbul --hook-run-in-context cover bin/spectacular -- test --verbose specs/**/*.coffee
     node_result=$?
 
     echo "  Send coverage to coveralls.io\n"
