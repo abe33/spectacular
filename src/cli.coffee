@@ -144,7 +144,7 @@ exports.run = (options) ->
     spectacular.global.document = window.document
 
     reporter = getReporter options
-    spectacular.env.runner.on 'messag', reporter.onMessage
+    spectacular.env.runner.on 'message', reporter.onMessage
     spectacular.env.runner.on 'result', reporter.onResult
     spectacular.env.runner.on 'end', reporter.onEnd
   .then(loadMatchers options)
