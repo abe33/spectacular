@@ -14,7 +14,7 @@ if [ $TRAVIS ]
     phantomjs_result=$?
 
     echo "  SlimerJS Tests\n"
-    bin/spectacular slimerjs --slimerjs-bin /usr/bin/slimerjs specs/**/*.coffee
+    bin/spectacular slimerjs --slimerjs-bin bin/slimerjs08/slimerjs specs/**/*.coffee
     slimerjs_result=$?
 
     exit $node_result || $phantomjs_result || $slimerjs_result
