@@ -7,3 +7,13 @@ node_js:
 
 before_install:
   - npm install coveralls
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - echo "Installing slimer"
+  - wget http://download.slimerjs.org/v0.8/slimerjs-0.8.zip
+  - unzip slimerjs-0.8.zip
+  - sudo mv slimerjs-0.8 bin/slimerjs08
+  - ls -lisa bin/slimerjs08
+
+before_script:
+  - bin/slimerjs08/slimerjs --version
