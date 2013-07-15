@@ -1,5 +1,4 @@
 --profile
---verbose
 --coffee
 --documentation
 --source specs/support/fixtures/*.js
