@@ -94,8 +94,10 @@ generateSpecRunner = (options) ->
       <html>
         <head>
           <script>
-            options = #{util.inspect options};
-            paths = #{util.inspect paths[2..]};
+            spectacular = {
+              options: #{util.inspect options},
+              paths: #{util.inspect paths[2..]}
+            };
           </script>
           <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
           <link rel="stylesheet" href="assets/css/spectacular.css"/>

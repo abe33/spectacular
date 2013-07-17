@@ -81,10 +81,10 @@ Then puts Spectacular in your html file:
 
 You can see the runner live at the bottom of this page in the [Spectacular Tests](/#Spectacular-Tests) section.
 
-You can pass options to spectacular by defining `window.options` before the spectacular script node :
+You can pass options to spectacular by defining `spectacular.options` before the spectacular script node :
 
 ```coffeescript
-window.options =
+spectacular.options =
   verbose: false
   trace: true
   longTrace: false
@@ -93,10 +93,10 @@ window.options =
   globs: []
 ```
 
-You can also pass an array containing the paths to the specs files in a `window.paths` array.
+You can also pass an array containing the paths to the specs files in a `spectacular.paths` array.
 
 ```coffeescript
-window.paths = ['js/specs.js']
+spectacular.paths = ['js/specs.js']
 ```
 
 It will allow the runner to crop the stack at the point a spec file is found and display the source of the test that failed. Errored test's stack is not cropped.

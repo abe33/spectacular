@@ -1,4 +1,4 @@
-spectacular = {}
+spectacular = spectacular or {}
 isCommonJS = typeof window is "undefined"
 
 if isCommonJS
