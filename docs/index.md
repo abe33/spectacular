@@ -9,9 +9,9 @@ template: page.jade
 [![Dependency Status](https://gemnasium.com/abe33/spectacular.png)](https://gemnasium.com/abe33/spectacular)
 [![NPM version](https://badge.fury.io/js/spectacular.png)](http://badge.fury.io/js/spectacular)
 
-Spectacular is a <abbr title='Behavior-Driven Development'>BDD</abbr> framework for CoffeeScript and JavaScript whose attempt to bring the power of RSpec to JavaScript. Spectacular try to favor the best practices used for writing [better RSpec tests](http://betterspecs.org/) in its design.
+Spectacular is a <abbr title='Behavior-Driven Development'>BDD</abbr> framework for CoffeeScript and JavaScript whose attempt to bring the power of RSpec to JavaScript. Spectacular tries to favor the best practices used for writing [better RSpec tests](http://betterspecs.org/) in its design.
 
-This is the kind of tests you can write with Spectacular:
+These are the kind of tests you can write with Spectacular:
 
 ```coffeescript
 describe Array, ->
@@ -330,7 +330,7 @@ specify 'a heavy asynchronous example', (async) ->
   # ...
 ```
 
-### Conditionned Examples
+### Conditioned Examples
 
 Examples can depends on other examples. If all their dependency succeed the example is run, otherwise the example is marked as `skipped`.
 
