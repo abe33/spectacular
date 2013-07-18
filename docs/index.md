@@ -330,7 +330,7 @@ specify 'a heavy asynchronous example', (async) ->
   # ...
 ```
 
-### Conditionned Examples
+### Conditioned Examples
 
 Examples can depends on other examples. If all their dependency succeed the example is run, otherwise the example is marked as `skipped`.
 
