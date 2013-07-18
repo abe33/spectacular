@@ -1,4 +1,3 @@
-spectacular = spectacular or {}
 isCommonJS = typeof window is "undefined"
 
 if isCommonJS
@@ -6,7 +5,8 @@ if isCommonJS
 else
   exports = window
 
-exports.spectacular = spectacular
+exports.spectacular = exports.spectacular or {}
+spectacular = exports.spectacular
 
 spectacular.version = '1.2.1'
 spectacular.global = (->
