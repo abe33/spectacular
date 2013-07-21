@@ -91,7 +91,7 @@ a
 
 
 #layout
-  padding-left 500px
+  padding-left 450px
   position relative
 
 
@@ -102,7 +102,7 @@ a
   overflow auto
 
 #nav
-  margin-left -500px
+  margin-left -450px
   width 200px
   background dark_blue_const
   // background rgb(37, 42, 58)
@@ -113,8 +113,8 @@ a
   margin-right 4px
 
 #list
-  margin-left -300px
-  width 300px
+  margin-left -250px
+  width 250px
   border-right 1px solid #ddd
 
 .primary-button
@@ -193,21 +193,11 @@ body
   font-family roboto
   font-weight 300
 
-// a
-//   color black
-//   border-bottom 1px solid #ccc
-//   text-decoration none
-//   transition all 0.3s ease-in
-
-//   &:hover
-//     border-color orange
 
 #download
   text-align center
 
   a.download
-    // background #e4e4e4
-    // border 1px solid #efefef
     display inline-block
     border-radius 6px
     width auto
@@ -217,53 +207,41 @@ body
     margin-top 11px
     margin-bottom 14px
     font-weight 100
-    // text-shadow 0 1px 0 white
-    // box-shadow 0 3px 0 #dfdfdf, 0 4px 6px rgba(0,0,0,0.3)
-    transition all 0.2s
 
-    // &:hover
-    //   margin-top 9px
-    //   margin-bottom 16px
-    //   box-shadow 0 5px 0 #dfdfdf, 0 6px 6px rgba(0,0,0,0.3)
+#main aside
+  background error(0.2)
+  border 1px solid error(0.4)
+  padding 8px 8px 8px 38px
+  border-radius 3px
+  position relative
+  margin-top 20px
 
-    // &:active
-    //   margin-top 13px
-    //   margin-bottom 12px
-    //   box-shadow 0 1px 0 #dfdfdf, 0 2px 6px rgba(0,0,0,0.3)
+  p
+    &:first-child
+      margin-top 0
+    &:last-child
+      margin-bottom 0
 
-
-//     i
-//       color #bbb
-//       margin-right 16px
-
-// .page-g-r aside
-//   background error(0.2)
-//   border 1px solid error(0.4)
-//   padding 8px 8px 8px 38px
-//   border-radius 3px
-//   position relative
-//   margin-top 20px
-
-//   p
-//     &:first-child
-//       margin-top 0
-//     &:last-child
-//       margin-bottom 0
-
-//   &:before
-//     position absolute
-//     left 8px
-//     top 8px
-//     display inline-block
-//     content "\f0eb"
-//     font-family FontAwesome
-//     color error(0.5)
-//     font-size 38px
+  &:before
+    position absolute
+    left 8px
+    top 8px
+    display inline-block
+    content "\f0eb"
+    font-family FontAwesome
+    color error(0.5)
+    font-size 38px
 
 #reporter
   margin-left 210px !important
   aside:before
     content inherit
+
+.gutter
+  max-width 800px
+
+.fork
+  font-variant small-caps
 
 table
   border 1px solid #e4e4e4
@@ -301,10 +279,6 @@ table
       cursor pointer
 
       & > div
-        // width 100%
-        // overflow hidden
-        // position relative
-        // transition all 0.3s ease-in
         padding 3px 8px
 
 
@@ -342,7 +316,6 @@ table
       line-height 1em
       white-space normal
       word-wrap break-word
-      // word-break break-all
 
   td:first-child
     text-align right
@@ -359,7 +332,9 @@ code
   border 1px solid #e4e4e4
   padding 2px
   border-radius 2px
+  line-height 1em
   display inline-block
+  font-size 14px
   white-space pre
   vertical-align baseline
 
@@ -460,11 +435,16 @@ h4
   transition height 0.3s ease-in
   max-width 800px
 
+  &:hover .toggle
+    margin-top 0
+
   pre
     transition left 0.5s ease-out
     border none
     position absolute
     width 100%
+
+
 
   .toggle
     overflow hidden
@@ -476,17 +456,18 @@ h4
     line-height 15px
     width 100px
     height 21px
+    margin-top -21px
     z-index 10
     background #e4e4e4
     font-size 10px
     text-transform uppercase
     border-radius 0 0 0 4px
     box-shadow 0 1px 3px rgba(0,0,0,1)
+    transition margin-top 0.2s ease-in
 
     span
       padding 4px 8px
       display block
-      width 100%
       text-align center
       position relative
       transition all 0.2s ease-in
@@ -526,10 +507,10 @@ h4
     .lang-coffeescript
       left -100%
 
-// hr
-//   height 0px
-//   border none
-//   border-top 1px solid #ccc
+hr
+  height 0px
+  border none
+  border-top 1px solid #ccc
 
 pre
   background dark_blue(1)
@@ -539,7 +520,6 @@ pre
   overflow auto
   margin 0
   box-shadow inset 0 1px 3px rgba(0,0,0,1)
-  max-width 800px
 
   code
     background none
@@ -667,8 +647,12 @@ pre
     thead, tbody, tr, td
       display block
 
+    td
+      &:last-child
+        padding-left 20px
       &:first-child
         text-align left
+        border-bottom none
 
 @media (max-width: 867px)
   #list
@@ -719,7 +703,12 @@ pre
   #nav
     width 100%
     height 40px
-    position relative
+    position fixed
+    z-index 100
+    transition height 0.2s ease-out
+
+  #list
+    margin-top 40px
 
   #nav .nav-menu-button
     display block
@@ -729,7 +718,7 @@ pre
     position absolute
 
   #nav.active
-    height 80%
+    height 100%
 
   .nav-inner
     display none

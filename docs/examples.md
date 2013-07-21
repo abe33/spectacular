@@ -1,13 +1,15 @@
 ---
-title: Writing Specs
+title: Writing Tests
 date: 2013-07-17 20:26
 author: Cédric Néhémie <cedric.nehemie@gmail.com>
 template: page.jade
 ----
 
-## Examples and ExampleGroups
+The tests in Spectacular are created through two classes, namely `Example` and `ExampleGroup`. The `Example` class represent the actual executed test while `ExampleGroup` represent a suite of tests and represent the organisation of your tests.
 
-`ExampleGroups` are created with either the `describe` or `context` methods, new aliases can be created with `spectacular.env.createExampleGroupAlias(newName)`.
+## Examples And ExampleGroups
+
+`ExampleGroups` are created with either the `describe` or `context` methods. New aliases can be created with `spectacular.env.createExampleGroupAlias(newName)`. The `ExampleGroup` class has some special properties regarding subjects that are detailed in the [Auto subjects](#Auto-subjects) section.
 
 `Examples` are created with `it`, `the` or `specify`, and new aliases can be created with `spectacular.env.createExampleAlias(newName)`.
 
@@ -17,6 +19,15 @@ describe 'a group', ->
     specify 'an example', ->
       [0,1,2].should contains 1
 ```
+## Examples States
+
+An example can end with one of the following five state:
+
+ * `success`: When all the expectations were successful.
+ * `failure`: When at least one expectation failed.
+ * `errored`: When an error was raised during the test execution.
+ * `skipped`: When dependencies of a test were not met.
+ * `pending`: When no assertions was made during the test.
 
 ## Pending Examples
 
@@ -104,7 +115,7 @@ describe 'parent context', ->
 ```
 In that case, the child example will only run if the parent example succeed.
 
-### Examples Subject
+## Examples Subject
 
 As in RSpecs, example groups can define a subject that will be available in all their examples:
 

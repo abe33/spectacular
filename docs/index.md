@@ -80,19 +80,21 @@ You can see the runner live at the bottom of this page in the [Spectacular Tests
 You can pass options to spectacular by defining `spectacular.options` before the spectacular script node :
 
 ```coffeescript
-spectacular.options =
-  verbose: false
-  trace: true
-  longTrace: false
-  showSource: true
-  fixturesRoot: './js/fixtures'
-  globs: []
+spectacular =
+  options:
+    verbose: false
+    trace: true
+    longTrace: false
+    showSource: true
+    fixturesRoot: './js/fixtures'
+    globs: []
 ```
 
 You can also pass an array containing the paths to the specs files in a `spectacular.paths` array.
 
 ```coffeescript
-spectacular.paths = ['js/specs.js']
+spectacular =
+  paths: ['js/specs.js']
 ```
 
 It will allow the runner to crop the stack at the point a spec file is found and display the source of the test that failed. Errored test's stack is not cropped.
@@ -256,98 +258,3 @@ spectacular test specs/**/*.spec.js
 </table>
 
 Options can also be defined in a `.spectacular` file at the root of your project.
-
-
-## Snake Case Syntax
-
-All the exposed methods are provided both with `camelCase` and `snake_case` syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.
-
-You can define any matcher, or helper, or aliases, with either the snake case
-or camel case form, the alternative will be also added to the global object.
-
-For instance, the `sharedExample` is also available through `shared_example`.
-
-You can find below a table with all the snake case equivalent:
-
-<table cellspacing="0">
-    <tr><td>`after`</td><td>No differences</td></tr>
-    <tr><td>`before`</td><td>No differences</td></tr>
-    <tr><td>`chain`</td><td>No differences</td></tr>
-    <tr><td>`contains`</td><td>No differences</td></tr>
-    <tr><td>`context`</td><td>No differences</td></tr>
-    <tr><td>`createWith`</td><td>`create_with`</td></tr>
-    <tr><td>`dependsOn`</td><td>`depends_on`</td></tr>
-    <tr><td>`describe`</td><td>No differences</td></tr>
-    <tr><td>`description`</td><td>No differences</td></tr>
-    <tr><td>`equal`</td><td>No differences</td></tr>
-    <tr><td>`exist`</td><td>No differences</td></tr>
-    <tr><td>`expect`</td><td>No differences</td></tr>
-    <tr><td>`factory`</td><td>No differences</td></tr>
-    <tr><td>`factoryMixin`</td><td>`factory_mixin`</td></tr>
-    <tr><td>`fail`</td><td>No differences</td></tr>
-    <tr><td>`failureMessageForShould`</td><td>`failure_message_for_should`</td></tr>
-    <tr><td>`failureMessageForShouldnt`</td><td>`failure_message_for_shouldnt`</td></tr>
-    <tr><td>`fixtures`</td><td>No differences</td></tr>
-    <tr><td>`given`</td><td>No differences</td></tr>
-    <tr><td>`have.selector`</td><td>No differences</td></tr>
-    <tr><td>`have`</td><td>No differences</td></tr>
-    <tr><td>`haveBeenCalled.with`</td><td>`have_been_called.with`</td></tr>
-    <tr><td>`haveBeenCalled`</td><td>`have_been_called`</td></tr>
-    <tr><td>`it`</td><td>No differences</td></tr>
-    <tr><td>`itBehavesLike`</td><td>`it_behaves_like`</td></tr>
-    <tr><td>`its`</td><td>No differences</td></tr>
-    <tr><td>`itShould`</td><td>`it_should`</td></tr>
-    <tr><td>`itsInstance`</td><td>`its_instance`</td></tr>
-    <tr><td>`itsReturn`</td><td>`its_return`</td></tr>
-    <tr><td>`match`</td><td>No differences</td></tr>
-    <tr><td>`match`</td><td>No differences</td></tr>
-    <tr><td>`pending`</td><td>No differences</td></tr>
-    <tr><td>`set`</td><td>No differences</td></tr>
-    <tr><td>`should`</td><td>No differences</td></tr>
-    <tr><td>`shouldnt`</td><td>No differences</td></tr>
-    <tr><td>`skip`</td><td>No differences</td></tr>
-    <tr><td>`specify`</td><td>No differences</td></tr>
-    <tr><td>`spy.argsForCall`</td><td>`spy.args_for_call`</td></tr>
-    <tr><td>`spyOn(...).andCallFake`</td><td>`spy_on(...).and_call_fake`</td></tr>
-    <tr><td>`spyOn(...).andCallThrough`</td><td>`spy_on(...).and_call_trough`</td></tr>
-    <tr><td>`spyOn(...).andReturns`</td><td>`spy_on(...).and_returns`</td></tr>
-    <tr><td>`spyOn`</td><td>`spy_on`</td></tr>
-    <tr><td>`subject`</td><td>No differences</td></tr>
-    <tr><td>`success`</td><td>No differences</td></tr>
-    <tr><td>`takes`</td><td>No differences</td></tr>
-    <tr><td>`the`</td><td>No differences</td></tr>
-    <tr><td>`throwAnError(msg).inContext`</td><td>`throw_an_error(msg).in_context`</td></tr>
-    <tr><td>`throwAnError(msg).with`</td><td>`throw_an_error(msg).with`</td></tr>
-    <tr><td>`throwAnError`</td><td>`throw_an_error`</td></tr>
-    <tr><td>`trait`</td><td>No differences</td></tr>
-    <tr><td>`whenPass`</td><td>`when_pass`</td></tr>
-    <tr><td>`withArguments`</td><td>`with_arguments`</td></tr>
-    <tr><td>`withParameters`</td><td>`with_parameters`</td></tr>
-    <tr><td>`xcontext`</td><td>No differences</td></tr>
-    <tr><td>`xdescribe`</td><td>No differences</td></tr>
-    <tr><td>`xit`</td><td>No differences</td></tr>
-</table>
-
-You can also snakify your own objects using the `utils.snakify` method:
-
-```coffeescript
-myObject =
-  someMethod: ->
-  someOtherMethod: ->
-
-utils.snakify myObject
-```
-
-Will gives you an object such as:
-
-```coffeescript
-myObject =
-  someMethod: ->
-  someOtherMethod: ->
-  some_method: ->
-  some_other_method: ->
-```
-
-<aside>
-  <p>Note that when using the `spectacular.matcher` and `spectacular.helper` methods the defined matcher/helper is automatically converted to either its camel or snake case alternative.</p>
-</aside>

@@ -31,13 +31,13 @@ html(lang='en', class=slug)
                 a(href='.') Home
               li
                 a(href='.#download') Download
-              - var items = {examples: 'Writing Specs', tools: 'Tests Tools', extend: 'Extend Spectacular', tests: 'Online Test Tool', previous: 'Archives'}
+              - var items = {examples: 'Writing Tests', tools: 'Tests Tools', extend: 'Extend Spectacular', tests: 'Online Test Tool', previous: 'Archives'}
               each val, key in items
                 li
                   a(href='./'+ key + '.html')= val
 
           hr
-          a(href="https://github.com/abe33/spectacular")
+          a.fork(href="https://github.com/abe33/spectacular")
             i.icon-github
             = 'Fork me on GitHub'
 
@@ -56,8 +56,9 @@ html(lang='en', class=slug)
           nav#toc
 
         #main.pure-u-1
-          h1!= page.title
-          != page.html
+          .gutter
+            h1!= page.title
+            != page.html
 
         script(src='js/caniuse.js', type='text/javascript')
 
