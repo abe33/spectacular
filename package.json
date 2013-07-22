@@ -34,7 +34,7 @@
     "istanbul": "~0.1.35",
     "express": "~3.3.0",
     "stylus": "~0.34.1",
-    "jsdom": "~0.7.0",
+    "jsdom": "~0.8.1",
     "wintersmith": "~2.0.5",
     "wintersmith-stylus": "~0.3.0",
     "wintersmith-coffee": "~0.2.0",
