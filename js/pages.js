@@ -1,25 +1,56 @@
 (function() {
   $(function() {
-    var afterInstall, collapseCell, expandCell, hs, pres, toc, tocList, toggleCellExpansion;
-    hs = $('h2, h3, h4, h5, h6');
-    afterInstall = false;
-    hs = hs.filter(function() {
-      if (this.textContent === 'Install') {
-        afterInstall = true;
+    var SlidingObject, collapseCell, expandCell, hs, pres, tocHeader, tocList, toggleCellExpansion;
+    SlidingObject = (function() {
+      function SlidingObject(target, container) {
+        var body, doc, previousOnScroll,
+          _this = this;
+        this.target = target;
+        this.container = container;
+        previousOnScroll = window.onscroll;
+        doc = document.documentElement;
+        body = document.body;
+        window.onscroll = function() {
+          var top, topMax, topMin;
+          if (previousOnScroll != null) {
+            previousOnScroll();
+          }
+          topMin = _this.getOffset(_this.container);
+          topMax = topMin + _this.container.clientHeight - _this.target.clientHeight;
+          top = doc && doc.scrollTop || body && body.scrollTop || 0;
+          top = Math.min(topMax, Math.max(topMin, top + 100)) - topMin;
+          return _this.target.style.top = "" + top + "px";
+        };
       }
-      return afterInstall && $(this).parents('.caniuse_static').length === 0;
+
+      SlidingObject.prototype.getOffset = function(node) {
+        if (node.nodeName.toLowerCase() === 'body') {
+          return node.offsetTop;
+        }
+        return node.offsetTop + this.getOffset(node.parentNode);
+      };
+
+      return SlidingObject;
+
+    })();
+    hs = $('h2, h3, h4, h5, h6');
+    hs = hs.filter(function() {
+      return $(this).parents('.caniuse_static, header').length === 0;
     });
-    toc = $('<nav id="toc"><h2>Table Of Content</h2><ul></ul></nav>');
-    tocList = toc.find('ul');
-    hs.each(function() {
-      var content, id, level;
-      level = parseInt(this.nodeName.slice(1));
-      content = this.textContent;
-      id = content.replace(/[^\w]+/g, '-');
-      this.id = id;
-      return tocList.append("<li class='level" + level + "'><a href='#" + id + "'>" + content + "</a></li>");
-    });
-    $('hr').before(toc);
+    if (hs.length > 0) {
+      tocHeader = $('<h2>Table Of Content</h2>');
+      tocList = $('<ul></ul>');
+      hs.each(function() {
+        var content, id, level;
+        level = parseInt(this.nodeName.slice(1));
+        content = this.textContent;
+        id = content.replace(/[^\w]+/g, '-');
+        this.id = id;
+        return tocList.append("<li class='level" + level + "'><a href='#" + id + "'>" + content + "</a></li>");
+      });
+      $('#toc').append(tocHeader);
+      $('#toc').append(tocList);
+    }
     $('pre.coffeescript code').each(function() {
       var code, coffee, pre;
       pre = $(this).parent();
@@ -87,61 +118,10 @@
     collapseCell = function(td) {
       return toggleCellExpansion(td, false);
     };
-    $('tr').each(function() {
-      var table, tds, tr;
-      tr = $(this);
-      table = tr.parents('table');
-      tr.addClass('no-padding');
-      tds = tr.find('td');
-      tds.each(function() {
-        var newContent, td;
-        td = $(this);
-        newContent = $("<div>" + (td.html()) + "</div>");
-        td.html('');
-        td.append(newContent);
-        if (tr.height() - 27 > 10) {
-          newContent.addClass('ellipsis');
-          if (!table.hasClass('ellipsis')) {
-            table.addClass('ellipsis');
-          }
-        }
-        newContent.attr('data-min-height', 27);
-        newContent.attr('data-max-height', tr.height());
-        return newContent.height(27);
-      });
-      return tr.click(function() {
-        return tr.find('td div.ellipsis').each(function() {
-          var d;
-          d = $(this);
-          if (d.height() === d.data('min-height')) {
-            return expandCell(d.parents('td'));
-          } else {
-            return collapseCell(d.parents('td'));
-          }
-        });
-      });
-    });
-    return $('table').each(function() {
-      var controls, expandAll, table;
-      if ($(this).find('.ellipsis').length === 0) {
-        return;
-      }
-      table = $(this).wrap('<div class="table-wrapper"/>').parent();
-      controls = $('<div class="table-controls"></div>');
-      table.append(controls);
-      expandAll = $('<button class="expand" title="expand/collapse"><i class="icon-collapse"></i><i class="icon-collapse-top"></i></button>');
-      expandAll.click(function() {
-        var expanded;
-        expandAll.toggleClass('expanded');
-        expanded = expandAll.hasClass('expanded');
-        return table.find('.ellipsis').each(function() {
-          var td;
-          td = $(this).parents('td');
-          return toggleCellExpansion(td, expanded);
-        });
-      });
+    return $('.nav-menu-button').on('click', function(e) {
+      $('#nav').toggleClass('active');
       controls.append(expandAll);
-      return new spectacular.SlidingObject(controls[0], table[0]);
+      return new SlidingObject(controls[0], table[0]);
     });
   });
 

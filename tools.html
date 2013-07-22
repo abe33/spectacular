@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en" class="tests-tools"><head><meta charset="utf-8"><title>Spectacular - Tests Tools</title><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="css/page.css" rel="stylesheet" type="text/css"><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script></head><body><div id="layout" class="pure-g-r content"><div id="nav" class="pure-u"><a href="#" class="nav-menu-button">Menu</a><header><h1>Spectacular</h1><h2>1.3.0</h2></header><div class="nav-inner"><div class="pure-menu pure-menu-open"><ul><li><a href=".">Home</a></li><li><a href=".#download">Download</a></li><li><a href="./examples.html">Writing Tests</a></li><li><a href="./tools.html">Tests Tools</a></li><li><a href="./extend.html">Extend Spectacular</a></li><li><a href="./tests.html">Online Test Tool</a></li><li><a href="./changelog.html">ChangeLog</a></li><li><a href="./previous.html">Archives</a></li></ul></div><hr><a href="https://github.com/abe33/spectacular" class="fork"><i class="icon-github"></i>Fork me on GitHub</a><div class="badges"><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a><a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a><a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a><a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></div></div></div><div id="list" class="pure-u-1"><nav id="toc"></nav></div><div id="main" class="pure-u-1"><div class="gutter"><h1>Tests Tools</h1><h2>Spies &amp; Mocks</h2>
+<p>Spies and mocks can be created in the same way as in Jasmine:</p>
+<pre><code class="lang-coffeescript">before <span class="function">-></span>
+  <span class="comment"># Intercepts the returned value of the spied method call and passed</span>
+  <span class="comment"># it to the provided method</span>
+  spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andCallThrough <span class="group"><span class="group_begin">(</span>result<span class="group_end">)</span></span> <span class="function">-></span> result
+
+  <span class="comment"># Mock the call to the method with another one.</span>
+  spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andCallFake <span class="function">-></span>
+
+  <span class="comment"># Mock the call to the method by returning the given value</span>
+  spy <span class="operators">=</span> spyOn<span class="group"><span class="group_begin">(</span>object<span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>method<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>andReturns<span class="group"><span class="group_begin">(</span>value<span class="group_end">)</span></span></code></pre>
+<h2>Factories</h2>
+<p>Spectacular provides native factories in a FactoryGirl manner:</p>
+<pre><code class="lang-coffeescript"><span class="class"><span class="keyword">class</span> <span class='title'>User</span></span>
+  <span class="property">constructor<span class='punctuation'>:</span></span> <span class="group"><span class="group_begin">(</span><span class="property">@id</span><span class="group_end">)</span></span> <span class="function">-></span>
+
+factory <span class="string"><span class="string_begin">'</span>user<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">class<span class='punctuation'>:</span></span> <span class="constant">User</span><span class="punctuation">,</span> <span class="function">-></span>
+  createWith <span class="function">-></span> <span class="constant">Math</span><span class="punctuation">.</span>floor <span class="constant">Math</span><span class="punctuation">.</span>random<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span> <span class="operators">*</span> <span class="number">100000</span>
+
+  set <span class="string"><span class="string_begin">'</span>name<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="string"><span class="string_begin">'</span>John Doe<span class="string_end">'</span></span>
+
+  trait <span class="string"><span class="string_begin">'</span>with_bike<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+    set <span class="string"><span class="string_begin">'</span>bike<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="hash"><span class="hash_begin">{</span><span class="property">model<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>z750<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">brand<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>Kawasaki<span class="string_end">'</span></span><span class="hash_end">}</span></span>
+
+user <span class="operators">=</span> create <span class="string"><span class="string_begin">'</span>user<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>with_bike<span class="string_end">'</span></span>
+<span class="comment"># {id: 12345, name: 'John Doe', bike: {model: 'z750', brand: 'Kawasaki'}}</span></code></pre>
+<p>Factories can be reopened any time to add traits or new configuration:</p>
+<pre><code class="lang-coffeescript">factory <span class="string"><span class="string_begin">'</span>user<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+  set <span class="string"><span class="string_begin">'</span>age<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="number">32</span>
+
+user <span class="operators">=</span> create <span class="string"><span class="string_begin">'</span>user<span class="string_end">'</span></span>
+<span class="comment"># {id: 12345, name: 'John Doe', age: 32}</span></code></pre>
+<p>Factories can also extends another factory with the <code>extends</code> option:</p>
+<pre><code class="lang-coffeescript">factory <span class="string"><span class="string_begin">'</span>admin<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">extends<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>user<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+  set <span class="string"><span class="string_begin">'</span>roles<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="punctuation">[</span><span class="string"><span class="string_begin">'</span>admin<span class="string_end">'</span></span><span class="punctuation">]</span>
+
+user <span class="operators">=</span> create <span class="string"><span class="string_begin">'</span>admin<span class="string_end">'</span></span>
+<span class="comment"># {id: 12345, name: 'John Doe', roles: ['admin']}</span></code></pre>
+<h3>Factory Mixins</h3>
+<p>Factories, as classes, can includes mixins. In that context a mixin is a function executed on a given factory to defines traits and property for this factory.</p>
+<pre><code class="lang-coffeescript">factoryMixin <span class="string"><span class="string_begin">'</span>has parent<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>factory<span class="group_end">)</span></span> <span class="function">-></span>
+  set <span class="string"><span class="string_begin">'</span>parent<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="literal">null</span>
+
+  trait <span class="string"><span class="string_begin">'</span>with parent<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+    set <span class="string"><span class="string_begin">'</span>parent<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> create factory<span class="punctuation">.</span>name
+
+factory <span class="string"><span class="string_begin">'</span>category<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">class<span class='punctuation'>:</span></span> <span class="constant">Object</span><span class="punctuation">,</span> <span class="function">-></span>
+  include <span class="string"><span class="string_begin">'</span>has parent<span class="string_end">'</span></span>
+
+  set <span class="string"><span class="string_begin">'</span>name<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="constant">Faker</span><span class="punctuation">.</span><span class="constant">Lorem</span><span class="punctuation">.</span>sentence<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span>
+
+category <span class="operators">=</span> create <span class="string"><span class="string_begin">'</span>category<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>with parent<span class="string_end">'</span></span>
+<span class="comment"># {</span>
+<span class="comment">#   name: 'Ut consectetur sed nihil vel dolores qui qui assumenda.'</span>
+<span class="comment">#   parent: {</span>
+<span class="comment">#     name: 'Sunt vitae maiores sit.'</span>
+<span class="comment">#   }</span>
+<span class="comment"># }</span></code></pre>
+<h3>Factory Hooks</h3>
+<p>Using the <code>after</code> method you can  set a block to be executed after the object was instanciated and all traits have been applied:</p>
+<pre><code class="lang-coffeescript">factory <span class="string"><span class="string_begin">'</span>object<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">class<span class='punctuation'>:</span></span> <span class="constant">Object</span><span class="punctuation">,</span> <span class="function">-></span>
+  set <span class="string"><span class="string_begin">'</span>field<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>value<span class="string_end">'</span></span>
+
+  after <span class="string"><span class="string_begin">'</span>build<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>object<span class="group_end">)</span></span> <span class="function">-></span>
+    object<span class="punctuation">.</span>propertiesCount <span class="operators">=</span> <span class="constant">Object</span><span class="punctuation">.</span>keys<span class="group"><span class="group_begin">(</span>object<span class="group_end">)</span></span><span class="punctuation">.</span>length</code></pre>
+<p>Currently <code>build</code> is the only hook available on a factory.</p>
+<h3>Customize Factory Builds</h3>
+<p>If you&#39;re not happy with the way Spectacular instanciate objects, or that what you&#39;re building can&#39;t be instanciated through the <code>new</code> operator, you can override the factory build process using the <code>build</code> function.</p>
+<p>For instance, given that we have models that may be created through a <code>create</code> method, wa can construct a factory as such:</p>
+<pre><code class="lang-coffeescript">factory <span class="string"><span class="string_begin">'</span>my_model<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">class<span class='punctuation'>:</span></span> <span class="constant">MyModel</span><span class="punctuation">,</span> <span class="function">-></span>
+  build <span class="group"><span class="group_begin">(</span>cls<span class="punctuation">,</span> args<span class="group_end">)</span></span> <span class="function">-></span> cls<span class="punctuation">.</span>create<span class="punctuation">.</span>apply cls<span class="punctuation">,</span> args
+
+  <span class="comment"># ...</span></code></pre>
+<p>In that case the create method will use the provided build block instead of
+the global <code>spectacular.factories.build</code> method.</p>
+<p>Build blocks are inherited from a parent factory and can be overriden in traits or in child factories.</p>
+<h3>Factory Functions</h3>
+<p>Find below more details about the factory functions:</p>
+<table cellspacing="0">
+  <tr>
+    <td><code>factory</code></td>
+    <td>The <code>factory</code> method registers a factory, it takes an option object that set the constructor function to use.</td>
+  </tr>
+  <tr>
+    <td><code>factoryMixin</code></td>
+    <td>The <code>factoryMixin</code> method registers a factory mixin, it takes the mixin name and a block to execute when included in a factory.</td>
+  </tr>
+  <tr>
+    <td><code>createWith</code></td>
+    <td>The <code>createWith</code> method defines the arguments to pass to the constructor. It can be either a list of values or a function that will return these arguments. In the case a function is passed, the function will be executed in the context of the current example. The <code>createWith</code> method can be used either in the factory block or in a trait block. When using several trait defining constructor arguments only the last trait will be effective.</td>
+  </tr>
+  <tr>
+    <td><code>set</code></td>
+    <td>The <code>set</code> method defines a value to set on the specified property, it can takes either a value or a function. In case of a function is passed, the function will be executed in the context of the instance.</td>
+  </tr>
+  <tr>
+    <td><code>trait</code></td>
+    <td>The <code>trait</code> method registers a trait for this factory. A trait can redefines the arguments to pass to the constructor.</td>
+  <tr>
+    <td><code>build</code></td>
+    <td>The <code>build</code> method allow to redefine the build function for this factory.</td>
+  </tr>
+
+  <tr>
+    <td><code>after</code></td>
+    <td>The <code>after</code> method takes the name of a hook and a block to execute during that hook. Currently only the </td>
+  </tr>
+
+  <tr>
+    <td><code>include</code></td>
+    <td>The <code>include</code> method takes one or more string containing mixins&#39;s names.</td>
+  </tr>
+</table>
+
+<h2>Fixtures</h2>
+<p>Fixtures are files that will be loaded before a test execution. Fixture files
+can be processed before being stored in the context if its extension matches
+one of the processor defined in the environment.</p>
+<pre><code class="lang-coffeescript">describe <span class="string"><span class="string_begin">'</span>with a fixture<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+  <span class="comment"># will be loaded, parsed and stored in @fixture</span>
+  fixture <span class="string"><span class="string_begin">'</span>sample.json<span class="string_end">'</span></span>
+
+  <span class="comment"># will be loaded, injected in a DOM (either jsdom on node</span>
+  <span class="comment"># or in a #fixtures div in a browser) and stored in @html</span>
+  fixture <span class="string"><span class="string_begin">'</span>sample.html<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">as<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>html<span class="string_end">'</span></span>
+
+  <span class="comment"># will be loaded, parsed to create a DOMExpression</span>
+  <span class="comment"># and stored in @dom</span>
+  fixture <span class="string"><span class="string_begin">'</span>sample.dom<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="property">as<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>dom<span class="string_end">'</span></span>
+
+  <span class="comment">#...</span></code></pre>
+<p>In practice, a fixture is a before block that load the file, pass it to a processor (if any) and stored in a property in the context.</p>
+<h2>DOM Expression</h2>
+<p>Spectacular provides a tool to perform deep test over a DOM structure called <code>DOMExpression</code>, it can be created either using fixtures with the <code>.dom</code> extensions or using the <code>spectacular.dom.DOMExpression</code> class.</p>
+<p>A DOM expression is basically a tree of css query strings that describe an HTML structure. For instance a typical webpage can be represented with:</p>
+<pre><code>html
+  head
+  body</code></pre>
+<p>DOM expressions use the <code>querySelectorAll</code> method to perform this test. First it will look for the <code>html</code> query and then perform the <code>head</code> and <code>body</code> queries on the results.</p>
+<p>It&#39;s also possible to test the text content of a node using quote or regex literal in the expression.</p>
+<pre><code>#section
+  article
+    h3
+      &#39;article title&#39;
+    p
+      /article(\s+content)*/</code></pre>
+<p>These expressions, when parsed, can be passed to the <code>match</code> or <code>contains</code> matchers and can be used with both nodes and nodes lists.</p>
+<pre><code class="lang-coffeescript">specify <span class="string"><span class="string_begin">'</span>the page<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+  <span class="global">document</span><span class="punctuation">.</span>should contains <span class="property">@domExpression</span>
+
+specify <span class="string"><span class="string_begin">'</span>the node<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+  <span class="comment"># on node</span>
+  <span class="global">document</span><span class="punctuation">.</span>querySelector<span class="group"><span class="group_begin">(</span><span class="string"><span class="string_begin">'</span>div<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>should match <span class="property">@domExpression</span>
+
+  <span class="comment"># on nodes list</span>
+  <span class="global">document</span><span class="punctuation">.</span>querySelectorAll<span class="group"><span class="group_begin">(</span><span class="string"><span class="string_begin">'</span>div<span class="string_end">'</span></span><span class="group_end">)</span></span><span class="punctuation">.</span>should match <span class="property">@domExpression</span></code></pre>
+<h2>Shared Example</h2>
+<p>Shared example are groups of tests that can be used to test similar functionalities accross several classes. For instance the following shared examples test that an object behave like a collection as defined by the <code>spectacular.HasCollection</code> mixin:</p>
+<pre><code class="lang-coffeescript">sharedExample <span class="string"><span class="string_begin">'</span>a collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>options<span class="group_end">)</span></span> <span class="function">-></span>
+  <span class="hash"><span class="hash_begin">{</span>singular<span class="punctuation">,</span> plural<span class="hash_end">}</span></span> <span class="operators">=</span> options
+  capitalizedSingular <span class="operators">=</span> spectacular<span class="punctuation">.</span>utils<span class="punctuation">.</span>capitalize singular
+
+  context <span class="string"><span class="string_begin">'</span>adding an item<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+    given <span class="string"><span class="string_begin">'</span>item<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="hash"><span class="hash_begin">{</span><span class="hash_end">}</span></span>
+    given <span class="string"><span class="string_begin">'</span>item2<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span> <span class="hash"><span class="hash_begin">{</span><span class="hash_end">}</span></span>
+
+    before <span class="function">-></span> <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>add<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span> <span class="property">@item</span>
+
+    specify <span class="string"><span class="string_begin">'</span>the collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      <span class="property">@subject</span><span class="punctuation">[</span>plural<span class="punctuation">]</span><span class="punctuation">.</span>should contains <span class="property">@item</span>
+
+    specify <span class="string"><span class="string_begin">"</span>then calling has<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>has<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span><span class="group"><span class="group_begin">(</span><span class="property">@item</span><span class="group_end">)</span></span><span class="punctuation">.</span>should be <span class="literal">true</span>
+
+    specify <span class="string"><span class="string_begin">'</span>the item index<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>find<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span><span class="group"><span class="group_begin">(</span><span class="property">@item</span><span class="group_end">)</span></span><span class="punctuation">.</span>should equal <span class="number">0</span>
+
+    specify <span class="string"><span class="string_begin">'</span>the item at index 0<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span><span class="subst"><span class="subst_begin">#{</span>singular<span class="subst_end">}</span></span>At<span class="string_end">"</span></span><span class="punctuation">]</span><span class="group"><span class="group_begin">(</span><span class="number">0</span><span class="group_end">)</span></span><span class="punctuation">.</span>should be <span class="property">@item</span>
+
+    context <span class="string"><span class="string_begin">'</span>then removing it<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      before <span class="function">-></span> <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>remove<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span> <span class="property">@item</span>
+
+      specify <span class="string"><span class="string_begin">'</span>the collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+        <span class="property">@subject</span><span class="punctuation">[</span>plural<span class="punctuation">]</span><span class="punctuation">.</span>shouldnt contains <span class="property">@item</span>
+
+    context <span class="string"><span class="string_begin">'</span>removing an inexistent item<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+      before <span class="function">-></span> <span class="property">@subject</span><span class="punctuation">[</span><span class="string"><span class="string_begin">"</span>remove<span class="subst"><span class="subst_begin">#{</span>capitalizedSingular<span class="subst_end">}</span></span><span class="string_end">"</span></span><span class="punctuation">]</span> <span class="property">@item2</span>
+
+      specify <span class="string"><span class="string_begin">'</span>the collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+        <span class="property">@subject</span><span class="punctuation">[</span>plural<span class="punctuation">]</span><span class="punctuation">.</span>should contains <span class="property">@item</span></code></pre>
+<p>The shared example can then be called with either the <code>itBehavesLike</code> or <code>itShould</code> functions:</p>
+<pre><code class="lang-coffeescript">describe <span class="constant">ClassWithCollection</span><span class="punctuation">,</span> <span class="function">-></span>
+  subject <span class="function">-></span> <span class="keyword">new</span> <span class="constant">ClassWithCollection</span>
+
+  itBehavesLike <span class="string"><span class="string_begin">'</span>a collection<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="hash"><span class="hash_begin">{</span>
+    <span class="property">singular<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>child<span class="string_end">'</span></span>
+    <span class="property">plural<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>children<span class="string_end">'</span></span>
+  <span class="hash_end">}</span></span></code></pre>
+<h2>Tests Helpers</h2>
+<p>Helpers can be created and exposed with the <code>spectacular.helper</code> function.
+The function takes a name and a value and will expose it on the global object
+through a <code>GlobalizableObject</code>.</p>
+<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>helper <span class="string"><span class="string_begin">'</span>someHelper<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span>params<span class="punctuation">.</span><span class="punctuation">.</span><span class="punctuation">.</span><span class="group_end">)</span></span> <span class="function">-></span>
+  <span class="comment"># Your helper's code</span>
+
+<span class="comment"># Usage</span>
+someHelper<span class="group"><span class="group_begin">(</span><span class="constant">SomeClass</span><span class="punctuation">,</span> <span class="property">someOption<span class='punctuation'>:</span></span> <span class="string"><span class="string_begin">'</span>some value<span class="string_end">'</span></span><span class="group_end">)</span></span></code></pre>
+</div></div><script src="js/caniuse.js" type="text/javascript"></script></div><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></body></html>

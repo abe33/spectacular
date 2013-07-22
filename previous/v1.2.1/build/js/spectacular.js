@@ -116,6 +116,8 @@
     return ((_ref = re.exec(this.toString())) != null ? _ref[2].split(/\s*,\s*/) : void 0) || [];
   };
 
+  spectacular = {};
+
   isCommonJS = typeof window === "undefined";
 
   if (isCommonJS) {
@@ -124,11 +126,9 @@
     exports = window;
   }
 
-  exports.spectacular = exports.spectacular || {};
+  exports.spectacular = spectacular;
 
-  spectacular = exports.spectacular;
-
-  spectacular.version = '1.3.0';
+  spectacular.version = '1.2.1';
 
   spectacular.global = (function() {
     if (typeof window !== 'undefined') {
@@ -2798,11 +2798,11 @@
         _this = this;
       this.notInsideIt('its');
       parentSubjectBlock = this.currentExampleGroup.subjectBlock;
-      return this.emptyContext(function() {
+      return this.context("" + property + " property", function() {
         _this.subject(property, function() {
           return parentSubjectBlock != null ? parentSubjectBlock.call(this)[property] : void 0;
         });
-        return _this.specify("the " + property + " property", block);
+        return _this.it(block);
       });
     };
 
@@ -2821,7 +2821,7 @@
       if (parentSubjectBlock == null) {
         throw new Error('itsInstance called in context without a previous subject');
       }
-      return this.emptyContext(function() {
+      return this.context('instance', function() {
         _this.subject('instance', function() {
           var params;
           params = options["with"] != null ? typeof options["with"] === 'function' ? options["with"].call(this) : options["with"] : this.parameters || [];
@@ -2830,7 +2830,7 @@
         if (property != null) {
           return _this.its(property, block);
         } else {
-          return _this.specify('the instance', block);
+          return _this.it(block);
         }
       });
     };
@@ -2846,14 +2846,14 @@
       if (parentSubjectBlock == null) {
         throw new Error('itsReturn called in context without a previous subject');
       }
-      return this.emptyContext(function() {
+      return this.context('returned value', function() {
         _this.subject('returnedValue', function() {
           var context, ctx, params;
           context = (options.inContext != null) || (options.in_context != null) ? (ctx = options.inContext || options.in_context, typeof ctx === 'function' ? ctx.call(this) : ctx) : this;
           params = options["with"] != null ? typeof options["with"] === 'function' ? options["with"].call(this) : options["with"] : this.parameters || [];
           return parentSubjectBlock != null ? parentSubjectBlock.call(this).apply(context, params) : void 0;
         });
-        return _this.specify('the returned value', block);
+        return _this.it(block);
       });
     };
 
@@ -2922,10 +2922,6 @@
       });
     };
 
-    Environment.prototype.emptyContext = function(block) {
-      return this.context('', block);
-    };
-
     Environment.prototype.withParameters = function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -2949,7 +2945,7 @@
         _this = this;
       this.notInsideIt('whenPass');
       previousContext = this.currentExampleGroup;
-      return this.emptyContext(function() {
+      return this.context('', function() {
         _this.currentExampleGroup.ownCascading = previousContext;
         return block();
       });
@@ -3180,9 +3176,7 @@
       if (args == null) {
         args = [];
       }
-      matcher = {
-        name: name
-      };
+      matcher = {};
       if ((takes[0] != null) && takes[0].indexOf('...') !== -1) {
         key = takes[0].replace(/\.\.\./, '');
         matcher[key] = args;
@@ -4240,7 +4234,7 @@
       stack = this.error.stack.split('\n').filter(function(line) {
         return /( at |@)/g.test(line);
       });
-      line = stack[0];
+      line = stack.shift();
       pre = "<pre id='pre_" + this.id + "_source' class='loading'></pre>\n<pre id='pre_" + this.id + "_stack'>" + (this.prepareStack(stack)) + "</pre>";
       this.loadSource(line).then(function(msg) {
         var source, stackLinks;
@@ -4574,7 +4568,7 @@
 
   loaders = {};
 
-  spectacular.options = spectacular.options || {};
+  window.options = window.options || {};
 
   defaults = {
     coffee: false,
@@ -4598,14 +4592,14 @@
 
   for (k in defaults) {
     v = defaults[k];
-    if (!k in spectacular.options) {
-      spectacular.options[k] = v;
+    if (!k in window.options) {
+      window.options[k] = v;
     }
   }
 
-  spectacular.paths = spectacular.paths || [];
+  window.paths = window.paths || [];
 
-  spectacular.options.loadFile = function(file) {
+  options.loadFile = function(file) {
     var listener, promise, req;
     promise = new spectacular.Promise;
     if (file in cache) {
@@ -4637,13 +4631,13 @@
     return promise;
   };
 
-  spectacular.env = new spectacular.Environment(spectacular.options);
+  spectacular.env = new spectacular.Environment(window.options);
 
   spectacular.env.globalize();
 
   spectacular.env.runner.loadStartedAt = new Date();
 
-  spectacular.env.runner.paths = spectacular.paths;
+  spectacular.env.runner.paths = window.paths;
 
   window.env = spectacular.env;
 
@@ -4655,9 +4649,9 @@
       currentWindowOnload();
     }
     utils = spectacular.utils;
-    if (spectacular.options.verbose) {
-      console.log(utils.indent(utils.inspect(spectacular.options)));
-      console.log(utils.indent(utils.inspect(spectacular.paths)));
+    if (options.verbose) {
+      console.log(utils.indent(utils.inspect(window.options)));
+      console.log(utils.indent(utils.inspect(window.paths)));
       console.log('\n  Scripts loaded:');
       scripts = document.querySelectorAll('script[src]');
       for (_i = 0, _len = scripts.length; _i < _len; _i++) {
@@ -4666,7 +4660,7 @@
       }
       console.log('');
     }
-    reporter = new spectacular.BrowserReporter(spectacular.options);
+    reporter = new spectacular.BrowserReporter(options);
     reporter.appendToBody();
     spectacular.env.runner.on('result', reporter.onResult);
     spectacular.env.runner.on('end', reporter.onEnd);

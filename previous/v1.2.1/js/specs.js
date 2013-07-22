@@ -527,7 +527,7 @@
     });
   });
 
-  describe('the custom matcher', function() {
+  describe('matcher', function() {
     describe(sample, function() {
       it(function() {
         return should(exist);
@@ -2583,10 +2583,7 @@
     });
   });
 
-  describe('HasNestedCollection', function() {
-    subject(function() {
-      return spectacular.HasNestedCollection;
-    });
+  describe(spectacular.HasNestedCollection, function() {
     return context('when called without options', function() {
       it(function() {
         return should(throwAnError()["with"]('foo'));
