@@ -1,3 +1,9 @@
+---
+title: ChangeLog
+date: Tue Jul 23 2013 00:30:09 GMT+0200 (CEST)
+author: Cédric Néhémie <cedric.nehemie@gmail.com>
+template: page.jade
+----
 <a name="1.3.0"></a>
 # 1.3.0 (2013-07-23)
 
