@@ -70,7 +70,7 @@ class spectacular.BrowserStackReporter extends spectacular.StackReporter
     return '' unless @error.stack
 
     stack = @error.stack.split('\n').filter (line) -> /( at |@)/g.test line
-    line = stack.shift()
+    line = stack[0]
 
     pre = """
       <pre id='pre_#{@id}_source' class='loading'></pre>
@@ -399,7 +399,7 @@ class spectacular.BrowserReporter
 cache = {}
 loaders = {}
 
-window.options = window.options or {}
+spectacular.options = spectacular.options or {}
 
 defaults =
   coffee: false
@@ -420,11 +420,11 @@ defaults =
   server: false
   globs: []
 
-window.options[k] = v for k,v of defaults when not k of window.options
+spectacular.options[k] = v for k,v of defaults when not k of spectacular.options
 
-window.paths = window.paths or []
+spectacular.paths = spectacular.paths or []
 
-options.loadFile = (file) ->
+spectacular.options.loadFile = (file) ->
 
   promise = new spectacular.Promise
 
@@ -449,10 +449,10 @@ options.loadFile = (file) ->
 
   promise
 
-spectacular.env = new spectacular.Environment(window.options)
+spectacular.env = new spectacular.Environment(spectacular.options)
 spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
-spectacular.env.runner.paths = window.paths
+spectacular.env.runner.paths = spectacular.paths
 
 window.env = spectacular.env
 
@@ -461,9 +461,9 @@ window.onload = ->
   do currentWindowOnload if currentWindowOnload?
   utils = spectacular.utils
 
-  if options.verbose
-    console.log utils.indent utils.inspect window.options
-    console.log utils.indent utils.inspect window.paths
+  if spectacular.options.verbose
+    console.log utils.indent utils.inspect spectacular.options
+    console.log utils.indent utils.inspect spectacular.paths
     console.log '\n  Scripts loaded:'
     scripts = document.querySelectorAll('script[src]')
     for s in scripts
@@ -471,13 +471,12 @@ window.onload = ->
 
     console.log ''
 
-  reporter = new spectacular.BrowserReporter(options)
+  reporter = new spectacular.BrowserReporter(spectacular.options)
   reporter.appendToBody()
   spectacular.env.runner.on 'result', reporter.onResult
   spectacular.env.runner.on 'end', reporter.onEnd
   spectacular.env.runner.loadEndedAt = new Date()
   spectacular.env.runner.specsStartedAt = new Date()
 
-  spectacular.env.run().fail (reason) ->
-    console.log reason
+  spectacular.env.run().fail (reason) -> console.log reason
 

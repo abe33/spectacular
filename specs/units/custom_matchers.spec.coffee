@@ -1,4 +1,4 @@
-describe 'matcher', ->
+describe 'the custom matcher', ->
   describe sample, ->
     it -> should exist
     it -> should sample

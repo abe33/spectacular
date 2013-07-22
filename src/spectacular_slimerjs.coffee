@@ -47,9 +47,7 @@ page.open(URL)
           else
             str
 
-
-        options.documentation = false
-        reporter = new window.spectacular.ConsoleReporter(options)
+        reporter = new window.spectacular.ConsoleReporter(spectacular.options)
         window.env.runner.on 'result', reporter.onResult
         window.env.runner.on 'end', reporter.onEnd
         reporter.on 'report', (msg) -> window.consoleResults = msg.target

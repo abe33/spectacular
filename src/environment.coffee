@@ -154,9 +154,9 @@ class spectacular.Environment
   its: (property, block) ->
     @notInsideIt 'its'
     parentSubjectBlock = @currentExampleGroup.subjectBlock
-    @context "#{property} property", =>
+    @emptyContext =>
       @subject property, -> parentSubjectBlock?.call(this)[property]
-      @it block
+      @specify "the #{property} property", block
 
   itsInstance: (property, options, block) ->
     @notInsideIt 'itsInstance'
@@ -172,7 +172,7 @@ class spectacular.Environment
     unless parentSubjectBlock?
       throw new Error 'itsInstance called in context without a previous subject'
 
-    @context 'instance', =>
+    @emptyContext =>
       @subject 'instance', ->
         params = if options.with?
          if typeof options.with is 'function'
@@ -187,7 +187,7 @@ class spectacular.Environment
       if property?
         @its property, block
       else
-        @it block
+        @specify 'the instance', block
 
   itsReturn: (options, block) ->
     @notInsideIt 'itsReturn'
@@ -198,7 +198,7 @@ class spectacular.Environment
     unless parentSubjectBlock?
       throw new Error 'itsReturn called in context without a previous subject'
 
-    @context 'returned value', =>
+    @emptyContext =>
       @subject 'returnedValue', ->
         context = if options.inContext? or options.in_context?
           ctx = options.inContext or options.in_context
@@ -218,7 +218,7 @@ class spectacular.Environment
           @parameters or []
         parentSubjectBlock?.call(this).apply(context, params)
 
-      @it block
+      @specify 'the returned value', block
 
   subject: (name, block) ->
     @notInsideIt 'subject'
@@ -265,6 +265,8 @@ class spectacular.Environment
 
     describe subject, -> it -> pending()
 
+  emptyContext: (block) -> @context '', block
+
   withParameters: (args...) ->
     @notInsideIt 'withParameters'
 
@@ -283,7 +285,7 @@ class spectacular.Environment
     @notInsideIt 'whenPass'
 
     previousContext = @currentExampleGroup
-    @context '', =>
+    @emptyContext =>
       @currentExampleGroup.ownCascading = previousContext
       block()
 

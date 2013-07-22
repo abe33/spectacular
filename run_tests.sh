@@ -3,7 +3,7 @@
 if [ $TRAVIS ]
   then
     echo "  Node Tests\n"
-    istanbul --hook-run-in-context cover bin/spectacular test -- specs/**/*.coffee
+    istanbul --hook-run-in-context cover bin/spectacular -- test --verbose specs/**/*.coffee
     node_result=$?
 
     echo "  Send coverage to coveralls.io\n"
@@ -13,7 +13,11 @@ if [ $TRAVIS ]
     bin/spectacular phantomjs specs/**/*.coffee
     phantomjs_result=$?
 
-    exit $node_result || $phantomjs_result
+    echo "  SlimerJS Tests\n"
+    bin/spectacular slimerjs --slimerjs-bin bin/slimerjs08/slimerjs specs/**/*.coffee
+    slimerjs_result=$?
+
+    exit $node_result || $phantomjs_result || $slimerjs_result
 else
   cake compile
   if [ $COVERAGE ]
