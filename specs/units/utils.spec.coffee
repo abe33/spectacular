@@ -128,4 +128,4 @@ describe spectacular.utils.inspect, ->
     context 'that does not have a name', ->
       withArguments -> [->]
 
-      itsReturn -> should equal 'function () {}'
+      itsReturn -> should match /function\s*\(\)\s*\{\}/
