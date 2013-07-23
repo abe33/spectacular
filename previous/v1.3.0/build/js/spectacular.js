@@ -128,7 +128,7 @@
 
   spectacular = exports.spectacular;
 
-  spectacular.version = '1.3.1';
+  spectacular.version = '1.3.0';
 
   spectacular.global = (function() {
     if (typeof window !== 'undefined') {
@@ -3457,25 +3457,6 @@
         msg += "\n\n" + this.diff.diff;
       }
       return msg;
-    });
-  });
-
-  spectacular.matcher('beWithin', function() {
-    takes('delta');
-    description(function() {
-      return "be within " + (utils.squeeze(utils.inspect(this.delta))) + " of " + (utils.squeeze(utils.inspect(this.expected)));
-    });
-    chain('of', function(expected) {
-      this.expected = expected;
-    });
-    match(function(actual) {
-      return (this.expected - this.delta <= actual && actual <= this.expected + this.delta);
-    });
-    failureMessageForShould(function() {
-      return "Expected " + (utils.inspect(this.actual)) + " to " + this.description;
-    });
-    return failureMessageForShouldnt(function() {
-      return "Expected " + (utils.inspect(this.actual)) + " not to " + this.description;
     });
   });
 
