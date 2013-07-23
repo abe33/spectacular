@@ -123,7 +123,7 @@ date: #{new Date()}
 author: Cédric Néhémie <cedric.nehemie@gmail.com>
 template: page.jade
 ----" > docs/changelog.md""")
-  .then(run 'cat CHANGELOG.md >> docs/changelog.md')
+  .then(run 'cat CHANGELOG.md | sed s/^#/##/ >> docs/changelog.md')
 
 task 'compile', 'Compiles the project sources', ->
   compileNode()
