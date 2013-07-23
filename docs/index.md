@@ -75,7 +75,7 @@ Then puts Spectacular in your html file:
 <script src="build/js/spectacular.js" type="text/javascript"/>
 ```
 
-You can see the runner live at the bottom of this page in the [Spectacular Tests](/#Spectacular-Tests) section.
+You can see the runner live on the [Online Test Tool](/tests.html) page.
 
 You can pass options to spectacular by defining `spectacular.options` before the spectacular script node :
 
@@ -99,8 +99,23 @@ spectacular =
 
 It will allow the runner to crop the stack at the point a spec file is found and display the source of the test that failed. Errored test's stack is not cropped.
 
-Spectacular rely on some feature that may not be available in all browsers. You can find below the list of features and the minimum browser version needed to use them.
+#### Spectacular Server
 
+If you don't want to bother create a html file to run your test you can use the server feature of Spectacular.
+
+By running:
+
+```bash
+spectacular server specs/**/*.spec.coffee
+```
+
+You start a server that can be accessed on `http://localhost:5000`. It bootstrap Spectacular for you with your tests, helpers, matchers, etc.
+
+The same server is used to run tests on [PhantomJS](http://phantomjs.org/) and [SlimerJS](http://slimerjs.org/).
+
+#### Browser Support
+
+Spectacular rely on some feature that may not be available in all browsers. You can find below the list of features and the minimum browser version needed to use them.
 
 <div class="caniuse_static">
   <h1>Object.defineProperty</h1>
