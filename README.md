@@ -193,4 +193,4 @@ I decided to start using the [AngularJS commit messages convention](https://docs
 
 I also try to follow Nvie's [Successful Git Branching Model](http://nvie.com/posts/a-successful-git-branching-model/). Meaning that I do the daily work in
 the `develop` branch and try to keep the `master` branch with only the released
-ersions. All the pull request should be done to the `develop` branch.
+versions. All the pull request should be done to the `develop` branch.
