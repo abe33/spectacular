@@ -246,6 +246,21 @@ spectacular.matcher 'equal', ->
 
 
 
+spectacular.matcher 'beWithin', ->
+  takes 'delta'
+
+  description -> "be within #{utils.squeeze utils.inspect @delta} of #{utils.squeeze utils.inspect @expected}"
+
+  chain 'of', (@expected) ->
+
+  match (actual) -> @expected - @delta <= actual <= @expected + @delta
+
+  failureMessageForShould -> "Expected #{utils.inspect @actual} to #{@description}"
+
+  failureMessageForShouldnt -> "Expected #{utils.inspect @actual} not to #{@description}"
+
+
+
 spectacular.matcher 'match', ->
   takes 're'
   description -> "match #{@re}"
