@@ -200,6 +200,12 @@ The following matchers are provided by Spectacular:
     </td>
   </tr>
   <tr>
+    <td>`beWithin(delta).of(value)`</td>
+    <td>The `beWithin` matcher checks that the actual is within a delta of your expected value. This is helpful when normal equality expectations do not work well for floating point values.
+      <ul><li>`pi.should beWithin(0.1).of(3.14)`</li></ul>
+    </td>
+  </tr>
+  <tr>
     <td>`have(count, property)`</td>
     <td>The `have` matcher will behave differently according the type of the actual value:
     <ul>
