@@ -117,6 +117,13 @@ compileBrowser = ->
   .then(run "./node_modules/.bin/stylus css/spectacular.styl")
   .then(run "cp css/spectacular.css docs/build/css/spectacular.css")
   .then(run "cd ./docs/build; zip -r ../spectacular-#{version}.zip *")
+  .then(run """echo "---
+title: ChangeLog
+date: #{new Date()}
+author: Cédric Néhémie <cedric.nehemie@gmail.com>
+template: page.jade
+----" > docs/changelog.md""")
+  .then(run 'cat CHANGELOG.md >> docs/changelog.md')
 
 task 'compile', 'Compiles the project sources', ->
   compileNode()
@@ -131,7 +138,7 @@ task 'build', 'Build the project for node and the browser with docs', ->
     console.log done 'Nodejs files compiled'
   .then(compileBrowser)
   .then ->
-    console.log done 'Documentation generated'
+    console.log done 'Browser files compiled'
   .fail (err) ->
     console.log fail err
 

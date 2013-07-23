@@ -69,6 +69,52 @@ describe equal, ->
 
       it -> shouldnt equal [10, 10, 10]
 
+describe beWithin, ->
+
+  context 'with integers', ->
+    subject -> 10
+
+    context 'integer delta', ->
+      it -> should beWithin(1).of(9)
+      it -> shouldnt beWithin(1).of(13)
+
+    context 'float delta', ->
+      it -> should beWithin(1.1).of(9)
+      it -> shouldnt beWithin(1.1).of(13)
+
+  context 'with floats', ->
+    subject -> 22.0/7
+
+    context 'integer delta', ->
+      it -> should beWithin(1).of(3.0)
+      it -> shouldnt beWithin(1).of(13.0)
+
+    context 'float delta', ->
+      it -> should beWithin(0.01).of(3.14)
+      it -> shouldnt beWithin(0.01).of(3.2)
+
+  context 'with integer and float', ->
+    subject -> 10
+
+    context 'integer delta', ->
+      it -> should beWithin(1).of(10.0)
+      it -> shouldnt beWithin(1).of(13.0)
+
+    context 'float delta', ->
+      it -> should beWithin(0.001).of(10.0001)
+      it -> shouldnt beWithin(0.001).of(10.1)
+
+  context 'with float and integer', ->
+    subject -> 22.0/7
+
+    context 'integer delta', ->
+      it -> should beWithin(1).of(3)
+      it -> shouldnt beWithin(1).of(13)
+
+    context 'float delta', ->
+      it -> should beWithin(1.1).of(3.1)
+      it -> shouldnt beWithin(1.1).of(5.0)
+
 describe exist, ->
   context 'with something', ->
     subject -> {}

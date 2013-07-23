@@ -31,7 +31,7 @@ html(lang='en', class=slug)
                 a(href='.') Home
               li
                 a(href='.#download') Download
-              - var items = {examples: 'Writing Tests', tools: 'Tests Tools', extend: 'Extend Spectacular', tests: 'Online Test Tool', previous: 'Archives'}
+              - var items = {examples: 'Writing Tests', tools: 'Tests Tools', extend: 'Extend Spectacular', tests: 'Online Test Tool', changelog: 'ChangeLog', previous: 'Archives'}
               each val, key in items
                 li
                   a(href='./'+ key + '.html')= val
