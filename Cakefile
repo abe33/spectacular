@@ -138,7 +138,7 @@ task 'build', 'Build the project for node and the browser with docs', ->
     console.log done 'Nodejs files compiled'
   .then(compileBrowser)
   .then ->
-    console.log done 'Browser files compiled'
+    console.log done 'Browser files compiled and documentation ready for build'
   .fail (err) ->
     console.log fail err
 
