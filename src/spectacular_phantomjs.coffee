@@ -7,8 +7,6 @@ URL = "http://localhost:#{PORT}"
 
 page.onConsoleMessage = (msg, line, source) -> console.log msg
 
-squeeze = (str) -> str.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')
-
 page.open URL, (status) ->
   page.onLoadFinished = ->
 
@@ -54,7 +52,7 @@ page.open URL, (status) ->
       done = ->
         result = page.evaluate -> window.result
 
-        console.log squeeze page.evaluate -> window.consoleProgress
+        console.log page.evaluate -> window.consoleProgress
         console.log page.evaluate -> window.consoleResults
 
         if result
