@@ -191,3 +191,6 @@ Options can also be defined in a `.spectacular` file at the root of your project
 
 I decided to start using the [AngularJS commit messages convention](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit) for this project. Please use the same convention as well for commits in PR.
 
+I also try to follow Nvie's [Successful Git Branching Model](http://nvie.com/posts/a-successful-git-branching-model/). Meaning that I do the daily work in
+the `develop` branch and try to keep the `master` branch with only the released
+ersions. All the pull request should be done to the `develop` branch.

@@ -4,8 +4,6 @@ system = require('system')
 PORT = system.args[1] or 5000
 URL = "http://localhost:#{PORT}"
 
-squeeze = (str) -> str.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '')
-
 page.onConsoleMessage = (msg, line, source) -> console.log msg
 
 page.open(URL)
@@ -58,7 +56,7 @@ page.open(URL)
       done = ->
         result = page.evaluate -> window.result
 
-        console.log squeeze page.evaluate -> window.consoleProgress
+        console.log page.evaluate -> window.consoleProgress
         console.log page.evaluate -> window.consoleResults
 
         if result
