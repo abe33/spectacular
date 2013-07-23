@@ -1,3 +1,26 @@
+<a name="1.3.1"></a>
+# 1.3.1 (2013-07-23)
+
+
+## Bug Fixes
+
+- **$cli:** fix broken formatting of documentation format
+  ([04372a98](https://github.com/abe33/spectacular/commit/04372a988df4bd66593fa7fc985503708e7f5e70),
+   [#4](https://github.com/abe33/spectacular/issues/4))
+- **pages:** add missing link to v1.2.1 documentation
+  ([ad666c01](https://github.com/abe33/spectacular/commit/ad666c01296f0f5060df21af5ccbe7c65a66e205))
+
+
+## Features
+
+- **$npm:** add contributors section in package.json
+  ([79bb90a7](https://github.com/abe33/spectacular/commit/79bb90a7f3a7dba74c15d3e78d6c5126514a90d1),
+   [#5](https://github.com/abe33/spectacular/issues/5))
+- **matchers:** beWithin(delta).of(expected) matcher for floating point expectiations
+  ([8797e6f4](https://github.com/abe33/spectacular/commit/8797e6f427ed86d82fc1df465ab91ea6b9b3a83a))
+
+
+
 <a name="1.3.0"></a>
 # 1.3.0 (2013-07-23)
 

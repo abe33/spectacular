@@ -1,21 +1,44 @@
 ---
 title: ChangeLog
-date: Tue Jul 23 2013 00:30:09 GMT+0200 (CEST)
+date: Tue Jul 23 2013 20:39:15 GMT+0200 (CEST)
 author: Cédric Néhémie <cedric.nehemie@gmail.com>
 template: page.jade
 ----
+<a name="1.3.1"></a>
+## 1.3.1 (2013-07-23)
+
+
+### Bug Fixes
+
+- **$cli:** fix broken formatting of documentation format
+  ([04372a98](https://github.com/abe33/spectacular/commit/04372a988df4bd66593fa7fc985503708e7f5e70),
+   [#4](https://github.com/abe33/spectacular/issues/4))
+- **pages:** add missing link to v1.2.1 documentation
+  ([ad666c01](https://github.com/abe33/spectacular/commit/ad666c01296f0f5060df21af5ccbe7c65a66e205))
+
+
+### Features
+
+- **$npm:** add contributors section in package.json
+  ([79bb90a7](https://github.com/abe33/spectacular/commit/79bb90a7f3a7dba74c15d3e78d6c5126514a90d1),
+   [#5](https://github.com/abe33/spectacular/issues/5))
+- **matchers:** beWithin(delta).of(expected) matcher for floating point expectiations
+  ([8797e6f4](https://github.com/abe33/spectacular/commit/8797e6f427ed86d82fc1df465ab91ea6b9b3a83a))
+
+
+
 <a name="1.3.0"></a>
-# 1.3.0 (2013-07-23)
+## 1.3.0 (2013-07-23)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$browser:** the options and paths are no longer passed though window
   ([ec776202](https://github.com/abe33/spectacular/commit/ec7762022e8283b918bc0b080749e9e98127e004))
 - **cli:** fix typo on event listener registration
   ([9f4f4dcb](https://github.com/abe33/spectacular/commit/9f4f4dcb4e438f1d990cb50526cbc6480fb95157))
 
-## Features
+### Features
 
 - **$travis:** add slimerjs tests on travis
   ([af948b5b](https://github.com/abe33/spectacular/commit/af948b5ba4cc17e0b903bbdb84aab4bedaed6443))
@@ -23,7 +46,7 @@ template: page.jade
   ([c4a3112b](https://github.com/abe33/spectacular/commit/c4a3112ba19128fe49c524a08e880c07a18dd185))
 
 
-## Breaking Changes
+### Breaking Changes
 
 - **$browser:** due to [ec776202](https://github.com/abe33/spectacular/commit/ec7762022e8283b918bc0b080749e9e98127e004),
   the options and paths are now retrieved from the
@@ -43,10 +66,10 @@ template: page.jade
 
 
 <a name="1.2.1"></a>
-# 1.2.1 (2013-07-14)
+## 1.2.1 (2013-07-14)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **documentation:** update documentation with latest options and commands
   ([4d281ea1](https://github.com/abe33/spectacular/commit/4d281ea19e8e3afae2b1e4225411ba2418b7e55d))
@@ -54,10 +77,10 @@ template: page.jade
 
 
 <a name="1.2.0"></a>
-# 1.2.0 (2013-07-14)
+## 1.2.0 (2013-07-14)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$core:** retrieve nextTick or setImmediate from window if available
   ([47e5c1e1](https://github.com/abe33/spectacular/commit/47e5c1e167758525d32ccadf00fad4ea2bf395d7))
@@ -72,7 +95,7 @@ template: page.jade
   ([f7a4c134](https://github.com/abe33/spectacular/commit/f7a4c1349680ceba292f99081c413edee70cd886))
 
 
-## Features
+### Features
 
 - **$bin:**
   - add a --phantom-bin option to pass the path to phantomjs
@@ -102,7 +125,7 @@ template: page.jade
   ([6633138b](https://github.com/abe33/spectacular/commit/6633138b7426b2078ca7f11234ac65435a4c50e8))
 
 
-## Breaking Changes
+### Breaking Changes
 
 - **$bin:** due to [2769b92a](https://github.com/abe33/spectacular/commit/2769b92a012a80ae2fdd9191e7e58dcba685e0d9),
   running the spectacular bin without a command will only
@@ -114,10 +137,10 @@ template: page.jade
 
 
 <a name="1.1.0"></a>
-# 1.1.0 (2013-07-06)
+## 1.1.0 (2013-07-06)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$browser:** fix invalid lookup in hasClass
   ([4b71516f](https://github.com/abe33/spectacular/commit/4b71516f741442cd314e745e7491d0f2c57c42ec))
@@ -135,7 +158,7 @@ template: page.jade
   ([384358f6](https://github.com/abe33/spectacular/commit/384358f6e1aefa57a94fba9e7fa8ebf6b158ced7))
 
 
-## Features
+### Features
 
 - **$browser:**
   - add verbose output through console.log
@@ -155,7 +178,7 @@ template: page.jade
   ([ddbe3bdb](https://github.com/abe33/spectacular/commit/ddbe3bdbf9223d79e94667523aac486265eb5664))
 
 
-## Breaking Changes
+### Breaking Changes
 
 - **mixins:** due to [d37e24c2](https://github.com/abe33/spectacular/commit/d37e24c22cad31b782edf519f6911bd75a0c43e1),
   the `Globalizable` mixin can no longer define and use
@@ -164,10 +187,10 @@ template: page.jade
 
 
 <a name="1.0.2"></a>
-# 1.0.2 (2013-06-26)
+## 1.0.2 (2013-06-26)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **server:** fix broken walkdir in server when directories don't exists
   ([0e642d4a](https://github.com/abe33/spectacular/commit/0e642d4a62dd1d1ea6295f835cb4b81100f654bb))
@@ -175,10 +198,10 @@ template: page.jade
 
 
 <a name="1.0.1"></a>
-# 1.0.1 (2013-06-26)
+## 1.0.1 (2013-06-26)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$bin:** server option didn't turn cli off
   ([087dbf06](https://github.com/abe33/spectacular/commit/087dbf06d3b45320ccae211e51e8cb192a5b3db6))
@@ -186,10 +209,10 @@ template: page.jade
 
 
 <a name="1.0.0"></a>
-# 1.0.0 (2013-06-23)
+## 1.0.0 (2013-06-23)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$tests:**
   - tests broken on node v0.10.9
@@ -207,7 +230,7 @@ template: page.jade
   ([7025b979](https://github.com/abe33/spectacular/commit/7025b979052bbdd68e211d32e81dd75941036efd))
 
 
-## Features
+### Features
 
 - **$bin:** add help and version options
   ([36b80595](https://github.com/abe33/spectacular/commit/36b80595332f4e84198914c5d6ae06729c837625))
@@ -220,7 +243,7 @@ template: page.jade
   ([62460189](https://github.com/abe33/spectacular/commit/62460189bb9772917a0551260ea389eb28fff32c))
 
 
-## Breaking Changes
+### Breaking Changes
 
 - **matchers:** due to [62460189](https://github.com/abe33/spectacular/commit/62460189bb9772917a0551260ea389eb28fff32c),
   matchers no longer can be defined as an object, the use of the spectacular helper is mandatory.
@@ -245,20 +268,20 @@ template: page.jade
     ```
 
 <a name="0.0.4"></a>
-# 0.0.4 (2013-06-15)
+## 0.0.4 (2013-06-15)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$tests:** fix broken travis tests due to server tests
   ([0f79ccd5](https://github.com/abe33/spectacular/commit/0f79ccd52c6f7f78a55392509164fe4ef8313fff))
 
 
 <a name="0.0.3"></a>
-# 0.0.3 (2013-06-15)
+## 0.0.3 (2013-06-15)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **$bin:** fix bad reading of paths options
   ([88d0962e](https://github.com/abe33/spectacular/commit/88d0962edc5bebf95e628ed606cc783bca16ed05))
@@ -270,7 +293,7 @@ template: page.jade
   ([975c4edc](https://github.com/abe33/spectacular/commit/975c4edc642499514b6521e144b30b7892c6be90))
 
 
-## Features
+### Features
 
 - **$bin:**
   - add support for config file
@@ -306,16 +329,16 @@ template: page.jade
 
 
 <a name="0.0.2"></a>
-# 0.0.2 (2013-06-11)
+## 0.0.2 (2013-06-11)
 
 
-## Bug Fixes
+### Bug Fixes
 
 - **environment:** unglobalize environment after tests
   ([975c4edc](https://github.com/abe33/spectacular/commit/975c4edc642499514b6521e144b30b7892c6be90))
 
 
-## Features
+### Features
 
 - **$core:** snakify matchers and matchers methods
   ([944f9f66](https://github.com/abe33/spectacular/commit/944f9f66e07e382178a2138e2f20c324fb341a76))
