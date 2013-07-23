@@ -19,6 +19,7 @@ You can find below a table with all the snake case equivalent:
 <table cellspacing="0">
     <tr><td>`after`</td><td>No differences</td></tr>
     <tr><td>`before`</td><td>No differences</td></tr>
+    <tr><td>`beWithin`</td><td>`be_within`<td></tr>
     <tr><td>`chain`</td><td>No differences</td></tr>
     <tr><td>`contains`</td><td>No differences</td></tr>
     <tr><td>`context`</td><td>No differences</td></tr>
