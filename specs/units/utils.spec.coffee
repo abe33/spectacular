@@ -114,14 +114,13 @@ describe spectacular.utils.inspect, ->
     context 'that have a name', ->
       withArguments -> [class Foo]
 
-      itsReturn -> should equal 'Foo'
+      itsReturn -> should match /Foo/
 
     context 'that have a user defined name', ->
       withArguments ->
         f = ->
         f._name = 'foo'
         [f]
-
 
       itsReturn -> should equal 'foo'
 

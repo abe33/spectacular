@@ -250,7 +250,7 @@ class spectacular.BrowserReporter
     ex = document.createElement 'article'
     ex.id = "example_#{id}"
     ex.className = "example #{example.result.state} level#{n}"
-    ex.dataset.id = id
+    if ex.dataset? then ex.dataset.id = id else ex.setAttribute 'data-id', id
 
     if example.result.expectations.length > 0
       ex.innerHTML = """

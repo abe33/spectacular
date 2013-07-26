@@ -4,7 +4,7 @@
 Object.getPropertyDescriptor = (o, name) ->
   proto = o
   descriptor = undefined
-  proto = proto.__proto__  while proto and not (descriptor = Object.getOwnPropertyDescriptor(proto, name))
+  proto = Object.getPrototypeOf?(proto) or proto.__proto__ while proto and not (descriptor = Object.getOwnPropertyDescriptor(proto, name))
   descriptor
 
 Function::include = (mixins...) ->
