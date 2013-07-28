@@ -8,6 +8,7 @@ Q = require 'q'
 walk = require 'walkdir'
 util = require 'util'
 jsdom = require 'jsdom'
+sourceMap = require 'source-map'
 
 colorize= (str, color, options) ->
   if str? and options.colors and str[color] then str[color] else str
@@ -124,11 +125,29 @@ loadFile = (options) ->
     Q.fcall ->
       return cache[file] if file of cache
 
-      fileContent = fs.readFileSync(file).toString()
-      if options.coffee and file.indexOf('.coffee') isnt -1
+      fileSource = fs.readFileSync(file).toString()
+      if options.coffee and /\.coffee$/.test file
         {compile} = require 'coffee-script'
-        fileContent = compile fileContent, bare: true
-      cache[file] = fileContent
+        compileOptions = bare: true
+        compileOptions.sourceMap = options.sourceMap
+        fileContent = compile fileSource, compileOptions
+        fileContent.source = fileSource if options.sourceMap
+
+      cache[file] = fileContent or fileSource
+
+getOriginalSourceFor = (options) ->
+  cache = {}
+  (file, line, column) ->
+    defer = Q.defer()
+    options.loadFile(file)
+    .then (compiled) ->
+      consumer = new sourceMap.SourceMapConsumer compiled.v3SourceMap
+      {line, column} = consumer.originalPositionFor {line, column}
+      defer.resolve {content: compiled.source, line, column}
+    .fail (reason) -> defer.reject reason
+
+    defer.promise
+
 
 exports.run = (options) ->
   loadStartedAt = null
@@ -140,6 +159,7 @@ exports.run = (options) ->
   .then(loadDOM)
   .then (window) ->
     options.loadFile = loadFile(options)
+    options.getOriginalSourceFor = getOriginalSourceFor(options)
     spectacular.global.window = window
     spectacular.global.document = window.document
 

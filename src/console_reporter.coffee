@@ -58,18 +58,20 @@ class spectacular.StackReporter
       return promise
 
     [match, p, file, h, e, line, c, column] = re.exec line
-    column = @error.columnNumber + 1 if not column? and @error.columnNumber?
-
-    @getLines(file, parseInt(line), parseInt(column)).then (lines) ->
+    column = @error.columnNumber if not column? and @error.columnNumber?
+    @getLines(file, line, column).then (lines) ->
       promise.resolve "\n#{lines}\n"
 
     promise
 
   getLines: (file, line, column) ->
     promise = new spectacular.Promise
-    @options.loadFile(file).then (fileContent) =>
+
+    continuation = (fileContent) =>
       fileContent = fileContent.split('\n').map (l,i) =>
         "    #{utils.padRight i + 1} | #{l}"
+
+      line = parseInt line
 
       @insertColumnLine fileContent, line, column
 
@@ -79,13 +81,23 @@ class spectacular.StackReporter
       lines = fileContent[startLine..endLine].join('\n')
       promise.resolve lines
 
+    if @options.coffee and @options.sourceMap and /\.coffee$/.test file
+      @options.getOriginalSourceFor(file, line, column)
+      .then (res) ->
+        {content, line, column} = res
+
+        continuation content
+    else
+      @options.loadFile(file).then continuation
+
     promise
 
   insertColumnLine: (content, line, column) ->
+    column = parseInt column
     if line is content.length
       content.push line
     else
-      content.splice line, 0, "         | #{utils.padRight('^', column)}"
+      content.splice line, 0, "         | #{utils.padRight('^', column+1)}"
 
 
 ## ConsoleReporter

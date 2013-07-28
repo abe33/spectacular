@@ -58,6 +58,7 @@ options = {
   phantomjs: false,
   slimerjs: false,
   random: true,
+  sourceMap: false,
   seed: null,
   globs: [],
   sources: []
@@ -137,6 +138,10 @@ while (args.length) {
     case '--profile':
     case '-p':
       options.profile = true;
+      break;
+    case '--map':
+    case '--source-map':
+      options.sourceMap = true;
       break;
     case '--random':
       options.random = true;

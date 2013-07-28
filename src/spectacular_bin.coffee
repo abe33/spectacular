@@ -46,6 +46,7 @@ options =
   phantomjs: false
   slimerjs: false
   random: true
+  sourceMap: false
   seed: null
   globs: []
   sources: []
@@ -91,6 +92,7 @@ while args.length
     when '--documentation', '-d' then options.documentation = true
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
+    when '--map', '--source-map' then options.sourceMap = true
     when '--random' then options.random = true
     when '--no-random' then options.random = false
     when '--seed' then options.seed = parseInt args.shift()
