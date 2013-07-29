@@ -81,7 +81,7 @@ class spectacular.StackReporter
       lines = fileContent[startLine..endLine].join('\n')
       promise.resolve lines
 
-    if @options.coffee and @options.sourceMap and /\.coffee$/.test file
+    if @options.coffee and @options.sourceMap and @options.hasSourceMap file
       @options.getOriginalSourceFor(file, line, column)
       .then (res) ->
         {content, line, column} = res

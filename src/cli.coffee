@@ -119,27 +119,28 @@ loadDOM = ->
       defer.resolve window
   defer.promise
 
-loadFile = (options) ->
-  cache = {}
-  (file) ->
+CliMethods = (options) ->
+  fileCache = {}
+
+  options.isCoffeeScriptFile = (file) -> /\.coffee$/.test file
+  options.hasSourceMap = (file) -> @isCoffeeScriptFile file
+  options.loadFile = (file) ->
     Q.fcall ->
-      return cache[file] if file of cache
+      return fileCache[file] if file of fileCache
 
       fileSource = fs.readFileSync(file).toString()
-      if options.coffee and /\.coffee$/.test file
+      if options.coffee and options.isCoffeeScriptFile file
         {compile} = require 'coffee-script'
         compileOptions = bare: true
         compileOptions.sourceMap = options.sourceMap
         fileContent = compile fileSource, compileOptions
         fileContent.source = fileSource if options.sourceMap
 
-      cache[file] = fileContent or fileSource
+      fileCache[file] = fileContent or fileSource
 
-getOriginalSourceFor = (options) ->
-  cache = {}
-  (file, line, column) ->
+  options.getOriginalSourceFor = (file, line, column) ->
     defer = Q.defer()
-    options.loadFile(file)
+    @loadFile(file)
     .then (compiled) ->
       consumer = new sourceMap.SourceMapConsumer compiled.v3SourceMap
       {line, column} = consumer.originalPositionFor {line, column}
@@ -158,8 +159,7 @@ exports.run = (options) ->
   loadSpectacular(options)
   .then(loadDOM)
   .then (window) ->
-    options.loadFile = loadFile(options)
-    options.getOriginalSourceFor = getOriginalSourceFor(options)
+    CliMethods(options)
     spectacular.global.window = window
     spectacular.global.document = window.document
 
