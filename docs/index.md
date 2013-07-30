@@ -113,6 +113,30 @@ You start a server that can be accessed on `http://localhost:5000`. It bootstrap
 
 The same server is used to run tests on [PhantomJS](http://phantomjs.org/) and [SlimerJS](http://slimerjs.org/).
 
+#### Source Map Support
+
+If you use the Spectacular server to test your code on the browser, no additional configuration is needed. However, if you use Spectacular in your own test page some additional configuration is needed to enable source mapping.
+
+In order for Spectacular to kown which files have source mapping and how to retrieve the source and the mapping for that file, some methods have to be defined in the options before the Spectacular start:
+
+  * `hasSourceMap`: A function that takes an url and return true if the file have source map support.
+  * `getSourceURLFor`: A function that takes an url and return the url of the corresponding source file.
+  * `getSourceMapURLFor`: A function that takes an url and return the url of the json containing the source mapping.
+
+A concrete example can be seen in the Spectacular server's source :
+
+```javascript
+spectacular.options.hasSourceMap = function(file) {
+  return /\.coffee$/.test(file);
+};
+spectacular.options.getSourceURLFor = function(file) {
+  return file.replace('.coffee', '.coffee.src')
+};
+spectacular.options.getSourceMapURLFor = function(file) {
+  return file.replace('.coffee', '.map')
+};
+```
+
 #### Browser Support
 
 Spectacular rely on some feature that may not be available in all browsers. You can find below the list of features and the minimum browser version needed to use them.
@@ -225,6 +249,10 @@ spectacular test specs/**/*.spec.js
   <tr>
     <td>`--source GLOB`</td>
     <td>When using the server, it allow to add files that matches the patterns as served files in the html runner. You can use this option as many times as you need.</td>
+  </tr>
+  <tr>
+    <td>`--map, --source-map`</td>
+    <td>Enable the support for CoffeeScript source map on both node and browsers. When using this mode with the browser without relying on the Spectacular server additional setup is required, please see the [Source Map Support](#Source-Map-Support) section for details.</td>
   </tr>
   <tr>
     <td>`-m, --matchers PATH`</td>
