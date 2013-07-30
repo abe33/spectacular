@@ -37,9 +37,12 @@ page.onResourceRequested = (requestData, networkRequest) ->
             red: ['\x1B[31m', '\x1B[39m']
             yellow: ['\x1B[33m', '\x1B[39m']
           }
-          (k for k of styles).forEach (key) ->
-            Object.defineProperty String.prototype, key,
-              get: -> styles[key][0] + this + styles[key][1]
+          spectacular.StackReporter::colorize =
+          spectacular.ConsoleReporter::colorize = (str, color) ->
+            if @options.colors
+              styles[color][0] + str + styles[color][1]
+            else
+              str
 
           reporter = new window.spectacular.ConsoleReporter(spectacular.options)
           window.env.runner.on 'result', reporter.onResult
