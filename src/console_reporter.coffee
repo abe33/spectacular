@@ -55,16 +55,24 @@ class spectacular.StackReporter
     if @isGeckoLikeStackTraceLine line
       re = /(@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
     else
-      re = /(at.\(?)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
+      re = /(at.\(|\()((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
 
-    [match, p, file, h, e, line, c, column] = re.exec line
+    res = re.exec line
 
+    return null unless res?
+
+    [match, p, file, h, e, line, c, column] = res
     {file, line, column}
 
   formatErrorInFile: (line) ->
     promise = new spectacular.Promise
 
-    {file, line, column} = @getLineDetails line
+    details = @getLineDetails line
+    unless details?
+      promise.resolve ''
+      return promise
+
+    {file, line, column} = details
     column = @error.columnNumber if not column? and @error.columnNumber?
     @getLines(file, line, column).then (lines) ->
       promise.resolve "\n#{lines}\n"
