@@ -32,7 +32,7 @@ class spectacular.StackReporter
         res += @colorize @formatStack(stack), 'grey'
         promise.resolve res
     else
-      promise.resolve res
+      promise.resolve ''
 
     promise
 
@@ -52,7 +52,7 @@ class spectacular.StackReporter
   formatErrorInFile: (line) ->
     promise = new spectacular.Promise
 
-    re = /(at.*\(|@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
+    re = /(at.[^\(h]*\(?|@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
     unless re.test line
       promise.resolve ''
       return promise
