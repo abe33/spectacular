@@ -116,7 +116,7 @@ generateSpecRunner = (options) ->
           <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
           <link rel="stylesheet" href="assets/css/spectacular.css"/>
           <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"/>
-          #{ if options.sourceMap then scriptNode 'vendor/source-map.min.js' else '' }
+          #{ if options.sourceMap then scriptNode 'vendor/source-map.js' else '' }
           #{(scriptNode p for p in sources).join '\n'}
           #{(scriptNode p for p in paths).join '\n'}
         </head>
