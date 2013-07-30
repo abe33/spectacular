@@ -42,22 +42,29 @@ class spectacular.StackReporter
   formatStack: (stack) ->
     if @options.longTrace
       s = "\n\n#{stack.join '\n'}\n"
-      s = utils.indent s if /@/.test s
+      s = utils.indent s if @isGeckoLikeStackTraceLine s
     else
       s = "\n#{stack[0..Math.min(5, stack.length-1)].join '\n'}"
-      s = utils.indent s if /@/.test s
+      s = utils.indent s if @isGeckoLikeStackTraceLine s
       s += "\n    ...\n\n    use --long-trace option to view the #{stack.length - 6} remaining lines" if stack.length > 6
       s += "\n\n"
+
+  isGeckoLikeStackTraceLine: (line) -> /@/.test line
+
+  getLineDetails: (line) ->
+    if @isGeckoLikeStackTraceLine line
+      re = /(@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
+    else
+      re = /(at.\(?)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
+
+    [match, p, file, h, e, line, c, column] = re.exec line
+
+    {file, line, column}
 
   formatErrorInFile: (line) ->
     promise = new spectacular.Promise
 
-    re = /(at.[^\(h@]*\(?|@)((http:\/\/)?.*\.(js|coffee)):(\d+)(:(\d+))*/
-    unless re.test line
-      promise.resolve ''
-      return promise
-
-    [match, p, file, h, e, line, c, column] = re.exec line
+    {file, line, column} = @getLineDetails line
     column = @error.columnNumber if not column? and @error.columnNumber?
     @getLines(file, line, column).then (lines) ->
       promise.resolve "\n#{lines}\n"
