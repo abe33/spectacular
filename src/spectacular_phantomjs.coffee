@@ -50,7 +50,7 @@ page.onResourceRequested = (requestData, networkRequest) ->
             window.consoleProgress += msg.target
 
         interval = setInterval ->
-          if window.env.runner?
+          if window.env?
             clearInterval interval
             bootstrap()
         , 0
