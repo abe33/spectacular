@@ -140,6 +140,10 @@ spectacular test specs/**/*.spec.js
     <td>When using the server, it allow to add files that matches the patterns as served files in the html runner. You can use this option as many times as you need.</td>
   </tr>
   <tr>
+    <td>`--map, --source-map`</td>
+    <td>Enable the support for CoffeeScript source map on both node and browsers. When using this mode with the browser without relying on the Spectacular server additional setup is required, please see the [Source Map Support](http://abe33.github.com/spectacular/#Source-Map-Support) section of the documentation for details.</td>
+  </tr>
+  <tr>
     <td>`-m, --matchers PATH`</td>
     <td>Specify the path where project matchers can be found, by default matchers are loaded from `./specs/support/matchers`.</td>
   </tr>
