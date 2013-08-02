@@ -8,6 +8,7 @@ Q = require 'q'
 walk = require 'walkdir'
 util = require 'util'
 jsdom = require 'jsdom'
+sourceMap = require 'source-map'
 
 colorize= (str, color, options) ->
   if str? and options.colors and str[color] then str[color] else str
@@ -118,17 +119,36 @@ loadDOM = ->
       defer.resolve window
   defer.promise
 
-loadFile = (options) ->
-  cache = {}
-  (file) ->
-    Q.fcall ->
-      return cache[file] if file of cache
+CliMethods = (options) ->
+  fileCache = {}
 
-      fileContent = fs.readFileSync(file).toString()
-      if options.coffee and file.indexOf('.coffee') isnt -1
+  options.isCoffeeScriptFile = (file) -> /\.coffee$/.test file
+  options.hasSourceMap = (file) -> @isCoffeeScriptFile file
+  options.loadFile = (file) ->
+    Q.fcall ->
+      return fileCache[file] if file of fileCache
+
+      fileSource = fs.readFileSync(file).toString()
+      if options.coffee and options.isCoffeeScriptFile file
         {compile} = require 'coffee-script'
-        fileContent = compile fileContent, bare: true
-      cache[file] = fileContent
+        compileOptions = bare: true
+        compileOptions.sourceMap = options.sourceMap
+        fileContent = compile fileSource, compileOptions
+        fileContent.source = fileSource if options.sourceMap
+
+      fileCache[file] = fileContent or fileSource
+
+  options.getOriginalSourceFor = (file, line, column) ->
+    defer = Q.defer()
+    @loadFile(file)
+    .then (compiled) ->
+      consumer = new sourceMap.SourceMapConsumer compiled.v3SourceMap
+      {line, column} = consumer.originalPositionFor {line, column}
+      defer.resolve {content: compiled.source, line, column}
+    .fail (reason) -> defer.reject reason
+
+    defer.promise
+
 
 exports.run = (options) ->
   loadStartedAt = null
@@ -139,7 +159,7 @@ exports.run = (options) ->
   loadSpectacular(options)
   .then(loadDOM)
   .then (window) ->
-    options.loadFile = loadFile(options)
+    CliMethods(options)
     spectacular.global.window = window
     spectacular.global.document = window.document
 

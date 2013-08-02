@@ -89,19 +89,34 @@ generateSpecRunner = (options) ->
     globPaths options.sources
   .then (sources) ->
     console.log "  #{colorize 'source', 'grey'} #{f}" for f in sources if options.verbose
+
+    sourceMapMethods = """
+    spectacular.options.hasSourceMap = function(file) {
+      return /\\.coffee$/.test(file);
+    };
+    spectacular.options.getSourceURLFor = function(file) {
+      return file.replace('.coffee', '.coffee.src')
+    };
+    spectacular.options.getSourceMapURLFor = function(file) {
+      return file.replace('.coffee', '.map')
+    };
+    """
+
     """
       <!doctype html>
       <html>
         <head>
           <script>
-            spectacular = {
+            window.spectacular = {
               options: #{util.inspect options},
               paths: #{util.inspect paths[2..]}
             };
+            #{ if options.sourceMap then sourceMapMethods else '' }
           </script>
           <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
           <link rel="stylesheet" href="assets/css/spectacular.css"/>
           <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"/>
+          #{ if options.sourceMap then scriptNode 'vendor/source-map.js' else '' }
           #{(scriptNode p for p in sources).join '\n'}
           #{(scriptNode p for p in paths).join '\n'}
         </head>
@@ -122,11 +137,23 @@ exports.run = (options) ->
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
   app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/', (req, res, next) ->
-    content = fs.readFileSync(path.resolve ".#{req.url}").toString()
 
     if /\.coffee$/.test(req.url) and options.coffee
+      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
       {compile} = require 'coffee-script'
       content = compile content
+
+    else if /\.coffee\.src$/.test(req.url) and options.coffee
+      content = fs.readFileSync(path.resolve ".#{req.url.replace '.coffee.src', '.coffee'}").toString()
+
+    else if /\.map$/.test(req.url) and options.coffee
+      content = fs.readFileSync(path.resolve ".#{req.url.replace '.map', '.coffee'}").toString()
+      {compile} = require 'coffee-script'
+      compiled = compile content, sourceMap: true
+      content = compiled.v3SourceMap
+
+    else
+      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
 
     console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} #{req.url}"
     res.send content

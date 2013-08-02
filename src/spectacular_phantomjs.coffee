@@ -7,8 +7,58 @@ URL = "http://localhost:#{PORT}"
 
 page.onConsoleMessage = (msg, line, source) -> console.log msg
 
+# This part ensure that we'll register the console reporter as soon as
+# the spectacular file have been loaded and that the environment have
+# been created. Some really quick tests, when running first, was missed
+# by the console reporter that was previously registered on the open callback.
+page.onResourceRequested = (requestData, networkRequest) ->
+  if /spectacular\.js/.test requestData.url
+    runnerAvailable = page.evaluate -> window.spectacular
+
+    if runnerAvailable
+      page.evaluate ->
+        bootstrap = ->
+          styles = {
+            # styles
+            bold: ['\x1B[1m', '\x1B[22m']
+            italic: ['\x1B[3m', '\x1B[23m']
+            underline: ['\x1B[4m', '\x1B[24m']
+            inverse: ['\x1B[7m', '\x1B[27m']
+            strikethrough: ['\x1B[9m', '\x1B[29m']
+            # grayscale
+            white: ['\x1B[37m', '\x1B[39m']
+            grey: ['\x1B[90m', '\x1B[39m']
+            black: ['\x1B[30m', '\x1B[39m']
+            # colors
+            blue: ['\x1B[34m', '\x1B[39m']
+            cyan: ['\x1B[36m', '\x1B[39m']
+            green: ['\x1B[32m', '\x1B[39m']
+            magenta: ['\x1B[35m', '\x1B[39m']
+            red: ['\x1B[31m', '\x1B[39m']
+            yellow: ['\x1B[33m', '\x1B[39m']
+          }
+          spectacular.StackReporter::colorize =
+          spectacular.ConsoleReporter::colorize = (str, color) ->
+            if @options.colors
+              styles[color][0] + str + styles[color][1]
+            else
+              str
+
+          reporter = new window.spectacular.ConsoleReporter(spectacular.options)
+          window.env.runner.on 'result', reporter.onResult
+          window.env.runner.on 'end', reporter.onEnd
+          reporter.on 'report', (msg) -> window.consoleResults = msg.target
+          reporter.on 'message', (msg) ->
+            window.consoleProgress ||= ''
+            window.consoleProgress += msg.target
+
+        interval = setInterval ->
+          if window.env?
+            clearInterval interval
+            bootstrap()
+        , 0
+
 page.open URL, (status) ->
-  page.onLoadFinished = ->
 
   if status isnt 'success'
     console.log JSON.stringify({ error: "Unable to access Spectacular specs at #{URL}" })
@@ -17,38 +67,6 @@ page.open URL, (status) ->
     runnerAvailable = page.evaluate -> window.spectacular
 
     if runnerAvailable
-      page.evaluate ->
-        styles = {
-          # styles
-          bold: ['\x1B[1m', '\x1B[22m']
-          italic: ['\x1B[3m', '\x1B[23m']
-          underline: ['\x1B[4m', '\x1B[24m']
-          inverse: ['\x1B[7m', '\x1B[27m']
-          strikethrough: ['\x1B[9m', '\x1B[29m']
-          # grayscale
-          white: ['\x1B[37m', '\x1B[39m']
-          grey: ['\x1B[90m', '\x1B[39m']
-          black: ['\x1B[30m', '\x1B[39m']
-          # colors
-          blue: ['\x1B[34m', '\x1B[39m']
-          cyan: ['\x1B[36m', '\x1B[39m']
-          green: ['\x1B[32m', '\x1B[39m']
-          magenta: ['\x1B[35m', '\x1B[39m']
-          red: ['\x1B[31m', '\x1B[39m']
-          yellow: ['\x1B[33m', '\x1B[39m']
-        }
-        (k for k of styles).forEach (key) ->
-          Object.defineProperty String.prototype, key,
-            get: -> styles[key][0] + this + styles[key][1]
-
-        reporter = new window.spectacular.ConsoleReporter(spectacular.options)
-        window.env.runner.on 'result', reporter.onResult
-        window.env.runner.on 'end', reporter.onEnd
-        reporter.on 'report', (msg) -> window.consoleResults = msg.target
-        reporter.on 'message', (msg) ->
-          window.consoleProgress ||= ''
-          window.consoleProgress += msg.target
-
       done = ->
         result = page.evaluate -> window.result
 
