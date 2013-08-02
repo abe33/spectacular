@@ -135,6 +135,7 @@ exports.run = (options) ->
       res.send html
 
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
+  app.use '/vendor', express.static path.resolve SPECTACULAR_ROOT, 'vendor'
   app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/', (req, res, next) ->
 
