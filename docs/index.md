@@ -155,12 +155,12 @@ spectacular test specs/**/*.spec.js
 
   <tr>
     <td>`phantomjs`</td>
-    <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
+    <td>Assuming you have PhantomJS installed, it starts a server and run the test on PhantomJS.</td>
   </tr>
 
   <tr>
     <td>`slimerjs`</td>
-    <td>Assuming you have SlimerJS installed, it will starts a server and run the test on SlimerJS.</td>
+    <td>Assuming you have SlimerJS installed, it starts a server and run the test on SlimerJS.</td>
   </tr>
 </table>
 
