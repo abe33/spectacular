@@ -1,9 +1,42 @@
 ---
 title: ChangeLog
-date: Tue Jul 23 2013 20:39:15 GMT+0200 (CEST)
+date: Sun Aug 25 2013 13:54:29 GMT+0200 (CEST)
 author: Cédric Néhémie <cedric.nehemie@gmail.com>
 template: page.jade
 ----
+<a name="1.4.0"></a>
+## 1.4.0 (2013-08-25)
+
+
+### Bug Fixes
+
+- **$support:** fix broken test on Opera 12
+  ([3911ecd8](https://github.com/abe33/spectacular/commit/3911ecd8e88c7b5b4a22d6e2fad7a308bc034aef))
+- **headless:** fix some bugs occuring in phantomjs and slimerjs on travis
+  ([c3573df7](https://github.com/abe33/spectacular/commit/c3573df72f53778ba9da3075cda0445c44a4bb00))
+- **node:** fix broken tests due to invalid error line parsing
+  ([1337d5c9](https://github.com/abe33/spectacular/commit/1337d5c93651cce428ddc0db6a1ee733650e7060))
+- **phantomjs:**
+  - remove String prototype decoration to avoid error on travis
+  ([ee643e1a](https://github.com/abe33/spectacular/commit/ee643e1aa8272e751edae8d1b4bef543be4b77fd))
+  - fix missed tests before the console reporter registration
+  ([75747a3f](https://github.com/abe33/spectacular/commit/75747a3fc398cd2d24bccaba5b44bc8486e0c627))
+  - fix broken stack trace line parsing on PhantomJS
+  ([297353c7](https://github.com/abe33/spectacular/commit/297353c7324b975c2737b92844d1b0060a89bb8d))
+- **server:** vendor files should be served from spectacular directory
+  ([006f2012](https://github.com/abe33/spectacular/commit/006f20126183cf2dfa957ccb2fbd561ebe85f057))
+- **source-map:** use a fixed version of source-map for PhantomJS
+  ([11dfe0df](https://github.com/abe33/spectacular/commit/11dfe0dfc4be28bc161b640947c531c4fe2a1a2c))
+- **tests:** fix broken tests on Internet Explorer 9
+  ([558166e7](https://github.com/abe33/spectacular/commit/558166e7f5c88b07c96b9382d52af9bc43050d94))
+
+
+### Features
+
+- **source-map:** implements source map support for both node and browsers
+  ([2783b975](https://github.com/abe33/spectacular/commit/2783b975110d1a2f3232d8ba02e93843a31e006c), [77c5c7f5](https://github.com/abe33/spectacular/commit/77c5c7f58b2436a13ec03911ba4e74cae5e6d921), [#6](https://github.com/abe33/spectacular/issues/6))
+
+
 <a name="1.3.1"></a>
 ## 1.3.1 (2013-07-23)
 
