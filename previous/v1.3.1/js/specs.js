@@ -3259,7 +3259,7 @@
           ];
         });
         return itsReturn(function() {
-          return should(match(/Foo/));
+          return should(equal('Foo'));
         });
       });
       context('that have a user defined name', function() {
@@ -3278,7 +3278,7 @@
           return [function() {}];
         });
         return itsReturn(function() {
-          return should(match(/function\s*\(\)\s*\{\}/));
+          return should(equal('function () {}'));
         });
       });
     });
