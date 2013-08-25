@@ -38,13 +38,13 @@
     "walkdir": "0.0.7",
     "istanbul": "~0.1.35",
     "express": "~3.3.0",
-    "stylus": "~0.34.1",
+    "stylus": "~0.37.0",
     "jsdom": "~0.8.1",
     "wintersmith": "~2.0.5",
-    "wintersmith-stylus": "~0.3.0",
+    "wintersmith-stylus": "~0.4.0",
     "wintersmith-coffee": "~0.2.0",
     "qq": "~0.3.5",
-    "uglify-js": "~2.3.6",
+    "uglify-js": "~2.4.0",
     "source-map": "~0.1.27"
   }
 }
