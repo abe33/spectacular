@@ -31,7 +31,7 @@ class User
   constructor: (@id) ->
 
 factory 'user', class: User, ->
-  createWith -> Math.floor Math.random() * 100000
+  createWith -> [ Math.floor Math.random() * 100000 ]
 
   set 'name', -> 'John Doe'
 

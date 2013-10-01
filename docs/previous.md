@@ -18,3 +18,4 @@ Find below the documentations for all the previous versions of Spectacular:
   * [v1.2.0](previous/v1.2.0/)
   * [v1.2.1](previous/v1.2.1/)
   * [v1.3.0](previous/v1.3.0/)
+  * [v1.3.1](previous/v1.3.1/)

@@ -66,7 +66,7 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 
 First download Spectacular:
 
-<div id="download"><a href='spectacular-1.3.1.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
+<div id="download"><a href='spectacular-1.4.0.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
 
 Then puts Spectacular in your html file:
 
@@ -194,12 +194,12 @@ spectacular test specs/**/*.spec.js
 
   <tr>
     <td>`phantomjs`</td>
-    <td>Assuming you have PhantomJS installed, it will starts a server and run the test on PhantomJS.</td>
+    <td>Assuming you have PhantomJS installed, it starts a server and run the test on PhantomJS.</td>
   </tr>
 
   <tr>
     <td>`slimerjs`</td>
-    <td>Assuming you have SlimerJS installed, it will starts a server and run the test on SlimerJS.</td>
+    <td>Assuming you have SlimerJS installed, it starts a server and run the test on SlimerJS.</td>
   </tr>
 </table>
 
