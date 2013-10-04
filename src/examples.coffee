@@ -54,7 +54,6 @@ class spectacular.Expectation
       if @callstack.stack?
         stack = @callstack.stack.split('\n')
         specIndex = spectacular.env.runner.findSpecFileInStack stack
-        console.log specIndex
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
