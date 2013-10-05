@@ -198,7 +198,7 @@ class spectacular.BrowserReporter
     @results.push example.result
     @examples.push example
     @progress.appendChild @link example, @examples.length
-    @counters.innerHTML = @formatCounters()
+    @counters.innerHTML = @formatCounters() + @getSeed()
     switch example.result.state
       when 'pending' then @pending.push example
       when 'skipped' then @skipped.push example
@@ -390,6 +390,15 @@ class spectacular.BrowserReporter
     duration = (end.getTime() - start.getTime()) / 1000
     duration = "<span class='yellow'>#{Math.max 0, duration}s</span>"
     duration
+
+  getSeed: ->
+    if @options.random and @options.seed?
+      @formatSeed(@options.seed)
+    else
+      ''
+
+  formatSeed: (seed) ->
+    "<span class='blue'><span>seed</span> #{seed}</span>"
 
   hasFailures: ->
     @results.some (result) -> result.state in ['failure', 'skipped', 'errored']
