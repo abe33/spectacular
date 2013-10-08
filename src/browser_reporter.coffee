@@ -494,7 +494,6 @@ spectacular.BrowserMethods(spectacular.options)
 spectacular.env = new spectacular.Environment(spectacular.options)
 spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
-spectacular.env.runner.paths = spectacular.paths
 
 window.env = spectacular.env
 

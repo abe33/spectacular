@@ -177,7 +177,6 @@ exports.run = (options) ->
     loadEndedAt = new Date()
     spectacular.env.runner.loadStartedAt = loadStartedAt
     spectacular.env.runner.loadEndedAt = loadEndedAt
-    spectacular.env.runner.paths = paths
     spectacular.env.run()
   .then (status) ->
     spectacular.env.unglobalize()

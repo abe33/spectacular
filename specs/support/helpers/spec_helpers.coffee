@@ -3,7 +3,6 @@ spectacular.helper 'createEnv', (block, context, options) ->
   env = spectacular.env.clone()
   env.options.colors = false
   env.options[k] = v for k,v of options
-  env.runner.paths = spectacular.env.runner.paths
   context.results = ''
 
   spyOn(env, 'globalize').andCallThrough ->

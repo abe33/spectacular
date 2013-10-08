@@ -37,7 +37,7 @@ class spectacular.Runner
       if @hasFailures() then 1 else 0
 
   findSpecFileInStack: (stack) ->
-    for p in @paths
+    for p in @options.paths or []
       for l,i in stack
         return i if l.indexOf(p) isnt -1
     -1
