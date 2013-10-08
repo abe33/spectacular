@@ -1,10 +1,11 @@
 URI_RE = '((http:\\/\\/)?.*\\.(js|coffee))(\\?[^:]*)*'
+LINE_RE = ':(\\d+)(:(\\d+))*'
 
 class GeckoMatch
   match: (stack) -> /@/g.test stack
   filter: (line) -> /@/.test line
   details: (line) ->
-    re = ///\s*([^\s]*)(@)#{URI_RE}:(\d+)(:(\d+))*///
+    re = ///\s*([^\s]*)(@)#{URI_RE}#{LINE_RE}///
     [match, method, p, file, h, e, q, line, c, column] = re.exec line
 
     {file, line, column, method}
@@ -13,7 +14,7 @@ class V8Match
   match: (stack) -> /\s+at\s+/g.test stack
   filter: (line) -> /\s+at\s+/.test line
   details: (line) ->
-    re = ///(at\s*([^\s]*)\s*\(|\()#{URI_RE}:(\d+)(:(\d+))*///
+    re = ///(at\s*([^\s]*)\s*\(|\()#{URI_RE}#{LINE_RE}///
     [match, p, method, file, h, e, q, line, c, column] = re.exec line
 
     {file, line, column, method, params: q}
