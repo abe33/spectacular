@@ -83,7 +83,7 @@ describe beWithin, ->
       it -> shouldnt beWithin(1.1).of(13)
 
   context 'with floats', ->
-    subject -> 22.0/7
+    subject -> 22.0 / 7
 
     context 'integer delta', ->
       it -> should beWithin(1).of(3.0)
@@ -105,7 +105,7 @@ describe beWithin, ->
       it -> shouldnt beWithin(0.001).of(10.1)
 
   context 'with float and integer', ->
-    subject -> 22.0/7
+    subject -> 22.0 / 7
 
     context 'integer delta', ->
       it -> should beWithin(1).of(3)
