@@ -347,3 +347,6 @@ spectacular.utils.findStateMethodOrProperty = (obj, state) ->
     null
 
 v._name = k for k,v of utils
+
+spectacular.utils.colorize = (str, color, colorsEnabled=false) ->
+  if str? and colorsEnabled and str?[color] then str[color] else str
