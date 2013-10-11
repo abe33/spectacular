@@ -10,7 +10,7 @@ class spectacular.Environment
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
       dependsOn spyOn whenPass fixture except only sharedExample
-      itBehavesLike'.split(/\s+/g)
+      itBehavesLike fixturePath'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup null, ''
     @currentExampleGroup = @rootExampleGroup
@@ -383,6 +383,9 @@ class spectacular.Environment
       throw new Error "shared example '#{name}' not found"
     @sharedExamples[name].call null, options
 
+  fixturePath: (file) -> "#{@options.fixturesRoot}/#{file}"
+
+
   fixture: (file, options={}) ->
     @notInsideIt 'fixture'
 
@@ -391,7 +394,7 @@ class spectacular.Environment
     envOptions = @options
     ext = file.split('.')[-1..][0]
     @before (async) ->
-      p = "#{envOptions.fixturesRoot}/#{file}"
+      p = env.fixturePath file
       envOptions.loadFile(p)
       .then (fileContent) =>
         env.handleFixture(ext, fileContent).then (result) =>
