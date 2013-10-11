@@ -11,23 +11,23 @@ class spectacular.formatters.console.ErrorStackFormatter
     spectacular.utils.colorize stack, 'grey', options.colors
 
 class spectacular.formatters.console.ErrorSourceFormatter
-  constructor: (@options, @file, @line, @column=0) ->
+  constructor: (@options, @file, line, column=0) ->
+    @line = parseInt line
+    @column = parseInt column
 
   format: ->
-    if @options.hasSourceMap(@file)
-      promise = @options.getOriginalSourceFor(@file, @line, @column)
-      .then(@_format)
+    promise = new spectacular.Promise
 
+    if @options.hasSourceMap(@file)
+      @options.getOriginalSourceFor(@file, @line, @column).then (res) =>
+        promise.resolve @_format res
     else
-      promise = @options.loadFile(@file)
-      .then (content) =>
-        @_format({content, line: @line, column: @column})
+      @options.loadFile(@file).then (content) =>
+        promise.resolve @_format {content, line: @line, column: @column}
 
     promise
 
   _format: ({content, line, column}) =>
-    promise = new spectacular.Promise
-
     {lines, start, end} = @selectLines content, line
     columnIndicator = @columnIndicator column
 
@@ -36,8 +36,7 @@ class spectacular.formatters.console.ErrorSourceFormatter
     else
       lines.push columnIndicator
 
-    promise.resolve("\n#{lines.join '\n'}\n")
-    promise
+    "\n#{lines.join '\n'}\n"
 
   selectLines: (content, line) ->
 
@@ -48,6 +47,7 @@ class spectacular.formatters.console.ErrorSourceFormatter
     lines = lines[startLine..endLine].map (l, i) ->
       pad = if l.length > 0 then ' ' else ''
       "    #{utils.padRight i + startLine + 1} |#{pad}#{l}"
+
 
     {lines, start: startLine + 1, end: endLine + 1}
 

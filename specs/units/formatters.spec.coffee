@@ -42,7 +42,7 @@ describe 'console formatter', ->
         }
 
       given 'formatter', ->
-        new formatters.ErrorSourceFormatter @options, @filePath, 3, 11
+        new formatters.ErrorSourceFormatter @options, @filePath, '3', '11'
 
       subject 'promise', -> @formatter.format()
 
@@ -72,7 +72,7 @@ describe 'console formatter', ->
         spyOn @options.getOriginalSourceFor
 
       given 'formatter', ->
-        new formatters.ErrorSourceFormatter @options, @filePath, 3, 11
+        new formatters.ErrorSourceFormatter @options, @filePath, '3', '11'
 
       subject 'promise', -> @formatter.format()
 
