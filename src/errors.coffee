@@ -1,7 +1,9 @@
 URI_RE = '((http:\\/\\/)?.*\\.(js|coffee))(\\?[^:]*)*'
 LINE_RE = ':(\\d+)(:(\\d+))*'
 
-class GeckoMatch
+spectacular.errors = {}
+
+class spectacular.errors.GeckoParser
   match: (stack) -> /@/g.test stack
   filter: (line) -> /@/.test line
   details: (line) ->
@@ -10,7 +12,7 @@ class GeckoMatch
 
     {file, line, column, method}
 
-class V8Match
+class spectacular.errors.V8Parser
   match: (stack) -> /\s+at\s+/g.test stack
   filter: (line) -> /\s+at\s+/.test line
   details: (line) ->
@@ -19,10 +21,10 @@ class V8Match
 
     {file, line, column, method, params: q}
 
-class spectacular.ErrorParser
+class spectacular.errors.ErrorParser
   @supportedFormats = [
-    new V8Match
-    new GeckoMatch
+    new spectacular.errors.V8Parser
+    new spectacular.errors.GeckoParser
   ]
 
   constructor: (@stack) ->

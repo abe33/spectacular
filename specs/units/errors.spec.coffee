@@ -1,9 +1,9 @@
-describe spectacular.ErrorParser, ->
+describe spectacular.errors.ErrorParser, ->
   fixture 'errors/firefox.txt', as: 'firefox'
   fixture 'errors/chrome.txt', as: 'chrome'
   fixture 'errors/node.txt', as: 'node'
 
-  given 'parser', -> new spectacular.ErrorParser @stack
+  given 'parser', -> new spectacular.errors.ErrorParser @stack
 
   context 'for a chrome stack', ->
     given 'stack', -> @chrome
