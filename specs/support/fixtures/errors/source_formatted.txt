@@ -1,0 +1,6 @@
+
+       1 | class ErroredClass
+       2 |   constructor: ->
+       3 |     throw new Error 'some error'
+         |           ^
+       4 |

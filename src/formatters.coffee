@@ -1,0 +1,1 @@
+spectacular.formatters = {}
