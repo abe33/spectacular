@@ -240,6 +240,7 @@ class spectacular.Example
       if @acceptAsync @block
         async = new spectacular.AsyncPromise
         async.then @executeExpectations, @reject
+        async.fail (reason) => @error reason
         async.run()
         @block.call(@context, async)
       else
