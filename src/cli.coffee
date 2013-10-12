@@ -20,6 +20,7 @@ requireFile = (file, context) ->
     console.log file, err
 
 exists = fs.exists or path.exists
+existsSync = fs.existsSync or path.existsSync
 
 loadSpectacular = (options) ->
   Q.fcall ->
@@ -126,6 +127,9 @@ CliMethods = (options) ->
   options.hasSourceMap = (file) -> @isCoffeeScriptFile file
   options.loadFile = (file) ->
     Q.fcall ->
+      unless existsSync file
+        throw new Error "File doesn't exist: '#{file}'"
+
       return fileCache[file] if file of fileCache
 
       fileSource = fs.readFileSync(file).toString()
@@ -148,7 +152,6 @@ CliMethods = (options) ->
     .fail (reason) -> defer.reject reason
 
     defer.promise
-
 
 exports.run = (options) ->
   loadStartedAt = null
