@@ -1,14 +1,19 @@
 spectacular.formatters.console = {}
 
 class spectacular.formatters.console.ErrorStackFormatter
-  constructor: (@stack) ->
+  constructor: (@stack, @options) ->
     @parser = new spectacular.errors.ErrorParser @stack
 
-  format: (options={}) ->
+  format: () ->
+    promise = new spectacular.Promise
+
     lines = @parser.lines
     lines = lines.map (line) -> line.replace /^\s+/, '    '
-    stack = "\n\n#{lines.join '\n'}\n"
-    spectacular.utils.colorize stack, 'grey', options.colors
+    stack = "\n#{lines.join '\n'}\n\n"
+    promise.resolve spectacular.utils.colorize stack, 'grey', @options.colors
+
+    promise
+
 
 class spectacular.formatters.console.ErrorSourceFormatter
   constructor: (@options, @file, line, column=0) ->
@@ -48,13 +53,8 @@ class spectacular.formatters.console.ErrorSourceFormatter
       pad = if l.length > 0 then ' ' else ''
       "    #{utils.padRight i + startLine + 1} |#{pad}#{l}"
 
-
     {lines, start: startLine + 1, end: endLine + 1}
 
   columnIndicator: (column) ->
     "         | #{spectacular.utils.padRight '^', column}"
-
-
-
-
 
