@@ -1,5 +1,16 @@
 spectacular.formatters.console = {}
 
+class spectacular.formatters.console.SeedFormatter
+  constructor: (@runner) ->
+    {@options} = @runner
+    {@seed} = @options
+
+  format: ->
+    promise = new spectacular.Promise
+
+    promise.resolve "  Seed #{spectacular.utils.colorize @seed.toString(), 'cyan', @options.colors}\n\n"
+
+    promise
 class spectacular.formatters.console.ErrorStackFormatter
   constructor: (@stack, @options) ->
     @parser = new spectacular.errors.ErrorParser @stack
