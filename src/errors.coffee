@@ -16,7 +16,7 @@ class spectacular.errors.V8Parser
   match: (stack) -> /\s+at\s+/g.test stack
   filter: (line) -> /\s+at\s+/.test line
   details: (line) ->
-    re = ///(at\s*([^\s]*)\s*\(|\()#{URI_RE}#{LINE_RE}///
+    re = ///at\s*(([^\s]*)\s*\(|\()*#{URI_RE}#{LINE_RE}///
     [match, p, method, file, h, e, q, line, c, column] = re.exec line
 
     {file, line, column, method, params: q}
