@@ -104,7 +104,8 @@ loadSpecs = (options) -> (paths) ->
   paths
 
 getReporter = (options) ->
-  reporter = new spectacular.ConsoleReporter options
+  reporter = spectacular.ConsoleReporter.getDefault options
+
   reporter.on 'message', (event) -> util.print event.target
   reporter.on 'report', (event) -> util.print event.target
   reporter

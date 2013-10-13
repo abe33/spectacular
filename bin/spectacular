@@ -41,6 +41,7 @@ options = {
   coffee: false,
   verbose: false,
   profile: false,
+  resume: true,
   trace: true,
   longTrace: false,
   showSource: true,

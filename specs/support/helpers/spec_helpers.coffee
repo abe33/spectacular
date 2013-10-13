@@ -12,7 +12,7 @@ spectacular.helper 'createEnv', (block, context, options) ->
   env
 
 spectacular.helper 'createReporter', (env, context, async) ->
-  reporter = new spectacular.ConsoleReporter env.options
+  reporter = spectacular.ConsoleReporter.getDefault env.options
   context.results = ''
   reporter.on 'message', (e) -> context.results += e.target
   reporter.on 'report', (e) ->
