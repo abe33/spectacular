@@ -31,9 +31,9 @@ options =
   profile: false
   resume: true
   trace: true
+  format: 'progress'
   longTrace: false
   showSource: true
-  documentation: false
   matchersRoot: './specs/support/matchers'
   helpersRoot: './specs/support/helpers'
   fixturesRoot: './specs/support/fixtures'
@@ -90,7 +90,10 @@ while args.length
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
     when '--long-trace' then options.longTrace = true
-    when '--documentation', '-d' then options.documentation = true
+    when '--documentation', '-d'
+      deprecated '--documentation is deprecated and may be removed in future release, use `--format documentation` instead.'
+      options.format = 'documentation'
+    when '--format', '-f' then options.format = args.shift()
     when '--verbose', '-v' then options.verbose = true
     when '--profile', '-p' then options.profile = true
     when '--map', '--source-map' then options.sourceMap = true
@@ -132,7 +135,6 @@ while args.length
   Options:
 
     -c, --coffee          Add support for CoffeeScript files.
-    -d, --documentation   Enable the documentation format in the output.
     -h, --help            Display this message.
     -m, --matchers PATH   Specify the path where project matchers can be found.
     -p, --profile         Add a report with the 10 slowest examples.

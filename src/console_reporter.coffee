@@ -33,14 +33,17 @@ class spectacular.ConsoleReporter
     reporter.resultFormatters.push f.SeedFormatter
     reporter.resultFormatters.push f.ResultsFormatter
 
+    reporter.progressFormatters['documentation'] = f.DocumentationFormatter
+    reporter.progressFormatters['progress'] = f.ProgressFormatter
+
+    reporter.exampleResultsFormatters.push f.ExampleResultsFormatter
+
     reporter
 
   constructor: (@options) ->
     @resultFormatters = []
-    @progressFormatters = []
-    @exampleResultsFormatters = [
-      spectacular.formatters.console.ExampleResultsFormatter
-    ]
+    @exampleResultsFormatters = []
+    @progressFormatters = {}
 
   onMessage: (event) => @dispatch event
 
@@ -92,52 +95,6 @@ class spectacular.ConsoleReporter
       console.log reason.stack
 
   printExampleResult: (example) =>
-    res = @formatExampleResult example
-    @dispatch new spectacular.Event 'message', res if res?
-
-  formatExampleResult: (example) ->
     state = example.result.state
-    if @options.documentation
-      @lastDepth ||= 0
-      @lastAncestorsStack ||= []
-
-      ancestors = example.ancestors.filter (e) -> e.ownDescription isnt ''
-      dif = @cropAncestors ancestors, @lastAncestorsStack
-      start = ancestors.length - dif.length
-      res = @formatDocumentation example, dif, start, PROGRESS_COLOR_MAP[state]
-
-      @lastAncestorsStack = ancestors
-      res
-    else
-      @colorize PROGRESS_CHAR_MAP[state], PROGRESS_COLOR_MAP[state]
-
-  formatDocumentation: (example, stack, start, color) ->
-    reverseStack = []
-    reverseStack.unshift e for e in stack
-    res = ''
-
-    for e,i in reverseStack
-      res += '\n' if i is 0
-      res += '\n'
-      res += utils.indent(utils.strip(e.ownDescription), (start + 1) * 2)
-      start += 1
-
-    res += '\n'
-    res += utils.indent(
-      @colorize(utils.strip(example.ownDescriptionWithExpectations), color),
-      (start + 1) * 2
-    )
-
-    @lastDepth = start
-
-    res
-
-  cropAncestors: (ancestors, lastAncestorsStack) ->
-    a = []
-    a.push elder for elder in ancestors when elder not in lastAncestorsStack
-    a
-
-  colorize: (str, color) ->
-    if str? and @options.colors and str?[color] then str[color] else str
-
-
+    res = new @progressFormatters[@options.format](example, @options).format()
+    @dispatch new spectacular.Event 'message', res if res?
