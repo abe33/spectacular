@@ -5,6 +5,21 @@ class spectacular.Random
     @seed = (@seed * 9301 + 49297) % 233280
     @seed / 233280.0
 
+class spectacular.RunnerResults
+  constructor: (@runner) ->
+    @errors = []
+    @failures = []
+    @skipped = []
+    @pending = []
+    @results = []
+    @examples = []
+    {@loadStartedAt, @loadEndedAt} = @runner
+    @specsStartedAt = null
+    @specsEndedAt = null
+
+  hasFailures: -> @examples.some (e) ->
+    e.result.state in ['skipped', 'failure', 'errored']
+
 class spectacular.Runner
 
   @include spectacular.EventDispatcher
@@ -25,16 +40,19 @@ class spectacular.Runner
     @randomSort = => Math.round 1 - @random.get() * 2
 
   run: () =>
-    promise = spectacular.Promise.unit()
-    .then =>
-      @specsStartedAt = new Date()
+    results = new spectacular.RunnerResults this
+    promise = spectacular.Promise.unit(results)
+    .then (results) ->
+      results.specsStartedAt = new Date()
+      results
     .then(@registerSpecs)
     .then(@executeSpecs)
-    .then =>
-      @specsEndedAt = new Date()
+    .then (results) ->
+      results.specsEndedAt = new Date()
+      results
     .then(@notifyEnd)
-    .then =>
-      if @hasFailures() then 1 else 0
+    .then (results) ->
+      if results.hasFailures() then 1 else 0
 
   findSpecFileInStack: (stack) ->
     for p in @options.paths or []
@@ -42,11 +60,13 @@ class spectacular.Runner
         return i if l.indexOf(p) isnt -1
     -1
 
-  registerSpecs: =>
+  registerSpecs: (results) =>
     set = @root.children
     set = set.sort(@randomSort) if @options.random
     for example in set
       @register example, @root.hasExclusiveExamples()
+
+    results
 
   register: (child, exclusiveOnly=false) ->
     if child.children?
@@ -142,33 +162,40 @@ class spectacular.Runner
 
     return
 
-  executeSpecs: =>
+  executeSpecs: (results) =>
     promise = new spectacular.Promise
-    @nextExample promise
+    @nextExample promise, results
     promise
 
-  nextExample: (defer) =>
+  nextExample: (defer, results) =>
     spectacular.nextTick =>
       if @stack.length is 0
-        defer.resolve()
+        defer.resolve(results)
       else
         nextExample = @stack.shift()
 
         @env.currentExample = nextExample
         nextExample.run()
         .then =>
-          @handleResult nextExample
-          @nextExample defer
+          @handleResult nextExample, results
+          @nextExample defer, results
         .fail (reason) =>
-          @handleResult nextExample
-          @nextExample defer
+          @handleResult nextExample, results
+          @nextExample defer, results
 
-  handleResult: (example) ->
+  handleResult: (example, results) ->
+    results.results.push example.result
+    results.examples.push example
+
+    switch example.result.state
+      when 'pending' then results.pending.push example
+      when 'skipped' then results.skipped.push example
+      when 'errored' then results.errors.push example
+      when 'failure' then results.failures.push example
+
     @dispatch new spectacular.Event 'result', example
     @env.currentExample = null
 
-  notifyEnd: =>
-    @dispatch new spectacular.Event 'end', this
-
-  hasFailures: -> @examples.some (e) ->
-    e.result.state in ['skipped', 'failure', 'errored']
+  notifyEnd: (results) =>
+    @dispatch new spectacular.Event 'end', results
+    results
