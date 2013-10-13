@@ -27,4 +27,3 @@ describe ResumeFormatter, ->
 
   itBehavesLike 'a formatter'
 
-

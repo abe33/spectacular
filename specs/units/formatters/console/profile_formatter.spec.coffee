@@ -20,11 +20,15 @@ describe ProfileFormatter, ->
     {
       examples: @examples
       options: @options
+    }
+
+  given 'results', ->
+    {
       specsStartedAt: { getTime: -> 0 }
       specsEndedAt: { getTime: -> 6 }
     }
 
-  given 'formatter', -> new ProfileFormatter @runner
+  given 'formatter', -> new ProfileFormatter @runner, @results
 
   subject -> @formatter.format()
 

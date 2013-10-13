@@ -48,7 +48,7 @@ class spectacular.formatters.console.ResultsFormatter
     s
 
 class spectacular.formatters.console.ExampleResultsFormatter
-  constructor: (@example, @options, @counter) ->
+  constructor: (@example, @options, @id) ->
 
   format: ->
     result = @example.result
@@ -95,11 +95,11 @@ class spectacular.formatters.console.ExampleResultsFormatter
 
     res = ''
     res += c(c(" #{label} ".toUpperCase(), 'inverse', hc), 'bold', hc)
-    res += " #{@counter} "
+    res += " #{@id} "
     res += c(' ', 'inverse', hc)
     res += ' '
     res += message
-    res = c(res, 'red', hc)
+    res = c(res, color, hc)
     res
 
 
@@ -141,13 +141,13 @@ class spectacular.formatters.console.SeedFormatter
     promise
 
 class spectacular.formatters.console.DurationFormatter
-  constructor: (@runner) ->
+  constructor: (@runner, @results) ->
     {@options} = @runner
 
   format: ->
     promise = new spectacular.Promise
 
-    {loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt} = @runner
+    {loadStartedAt, loadEndedAt, specsStartedAt, specsEndedAt} = @results
 
     if loadStartedAt? and loadEndedAt?
       loadDuration = @formatDuration loadStartedAt, loadEndedAt
@@ -167,14 +167,14 @@ class spectacular.formatters.console.DurationFormatter
     spectacular.utils.colorize "#{Math.max 0, duration}s", 'yellow', @options.colors
 
 class spectacular.formatters.console.ProfileFormatter
-  constructor: (@runner) ->
+  constructor: (@runner, @results) ->
     {@examples, @options} = @runner
 
   format: ->
     promise = new spectacular.Promise
 
     sortedExamples = @examples.sort((a, b) -> b.duration - a.duration)[0..9]
-    totalDuration = @runner.specsEndedAt.getTime() - @runner.specsStartedAt.getTime()
+    totalDuration = @results.specsEndedAt.getTime() - @results.specsStartedAt.getTime()
 
     topSlowest = sortedExamples.reduce ((a,b) -> a + b.duration), 0
     rate = Math.floor(topSlowest / totalDuration * 10000) / 100
