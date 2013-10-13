@@ -159,6 +159,10 @@ exports.run = (options) ->
 
   console.log colorize('  options','grey',options), options if options.verbose
 
+  options.matchersRoot = path.resolve options.matchersRoot
+  options.helpersRoot = path.resolve options.helpersRoot
+  options.fixturesRoot = path.resolve options.fixturesRoot
+
   loadSpectacular(options)
   .then(loadDOM)
   .then (window) ->
