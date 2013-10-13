@@ -132,24 +132,26 @@ spectacular.utils.descOfNode = (actual) ->
 spectacular.utils.diff = (o, n) ->
   ns = new Object()
   os = new Object()
-  i = 0
 
+  i = 0
   while i < n.length
-    unless ns[n[i]]?
+    if not ns[n[i]]? or typeof ns[n[i]] isnt 'object'
       ns[n[i]] =
         rows: new Array()
         o: null
+
     ns[n[i]].rows.push i
     i++
-  i = 0
 
+  i = 0
   while i < o.length
-    unless os[o[i]]?
+    if not os[o[i]]? or typeof os[n[i]] isnt 'object'
       os[o[i]] =
         rows: new Array()
         n: null
     os[o[i]].rows.push i
     i++
+
   for i of ns
     if ns[i].rows.length is 1 and typeof (os[i]) isnt "undefined" and os[i].rows.length is 1
       n[ns[i].rows[0]] =
