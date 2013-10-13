@@ -1,6 +1,15 @@
 spectacular.formatters.console = {}
 
-{COLOR_MAP, BADGE_MAP} = spectacular.formatters
+{CHAR_MAP, COLOR_MAP, BADGE_MAP} = spectacular.formatters
+
+class spectacular.formatters.console.ProgressFormatter
+  constructor: (@example, @options) ->
+
+  format: ->
+    state = @example.result.state
+    spectacular.utils.colorize CHAR_MAP[state], COLOR_MAP[state], @options.colors
+
+class spectacular.formatters.console.DocumentationFormatter
 
 class spectacular.formatters.console.ResultsFormatter
   constructor: (@runner, @results) ->
