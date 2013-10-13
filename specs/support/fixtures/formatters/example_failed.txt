@@ -1,0 +1,13 @@
+ FAIL  1   Some failing test should have succeed
+
+    Expected failing test to have succeed
+
+       1 | class ErroredClass
+       2 |   constructor: ->
+       3 |     throw new Error 'some error'
+         |           ^
+       4 |
+
+    at Object.<anonymous> (#{file})
+    at String.foo (file.js:10:100)
+
