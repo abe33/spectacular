@@ -49,6 +49,7 @@ compileSpectacularNode = ->
     "src/matchers.coffee"
     "src/formatters.coffee"
     "src/formatters/console.coffee"
+    "src/formatters/console/*.coffee"
     "src/console_reporter.coffee"
   ]
   run("./node_modules/.bin/coffee #{options.join ' '}")()
@@ -111,6 +112,7 @@ compileBrowser = ->
     "src/matchers.coffee"
     "src/formatters.coffee"
     "src/formatters/console.coffee"
+    "src/formatters/console/*.coffee"
     "src/formatters/browser.coffee"
     "src/console_reporter.coffee"
     "src/browser_reporter.coffee"

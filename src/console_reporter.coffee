@@ -1,22 +1,4 @@
 
-## StackReporter
-
-PROGRESS_CHAR_MAP =
-  pending: '*'
-  skipped: 'x'
-  failure: 'F'
-  errored: 'E'
-  success: '.'
-
-PROGRESS_COLOR_MAP =
-  pending: 'yellow'
-  skipped: 'magenta'
-  failure: 'red'
-  errored: 'yellow'
-  success: 'green'
-
-spectacular.StackReporter = spectacular.formatters.console.ErrorFormatter
-
 ## ConsoleReporter
 
 class spectacular.ConsoleReporter
