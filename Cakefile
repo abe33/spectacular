@@ -54,8 +54,23 @@ compileSpectacularNode = ->
   ]
   run("./node_modules/.bin/coffee #{options.join ' '}")()
 
+compileBrowserPart = ->
+  options = [
+    "--compile"
+    "--bare"
+    "--output"
+    "lib/"
+    "--join"
+    "lib/browser_reporter.js"
+    "src/formatters/browser.coffee"
+    "src/formatters/browser/*.coffee"
+    "src/browser_reporter.coffee"
+  ]
+  run("./node_modules/.bin/coffee #{options.join ' '}")()
+
 compileNode = ->
   compileSpectacularNode()
+  .then(compileBrowserPart)
   .then ->
     options = [
       "--compile"
@@ -65,7 +80,6 @@ compileNode = ->
       "src/cli.coffee"
       "src/server.coffee"
       "src/spectacular_bin.coffee"
-      "src/browser_reporter.coffee"
       "src/spectacular_phantomjs.coffee"
       "src/spectacular_slimerjs.coffee"
     ]
@@ -114,6 +128,7 @@ compileBrowser = ->
     "src/formatters/console.coffee"
     "src/formatters/console/*.coffee"
     "src/formatters/browser.coffee"
+    "src/formatters/browser/*.coffee"
     "src/console_reporter.coffee"
     "src/browser_reporter.coffee"
   ]
