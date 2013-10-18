@@ -66,6 +66,7 @@ class spectacular.Runner
     for example in set
       @register example, @root.hasExclusiveExamples()
 
+    @dispatch new spectacular.Event 'start', this
     results
 
   register: (child, exclusiveOnly=false) ->
