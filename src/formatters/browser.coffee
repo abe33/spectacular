@@ -39,3 +39,20 @@ fixNodeHeight = (nl) ->
   nl = wrapNode nl
   Array::forEach.call nl, (node) ->
     node.style.height = "#{node.clientHeight}px"
+
+tag = (tag, inner='', attrs={}, block) ->
+  [inner, attrs, block] = ['', inner, attrs] if typeof inner is 'object'
+  inner = do block if typeof block is 'function'
+
+  node = document.createElement tag
+  node.setAttribute k, v for k,v of attrs
+
+  if typeof inner is 'string'
+    node.innerHTML = inner
+  else
+    node.appendChild inner
+
+  node
+
+icon = (icon) -> tag 'i', class: "icon-#{icon}"
+
