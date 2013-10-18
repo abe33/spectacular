@@ -1,13 +1,13 @@
 spectacular.formatters = {}
 
-spectacular.formatters.PROGRESS_CHAR_MAP = spectacular.formatters.CHAR_MAP =
-  pending: '*'
-  skipped: 'x'
-  failure: 'F'
+spectacular.formatters.CHAR_MAP =
   errored: 'E'
+  failure: 'F'
+  skipped: 'x'
+  pending: '*'
   success: '.'
 
-spectacular.formatters.PROGRESS_COLOR_MAP = spectacular.formatters.COLOR_MAP =
+spectacular.formatters.COLOR_MAP =
   pending: 'yellow'
   skipped: 'magenta'
   failure: 'red'

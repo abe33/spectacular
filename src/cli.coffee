@@ -34,12 +34,9 @@ loadSpectacular = (options) ->
     spectacular.env.globalize()
 
 handleEmitter = (emitter, defer) ->
-  emitter.on 'end', ->
-    defer.resolve()
-  emitter.on 'error', (err) ->
-    defer.reject(err)
-  emitter.on 'fail', (err) ->
-    defer.reject(err)
+  emitter.on 'end', -> defer.resolve()
+  emitter.on 'error', (err) -> defer.reject(err)
+  emitter.on 'fail', (err) -> defer.reject(err)
 
 loadMatchers = (options) -> ->
   defer = Q.defer()
