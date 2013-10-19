@@ -13,37 +13,17 @@ SPECTACULAR_ROOT = path.resolve __dirname, '..'
 
 colorize = null
 
-findMatchers = (options) ->
+findrequire = (p, options) ->
   defer = Q.defer()
   res = []
 
-  if options.noMatchers
-    defer.resolve()
-  else
-    exists options.matchersRoot, (exist) ->
-      if exist
-        emitter = walk options.matchersRoot
-        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-        emitter.on 'end', -> defer.resolve res
-      else
-        defer.resolve([])
-
-  defer.promise
-
-findHelpers = (options) ->
-  defer = Q.defer()
-  res = []
-
-  if options.noHelpers
-    defer.resolve()
-  else
-    exists options.helpersRoot, (exist) ->
-      if exist
-        emitter = walk options.helpersRoot
-        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-        emitter.on 'end', -> defer.resolve res
-      else
-        defer.resolve([])
+  exists p, (exist) ->
+    if exist
+      emitter = walk p
+      emitter.on 'file', (p, stat) -> res.push path.relative '.', p
+      emitter.on 'end', -> defer.resolve res
+    else
+      defer.resolve([])
 
   defer.promise
 
@@ -70,14 +50,14 @@ generateSpecRunner = (options) ->
     'assets/js/spectacular.js'
     'assets/js/browser_reporter.js'
   ]
-  findHelpers(options)
-  .then (helpers) ->
-    paths = paths.concat helpers
-    console.log "  #{colorize 'helper', 'grey'} #{h}" for h in helpers if options.verbose
-    findMatchers options
-  .then (matchers) ->
-    console.log "  #{colorize 'matcher', 'grey'} #{m}" for m in matchers if options.verbose
-    paths = paths.concat matchers
+  Q.all(findrequire p, options for p in options.requires)
+  .then (requires) ->
+    for collection in requires
+      for f in collection
+        if /(js|coffee)$/.test f
+          paths.push f
+          console.log "  #{colorize 'requires', 'grey'} #{f}" if options.verbose
+
     globPaths options.globs
   .then (specs) ->
     console.log "  #{colorize 'spec', 'grey'} #{f}" for f in specs if options.verbose

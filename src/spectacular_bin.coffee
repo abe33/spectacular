@@ -34,8 +34,7 @@ options =
   format: 'progress'
   longTrace: false
   showSource: true
-  matchersRoot: './specs/support/matchers'
-  helpersRoot: './specs/support/helpers'
+  requires: [ './specs/support' ]
   fixturesRoot: './specs/support/fixtures'
   phantomjsExecutable: 'phantomjs'
   slimerjsExecutable: 'slimerjs'
@@ -80,12 +79,25 @@ while args.length
     when '--coffee', '-c'
       options.coffee = true
       require 'coffee-script'
-    when '--no-matchers' then options.noMatchers = true
-    when '--no-helpers' then options.noHelpers = true
+
+    when '--no-matchers'
+      deprecated '--no-matchers is deprecated and may be removed in future release, use --require PATH instead'
+
+    when '--no-helpers'
+      deprecated '--no-helpers is deprecated and may be removed in future release, use --require PATH instead'
+
+    when '--matchers', '-m'
+      deprecated '--matchers and -m are deprecated and may be removed in future release, use --require PATH instead'
+      options.requires.push args.shift()
+
+    when '--helpers'
+      deprecated '--helpers is deprecated and may be removed in future release, use --require PATH instead'
+      options.requires.push args.shift()
+
+    when '--require', '-r' then options.requires.push args.shift()
     when '--colors' then options.colors = true
     when '--no-colors' then options.colors = false
-    when '--matchers', '-m' then options.matchersRoot = args.shift()
-    when '--helpers' then options.helpersRoot = args.shift()
+
     when '--fixtures' then options.fixturesRoot = args.shift()
     when '--trace', '-t' then options.trace = true
     when '--no-trace' then options.trace = false
@@ -136,22 +148,19 @@ while args.length
 
     -c, --coffee          Add support for CoffeeScript files.
     -h, --help            Display this message.
-    -m, --matchers PATH   Specify the path where project matchers can be found.
     -p, --profile         Add a report with the 10 slowest examples.
     -t, --trace           Enable stack trace report for failures.
     -v, --verbose         Enable verbose output.
+    -r, --require PATH    Append the passed-in path to the array of paths to require
     --phantomjs-bin PATH  Sets the path to the PhantomJS binary.
     --slimerjs-bin PATH   Sets the path to the SlimerJS binary.
     --fixtures PATH       Specify the path where project fixtures can be found.
-    --helpers PATH        Specify the path where project helpers can be found.
     --long-trace          Display the full stack trace.
     --colors              Enable coloring from the output.
     --no-colors           Disable coloring from the output.
     --seed                Set the seed of the test ranomizer.
     --random              Enable the randomness of test execution
     --no-random           Disable the randomness of test execution.
-    --no-helpers          Disable the loading of project helpers.
-    --no-matchers         Disable the loading of project matchers.
     --no-trace            Remove stack trace from failures reports.
     --source GLOB         Source files for the server.
     --version             Display the Spectacular version.

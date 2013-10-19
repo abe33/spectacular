@@ -46,8 +46,7 @@ options = {
   format: 'progress',
   longTrace: false,
   showSource: true,
-  matchersRoot: './specs/support/matchers',
-  helpersRoot: './specs/support/helpers',
+  requires: ['./specs/support'],
   fixturesRoot: './specs/support/fixtures',
   phantomjsExecutable: 'phantomjs',
   slimerjsExecutable: 'slimerjs',
@@ -97,10 +96,10 @@ while (args.length) {
       require('coffee-script');
       break;
     case '--no-matchers':
-      options.noMatchers = true;
+      deprecated('--no-matchers is deprecated and may be removed in future release, use --require PATH instead');
       break;
     case '--no-helpers':
-      options.noHelpers = true;
+      deprecated('--no-helpers is deprecated and may be removed in future release, use --require PATH instead');
       break;
     case '--colors':
       options.colors = true;
@@ -110,10 +109,12 @@ while (args.length) {
       break;
     case '--matchers':
     case '-m':
-      options.matchersRoot = args.shift();
+      deprecated('--matchers and -m are deprecated and may be removed in future release, use --require PATH instead');
+      options.requires.push(args.shift());
       break;
     case '--helpers':
-      options.helpersRoot = args.shift();
+      deprecated('--helpers is deprecated and may be removed in future release, use --require PATH instead');
+      options.requires.push(args.shift());
       break;
     case '--fixtures':
       options.fixturesRoot = args.shift();

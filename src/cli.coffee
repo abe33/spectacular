@@ -38,43 +38,21 @@ handleEmitter = (emitter, defer) ->
   emitter.on 'error', (err) -> defer.reject(err)
   emitter.on 'fail', (err) -> defer.reject(err)
 
-loadMatchers = (options) -> ->
+loadRequire = (path, options) ->
   defer = Q.defer()
 
-  if options.noMatchers
-    defer.resolve()
-  else
-    exists options.matchersRoot, (exists) ->
-      if exists
-        emitter = walk options.matchersRoot
-        emitter.on 'file', (path, stat) ->
+  exists path, (exists) ->
+    if exists
+      emitter = walk path
+      emitter.on 'file', (path, stat) ->
+        if /(js|coffee)$/.test path
           if options.verbose
-            console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
+            console.log "  #{colorize 'require', 'grey', options} #{path}"
           requireFile path
 
-        handleEmitter emitter, defer
-      else
-        defer.resolve()
-
-  defer.promise
-
-loadHelpers = (options) -> ->
-  defer = Q.defer()
-
-  if options.noHelpers
-    defer.resolve()
-  else
-     exists options.helpersRoot, (exists) ->
-      if exists
-        emitter = walk options.helpersRoot
-        emitter.on 'file', (path, stat) ->
-          if options.verbose
-            console.log "  #{colorize 'load helper', 'grey', options} #{path}"
-          requireFile path
-
-        handleEmitter emitter, defer
-      else
-        defer.resolve()
+      handleEmitter emitter, defer
+    else
+      defer.resolve()
 
   defer.promise
 
@@ -93,11 +71,11 @@ globPaths= (globs) -> ->
     paths
 
 loadSpecs = (options) -> (paths) ->
-  if options.verbose
-    for p in paths
+  for p in paths
+    if options.verbose
       console.log "  #{colorize 'load spec', 'grey', options} #{p}"
+    require path.resolve('.', p)
 
-  require path.resolve('.', p) for p in paths
   paths
 
 getReporter = (options) ->
@@ -157,8 +135,6 @@ exports.run = (options) ->
 
   console.log colorize('  options','grey',options), options if options.verbose
 
-  options.matchersRoot = path.resolve options.matchersRoot
-  options.helpersRoot = path.resolve options.helpersRoot
   options.fixturesRoot = path.resolve options.fixturesRoot
 
   loadSpectacular(options)
@@ -172,8 +148,8 @@ exports.run = (options) ->
     spectacular.env.runner.on 'message', reporter.onMessage
     spectacular.env.runner.on 'result', reporter.onResult
     spectacular.env.runner.on 'end', reporter.onEnd
-  .then(loadMatchers options)
-  .then(loadHelpers options)
+
+    Q.all(loadRequire p, options for p in options.requires)
   .then ->
     loadStartedAt = new Date()
   .then(globPaths options.globs)
@@ -187,13 +163,4 @@ exports.run = (options) ->
     spectacular.env.unglobalize()
     status
   .fail (reason) ->
-    if spectacular.env?
-      reporter = getReporter options
-      console.log reporter.errorBadge "Spectacular failed"
-      reporter.formatError(reason).then (msg) ->
-        console.log msg
-        process.exit 1
-    else
-      console.log reason.stack
-      process.exit 1
-
+    handleError reason
