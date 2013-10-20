@@ -1,4 +1,7 @@
 spectacular.formatters.browser = {}
+spectacular.widgets = {}
+
+{CHAR_MAP, COLOR_MAP, BADGE_MAP} = spectacular.formatters
 
 utils = spectacular.utils
 

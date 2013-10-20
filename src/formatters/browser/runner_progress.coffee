@@ -1,6 +1,3 @@
-spectacular.widgets = {}
-
-{CHAR_MAP, COLOR_MAP, BADGE_MAP} = spectacular.formatters
 
 class spectacular.widgets.RunnerProgress
   init: (@runner) ->
@@ -65,7 +62,6 @@ class spectacular.widgets.RunnerProgress
 
       if @counters[key] and not hasClass(@[key], 'not-zero')
         addClass @[key], 'not-zero'
-
 
   onResult: (e) ->
     example = e.target
