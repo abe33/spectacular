@@ -37,14 +37,13 @@ page.onResourceRequested = (requestData, networkRequest) ->
             red: ['\x1B[31m', '\x1B[39m']
             yellow: ['\x1B[33m', '\x1B[39m']
           }
-          spectacular.StackReporter::colorize =
-          spectacular.ConsoleReporter::colorize = (str, color) ->
-            if @options.colors
+          window.spectacular.utils.colorize = (str, color, colors) ->
+            if colors
               styles[color][0] + str + styles[color][1]
             else
               str
 
-          reporter = new window.spectacular.ConsoleReporter(spectacular.options)
+          reporter = window.spectacular.ConsoleReporter.getDefault(spectacular.options)
           window.env.runner.on 'result', reporter.onResult
           window.env.runner.on 'end', reporter.onEnd
           reporter.on 'report', (msg) -> window.consoleResults = msg.target
@@ -83,7 +82,7 @@ page.open URL, (status) ->
       phantom.exit(1)
 
 specsReady = ->
-  page.evaluate -> window.resultReceived and window.consoleResults?
+  page.evaluate -> window.consoleResults?
 
 # Wait until the test condition is true or a timeout occurs.
 #
