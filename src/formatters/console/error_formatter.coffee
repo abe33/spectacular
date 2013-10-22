@@ -8,10 +8,10 @@ class spectacular.formatters.console.ErrorFormatter
     formatters = spectacular.formatters.console
 
     res = @formatMessage @error.message
+    res += '\n'
 
     if @error.stack?
       stackFormatter = new formatters.ErrorStackFormatter @error.stack, @options
-      res += '\n'
 
       if @options.showSource
         {file, line, column} = stackFormatter.parser.details(stackFormatter.parser.lines[0])
@@ -32,7 +32,7 @@ class spectacular.formatters.console.ErrorFormatter
         res += stackFormatter.format()
         promise.resolve res
     else
-      promise.resolve res
+      promise.resolve res + '\n'
 
     promise
 
