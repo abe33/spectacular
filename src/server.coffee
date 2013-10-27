@@ -6,6 +6,7 @@ express = require 'express'
 walk = require 'walkdir'
 util = require 'util'
 {spawn} = require 'child_process'
+jade = require 'jade'
 
 exists = fs.exists or path.exists
 
@@ -50,6 +51,7 @@ generateSpecRunner = (options) ->
     'assets/js/spectacular.js'
     'assets/js/browser_reporter.js'
   ]
+  templates = {}
   Q.all(findrequire p, options for p in options.requires)
   .then (requires) ->
     for collection in requires
@@ -66,43 +68,34 @@ generateSpecRunner = (options) ->
     uniq.push v for v in paths when v not in uniq
     paths = uniq
   .then ->
+    globPaths [path.resolve SPECTACULAR_ROOT, 'templates/formatters/*.jade']
+  .then (tpls) ->
+
+    for p in tpls
+      n = p.split('/')
+      n = n[n.length - 1]
+      n = n.split('.')[0]
+
+      templates[n] = jade.compile(fs.readFileSync(p), client: true, compileDebug: false).toString()
+      templates[n] = "<script type='text/javascript'>\nspectacular.templates['#{n}'] = #{templates[n]}\n</script>"
     globPaths options.sources
   .then (sources) ->
     console.log "  #{colorize 'source', 'grey'} #{f}" for f in sources if options.verbose
 
-    sourceMapMethods = """
-    spectacular.options.hasSourceMap = function(file) {
-      return /\\.coffee$/.test(file);
-    };
-    spectacular.options.getSourceURLFor = function(file) {
-      return file.replace('.coffee', '.coffee.src')
-    };
-    spectacular.options.getSourceMapURLFor = function(file) {
-      return file.replace('.coffee', '.map')
-    };
-    """
+    options.paths = paths[2..]
 
-    """
-      <!doctype html>
-      <html>
-        <head>
-          <script>
-            window.spectacular = {
-              options: #{util.inspect options},
-              paths: #{util.inspect paths[2..]}
-            };
-            #{ if options.sourceMap then sourceMapMethods else '' }
-          </script>
-          <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
-          <link rel="stylesheet" href="assets/css/spectacular.css"/>
-          <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"/>
-          #{ if options.sourceMap then scriptNode 'vendor/source-map.js' else '' }
-          #{(scriptNode p for p in sources).join '\n'}
-          #{(scriptNode p for p in paths).join '\n'}
-        </head>
-        <body></body>
-      </html>
-    """
+    locals =
+      options: util.inspect options
+      paths: paths
+      sources: sources
+      pretty: true
+      sourceMap: options.sourceMap
+      templates: templates
+
+    tplPath = path.resolve SPECTACULAR_ROOT, 'templates/specs.jade'
+    console.log "  #{colorize 'template', 'grey'} #{tplPath}" if options.verbose
+    tpl = jade.renderFile(tplPath, locals)
+
 
 exports.run = (options) ->
   colorize = (str, color) -> if options.colors then str[color] else str
@@ -110,9 +103,15 @@ exports.run = (options) ->
   app = express()
 
   app.get '/', (req, res) ->
-    generateSpecRunner(options).then (html) ->
+    generateSpecRunner(options)
+    .then (html) ->
       console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} /"
       res.send html
+    .fail (reason) ->
+      console.log "  #{colorize '500', 'red'} #{colorize 'GET', 'cyan'} /"
+      console.log reason.stack
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/500.jade'
+      res.send jade.renderFile tplPath, error: reason.stack
 
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
   app.use '/vendor', express.static path.resolve SPECTACULAR_ROOT, 'vendor'
