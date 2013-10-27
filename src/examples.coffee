@@ -135,10 +135,10 @@ class spectacular.Example
     if @examplePromise?.pending
       @result.state = 'skipped'
       error = new Error 'Skipped'
-
-      stack = error.stack.split('\n')
-      specIndex = spectacular.env.runner.findSpecFileInStack stack
-      error.stack = stack[specIndex..].join('\n') if specIndex
+      if error.stack?
+        stack = error.stack.split('\n')
+        specIndex = spectacular.env.runner.findSpecFileInStack stack
+        error.stack = stack[specIndex..].join('\n') if specIndex
 
       @examplePromise.reject error
 

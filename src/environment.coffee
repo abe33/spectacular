@@ -125,9 +125,10 @@ class spectacular.Environment
   fail: ->
     error = new Error 'Failed'
 
-    stack = error.stack.split('\n')
-    specIndex = spectacular.env.runner.findSpecFileInStack stack
-    error.stack = stack[specIndex..].join('\n') if specIndex
+    if error.stack?
+      stack = error.stack.split('\n')
+      specIndex = spectacular.env.runner.findSpecFileInStack stack
+      error.stack = stack[specIndex..].join('\n') if specIndex
 
     @currentExample.reject error
   pending: -> @currentExample.pending()
