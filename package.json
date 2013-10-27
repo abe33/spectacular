@@ -45,6 +45,7 @@
     "wintersmith-coffee": "~0.2.0",
     "qq": "~0.3.5",
     "uglify-js": "~2.4.0",
-    "source-map": "~0.1.27"
+    "source-map": "~0.1.27",
+    "jade": "~0.35.0"
   }
 }

@@ -5,6 +5,15 @@ spectacular.widgets = {}
 
 utils = spectacular.utils
 
+escapeHTML = (str) ->
+  str
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+
+selfAndAncestors = (node, block) ->
+  block.call this, node
+  ancestors node, block
+
 ancestors = (node, block) ->
   parent = node.parentNode
 
@@ -13,6 +22,7 @@ ancestors = (node, block) ->
     ancestors parent, block
 
 wrapNode = (node) ->
+  return [] unless node?
   if node.length? then node else [node]
 
 hasClass = (nl, cls) ->
@@ -45,6 +55,8 @@ fixNodeHeight = (nl) ->
 
 tag = (tag, inner='', attrs={}, block) ->
   [inner, attrs, block] = ['', inner, attrs] if typeof inner is 'object'
+  [inner, attrs, block] = ['', {}, inner] if typeof inner is 'function'
+
   inner = do block if typeof block is 'function'
 
   node = document.createElement tag
@@ -56,6 +68,13 @@ tag = (tag, inner='', attrs={}, block) ->
     node.appendChild inner
 
   node
+
+buildHTML = (html) ->
+  res = tag('div', html).children
+  if res.length is 1
+    res[0]
+  else
+    res
 
 icon = (icon) -> tag 'i', class: "icon-#{icon}"
 

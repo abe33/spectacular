@@ -4,44 +4,50 @@
 
 states = ('errored' errored) ('skipped' skipped) ('pending' pending) ('failure' failure) ('success' success)
 
-@keyframes rotate {
-  from {
-    transform rotate(0deg)
-  }
-
-  to {
-    transform rotate(360deg)
-  }
-}
-
 body
   font-family Roboto, sans
   font-weight 300
+  background very_dark_blue
+  overflow hidden
+
+*
+  box-sizing border-box
+
+#progress, #examples, #viewer
+  position absolute
+
+  & > span, & > div
+    border-radius 3px
+    display block
+
+#progress, #viewer
+  z-index 1
+
+#examples
+  z-index 2
 
 #progress
-  background light_gray
-  display inline-block
-  position fixed
-  padding 5px
-  border-radius 5px
+  color medium_gray
+  padding 10px
+  width 266px
+  left 0
+  top 0
+  bottom 0
 
-  & > span
+
+  .all
     display block
-    background dark_blue
-    color medium_gray
-    padding 5px 8px
-    border-radius 3px
+    font-size 40px
+    line-height 43px
+    font-weight 100
+    clear both
 
-    .all
-      display block
-      font-size 40px
-      line-height 40px
-      font-weight 100
-
-    .total
-      color light_gray
+  .total
+    color light_gray
 
   for state in states
+    .{state[0]}
+      margin-right 8px
     .{state[0]} .symbol
       color state[1]
 
@@ -74,12 +80,14 @@ body
     line-height 1em
     padding 3px 5px
     margin-top 3px
-    text-shadow 0 1px 2px transparentize(dark_blue, 0.5)
 
+    .value
+      text-shadow 0 1px 2px transparentize(dark_blue, 0.5)
 
     i
       color dark_blue
       font-size 0.9em
+      margin-right 5px
 
   .time
     margin-left 8px
@@ -88,6 +96,279 @@ body
   .seed
     background light_blue
 
+  ul
+    margin 0
+    padding 0
+
+  li
+    margin 0
+    padding 0
+    position relative
+    list-style none
+    padding 10px
+    border-bottom 1px solid dark_blue
+    cursor pointer
+
+    &:hover
+      background dark_blue
+
+    &:after
+      content '\f06e'
+      font-family FontAwesome
+      color white
+      position absolute
+      right 10px
+
+#viewer
+  width 50%
+  top 0
+  bottom 0
+  right 0
+  margin-top -5px
+
+for state in states
+  .hide-{state[0]} #progress li.{state[0]}
+    &:after
+      color black
+      text-shadow 0 1px 1px white
+
+.snapjs-left
+.snapjs-right
+  #examples
+    &:before
+      content ''
+      display block
+      position absolute
+      width 100%
+      height 100%
+      z-index 3
+
+.snapjs-left
+  #viewer
+    display none
+
+.snapjs-right
+  #progress
+    display none
+
+#examples
+  background light_gray
+  top 0
+  left 0
+  right 0
+  bottom 0
+  box-shadow 0 0 5px 4px black
+  border-radius 5px
+
+  & > div
+    overflow auto
+    padding-top 48px
+    height 100%
+    border 1px solid transparentize(dark_blue, 0.8)
+
+  & > header
+    position absolute
+    padding 0
+    top 5px
+
+  .header
+    position absolute
+    left 0
+    right 0
+    top 0
+    height 48px
+    padding 2px
+    z-index 2
+    background transparentize(light_gray, 0.2)
+
+    button
+      background medium_gray
+      border none
+      border-radius 4px
+      height 44px
+      width 44px
+      font-size 32px
+      cursor pointer
+
+      &.btn-open-right
+        position absolute
+        right 2px
+
+      &.btn-collapse
+        position absolute
+        right 50px
+
+
+  .example-group
+    position relative
+    color dark_blue
+
+    & + .example-group
+      border-top 1px solid transparentize(dark_blue, 0.9)
+
+    for i in 0..20
+      &.level{i}
+        header
+          padding-left (i + 1) * 20px + 8px
+
+        article
+          padding-left (i + 2) * 20px + 8px
+
+    &:before
+      position absolute
+      content '\f13a'
+      font-family FontAwesome
+      display block
+      width 20px
+      height 20px
+      top 8px
+      left 5px
+      transition all 0.2s
+      opacity 0
+
+    &:hover:before
+      opacity 0.4
+
+    &.success
+      background transparentize(success, 0.8)
+
+    &.failure
+      background transparentize(failure, 0.8)
+
+    &.collapse
+      section
+      article
+        display none
+
+      &:before
+        content '\f138'
+
+      header:after
+        opacity 1
+
+
+    header:after
+      display inline-block
+      background pending
+      line-height 8px
+      padding 2px 3px
+      content '•••'
+      border-radius 3px
+      opacity 0
+      transition all 0.3s
+
+    header
+    article
+      cursor pointer
+      margin 0
+      font-weight 300
+      padding 5px 8px
+
+  .example
+    & + .example
+      border-top 1px solid transparentize(dark_blue, 0.9)
+
+    for state in states
+      &.{state[0]}
+        background transparentize(state[1], 0.8)
+
+for state in states
+  .hide-{state[0]} #examples .{state[0]}
+    display none
+
+#viewer
+  background very_dark_blue
+  padding 10px 20px
+  overflow auto
+
+  .example
+    width 100%
+    color light_gray
+
+    for state in states
+      &.{state[0]}
+        .state
+          background state[1]
+
+        .message
+          color state[1]
+
+    h3
+      margin 0
+      font-weight 300
+
+    .details
+    .message
+    .stack
+      margin 10px 0
+
+    .stack
+      font-size 12px
+      font-family monospace
+      white-space nowrap
+
+      a
+        color light_blue
+        cursor pointer
+        &:hover
+          text-decoration none
+
+      pre
+        color darken(medium_gray, 20%)
+
+        .line-number
+          color darken(medium_gray, 50%)
+
+    .time
+    .state
+      display inline-block
+      color light_gray
+      border-radius 3px
+      line-height 10px
+      font-size 12px
+      margin-right 5px
+      text-shadow 0 0 2px transparentize(dark_blue, 0.3)
+
+      i
+        margin-right 5px
+
+    .time
+      padding 3px 5px
+      background light_blue
+
+    .state
+      padding 4px 5px
+      text-transform uppercase
+
+    .expectations
+      padding 0
+      margin 10px 0
+
+      .expectation
+        list-style none
+        cursor pointer
+        padding 5px
+        margin 0 -5px
+        border-radius 3px
+
+        &.active
+          background dark_blue
+
+        &.success
+          color success
+
+        &.failure
+          color failure
+
+    .expectation-message
+      border-top 1px solid dark_blue
+      padding-top 5px
+
+      &.success
+        color success
+
+      &.failure
+        color failure
 
 
 

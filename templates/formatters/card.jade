@@ -1,0 +1,26 @@
+result = example.result
+state = result.state
+hasExpectations = result.expectations.length > 0
+
+.example(class=state)
+  .details
+    header
+      h3!= example.fullDescription
+      span.state= state
+      span.time
+        i.icon-time
+        != (example.duration / 1000) + "s"
+
+    if hasExpectations
+      ul.expectations
+        each expectation,i in result.expectations
+          if expectation.success
+            li.expectation.success(data-expectation=i)= expectation.description
+          else
+            li.expectation.failure(data-expectation=i)= expectation.description
+
+    else if state != 'success' && state != 'pending'
+      .message= example.examplePromise.reason.message
+
+  .expectation-message
+  .stack

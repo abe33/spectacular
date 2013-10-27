@@ -15,7 +15,7 @@ class spectacular.BrowserReporter
     @runner.off 'result', @onResult
     @runner.off 'end', @onEnd
 
-  init: -> @widgets.forEach (w) => w.init(@runner)
+  init: -> @widgets.forEach (w) => w.init(@runner, this)
   onStart: (e) => @widgets.forEach (w) => w.onStart(e)
   onResult: (e) => @widgets.forEach (w) -> w.onResult e
   onEnd: (e) => @widgets.forEach (w) -> w.onEnd e
@@ -109,6 +109,8 @@ spectacular.env = new spectacular.Environment(spectacular.options)
 spectacular.env.globalize()
 spectacular.env.runner.loadStartedAt = new Date()
 
+viewerSize = -> Math.min(document.body.clientWidth - 60, 500)
+
 window.env = spectacular.env
 
 currentWindowOnload = window.onload
@@ -128,6 +130,8 @@ window.onload = ->
 
   reporter = new spectacular.BrowserReporter(spectacular.env.runner, [
     new spectacular.widgets.RunnerProgress
+    new spectacular.widgets.ExamplesList
+    new spectacular.widgets.ExampleViewer
   ])
 
   reporter.init()
@@ -136,4 +140,18 @@ window.onload = ->
 
   spectacular.env.run().fail (reason) ->
     console.log reason.stack
+
+  window.snapper = new Snap
+    element: document.getElementById('examples')
+    minPosition: -viewerSize()
+
+  document.getElementById('viewer').setAttribute 'style', "width: #{viewerSize()}px;"
+  snapper.open 'left'
+
+  previousOnResize = document.body.onresize
+  document.body.onresize = ->
+    snapper.close()
+    snapper.settings minPosition: -viewerSize()
+    document.getElementById('viewer').setAttribute 'style', "width: #{viewerSize()}px;"
+
 
