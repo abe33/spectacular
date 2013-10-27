@@ -156,6 +156,7 @@ exports.run = (options) ->
   .then(loadSpecs options)
   .then (paths) ->
     loadEndedAt = new Date()
+    options.paths = paths
     spectacular.env.runner.loadStartedAt = loadStartedAt
     spectacular.env.runner.loadEndedAt = loadEndedAt
     spectacular.env.run()
