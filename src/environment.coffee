@@ -122,7 +122,14 @@ class spectacular.Environment
    notWihoutMatcher: (method) ->
     throw new Error "#{method} called without a matcher"
 
-  fail: -> @currentExample.reject new Error 'Failed'
+  fail: ->
+    error = new Error 'Failed'
+
+    stack = error.stack.split('\n')
+    specIndex = spectacular.env.runner.findSpecFileInStack stack
+    error.stack = stack[specIndex..].join('\n') if specIndex
+
+    @currentExample.reject error
   pending: -> @currentExample.pending()
   skip: -> @currentExample.skip()
   success: ->

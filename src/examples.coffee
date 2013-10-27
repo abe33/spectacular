@@ -134,7 +134,13 @@ class spectacular.Example
   skip: ->
     if @examplePromise?.pending
       @result.state = 'skipped'
-      @examplePromise.reject new Error 'Skipped'
+      error = new Error 'Skipped'
+
+      stack = error.stack.split('\n')
+      specIndex = spectacular.env.runner.findSpecFileInStack stack
+      error.stack = stack[specIndex..].join('\n') if specIndex
+
+      @examplePromise.reject error
 
   resolve: =>
     if @examplePromise?.pending
