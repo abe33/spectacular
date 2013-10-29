@@ -219,6 +219,11 @@ spectacular.matcher 'be', ->
         @stateValue
       when 'number', 'boolean'
         actual?.valueOf() is @value
+      when 'function'
+        if typeof @actual is 'function'
+          actual is @value
+        else
+          actual?.constructor is @value
       else
         actual is @value
 

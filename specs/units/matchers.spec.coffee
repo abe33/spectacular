@@ -18,6 +18,18 @@ describe be, ->
     it -> should be @subject
     it -> shouldnt be {}
 
+  context 'when called with a function', ->
+    subject -> {}
+
+    it -> should be Object
+    it -> shouldnt be String
+
+    context 'and that the value is a function', ->
+      subject -> Object
+
+      it -> should be Object
+      it -> shouldnt be String
+
 describe equal, ->
 
   context 'with strings', ->
