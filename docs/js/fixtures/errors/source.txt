@@ -1,0 +1,7 @@
+class ErroredClass
+  constructor: ->
+    throw new Error 'some error'
+
+  someMethod: ->
+
+  someOtherMethod: ->

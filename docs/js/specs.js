@@ -73,6 +73,57 @@
     });
   });
 
+  sharedExample('match error', function() {
+    return describe('the parser', function() {
+      the(function() {
+        return this.parser.should(exist);
+      });
+      the('size', function() {
+        return this.parser.size.should(equal(4));
+      });
+      describe('::find', function() {
+        return context('with a file path', function() {
+          subject(function() {
+            return this.parser.find('file.js');
+          });
+          return it(function() {
+            return should(have(2, 'lines'));
+          });
+        });
+      });
+      return describe('::details', function() {
+        return context('with a line from the stack', function() {
+          subject(function() {
+            var line;
+            line = this.parser.find('file.js')[0];
+            return this.parser.details(line);
+          });
+          its('line', function() {
+            return should(equal('10'));
+          });
+          its('file', function() {
+            return should(equal('file.js'));
+          });
+          return its('method', function() {
+            return should(equal('failingFunction'));
+          });
+        });
+      });
+    });
+  });
+
+  sharedExample('a formatter', function() {
+    return specify('the returned promise value', function(async) {
+      var _this = this;
+      return this.subject.then(function(result) {
+        expect(result).to(equal(_this.expected));
+        return async.resolve();
+      }).fail(function(reason) {
+        return async.reject(reason);
+      });
+    });
+  });
+
   spectacular.helper('createEnv', function(block, context, options) {
     var env, k, v;
     env = spectacular.env.clone();
@@ -81,7 +132,6 @@
       v = options[k];
       env.options[k] = v;
     }
-    env.runner.paths = spectacular.env.runner.paths;
     context.results = '';
     spyOn(env, 'globalize').andCallThrough(function() {
       var promise;
@@ -95,7 +145,7 @@
 
   spectacular.helper('createReporter', function(env, context, async) {
     var reporter;
-    reporter = new spectacular.ConsoleReporter(env.options);
+    reporter = spectacular.ConsoleReporter.getDefault(env.options);
     context.results = '';
     reporter.on('message', function(e) {
       return context.results += e.target;
@@ -1237,6 +1287,39 @@
     });
   });
 
+  describe(spectacular.errors.ErrorParser, function() {
+    fixture('errors/firefox.txt', {
+      as: 'firefox'
+    });
+    fixture('errors/chrome.txt', {
+      as: 'chrome'
+    });
+    fixture('errors/node.txt', {
+      as: 'node'
+    });
+    given('parser', function() {
+      return new spectacular.errors.ErrorParser(this.stack);
+    });
+    context('for a chrome stack', function() {
+      given('stack', function() {
+        return this.chrome;
+      });
+      return itShould('match error');
+    });
+    context('for a node stack', function() {
+      given('stack', function() {
+        return this.node;
+      });
+      return itShould('match error');
+    });
+    return context('for a firefox stack', function() {
+      given('stack', function() {
+        return this.firefox;
+      });
+      return itShould('match error');
+    });
+  });
+
   MixinWithIncludedHook = (function() {
     function MixinWithIncludedHook() {}
 
@@ -1889,6 +1972,41 @@
       return include('bar');
     });
   });
+
+  only(describe('Some test', function() {
+    describe('Success', function() {
+      return specify(function() {
+        return true.should(be(true));
+      });
+    });
+    describe('Error', function() {
+      return it(function() {
+        throw new Error('This is the error message');
+      });
+    });
+    describe('Failure', function() {
+      it(function() {
+        return fail();
+      });
+      return specify(function() {
+        true.should(be(true));
+        true.should(be(true));
+        true.should(be(false));
+        true.should(be(true));
+        return true.should(be(false));
+      });
+    });
+    describe('Skipped', function() {
+      return it(function() {
+        return skip();
+      });
+    });
+    return describe('Pending', function() {
+      return it(function() {
+        return pending();
+      });
+    });
+  }));
 
   describe(fixture, function() {
     it(function() {
