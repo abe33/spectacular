@@ -1,5 +1,8 @@
 # examples groups
 
+runningSpecs('without examples')
+.shouldSucceedWith /0 success, 0 assertions, 0 failures/, ->
+
 runningSpecs('an error raised in spec file')
 .shouldStopWith /message/, ->
   throw new Error 'message'
