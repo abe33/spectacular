@@ -5,7 +5,7 @@
 states = ('errored' errored) ('skipped' skipped) ('pending' pending) ('failure' failure) ('success' success)
 
 body
-  font-family Roboto, sans
+  font-family Roboto, Helvetica Neue, Helvetica, sans
   font-weight 300
   background very_dark_blue
   overflow hidden
@@ -106,11 +106,19 @@ body
     position relative
     list-style none
     padding 10px
-    border-bottom 1px solid dark_blue
+    border-top 1px solid dark_blue
     cursor pointer
+    transition all 0.3s
+
+    &:first-child
+      border-top none
 
     &:hover
       background dark_blue
+      border-radius 4px
+
+      & + li
+        border-color very_dark_blue
 
     &:after
       content '\f06e'
@@ -199,7 +207,7 @@ for state in states
         right 50px
 
   .value
-    font-weight bold
+    font-weight 400
 
   .example-group
     position relative

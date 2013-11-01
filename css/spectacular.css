@@ -1,5 +1,5 @@
 body {
-  font-family: Roboto, sans;
+  font-family: Roboto, Helvetica Neue, Helvetica, sans;
   font-weight: 300;
   background: #0b1d26;
   overflow: hidden;
@@ -158,11 +158,27 @@ body {
   position: relative;
   list-style: none;
   padding: 10px;
-  border-bottom: 1px solid #163a4c;
+  border-top: 1px solid #163a4c;
   cursor: pointer;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+#progress li:first-child {
+  border-top: none;
 }
 #progress li:hover {
   background: #163a4c;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+#progress li:hover + li {
+  border-color: #0b1d26;
 }
 #progress li:after {
   content: '\f06e';
@@ -293,7 +309,7 @@ body {
   right: 50px;
 }
 #examples .value {
-  font-weight: bold;
+  font-weight: 400;
 }
 #examples .example-group {
   position: relative;
