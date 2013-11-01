@@ -99,6 +99,7 @@ loadDOM = ->
 CliMethods = (options) ->
   fileCache = {}
 
+  options.valueOutput = (value) -> colorize "#{value}", 'bold', spectacular.env.options
   options.isCoffeeScriptFile = (file) -> /\.coffee$/.test file
   options.hasSourceMap = (file) -> @isCoffeeScriptFile file
   options.loadFile = (file) ->

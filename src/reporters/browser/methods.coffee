@@ -3,6 +3,17 @@ spectacular.BrowserMethods = (options) ->
   cache = {}
   loaders = {}
 
+  unless options.valueOutput?
+    options.valueOutput = (value) ->
+      "<span class='value'>#{options.htmlSafe String(value)}</span>"
+
+
+  unless options.htmlSafe?
+    options.htmlSafe = (str) ->
+      str
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+
   unless options.loadFile?
     options.loadFile = (file) ->
       promise = new spectacular.Promise

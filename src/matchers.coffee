@@ -48,6 +48,9 @@ spectacular.matcher = (name, block) ->
 
     matcher.match = (@actual) -> @result = match.apply(this, arguments)
     matcher.timeout = timeout
+    matcher.formatValue = (value) ->
+      spectacular.env?.options?.valueOutput?(value) or value
+
 
     genChain matcher, k, v for k,v of chains
 
@@ -100,9 +103,8 @@ spectacular.matcher 'exist', ->
   match (actual, notText) -> actual?
 
   description -> "exist"
-  failureMessageForShould -> "Expected #{@actual} to exist"
-  failureMessageForShouldnt -> "Expected #{@actual} to be undefined"
-
+  failureMessageForShould -> "Expected #{@formatValue @actual} to exist"
+  failureMessageForShouldnt -> "Expected #{@formatValue @actual} to be undefined"
 
 
 
@@ -131,32 +133,32 @@ spectacular.matcher 'have', ->
 
   failureMessageForShould ->
     switch typeof @actual
-      when 'string' then "Expected string #{utils.inspect @actual} to #{@description} but was #{@actual.length}"
+      when 'string' then "Expected string #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
       when 'object'
         if utils.isArray @actual
-          "Expected array #{utils.inspect @actual} to #{@description} but was #{@actual.length}"
+          "Expected array #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
         else
-          @message = "Expected object #{utils.inspect @actual} to #{@description}"
+          @message = "Expected object #{@formatValue utils.inspect @actual} to #{@description}"
       else
-        @message = "Expected #{utils.inspect @actual} to #{@description} but it don't belong to a type that can be handled"
+        @message = "Expected #{@formatValue utils.inspect @actual} to #{@description} but it don't belong to a type that can be handled"
 
   failureMessageForShouldnt ->
     switch typeof @actual
-      when 'string' then "Expected string #{utils.inspect @actual} not to #{@description} but was #{@actual.length}"
+      when 'string' then "Expected string #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
       when 'object'
         if utils.isArray @actual
-          "Expected array #{utils.inspect @actual} not to #{@description} but was #{@actual.length}"
+          "Expected array #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
         else
-          @message = "Expected object #{utils.inspect @actual} not to #{@description}"
+          @message = "Expected object #{@formatValue utils.inspect @actual} not to #{@description}"
       else
-        @message = "Expected #{utils.inspect @actual} not to #{@description} but it don't belong to a type that can be handled"
+        @message = "Expected #{@formatValue utils.inspect @actual} not to #{@description} but it don't belong to a type that can be handled"
 
 
 
 
 spectacular.matcher 'haveSelector', ->
   takes 'selector'
-  description -> "have content that match '#{@selector}'"
+  description -> "have content that match #{@formatValue @selector}"
 
   match (actual) ->
     if actual.length?
@@ -165,10 +167,10 @@ spectacular.matcher 'haveSelector', ->
       actual.querySelectorAll(@selector).length > 0
 
   failureMessageForShould ->
-    "Expected #{utils.descOfNode @actual} to have selector '#{@selector}'"
+    "Expected #{@formatValue utils.descOfNode @actual} to have selector #{@formatValue @selector}"
 
   failureMessageForShouldnt ->
-    "Expected #{utils.descOfNode @actual} not to have selector '#{@selector}'"
+    "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
 
 
 
@@ -186,20 +188,20 @@ spectacular.matcher 'be', ->
   failureMessageForShould ->
     switch typeof @value
       when 'string'
-        "Expected #{@actual} to #{@description} but was #{@stateValue}"
+        "Expected #{@formatValue @actual} to #{@description} but was #{@formatValue @stateValue}"
       when 'number', 'boolean'
-        "Expected #{@actual} to #{@description}"
+        "Expected #{@formatValue @actual} to #{@description}"
       else
-        @message = "Expected #{utils.inspect @actual} to #{@description}"
+        @message = "Expected #{@formatValue utils.inspect @actual} to #{@description}"
 
   failureMessageForShouldnt ->
     switch typeof @value
       when 'string'
-        "Expected #{@actual} not to #{@description} but was #{@stateValue}"
+        "Expected #{@formatValue @actual} not to #{@description} but was #{@formatValue @stateValue}"
       when 'number', 'boolean'
-        "Expected #{@actual} not to #{@description}"
+        "Expected #{@formatValue @actual} not to #{@description}"
       else
-        @message = "Expected #{utils.inspect @actual} not to #{@description}"
+        @message = "Expected #{@formatValue utils.inspect @actual} not to #{@description}"
 
   match (actual) ->
     @value = @desc unless @value?
@@ -231,22 +233,21 @@ spectacular.matcher 'be', ->
 
 spectacular.matcher 'equal', ->
   takes 'value'
-  description -> "be equal to #{utils.squeeze utils.inspect @value}"
+  description -> "be equal to #{@formatValue utils.squeeze utils.inspect @value}"
 
   match (actual) ->
     @diff = diff: ''
-    r = utils.compare actual, @value, @diff
-    r
+    @result = utils.compare actual, @value, @diff
 
   failureMessageForShould ->
-    msg = "Expected #{utils.inspect @actual} to be equal to #{utils.inspect @value}"
-    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0
+    msg = "Expected #{@formatValue utils.inspect @actual} to be equal to #{@formatValue utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
 
     msg
 
   failureMessageForShouldnt ->
-    msg = "Expected #{utils.inspect @actual} to be different than #{utils.inspect @value}"
-    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0
+    msg = "Expected #{@formatValue utils.inspect @actual} to be different than #{@formatValue utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
     msg
 
 
@@ -254,21 +255,21 @@ spectacular.matcher 'equal', ->
 spectacular.matcher 'beWithin', ->
   takes 'delta'
 
-  description -> "be within #{utils.squeeze utils.inspect @delta} of #{utils.squeeze utils.inspect @expected}"
+  description -> "be within #{@formatValue utils.squeeze utils.inspect @delta} of #{@formatValue utils.squeeze utils.inspect @expected}"
 
   chain 'of', (@expected) ->
 
   match (actual) -> @expected - @delta <= actual <= @expected + @delta
 
-  failureMessageForShould -> "Expected #{utils.inspect @actual} to #{@description}"
+  failureMessageForShould -> "Expected #{@formatValue utils.inspect @actual} to #{@description}"
 
-  failureMessageForShouldnt -> "Expected #{utils.inspect @actual} not to #{@description}"
+  failureMessageForShouldnt -> "Expected #{@formatValue utils.inspect @actual} not to #{@description}"
 
 
 
 spectacular.matcher 'match', ->
   takes 're'
-  description -> "match #{@re}"
+  description -> "match #{@formatValue @re}"
 
   match (actual) ->
     # The match matcher allow DOMExpression object as value
@@ -279,15 +280,15 @@ spectacular.matcher 'match', ->
 
   failureMessageForShould ->
     if @re.match? and @re.contained?
-      "Expected #{utils.descOfNode @actual} to match #{@re}"
+      "Expected #{@formatValue utils.descOfNode @actual} to match #{@formatValue @re}"
     else
-      @message = "Expected '#{@actual}' to match #{@re}"
+      @message = "Expected #{@formatValue @actual} to match #{@formatValue @re}"
 
   failureMessageForShouldnt ->
     if @re.match? and @re.contained?
-      "Expected #{utils.descOfNode @actual} not to match #{@re}"
+      "Expected #{@formatValue utils.descOfNode @actual} not to match #{@formatValue @re}"
     else
-      @message = "Expected '#{@actual}' not to match #{@re}"
+      @message = "Expected #{@formatValue @actual} not to match #{@formatValue @re}"
 
 
 
@@ -295,10 +296,10 @@ spectacular.matcher 'contains', ->
   takes 'values...'
   description ->
     if @value?.match? and @value?.contained?
-      "contains #{@value}"
+      "contains #{@formatValue @value}"
     else
       valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "contains #{valuesDescription}"
+      "contains #{@formatValue valuesDescription}"
 
   match (actual) ->
     @value = @values[0]
@@ -310,26 +311,26 @@ spectacular.matcher 'contains', ->
 
   failureMessageForShould ->
     if @value?.match? and @value?.contained?
-      "Expected #{utils.descOfNode @actual} to contains #{@value}"
+      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue @value}"
     else
       valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "Expected #{utils.descOfNode @actual} to contains #{valuesDescription}"
+      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue valuesDescription}"
 
   failureMessageForShouldnt ->
     if @value?.match? and @value?.contained?
-      "Expected #{utils.descOfNode @actual} not to contains #{@value}"
+      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue @value}"
     else
       valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "Expected #{utils.descOfNode @actual} not to contains #{valuesDescription}"
+      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue valuesDescription}"
 
 
 
 spectacular.matcher 'throwAnError', ->
   takes 'message'
   description ->
-    msg = if @message? then " with message #{@message}" else ''
-    msg += " with arguments #{utils.inspect @arguments}" if @arguments?
-    msg += " in context #{utils.inspect @context}" if @context?
+    msg = if @message? then " with message #{@formatValue @message}" else ''
+    msg += " with arguments #{@formatValue utils.inspect @arguments}" if @arguments?
+    msg += " in context #{@formatValue utils.inspect @context}" if @context?
 
     "throw an error#{msg}"
 
@@ -354,14 +355,14 @@ spectacular.matcher 'throwAnError', ->
 
     result
 
-  failureMessageForShould -> "Expected to #{@description} but was #{@error}"
-  failureMessageForShouldnt -> "Expected not to #{@description} but was #{@error}"
+  failureMessageForShould -> "Expected to #{@description} but was #{@formatValue @error}"
+  failureMessageForShouldnt -> "Expected not to #{@description} but was #{@formatValue @error}"
 
 
 spectacular.matcher 'haveBeenCalled', ->
   description ->
     msg = "have been called"
-    msg += "with #{utils.inspect @arguments}" if @arguments?
+    msg += "with #{@formatValue utils.inspect @arguments}" if @arguments?
     msg
 
   chain 'with', (@arguments...) ->
@@ -379,18 +380,18 @@ spectacular.matcher 'haveBeenCalled', ->
   failureMessageForShould ->
     if typeof @actual?.spied is 'function'
       if @arguments?
-        "Expected #{@actual.spied} to #{@description} but was called with #{@actual.argsForCall}"
+        "Expected #{@formatValue @actual.spied} to #{@description} but was called with #{@formatValue @actual.argsForCall}"
       else
-        "Expected #{@actual.spied} to have been called"
+        "Expected #{@formatValue @actual.spied} to have been called"
     else
-      @message = "Expected a spy but it was #{@actual}"
+      @message = "Expected a spy but it was #{@formatValue @actual}"
 
   failureMessageForShouldnt ->
     if typeof @actual?.spied is 'function'
       if @arguments?
-        "Expected #{@actual.spied} not to #{@description} but was called with #{@actual.argsForCall}"
+        "Expected #{@formatValue @actual.spied} not to #{@description} but was called with #{@actual.argsForCall}"
       else
-        "Expected #{@actual.spied} not to have been called"
+        "Expected #{@formatValue @actual.spied} not to have been called"
     else
-      @message = "Expected a spy but it was #{@actual}"
+      @message = "Expected a spy but it was #{@formatValue @actual}"
 

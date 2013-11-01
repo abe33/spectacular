@@ -27,7 +27,7 @@ class spectacular.widgets.ExampleViewer
   displayExpectationDetails: (node, expectation) ->
     @each @expectations, (el) -> removeClass el, 'active'
 
-    @expectationMessage.textContent = expectation.message
+    @expectationMessage.innerHTML = expectation.message
     @expectationMessage.setAttribute 'class', if expectation.success then 'expectation-message success' else 'expectation-message failure'
 
     @clearStack()

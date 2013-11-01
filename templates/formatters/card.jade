@@ -15,9 +15,9 @@ hasExpectations = result.expectations.length > 0
       ul.expectations
         each expectation,i in result.expectations
           if expectation.success
-            li.expectation.success(data-expectation=i)= expectation.description
+            li.expectation.success(data-expectation=i)!= expectation.description
           else
-            li.expectation.failure(data-expectation=i)= expectation.description
+            li.expectation.failure(data-expectation=i)!= expectation.description
 
     else if state != 'success' && state != 'pending'
       .message= example.examplePromise.reason.message
