@@ -1,9 +1,9 @@
 
 class spectacular.widgets.ExampleViewer
-  init: (@runner) ->
+  init: (@runner, @reporter) ->
     @container = buildHTML spectacular.templates.viewer()
     @view = @container.querySelector 'div'
-    document.body.appendChild @container
+    @reporter.container.appendChild @container
 
   displayCard: (example) ->
     @view.innerHTML = @getCard example

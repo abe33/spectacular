@@ -17,19 +17,18 @@ class spectacular.widgets.ExamplesList
     openLeft = @container.querySelector '.btn-open-left'
     openLeft.onclick = =>
       if hasClass html, 'snapjs-left'
-        window.snapper.close()
+        @reporter.snapper.close()
       else
-        window.snapper.open('left')
+        @reporter.snapper.open('left')
 
     openRight = @container.querySelector '.btn-open-right'
     openRight.onclick = =>
       if hasClass html, 'snapjs-right'
-        window.snapper.close()
+        @reporter.snapper.close()
       else
-        window.snapper.open('right')
+        @reporter.snapper.open('right')
 
-
-    document.body.appendChild @container
+    @reporter.container.appendChild @container
 
   onStart: ->
 
@@ -39,6 +38,7 @@ class spectacular.widgets.ExamplesList
     state = example.result.state
     if state in ['failure', 'errored'] and not hasClass document.body, 'hide-success'
       addClass document.body, 'hide-success'
+      @reporter.snapper.open('right')
       @viewer.displayCard example
 
     @buildExample example
@@ -63,7 +63,7 @@ class spectacular.widgets.ExamplesList
 
     node.onclick = =>
       @viewer.displayCard @examples[node.attributes.id.value]
-      snapper.open 'right'
+      @reporter.snapper.open 'right'
 
     node
 

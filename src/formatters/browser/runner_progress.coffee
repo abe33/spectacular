@@ -9,7 +9,7 @@ class spectacular.widgets.RunnerProgress
     for state of CHAR_MAP
       @[state + 'Value'] = @container.querySelector(".#{state} .value")
 
-    document.body.appendChild @container
+    @reporter.container.appendChild @container
 
   onStart: ->
     @counters =

@@ -69,7 +69,7 @@ compileSpectacularNode = ->
     "--join"
     "lib/spectacular.js"
     "src/extensions.coffee"
-    "src/bootstrap.coffee"
+    "src/module.coffee"
     "src/utils.coffee"
     "src/errors.coffee"
     "src/mixins.coffee"
@@ -83,7 +83,7 @@ compileSpectacularNode = ->
     "src/formatters.coffee"
     "src/formatters/console.coffee"
     "src/formatters/console/*.coffee"
-    "src/console_reporter.coffee"
+    "src/reporters/console.coffee"
   ]
   run("./node_modules/.bin/coffee #{options.join ' '}")()
 
@@ -97,7 +97,9 @@ compileBrowserPart = ->
     "lib/browser_reporter.js"
     "src/formatters/browser.coffee"
     "src/formatters/browser/*.coffee"
-    "src/browser_reporter.coffee"
+    "src/reporters/browser.coffee"
+    "src/reporters/browser/*.coffee"
+    "src/reporters/browser_bootstrap.coffee"
   ]
   run("./node_modules/.bin/coffee #{options.join ' '}")()
 
@@ -146,7 +148,7 @@ compileBrowser = ->
     "--join"
     "docs/build/js/spectacular.js"
     "src/extensions.coffee"
-    "src/bootstrap.coffee"
+    "src/module.coffee"
     "src/utils.coffee"
     "src/errors.coffee"
     "src/mixins.coffee"
@@ -162,8 +164,10 @@ compileBrowser = ->
     "src/formatters/console/*.coffee"
     "src/formatters/browser.coffee"
     "src/formatters/browser/*.coffee"
-    "src/console_reporter.coffee"
-    "src/browser_reporter.coffee"
+    "src/reporters/console.coffee"
+    "src/reporters/browser.coffee"
+    "src/reporters/browser/*.coffee"
+    "src/reporters/browser_bootstrap.coffee"
   ]
 
   run("./node_modules/.bin/coffee #{options.join ' '}")()
