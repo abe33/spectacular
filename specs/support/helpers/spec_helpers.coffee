@@ -2,6 +2,7 @@
 spectacular.helper 'createEnv', (block, context, options) ->
   env = spectacular.env.clone()
   env.options.colors = false
+  env.options.valueOutput = (str) -> str
   env.options[k] = v for k,v of options
   context.results = ''
 
