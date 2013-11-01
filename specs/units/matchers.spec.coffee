@@ -169,6 +169,10 @@ describe match, ->
 
       it -> should match @dom
 
+  context 'with a string', ->
+    it -> should match 'irrelevant'
+    it -> shouldnt match 'tnavelerri'
+
 describe contains, ->
   given 'fixturesContainer', -> document.querySelector '#fixtures'
   subject -> [0,1,2,'foo','bar',true]

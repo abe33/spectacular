@@ -181,7 +181,7 @@ spectacular.matcher 'be', ->
     desc = if typeof @desc is 'string'
       @desc
     else
-      utils.squeeze utils.inspect @value
+      @formatValue utils.squeeze utils.inspect @value
 
     "be #{desc}"
 
@@ -275,8 +275,10 @@ spectacular.matcher 'match', ->
     # The match matcher allow DOMExpression object as value
     if @re.match? and @re.contained?
       @re.match actual
-    else
+    else if @re.test?
       @re.test actual
+    else if @re.indexOf?
+      @re.indexOf(actual) isnt -1
 
   failureMessageForShould ->
     if @re.match? and @re.contained?
