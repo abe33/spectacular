@@ -36,4 +36,12 @@ factory 'example', class: spectacular.Example, ->
         expectations: [create 'expectation', 'failure']
       }
 
+  trait 'errored', ->
+    after 'build', (example) ->
+      example.result = {
+        example
+        state: 'errored'
+        hasFailures: -> false
+        expectations: []
+      }
 

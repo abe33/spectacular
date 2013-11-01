@@ -1,5 +1,13 @@
 
+Plurals =
+  failure: 'failures'
+  errored: 'errored'
+  skipped: 'skipped'
+  pending: 'pending'
+  success: 'success'
+
 class spectacular.widgets.RunnerProgress
+
   init: (@runner, @reporter) ->
     @container = buildHTML spectacular.templates.progress(seed: @runner.options.seed, chars: CHAR_MAP)
 
@@ -8,6 +16,7 @@ class spectacular.widgets.RunnerProgress
     @allValue = @container.querySelector('.all .value')
     for state of CHAR_MAP
       @[state + 'Value'] = @container.querySelector(".#{state} .value")
+      @[state + 'Text'] = @container.querySelector(".#{state} .symbol")
 
     @reporter.container.appendChild @container
 
@@ -35,6 +44,7 @@ class spectacular.widgets.RunnerProgress
     @allValue.textContent = @counters.all
     for key,c of CHAR_MAP
       @["#{key}Value"].textContent = @counters[key]
+      @["#{key}Text"].textContent = ' ' + if @counters[key] > 1 then Plurals[key] else key
 
       if @counters[key] and not hasClass(@[key], 'not-zero')
         addClass @[key], 'not-zero'
