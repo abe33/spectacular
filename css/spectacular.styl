@@ -198,6 +198,8 @@ for state in states
         position absolute
         right 50px
 
+  .value
+    font-weight bold
 
   .example-group
     position relative
@@ -302,6 +304,9 @@ for state in states
     .stack
       margin 10px 0
 
+    .message
+      white-space pre-wrap
+
     .stack
       font-size 12px
       font-family monospace
@@ -363,12 +368,20 @@ for state in states
     .expectation-message
       border-top 1px solid dark_blue
       padding-top 5px
+      white-space pre-wrap
+      font-family Menlo, Consolas, monospace
+      font-size 0.8em
 
       &.success
         color success
 
       &.failure
         color failure
+
+      .value
+        background dark_blue
+        border-radius 3px
+        padding 1px 3px
 
 
 

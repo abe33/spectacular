@@ -292,6 +292,9 @@ body {
   position: absolute;
   right: 50px;
 }
+#examples .value {
+  font-weight: bold;
+}
 #examples .example-group {
   position: relative;
   color: #163a4c;
@@ -582,6 +585,9 @@ body {
 #viewer .example .stack {
   margin: 10px 0;
 }
+#viewer .example .message {
+  white-space: pre-wrap;
+}
 #viewer .example .stack {
   font-size: 12px;
   font-family: monospace;
@@ -657,10 +663,22 @@ body {
 #viewer .example .expectation-message {
   border-top: 1px solid #163a4c;
   padding-top: 5px;
+  white-space: pre-wrap;
+  font-family: Menlo, Consolas, monospace;
+  font-size: 0.8em;
 }
 #viewer .example .expectation-message.success {
   color: #64b432;
 }
 #viewer .example .expectation-message.failure {
   color: #ff2814;
+}
+#viewer .example .expectation-message .value {
+  background: #163a4c;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  padding: 1px 3px;
 }
