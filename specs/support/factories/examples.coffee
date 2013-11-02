@@ -1,6 +1,9 @@
 factory 'exampleGroup', class: spectacular.ExampleGroup, ->
   set 'description', 'Some group description'
 
+  trait 'with root', ->
+    set 'parent', -> create 'exampleGroup'
+
 factory 'expectation', class: spectacular.Expectation, ->
   createWith -> [null, null, equal 42, false, new Error]
 
@@ -16,7 +19,7 @@ factory 'expectation', class: spectacular.Expectation, ->
 
 factory 'example', class: spectacular.Example, ->
   set 'ownDescription', 'Some example description'
-  set 'parent', -> create 'exampleGroup'
+  set 'parent', -> create 'exampleGroup', 'with root'
 
   trait 'successful', ->
     after 'build', (example) ->
