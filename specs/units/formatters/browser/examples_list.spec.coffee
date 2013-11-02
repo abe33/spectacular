@@ -1,0 +1,38 @@
+
+if typeof module is 'undefined'
+  describe spectacular.widgets.ExamplesList, ->
+    fixture 'formatters/list.dom', as: 'listDOM'
+
+    given 'list', -> new spectacular.widgets.ExamplesList
+
+    withWidgetSetup ->
+      before ->
+        @list.init @runner, @reporter
+        @list.onStart(target: @reporter)
+
+      given 'container', -> @list.container
+      given 'header', -> @container.querySelector '.header'
+      given 'listContainer', -> @container.querySelector 'div'
+
+      the -> @container.should match @listDOM
+
+      whenPass ->
+        context 'when a result event is propagated', ->
+          fixture 'formatters/list_item.dom', as: 'itemDOM'
+
+
+          context 'for a successful example', ->
+            given 'example', -> create 'example', 'successful'
+
+            before -> @list.onResult target: @example
+
+            the -> @listContainer.should contains @itemDOM
+
+          context 'for a failing example', ->
+            given 'example', -> create 'example', 'failure'
+
+            before -> @list.onResult target: @example
+
+            the -> @listContainer.should contains @itemDOM
+            the 'container', -> @reporter.container.getAttribute('class').should match 'hide-success'
+

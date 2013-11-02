@@ -36,10 +36,10 @@ class spectacular.widgets.ExamplesList
   onResult: (event) ->
     example = event.target
     state = example.result.state
-    if state in ['failure', 'errored'] and not hasClass document.body, 'hide-success'
-      addClass document.body, 'hide-success'
+    if state in ['failure', 'errored'] and not hasClass @reporter.container, 'hide-success'
+      addClass @reporter.container, 'hide-success'
       @reporter.snapper.open('right')
-      @viewer.displayCard example
+      @viewer?.displayCard example
 
     @buildExample example
 
