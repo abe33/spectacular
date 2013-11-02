@@ -277,8 +277,8 @@ spectacular.matcher 'match', ->
       @re.match actual
     else if @re.test?
       @re.test actual
-    else if @re.indexOf?
-      @re.indexOf(actual) isnt -1
+    else
+      String(actual).indexOf(@re) isnt -1
 
   failureMessageForShould ->
     if @re.match? and @re.contained?

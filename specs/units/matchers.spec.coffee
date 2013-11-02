@@ -145,7 +145,7 @@ describe exist, ->
 
 describe match, ->
   given 'fixturesContainer', -> document.querySelector '#fixtures'
-  subject -> 'irrelevant'
+  subject -> 'irrelevant irrelevant'
 
   it -> should match /irrelevant/
   it -> shouldnt match /tnavelerri/
