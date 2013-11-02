@@ -1,5 +1,5 @@
 if typeof module is 'undefined'
-  only describe spectacular.widgets.RunnerProgress, ->
+  describe spectacular.widgets.RunnerProgress, ->
     fixture 'formatters/progress.dom', as: 'progressDOM'
 
     given 'progress', -> new spectacular.widgets.RunnerProgress
