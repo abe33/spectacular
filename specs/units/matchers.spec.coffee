@@ -245,7 +245,7 @@ describe throwAnError, ->
     it -> should throwAnError().with 'an argument'
     it -> should throwAnError(/message/).with('an argument').inContext({})
 
-describe 'have', ->
+describe have, ->
   context 'on an object with a collection', ->
     subject -> items: [0,1,2,3], foo: 'bar'
 
@@ -280,3 +280,22 @@ describe 'have', ->
     subject -> 10
 
     it -> shouldnt have 10, 'elements'
+
+describe haveProperty, ->
+  context 'on an object', ->
+    subject -> foo: 'bar', baz: 'oof'
+
+    it -> should haveProperty 'foo'
+    it -> shouldnt haveProperty 'bar'
+
+    it -> should haveProperty('foo').to equal 'bar'
+    it -> shouldnt haveProperty('foo').to equal 'baz'
+
+describe haveProperties, ->
+  context 'on an object', ->
+    subject -> foo: 'bar', baz: 'oof'
+
+    it -> should haveProperties 'foo', 'baz'
+    it -> should haveProperties 'baz', foo: match 'bar'
+    it -> should haveProperties foo: equal 'bar'
+    it -> shouldnt haveProperties 'bar', baz: equal 'bar'

@@ -95,9 +95,9 @@ spectacular.matcher = (name, block) ->
   spectacular.matchers.set name, matcher
 
 
-
-
 ## Native Matchers
+
+#### exist
 
 spectacular.matcher 'exist', ->
   match (actual, notText) -> actual?
@@ -107,73 +107,7 @@ spectacular.matcher 'exist', ->
   failureMessageForShouldnt -> "Expected #{@formatValue @actual} to be undefined"
 
 
-
-spectacular.matcher 'have', ->
-  takes 'count', 'label'
-  description -> "have #{@count} #{@label}"
-
-  match (actual) ->
-    switch typeof actual
-      when 'string'
-        actual.length is @count
-      when 'object'
-        if utils.isArray actual
-          actual.length is @count
-        else
-          unless @label?
-            throw new Error "Undefined label in have matcher"
-
-          if actual[@label]
-            if utils.isArray actual[@label]
-              actual[@label].length is @count
-            else false
-          else false
-
-      else false
-
-  failureMessageForShould ->
-    switch typeof @actual
-      when 'string' then "Expected string #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
-      when 'object'
-        if utils.isArray @actual
-          "Expected array #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
-        else
-          @message = "Expected object #{@formatValue utils.inspect @actual} to #{@description}"
-      else
-        @message = "Expected #{@formatValue utils.inspect @actual} to #{@description} but it don't belong to a type that can be handled"
-
-  failureMessageForShouldnt ->
-    switch typeof @actual
-      when 'string' then "Expected string #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
-      when 'object'
-        if utils.isArray @actual
-          "Expected array #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
-        else
-          @message = "Expected object #{@formatValue utils.inspect @actual} not to #{@description}"
-      else
-        @message = "Expected #{@formatValue utils.inspect @actual} not to #{@description} but it don't belong to a type that can be handled"
-
-
-
-
-spectacular.matcher 'haveSelector', ->
-  takes 'selector'
-  description -> "have content that match #{@formatValue @selector}"
-
-  match (actual) ->
-    if actual.length?
-      Array::some.call actual, (e) => e.querySelectorAll(@selector).length > 0
-    else
-      actual.querySelectorAll(@selector).length > 0
-
-  failureMessageForShould ->
-    "Expected #{@formatValue utils.descOfNode @actual} to have selector #{@formatValue @selector}"
-
-  failureMessageForShouldnt ->
-    "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
-
-
-
+#### be
 
 spectacular.matcher 'be', ->
   takes 'desc', 'value'
@@ -230,136 +164,150 @@ spectacular.matcher 'be', ->
         actual is @value
 
 
+#### have
 
-spectacular.matcher 'equal', ->
-  takes 'value'
-  description -> "be equal to #{@formatValue utils.squeeze utils.inspect @value}"
+spectacular.matcher 'have', ->
+  takes 'count', 'label'
+  description -> "have #{@count} #{@label}"
 
   match (actual) ->
-    @diff = diff: ''
-    @result = utils.compare actual, @value, @diff
+    switch typeof actual
+      when 'string'
+        actual.length is @count
+      when 'object'
+        if utils.isArray actual
+          actual.length is @count
+        else
+          unless @label?
+            throw new Error "Undefined label in have matcher"
+
+          if actual[@label]
+            if utils.isArray actual[@label]
+              actual[@label].length is @count
+            else false
+          else false
+
+      else false
 
   failureMessageForShould ->
-    msg = "Expected #{@formatValue utils.inspect @actual} to be equal to #{@formatValue utils.inspect @value}"
-    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
-
-    msg
-
-  failureMessageForShouldnt ->
-    msg = "Expected #{@formatValue utils.inspect @actual} to be different than #{@formatValue utils.inspect @value}"
-    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
-    msg
-
-
-
-spectacular.matcher 'beWithin', ->
-  takes 'delta'
-
-  description -> "be within #{@formatValue utils.squeeze utils.inspect @delta} of #{@formatValue utils.squeeze utils.inspect @expected}"
-
-  chain 'of', (@expected) ->
-
-  match (actual) -> @expected - @delta <= actual <= @expected + @delta
-
-  failureMessageForShould -> "Expected #{@formatValue utils.inspect @actual} to #{@description}"
-
-  failureMessageForShouldnt -> "Expected #{@formatValue utils.inspect @actual} not to #{@description}"
-
-
-
-spectacular.matcher 'match', ->
-  takes 're'
-  description -> "match #{@formatValue @re}"
-
-  match (actual) ->
-    # The match matcher allow DOMExpression object as value
-    if @re.match? and @re.contained?
-      @re.match actual
-    else if @re.test?
-      @re.test actual
-    else
-      String(actual).indexOf(@re) isnt -1
-
-  failureMessageForShould ->
-    if @re.match? and @re.contained?
-      "Expected #{@formatValue utils.descOfNode @actual} to match #{@formatValue @re}"
-    else
-      @message = "Expected #{@formatValue @actual} to match #{@formatValue @re}"
-
-  failureMessageForShouldnt ->
-    if @re.match? and @re.contained?
-      "Expected #{@formatValue utils.descOfNode @actual} not to match #{@formatValue @re}"
-    else
-      @message = "Expected #{@formatValue @actual} not to match #{@formatValue @re}"
-
-
-
-spectacular.matcher 'contains', ->
-  takes 'values...'
-  description ->
-    if @value?.match? and @value?.contained?
-      "contains #{@formatValue @value}"
-    else
-      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "contains #{@formatValue valuesDescription}"
-
-  match (actual) ->
-    @value = @values[0]
-    # The contains matcher allow DOMExpression object as value
-    if @value?.match? and @value?.contained?
-      @value.contained actual
-    else
-      @values.every (v) -> v in actual
-
-  failureMessageForShould ->
-    if @value?.match? and @value?.contained?
-      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue @value}"
-    else
-      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue valuesDescription}"
-
-  failureMessageForShouldnt ->
-    if @value?.match? and @value?.contained?
-      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue @value}"
-    else
-      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
-      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue valuesDescription}"
-
-
-
-spectacular.matcher 'throwAnError', ->
-  takes 'message'
-  description ->
-    msg = if @message? then " with message #{@formatValue @message}" else ''
-    msg += " with arguments #{@formatValue utils.inspect @arguments}" if @arguments?
-    msg += " in context #{@formatValue utils.inspect @context}" if @context?
-
-    "throw an error#{msg}"
-
-  chain 'with', (@arguments...) ->
-  chain 'inContext', (@context) ->
-
-  match (actual) ->
-    try
-      if @arguments?
-        actual.apply @context, @arguments
+    switch typeof @actual
+      when 'string' then "Expected string #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
+      when 'object'
+        if utils.isArray @actual
+          "Expected array #{@formatValue utils.inspect @actual} to #{@description} but was #{@formatValue @actual.length}"
+        else
+          @message = "Expected object #{@formatValue utils.inspect @actual} to #{@description}"
       else
-        actual.call @context
-    catch err
+        @message = "Expected #{@formatValue utils.inspect @actual} to #{@description} but it don't belong to a type that can be handled"
 
-    @error = err
+  failureMessageForShouldnt ->
+    switch typeof @actual
+      when 'string' then "Expected string #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
+      when 'object'
+        if utils.isArray @actual
+          "Expected array #{@formatValue utils.inspect @actual} not to #{@description} but was #{@formatValue @actual.length}"
+        else
+          @message = "Expected object #{@formatValue utils.inspect @actual} not to #{@description}"
+      else
+        @message = "Expected #{@formatValue utils.inspect @actual} not to #{@description} but it don't belong to a type that can be handled"
 
-    result = if @message?
-      @error? and @message.test @error.message
+
+#### haveProperty
+
+spectacular.matcher 'haveProperty', ->
+  takes 'property'
+
+  chain 'to', (@matcher) ->
+
+  description ->
+    desc = "have property #{@formatValue @property}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
+
+  match (actual) ->
+    if @matcher?
+      actual[@property]? and @matcher.match(actual[@property])
     else
-      @error?
+      actual[@property]?
+
+  failureMessageForShould ->
+    desc = "Expected #{@formatValue utils.inspect @actual} to have a property #{@formatValue @property}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
+
+  failureMessageForShouldnt ->
+    desc = "Expected #{@formatValue utils.inspect @actual} not to have a property #{@formatValue @property}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
 
 
-    result
+#### haveProperties
 
-  failureMessageForShould -> "Expected to #{@description} but was #{@formatValue @error}"
-  failureMessageForShouldnt -> "Expected not to #{@description} but was #{@formatValue @error}"
+spectacular.matcher 'haveProperties', ->
+  collectStrings = (col) -> col.filter (el) -> typeof el is 'string'
+  collectHashs = (col) -> col.filter (el) -> typeof el is 'object'
 
+  takes 'properties...'
+
+  description ->
+    stringProperties = collectStrings(@properties).map (v) => @formatValue v
+    hashProperties = collectHashs @properties
+
+    descs = []
+    descs = descs.concat stringProperties
+    hashProperties.forEach (item) =>
+      for k,v of item
+        descs.push "#{@formatValue k} to #{v.description}"
+
+    desc = "have #{if descs.length > 1 then 'properties' else 'property'} "
+    desc += utils.literalEnumeration(descs)
+
+    desc
+
+  match (actual) ->
+    @matchers = []
+    @properties.forEach (key) =>
+      if typeof key is 'object'
+        for k of key
+          @matchers.push haveProperty(k).to(key[k])
+      else
+        @matchers.push haveProperty(key)
+
+    res = true
+    res = m.match(actual) and res for m in @matchers
+    res
+
+  failureMessageForShould ->
+    @matchers?.filter((m) -> not m.success)
+    .map((m) -> m.messageForShould)
+    .join('\n')
+
+  failureMessageForShouldnt ->
+    @matchers?.filter((m) -> not m.success)
+    .map((m) -> m.messageForShouldnt)
+    .join('\n')
+
+
+#### haveSelector
+
+spectacular.matcher 'haveSelector', ->
+  takes 'selector'
+  description -> "have content that match #{@formatValue @selector}"
+
+  match (actual) ->
+    if actual.length?
+      Array::some.call actual, (e) => e.querySelectorAll(@selector).length > 0
+    else
+      actual.querySelectorAll(@selector).length > 0
+
+  failureMessageForShould ->
+    "Expected #{@formatValue utils.descOfNode @actual} to have selector #{@formatValue @selector}"
+
+  failureMessageForShouldnt ->
+    "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
+
+
+#### haveBeenCalled
 
 spectacular.matcher 'haveBeenCalled', ->
   description ->
@@ -397,3 +345,138 @@ spectacular.matcher 'haveBeenCalled', ->
     else
       @message = "Expected a spy but it was #{@formatValue @actual}"
 
+
+#### equal
+
+spectacular.matcher 'equal', ->
+  takes 'value'
+  description -> "be equal to #{@formatValue utils.squeeze utils.inspect @value}"
+
+  match (actual) ->
+    @diff = diff: ''
+    @result = utils.compare actual, @value, @diff
+
+  failureMessageForShould ->
+    msg = "Expected #{@formatValue utils.inspect @actual} to be equal to #{@formatValue utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
+
+    msg
+
+  failureMessageForShouldnt ->
+    msg = "Expected #{@formatValue utils.inspect @actual} to be different than #{@formatValue utils.inspect @value}"
+    msg += "\n\n#{@diff.diff}" if @diff?.diff.length > 0 and not @result
+    msg
+
+
+#### beWithin
+
+spectacular.matcher 'beWithin', ->
+  takes 'delta'
+
+  description -> "be within #{@formatValue utils.squeeze utils.inspect @delta} of #{@formatValue utils.squeeze utils.inspect @expected}"
+
+  chain 'of', (@expected) ->
+
+  match (actual) -> @expected - @delta <= actual <= @expected + @delta
+
+  failureMessageForShould -> "Expected #{@formatValue utils.inspect @actual} to #{@description}"
+
+  failureMessageForShouldnt -> "Expected #{@formatValue utils.inspect @actual} not to #{@description}"
+
+
+#### match
+
+spectacular.matcher 'match', ->
+  takes 're'
+  description -> "match #{@formatValue @re}"
+
+  match (actual) ->
+    # The match matcher allow DOMExpression object as value
+    if @re.match? and @re.contained?
+      @re.match actual
+    else if @re.test?
+      @re.test actual
+    else
+      String(actual).indexOf(@re) isnt -1
+
+  failureMessageForShould ->
+    if @re.match? and @re.contained?
+      "Expected #{@formatValue utils.descOfNode @actual} to match #{@formatValue @re}"
+    else
+      @message = "Expected #{@formatValue @actual} to match #{@formatValue @re}"
+
+  failureMessageForShouldnt ->
+    if @re.match? and @re.contained?
+      "Expected #{@formatValue utils.descOfNode @actual} not to match #{@formatValue @re}"
+    else
+      @message = "Expected #{@formatValue @actual} not to match #{@formatValue @re}"
+
+
+#### contains
+
+spectacular.matcher 'contains', ->
+  takes 'values...'
+  description ->
+    if @value?.match? and @value?.contained?
+      "contains #{@formatValue @value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "contains #{@formatValue valuesDescription}"
+
+  match (actual) ->
+    @value = @values[0]
+    # The contains matcher allow DOMExpression object as value
+    if @value?.match? and @value?.contained?
+      @value.contained actual
+    else
+      @values.every (v) -> v in actual
+
+  failureMessageForShould ->
+    if @value?.match? and @value?.contained?
+      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue @value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "Expected #{@formatValue utils.descOfNode @actual} to contains #{@formatValue valuesDescription}"
+
+  failureMessageForShouldnt ->
+    if @value?.match? and @value?.contained?
+      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue @value}"
+    else
+      valuesDescription = utils.literalEnumeration @values.map (v) -> utils.inspect v
+      "Expected #{@formatValue utils.descOfNode @actual} not to contains #{@formatValue valuesDescription}"
+
+
+#### throwAnError
+
+spectacular.matcher 'throwAnError', ->
+  takes 'message'
+  description ->
+    msg = if @message? then " with message #{@formatValue @message}" else ''
+    msg += " with arguments #{@formatValue utils.inspect @arguments}" if @arguments?
+    msg += " in context #{@formatValue utils.inspect @context}" if @context?
+
+    "throw an error#{msg}"
+
+  chain 'with', (@arguments...) ->
+  chain 'inContext', (@context) ->
+
+  match (actual) ->
+    try
+      if @arguments?
+        actual.apply @context, @arguments
+      else
+        actual.call @context
+    catch err
+
+    @error = err
+
+    result = if @message?
+      @error? and @message.test @error.message
+    else
+      @error?
+
+    result
+
+  failureMessageForShould -> "Expected to #{@description} but was #{@formatValue @error}"
+
+  failureMessageForShouldnt -> "Expected not to #{@description} but was #{@formatValue @error}"
