@@ -299,3 +299,31 @@ describe haveProperties, ->
     it -> should haveProperties 'baz', foo: match 'bar'
     it -> should haveProperties foo: equal 'bar'
     it -> shouldnt haveProperties 'bar', baz: equal 'bar'
+
+describe haveAttribute, ->
+  context 'on a node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'id', 'foo'
+      node
+
+    it -> should haveAttribute 'id'
+    it -> shouldnt haveAttribute 'bar'
+
+    it -> should haveAttribute('id').to equal 'foo'
+    it -> shouldnt haveAttribute('foo').to equal 'baz'
+
+describe haveAttributes, ->
+  context 'on an node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'id', 'foo'
+      node.setAttribute 'class', 'bar'
+      node
+
+    it -> should haveAttributes 'id', 'class'
+    it -> should haveAttributes 'id', class: match 'bar'
+    it -> should haveAttributes id: equal 'foo'
+    it -> shouldnt haveAttributes 'bar', baz: equal 'bar'
+
+

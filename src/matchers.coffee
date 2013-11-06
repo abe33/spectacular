@@ -288,25 +288,6 @@ spectacular.matcher 'haveProperties', ->
     .join('\n')
 
 
-#### haveSelector
-
-spectacular.matcher 'haveSelector', ->
-  takes 'selector'
-  description -> "have content that match #{@formatValue @selector}"
-
-  match (actual) ->
-    if actual.length?
-      Array::some.call actual, (e) => e.querySelectorAll(@selector).length > 0
-    else
-      actual.querySelectorAll(@selector).length > 0
-
-  failureMessageForShould ->
-    "Expected #{@formatValue utils.descOfNode @actual} to have selector #{@formatValue @selector}"
-
-  failureMessageForShouldnt ->
-    "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
-
-
 #### haveBeenCalled
 
 spectacular.matcher 'haveBeenCalled', ->
@@ -480,3 +461,102 @@ spectacular.matcher 'throwAnError', ->
   failureMessageForShould -> "Expected to #{@description} but was #{@formatValue @error}"
 
   failureMessageForShouldnt -> "Expected not to #{@description} but was #{@formatValue @error}"
+
+
+
+#### DOM Related
+
+#### haveAttribute
+
+spectacular.matcher 'haveAttribute', ->
+  takes 'attribute'
+  chain 'to', (@matcher) ->
+
+  description ->
+    desc = "have attribute #{@formatValue @attribute}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
+
+  match (actual) ->
+    if @matcher?
+      actual.hasAttribute(@attribute) and @matcher.match(actual.getAttribute(@attribute))
+    else
+      actual.hasAttribute(@attribute)
+
+  failureMessageForShould ->
+    desc = "Expected #{@formatValue utils.descOfNode @actual} to have an attribute #{@formatValue @attribute}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
+
+  failureMessageForShouldnt ->
+    desc = "Expected #{@formatValue utils.descOfNode @actual} not to have an attribute #{@formatValue @attribute}"
+    desc += ' to ' + @matcher.description if @matcher?
+    desc
+
+
+#### haveAttributes
+
+spectacular.matcher 'haveAttributes', ->
+  collectStrings = (col) -> col.filter (el) -> typeof el is 'string'
+  collectHashs = (col) -> col.filter (el) -> typeof el is 'object'
+
+  takes 'attributes...'
+
+  description ->
+    stringAttributes = collectStrings(@attributes).map (v) => @formatValue v
+    hashAttributes = collectHashs @attributes
+
+    descs = []
+    descs = descs.concat stringAttributes
+    hashAttributes.forEach (item) =>
+      for k,v of item
+        descs.push "#{@formatValue k} to #{v.description}"
+
+    desc = "have #{if descs.length > 1 then 'attributes' else 'attribute'} "
+    desc += utils.literalEnumeration(descs)
+
+    desc
+
+  match (actual) ->
+    @matchers = []
+    @attributes.forEach (key) =>
+      if typeof key is 'object'
+        for k of key
+          @matchers.push haveAttribute(k).to(key[k])
+      else
+        @matchers.push haveAttribute(key)
+
+    res = true
+    res = m.match(actual) and res for m in @matchers
+    res
+
+  failureMessageForShould ->
+    @matchers?.filter((m) -> not m.success)
+    .map((m) -> m.messageForShould)
+    .join('\n')
+
+  failureMessageForShouldnt ->
+    @matchers?.filter((m) -> not m.success)
+    .map((m) -> m.messageForShouldnt)
+    .join('\n')
+
+
+
+#### haveSelector
+
+spectacular.matcher 'haveSelector', ->
+  takes 'selector'
+  description -> "have content that match #{@formatValue @selector}"
+
+  match (actual) ->
+    if actual.length?
+      Array::some.call actual, (e) => e.querySelectorAll(@selector).length > 0
+    else
+      actual.querySelectorAll(@selector).length > 0
+
+  failureMessageForShould ->
+    "Expected #{@formatValue utils.descOfNode @actual} to have selector #{@formatValue @selector}"
+
+  failureMessageForShouldnt ->
+    "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
+
