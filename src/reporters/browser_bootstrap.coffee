@@ -34,9 +34,27 @@ viewerSize = -> Math.min(document.body.clientWidth - 60, 500)
 
 window.env = spectacular.env
 
+displayErrors = (msg, file, line) ->
+  formatter = new spectacular.formatters.console.ErrorSourceFormatter spectacular.options, file, line
+
+  formatter.format().then (src) ->
+    node = document.createElement 'div'
+    node.innerHTML = spectacular.templates.error(message: msg, source: src)
+    document.body.appendChild node
+
+hasErrors = false
+errors = []
+window.onerror = (e) ->
+  hasErrors = true
+  displayErrors.apply null, arguments
+  true
+
 currentWindowOnload = window.onload
 window.onload = ->
   do currentWindowOnload if currentWindowOnload?
+
+  return if hasErrors
+
   utils = spectacular.utils
 
   if spectacular.options.verbose

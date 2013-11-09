@@ -698,3 +698,19 @@ body {
   border-radius: 3px;
   padding: 1px 3px;
 }
+.error {
+  background: rgba(255,40,20,0.3);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+.error .message {
+  color: #ff2814;
+}
+.error pre {
+  color: #aac8c8;
+}
