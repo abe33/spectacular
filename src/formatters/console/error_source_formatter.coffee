@@ -1,7 +1,7 @@
 
 
 class spectacular.formatters.console.ErrorSourceFormatter
-  constructor: (@options, @file, line, column=0) ->
+  constructor: (@options, @file, line, column=1) ->
     @line = parseInt line
     @column = parseInt column
 
