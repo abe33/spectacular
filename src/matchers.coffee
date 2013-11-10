@@ -540,7 +540,22 @@ spectacular.matcher 'haveAttributes', ->
     .map((m) -> m.messageForShouldnt)
     .join('\n')
 
+#### haveClass
 
+spectacular.matcher 'haveClass', ->
+  takes 'className'
+  description -> "have class #{@formatValue @className}"
+
+  match (actual) ->
+    classes = actual.getAttribute 'class'
+
+    classes? and @className in classes.split(/\s+/g)
+
+  failureMessageForShould ->
+    "Expected #{@formatValue utils.descOfNode @actual} to #{@description}"
+
+  failureMessageForShouldnt ->
+    "Expected #{@formatValue utils.descOfNode @actual} not to #{@description}"
 
 #### haveSelector
 

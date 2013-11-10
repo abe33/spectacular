@@ -326,4 +326,15 @@ describe haveAttributes, ->
     it -> should haveAttributes id: equal 'foo'
     it -> shouldnt haveAttributes 'bar', baz: equal 'bar'
 
+describe haveClass, ->
+  context 'on a node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'class', 'foo bar'
+      node
+
+    it -> should haveClass 'foo'
+    it -> should haveClass 'bar'
+    it -> shouldnt haveClass 'baz'
+
 
