@@ -3,6 +3,8 @@ class spectacular.widgets.ExamplesList
     @examples = []
     @container = buildHTML spectacular.templates.list(chars: CHAR_MAP)
     @list = @container.querySelector('div')
+    @totalValue = @container.querySelector('.all .total')
+    @allValue = @container.querySelector('.all .value')
     @viewer = @reporter.widgets.filter((w)-> w.constructor is spectacular.widgets.ExampleViewer)[0]
 
     btn = @container.querySelector '.btn-collapse'
@@ -31,19 +33,26 @@ class spectacular.widgets.ExamplesList
     @reporter.container.appendChild @container
 
   onStart: ->
-
+    @totalValue.textContent = @runner.examples.length
 
   onResult: (event) ->
     example = event.target
     state = example.result.state
     if state in ['failure', 'errored'] and not hasClass @reporter.container, 'hide-success'
+      addClass @container, 'fail'
       addClass @reporter.container, 'hide-success'
       @reporter.snapper.open('right')
       @viewer?.displayCard example
 
     @buildExample example
+    @examples.push example
+    @allValue.textContent = @examples.length
 
   onEnd: (event) ->
+    if hasClass @container, 'fail'
+      addClass @container, 'failure'
+    else
+      addClass @container, 'success'
 
   buildExample: (example) ->
     node = @getParent example
@@ -55,7 +64,6 @@ class spectacular.widgets.ExamplesList
           addClass node, 'failure'
 
     node.appendChild @getExample example
-    @examples.push example
 
   getExample: (example) ->
     state = example.result.state

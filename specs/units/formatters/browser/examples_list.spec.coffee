@@ -11,6 +11,7 @@ if typeof module is 'undefined'
         @list.onStart(target: @reporter)
 
       given 'container', -> @list.container
+      given 'all', -> @container.querySelector '.all .value'
       given 'header', -> @container.querySelector '.header'
       given 'listContainer', -> @container.querySelector 'div'
 
@@ -26,13 +27,17 @@ if typeof module is 'undefined'
 
             before -> @list.onResult target: @example
 
+            the 'tests counter', -> @all.textContent.should equal '1'
             the -> @listContainer.should contains @itemDOM
+
+            context
 
           context 'for a failing example', ->
             given 'example', -> create 'example', 'failure'
 
             before -> @list.onResult target: @example
 
+            the 'tests counter', -> @all.textContent.should equal '1'
             the -> @listContainer.should contains @itemDOM
             the 'container', -> @reporter.container.getAttribute('class').should match 'hide-success'
 

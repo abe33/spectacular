@@ -36,6 +36,39 @@ body {
 #examples {
   z-index: 2;
 }
+#progress .all,
+#examples .all {
+  margin: 0;
+  display: block;
+  font-weight: 100;
+  color: #cfe7e6;
+}
+#progress .all .value,
+#examples .all .value {
+  font-weight: 100;
+}
+#progress.fail .all .total,
+#examples.fail .all .total {
+  color: #ff2814;
+}
+#progress.failure .all,
+#examples.failure .all,
+#progress.failure .all .total,
+#examples.failure .all .total {
+  color: #ff2814;
+}
+#progress.success .all,
+#examples.success .all,
+#progress.success .all .total,
+#examples.success .all .total {
+  color: #64b432;
+}
+#examples .all {
+  display: inline-block;
+  padding-left: 5px;
+  font-size: 30px;
+  line-height: 36px;
+}
 #progress {
   color: #aac8c8;
   padding: 10px;
@@ -45,14 +78,9 @@ body {
   bottom: 0;
 }
 #progress .all {
-  margin: 8px 0;
-  display: block;
   font-size: 40px;
   line-height: 43px;
-  font-weight: 100;
-}
-#progress .total {
-  color: #cfe7e6;
+  margin: 8px 0;
 }
 #progress .errored .symbol {
   color: #ff9614;
@@ -60,11 +88,17 @@ body {
 #progress .errored.not-zero {
   color: #ff9614;
 }
+#progress span:not(:first-child):not(.not-zero) .symbol {
+  color: #aac8c8;
+}
 #progress .skipped .symbol {
   color: #ff14dc;
 }
 #progress .skipped.not-zero {
   color: #ff14dc;
+}
+#progress span:not(:first-child):not(.not-zero) .symbol {
+  color: #aac8c8;
 }
 #progress .pending .symbol {
   color: #ffc85a;
@@ -72,11 +106,17 @@ body {
 #progress .pending.not-zero {
   color: #ffc85a;
 }
+#progress span:not(:first-child):not(.not-zero) .symbol {
+  color: #aac8c8;
+}
 #progress .failure .symbol {
   color: #ff2814;
 }
 #progress .failure.not-zero {
   color: #ff2814;
+}
+#progress span:not(:first-child):not(.not-zero) .symbol {
+  color: #aac8c8;
 }
 #progress .success .symbol {
   color: #64b432;
@@ -84,18 +124,7 @@ body {
 #progress .success.not-zero {
   color: #64b432;
 }
-#progress.fail .all .total {
-  color: #ff2814;
-}
-#progress.failure .all,
-#progress.failure .all .total {
-  color: #ff2814;
-}
-#progress.success .all,
-#progress.success .all .total {
-  color: #64b432;
-}
-#progress.success span:not(:first-child):not(.not-zero) .symbol {
+#progress span:not(:first-child):not(.not-zero) .symbol {
   color: #aac8c8;
 }
 #progress .seed,
@@ -278,8 +307,19 @@ body {
   border-right: 1px solid #0b1d26;
   height: 48px;
   width: 48px;
+  position: relative;
   font-size: 32px;
   cursor: pointer;
+}
+#examples .header button.btn-open-left:after {
+  content: '';
+  display: block;
+  position: absolute;
+  margin-left: 1px;
+  left: 100%;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid #163a4c;
 }
 #examples .header button.btn-open-right {
   position: absolute;
@@ -288,6 +328,16 @@ body {
 #examples .header button.btn-collapse {
   position: absolute;
   right: 48px;
+}
+#examples .header button.btn-collapse:before {
+  content: '';
+  display: block;
+  position: absolute;
+  margin-left: -2px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid #0b1d26;
 }
 #examples .value {
   font-weight: 400;

@@ -26,30 +26,15 @@ body
 #examples
   z-index 2
 
-#progress
-  color medium_gray
-  padding 10px
-  width 266px
-  left 0
-  top 0
-  bottom 0
-
+#progress, #examples
   .all
-    margin 8px 0
+    margin 0
     display block
-    font-size 40px
-    line-height 43px
     font-weight 100
-
-  .total
     color light_gray
 
-  for state in states
-    .{state[0]} .symbol
-      color state[1]
-
-    .{state[0]}.not-zero
-      color state[1]
+    .value
+      font-weight 100
 
   &.fail
     .all .total
@@ -64,6 +49,32 @@ body
     .all
     .all .total
       color success
+
+#examples .all
+  display inline-block
+  padding-left 5px
+  font-size 30px
+  line-height 36px
+
+#progress
+  color medium_gray
+  padding 10px
+  width 266px
+  left 0
+  top 0
+  bottom 0
+
+  .all
+    font-size 40px
+    line-height 43px
+    margin 8px 0
+
+  for state in states
+    .{state[0]} .symbol
+      color state[1]
+
+    .{state[0]}.not-zero
+      color state[1]
 
     span:not(:first-child):not(.not-zero) .symbol
       color: medium_gray
@@ -192,8 +203,19 @@ for state in states
       border-right 1px solid very_dark_blue
       height 48px
       width 48px
+      position relative
       font-size 32px
       cursor pointer
+
+      &.btn-open-left:after
+        content ''
+        display block
+        position absolute
+        margin-left 1px
+        left 100%
+        top 0
+        height 100%
+        border-left 1px solid dark_blue
 
       &.btn-open-right
         position absolute
@@ -202,6 +224,16 @@ for state in states
       &.btn-collapse
         position absolute
         right 48px
+
+        &:before
+          content ''
+          display block
+          position absolute
+          margin-left -2px
+          left 0
+          top 0
+          height 100%
+          border-left 1px solid very_dark_blue
 
   .value
     font-weight 400
