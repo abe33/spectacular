@@ -34,20 +34,17 @@ body
   top 0
   bottom 0
 
-
   .all
+    margin 8px 0
     display block
     font-size 40px
     line-height 43px
     font-weight 100
-    clear both
 
   .total
     color light_gray
 
   for state in states
-    .{state[0]}
-      margin-right 8px
     .{state[0]} .symbol
       color state[1]
 
@@ -73,7 +70,6 @@ body
 
   .seed
   .time
-    float left
     color light_gray
     display inline-block
     border-radius 3px
@@ -101,7 +97,7 @@ body
     padding 0
 
   li
-    margin 0
+    margin 0 -10px
     padding 0
     position relative
     list-style none
@@ -115,7 +111,6 @@ body
 
     &:hover
       background dark_blue
-      border-radius 4px
 
       & + li
         border-color very_dark_blue
@@ -123,9 +118,9 @@ body
     &:after
       content '\f06e'
       font-family FontAwesome
-      color white
+      color medium_gray
       position absolute
-      right 10px
+      right 20px
 
 #viewer
   width 50%
@@ -185,26 +180,28 @@ for state in states
     right 0
     top 0
     height 48px
-    padding 2px
     z-index 2
-    background transparentize(light_gray, 0.2)
+    background-image linear-gradient(to bottom, dark_blue 0%, very_dark_blue 100%)
+    border-radius 3px
 
     button
-      background medium_gray
+      color light_gray
+      background transparent
       border none
-      border-radius 4px
-      height 44px
-      width 44px
+      border-left 1px solid dark_blue
+      border-right 1px solid very_dark_blue
+      height 48px
+      width 48px
       font-size 32px
       cursor pointer
 
       &.btn-open-right
         position absolute
-        right 2px
+        right 0px
 
       &.btn-collapse
         position absolute
-        right 50px
+        right 48px
 
   .value
     font-weight 400

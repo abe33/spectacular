@@ -45,17 +45,14 @@ body {
   bottom: 0;
 }
 #progress .all {
+  margin: 8px 0;
   display: block;
   font-size: 40px;
   line-height: 43px;
   font-weight: 100;
-  clear: both;
 }
 #progress .total {
   color: #cfe7e6;
-}
-#progress .errored {
-  margin-right: 8px;
 }
 #progress .errored .symbol {
   color: #ff9614;
@@ -63,17 +60,11 @@ body {
 #progress .errored.not-zero {
   color: #ff9614;
 }
-#progress .skipped {
-  margin-right: 8px;
-}
 #progress .skipped .symbol {
   color: #ff14dc;
 }
 #progress .skipped.not-zero {
   color: #ff14dc;
-}
-#progress .pending {
-  margin-right: 8px;
 }
 #progress .pending .symbol {
   color: #ffc85a;
@@ -81,17 +72,11 @@ body {
 #progress .pending.not-zero {
   color: #ffc85a;
 }
-#progress .failure {
-  margin-right: 8px;
-}
 #progress .failure .symbol {
   color: #ff2814;
 }
 #progress .failure.not-zero {
   color: #ff2814;
-}
-#progress .success {
-  margin-right: 8px;
 }
 #progress .success .symbol {
   color: #64b432;
@@ -115,7 +100,6 @@ body {
 }
 #progress .seed,
 #progress .time {
-  float: left;
   color: #cfe7e6;
   display: inline-block;
   -webkit-border-radius: 3px;
@@ -153,7 +137,7 @@ body {
   padding: 0;
 }
 #progress li {
-  margin: 0;
+  margin: 0 -10px;
   padding: 0;
   position: relative;
   list-style: none;
@@ -171,11 +155,6 @@ body {
 }
 #progress li:hover {
   background: #163a4c;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
 }
 #progress li:hover + li {
   border-color: #0b1d26;
@@ -183,9 +162,9 @@ body {
 #progress li:after {
   content: '\f06e';
   font-family: FontAwesome;
-  color: #fff;
+  color: #aac8c8;
   position: absolute;
-  right: 10px;
+  right: 20px;
 }
 #viewer {
   width: 50%;
@@ -283,30 +262,32 @@ body {
   right: 0;
   top: 0;
   height: 48px;
-  padding: 2px;
   z-index: 2;
-  background: rgba(207,231,230,0.8);
+  background-image: linear-gradient(to bottom, #163a4c 0%, #0b1d26 100%);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 #examples .header button {
-  background: #aac8c8;
+  color: #cfe7e6;
+  background: transparent;
   border: none;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  height: 44px;
-  width: 44px;
+  border-left: 1px solid #163a4c;
+  border-right: 1px solid #0b1d26;
+  height: 48px;
+  width: 48px;
   font-size: 32px;
   cursor: pointer;
 }
 #examples .header button.btn-open-right {
   position: absolute;
-  right: 2px;
+  right: 0px;
 }
 #examples .header button.btn-collapse {
   position: absolute;
-  right: 50px;
+  right: 48px;
 }
 #examples .value {
   font-weight: 400;
