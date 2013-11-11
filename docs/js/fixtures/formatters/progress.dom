@@ -1,0 +1,11 @@
+#progress
+  .seed
+  .time
+  .all
+
+  ul
+    li.errored
+    li.failure
+    li.skipped
+    li.pending
+    li.success

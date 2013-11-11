@@ -1,6 +1,6 @@
 ---
 title: ChangeLog
-date: Sun Aug 25 2013 13:54:29 GMT+0200 (CEST)
+date: Mon Nov 11 2013 23:16:30 GMT+0100 (CET)
 author: Cédric Néhémie <cedric.nehemie@gmail.com>
 template: page.jade
 ----
