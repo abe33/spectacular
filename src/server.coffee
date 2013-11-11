@@ -111,29 +111,58 @@ exports.run = (options) ->
       console.log "  #{colorize '500', 'red'} #{colorize 'GET', 'cyan'} /"
       console.log reason.stack
       tplPath = path.resolve SPECTACULAR_ROOT, 'templates/500.jade'
-      res.send jade.renderFile tplPath, error: reason.stack
+      res.status(500).send jade.renderFile tplPath, error: reason.stack
 
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
   app.use '/vendor', express.static path.resolve SPECTACULAR_ROOT, 'vendor'
   app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/', (req, res, next) ->
+    serverError = (reason) ->
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/500.jade'
+      console.log "  #{colorize '500', 'red'} #{colorize 'GET', 'cyan'} #{req.url}"
+      res.status(500).send jade.renderFile tplPath, error: reason.stack
+
+    notFound = (reason) ->
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/404.jade'
+      console.log "  #{colorize '404', 'red'} #{colorize 'GET', 'cyan'} #{req.url}"
+      res.status(404).send jade.renderFile tplPath, error: reason.stack
 
     if /\.coffee$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
-      {compile} = require 'coffee-script'
-      content = compile content
+        try
+          content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+        catch reason
+          return notFound reason
+
+        try
+          {compile} = require 'coffee-script'
+        catch reason
+          return serverError notFound
+        content = compile content
 
     else if /\.coffee\.src$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url.replace '.coffee.src', '.coffee'}").toString()
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url.replace '.coffee.src', '.coffee'}").toString()
+      catch reason
+        return notFound reason
 
     else if /\.map$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url.replace '.map', '.coffee'}").toString()
-      {compile} = require 'coffee-script'
-      compiled = compile content, sourceMap: true
-      content = compiled.v3SourceMap
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url.replace '.map', '.coffee'}").toString()
+      catch reason
+        return notFound reason
+
+      try
+        {compile} = require 'coffee-script'
+        compiled = compile content, sourceMap: true
+        content = compiled.v3SourceMap
+      catch reason
+        serverError reason
 
     else
-      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+      catch reason
+        return notFound reason
 
     console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} #{req.url}"
     res.send content

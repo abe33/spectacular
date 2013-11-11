@@ -18,21 +18,27 @@ spectacular.BrowserMethods = (options) ->
     options.loadFile = (file) ->
       promise = new spectacular.Promise
 
+      success = (data) -> promise.resolve data
+      failure = (reason) -> promise.reject reason
+
       if file of cache
-        setTimeout (-> promise.resolve cache[file]), 0
+        setTimeout((-> success cache[file]), 0)
         return promise
 
       if file of loaders
-        loaders[file].push (data) -> promise.resolve data
+        loaders[file].push {success, failure}
         return promise
 
       req = new XMLHttpRequest()
       req.onload = ->
         data = @responseText
-        loaders[file].forEach (f) -> f data
+        cache[file] = data
+        if req.status >= 400
+          loaders[file].forEach (f) -> f.failure new Error data
+        else
+          loaders[file].forEach (f) -> f.success data
 
-      listener = (data) -> promise.resolve cache[file] = data
-      loaders[file] = [listener]
+      loaders[file] = [{success, failure}]
 
       req.open 'get', file, true
       req.send()
