@@ -73,6 +73,7 @@ window.onload = ->
       new spectacular.widgets.RunnerProgress
       new spectacular.widgets.ExamplesList
       new spectacular.widgets.ExampleViewer
+      new spectacular.widgets.ExamplesSearch
     ]
   )
 

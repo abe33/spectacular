@@ -67,7 +67,7 @@ class spectacular.widgets.ExamplesList
 
   getExample: (example) ->
     state = example.result.state
-    node = tag 'article', example.ownDescriptionWithExpectations, class: "example #{state}", id: @examples.length, title: example.fullDescription
+    node = tag 'article', example.ownDescriptionWithExpectations, class: "example #{state}", id: @examples.length, title: example.fullDescription, 'data-index': stripHTML example.fullDescription.toLowerCase()
 
     node.onclick = =>
       @viewer.displayCard @examples[node.attributes.id.value]
@@ -105,7 +105,8 @@ class spectacular.widgets.ExamplesList
       #{ancestor.ownDescription}
       </header>
     """
-    node = tag 'section', content, {id, class: "example-group #{if ancestor.failed then 'failure' else 'success'} level#{n}"}
+    index = ancestor.allExamples.map((ex) -> stripHTML ex.description.toLowerCase()).join()
+    node = tag 'section', content, {id, class: "example-group #{if ancestor.failed then 'failure' else 'success'} level#{n}", 'data-index': index}
 
     header = node.querySelector 'header'
     header.onclick = -> toggleClass node, 'collapse'

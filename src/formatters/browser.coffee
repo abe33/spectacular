@@ -10,6 +10,11 @@ escapeHTML = (str) ->
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;')
 
+stripHTML = (str) ->
+  n = document.createElement 'span'
+  n.innerHTML = str
+  n.textContent
+
 selfAndAncestors = (node, block) ->
   block.call this, node
   ancestors node, block

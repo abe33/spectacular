@@ -1,0 +1,6 @@
+#search
+  form[action='/'][method='get']
+    input[name='filter']
+    button[type='submit']
+
+  style#search-style
