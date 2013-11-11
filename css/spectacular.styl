@@ -51,11 +51,18 @@ body
       color success
 
 #examples .all
-  display inline-block
   padding-left 8px
   font-size 30px
   line-height 36px
-  text-shadow -2px -2px 0px very_dark_blue, 2px 2px 0px dark_blue
+  text-shadow -1.5px -1.5px 0px very_dark_blue, 1.5px 1.5px 0px lighten(dark_blue, 5)
+  display block
+  position absolute
+  left 48px
+  top 4px
+
+  span
+    font-size 30px
+    line-height 36px
 
 #progress
   color medium_gray
@@ -206,10 +213,10 @@ for state in states
 
       input
         font-family Roboto, Helvetica Neue, sans
-        min-width 100px
-        width 100px
+        min-width 200px
+        width 200px
         height 100%
-        padding 3px 36px 3px 8px
+        padding 5px 36px 3px 8px
         border-top 1px solid very_dark_blue
         border-left 1px solid very_dark_blue
         border-right 1px solid dark_blue

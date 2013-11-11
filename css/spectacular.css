@@ -64,15 +64,22 @@ body {
   color: #64b432;
 }
 #examples .all {
-  display: inline-block;
   padding-left: 8px;
   font-size: 30px;
   line-height: 36px;
-  -webkit-text-shadow: -2px -2px 0px #0b1d26, 2px 2px 0px #163a4c;
-  -moz-text-shadow: -2px -2px 0px #0b1d26, 2px 2px 0px #163a4c;
-  -ms-text-shadow: -2px -2px 0px #0b1d26, 2px 2px 0px #163a4c;
-  -o-text-shadow: -2px -2px 0px #0b1d26, 2px 2px 0px #163a4c;
-  text-shadow: -2px -2px 0px #0b1d26, 2px 2px 0px #163a4c;
+  -webkit-text-shadow: -1.5px -1.5px 0px #0b1d26, 1.5px 1.5px 0px #1c4960;
+  -moz-text-shadow: -1.5px -1.5px 0px #0b1d26, 1.5px 1.5px 0px #1c4960;
+  -ms-text-shadow: -1.5px -1.5px 0px #0b1d26, 1.5px 1.5px 0px #1c4960;
+  -o-text-shadow: -1.5px -1.5px 0px #0b1d26, 1.5px 1.5px 0px #1c4960;
+  text-shadow: -1.5px -1.5px 0px #0b1d26, 1.5px 1.5px 0px #1c4960;
+  display: block;
+  position: absolute;
+  left: 48px;
+  top: 4px;
+}
+#examples .all span {
+  font-size: 30px;
+  line-height: 36px;
 }
 #progress {
   color: #aac8c8;
@@ -314,10 +321,10 @@ body {
 }
 #examples .header #search input {
   font-family: Roboto, Helvetica Neue, sans;
-  min-width: 100px;
-  width: 100px;
+  min-width: 200px;
+  width: 200px;
   height: 100%;
-  padding: 3px 36px 3px 8px;
+  padding: 5px 36px 3px 8px;
   border-top: 1px solid #0b1d26;
   border-left: 1px solid #0b1d26;
   border-right: 1px solid #163a4c;
