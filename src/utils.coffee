@@ -93,12 +93,16 @@ spectacular.utils.padRight = (string, pad=4) ->
 spectacular.utils.toggle = (value, c1, c2) -> if value then c2 else c1
 
 spectacular.utils.TAGS = if isCommonJS
+  diffStart: ''
+  diffEnd: ''
   delStart: '\x1B[31m'
   delEnd: '\x1B[39m'
   insStart: '\x1B[32m'
   insEnd: '\x1B[39m'
   space: ''
 else
+  diffStart: '<span class="diff">'
+  diffEnd: '</span>'
   delStart: '<del>'
   delEnd: '</del>'
   insStart: '<ins>'
@@ -312,7 +316,7 @@ spectacular.utils.compare = (actual, value, diff, noMessage=false) ->
     when 'object'
       if utils.isArray actual
         unless noMessage
-          diff.diff = "#{diff.diff}\n\n#{utils.objectDiff actual, value}"
+          diff.diff = utils.TAGS.diffStart + "#{diff.diff}\n\n#{utils.objectDiff actual, value}" + utils.TAGS.diffEnd
         return false if actual.length isnt value.length
 
         for v,i in value
@@ -321,7 +325,7 @@ spectacular.utils.compare = (actual, value, diff, noMessage=false) ->
         return true
       else
         unless noMessage
-          diff.diff = "#{diff.diff}\n\n#{utils.objectDiff actual, value}"
+          diff.diff = utils.TAGS.diffStart + "#{diff.diff}\n\n#{utils.objectDiff actual, value}" + utils.TAGS.diffEnd
         return false if utils.keys(actual).length isnt utils.keys(value).length
 
         for k,v of value
@@ -330,10 +334,11 @@ spectacular.utils.compare = (actual, value, diff, noMessage=false) ->
         return true
     when 'string'
       unless noMessage
-        diff.diff = "#{diff.diff}\n\n'#{utils.stringDiff actual, value}'"
+        diff.diff = utils.TAGS.diffStart + "#{diff.diff}\n\n'#{utils.stringDiff actual, value}'" + utils.TAGS.diffEnd
       actual is value
     else
       actual is value
+
 
 spectacular.utils.findStateMethodOrProperty = (obj, state) ->
   camelizedVersion = "is#{utils.capitalize state}"

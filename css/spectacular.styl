@@ -478,6 +478,22 @@ for state in states
         border-radius 3px
         padding 1px 3px
 
+    .diff
+      display block
+      background dark_blue
+      padding 5px
+      border-radius 4px
+      color medium_gray
+
+      del, ins
+        padding 2px
+        text-decoration none
+
+      del
+        background transparentize(failure, 0.5)
+
+      ins
+        background transparentize(success, 0.5)
 
 .error
   background transparentize(failure, 0.7)
