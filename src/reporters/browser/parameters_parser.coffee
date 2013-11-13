@@ -3,14 +3,21 @@ class spectacular.URLParameters
   constructor: (parameters) ->
     tuples = String(parameters).split('&').map((tuple) -> tuple.split('='))
     tuples.forEach ([key, value]) =>
-      keys = @parseKey key
-      @consumeKeys this, keys, value
+      @consumeKeys this, @parseKey(key), @parseValue(value)
 
   parseKey: (key) ->
     key = key[0..-2] if key.substr(-1) is ']'
     key.split /\]*\[/g
 
-  isFloat: (value) -> /^\d+(\.\d+)*$/.test String(value)
+  parseValue: (value) ->
+    switch true
+      when @isBoolean(value) then /true|on|yes/.test value
+      when @isFloat(value) then parseFloat value
+      when @isInteger(value) then parseInt value
+      else value
+
+  isBoolean: (value) -> /^(true|false|on|off|yes|no)$/.test String(value)
+  isFloat: (value) -> /^\d+\.\d+$/.test String(value)
   isInteger: (value) -> /^\d+$/.test String(value)
   isArray: (a) -> Object::toString.call(a) is '[object Array]'
 
