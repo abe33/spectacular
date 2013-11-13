@@ -1,5 +1,5 @@
 factory 'exampleGroup', class: spectacular.ExampleGroup, ->
-  set 'description', 'Some group description'
+  set 'ownDescription', 'Some group description'
 
   trait 'with root', ->
     set 'parent', -> create 'exampleGroup'
