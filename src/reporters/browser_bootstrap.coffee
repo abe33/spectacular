@@ -26,10 +26,10 @@ spectacular.options[k] = v for k,v of defaults when not k of spectacular.options
 
 a = document.createElement 'a'
 a.href = window.location
-params = new spectacular.URLParameters(a.search[1..])
+if a.search && a.search.length > 1
+  params = new spectacular.URLParameters(decodeURI a.search[1..])
 
 spectacular.options[k] = v for k,v of params when params.hasOwnProperty k
-
 
 spectacular.BrowserMethods(spectacular.options)
 
@@ -83,6 +83,19 @@ window.onload = ->
       new spectacular.widgets.ExamplesSearch
     ]
   )
+
+  if spectacular.options.filter
+    {filter} = spectacular.options
+    n = document.createElement 'div'
+
+    if spectacular.options.verbose
+      console.log "Example Filter: '#{filter}'"
+
+    spectacular.env.rootExampleGroup.allExamples.forEach (example) ->
+      n.innerHTML = example.description
+      desc = n.textContent
+
+      example.exclusive = true if desc.indexOf(filter) isnt -1
 
   reporter.init()
   spectacular.env.runner.loadEndedAt = new Date()
