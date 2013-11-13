@@ -24,6 +24,13 @@ defaults =
 
 spectacular.options[k] = v for k,v of defaults when not k of spectacular.options
 
+a = document.createElement 'a'
+a.href = window.location
+params = new spectacular.URLParameters(a.search[1..])
+
+spectacular.options[k] = v for k,v of params when params.hasOwnProperty k
+
+
 spectacular.BrowserMethods(spectacular.options)
 
 spectacular.env = new spectacular.Environment(spectacular.options)
