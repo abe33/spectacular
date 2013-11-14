@@ -1,6 +1,8 @@
 #progress
-  .seed
-  .time
+  section
+    .seed
+    .time
+
   .all
 
   ul

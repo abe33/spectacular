@@ -23,6 +23,18 @@ body
 #progress, #viewer
   z-index 1
 
+  section
+    padding 10px
+    height 48px
+    background-image linear-gradient(to bottom, darken(dark_blue, 30%) 0%, very_dark_blue 100%)
+    margin -10px -10px 0
+    box-shadow 0 1px 4px rgba(0, 0, 0, .7)
+
+#viewer
+  section
+    margin -15px -20px 10px
+    padding 13px 0px 13px 20px
+
 #examples
   z-index 2
 
@@ -91,25 +103,25 @@ body
   .time
     color light_gray
     display inline-block
+    float left
     border-radius 3px
     line-height 1em
     padding 3px 5px
     margin-top 3px
+    background light_blue
+    box-shadow inset 0 1px 2px rgba(0, 0, 0, .3), 0 1px 0px dark_blue
 
     .value
       text-shadow 0 1px 2px transparentize(dark_blue, 0.5)
 
     i
       color dark_blue
-      font-size 0.9em
+      // font-size 0.9em
       margin-right 5px
 
   .time
-    margin-left 8px
-    background success
-
-  .seed
-    background light_blue
+    margin-left 10px
+    // background success
 
   ul
     margin 0
@@ -202,6 +214,7 @@ for state in states
     z-index 2
     background-image linear-gradient(to bottom, dark_blue 0%, very_dark_blue 100%)
     border-radius 3px
+    box-shadow 0 1px 3px transparentize(very_dark_blue, 0.5)
 
     #search
       position absolute
@@ -421,23 +434,33 @@ for state in states
 
     .time
     .state
+    .refresh
       display inline-block
       color light_gray
       border-radius 3px
-      line-height 10px
-      font-size 12px
-      margin-right 5px
-      text-shadow 0 0 2px transparentize(dark_blue, 0.3)
+      font-weight 300
+      margin-right 10px
+      text-decoration none
+      padding 3px 5px
+      line-height 1em
+      box-shadow inset 0 1px 2px rgba(0, 0, 0, .3), 0 1px 0px dark_blue
+
 
       i
         margin-right 5px
+        color dark_blue
+
+      span
+        text-shadow 0 0 2px transparentize(dark_blue, 0.3)
 
     .time
-      padding 3px 5px
       background light_blue
 
+    .refresh
+      background failure
+      text-transform uppercase
+
     .state
-      padding 4px 5px
       text-transform uppercase
 
     .expectations
@@ -512,6 +535,8 @@ for state in states
     .header
       #search
         overflow hidden
+
+
         input
           min-width 0px
           width 0px
@@ -520,8 +545,38 @@ for state in states
           &:focus + button
             right 0
 
+            i:after
+              opacity 0
+
         button
           right -30px
+
+          i:after
+            content '\f002'
+            font-family FontAwesome
+            color medium_gray
+            position absolute
+            display block
+            right 37px
+            top 8px
+            opacity 0.5
+            transition all 0.3s
+
+            z-index 2
+            pointer-events: none
+
+  #viewer .example section
+    .time, .state
+      margin-right 3px
+
+    .refresh
+      margin-right 0
+
+      i
+        margin-right 0
+
+      span
+        display none
 
 
 

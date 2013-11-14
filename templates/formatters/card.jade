@@ -2,17 +2,23 @@ result = example.result
 state = result.state
 hasExpectations = result.expectations.length > 0
 
+- icons = { success: 'ok', failure: 'remove', errored: 'remove', pending: 'ellipsis', skipped: 'remove' }
+
 .example(class=state)
   .details
-    header
-      h3!= example.fullDescription
-      span.state= state
+    section
+      span.state
+        i(class="icon-#{icons[state]}")
+        span= state
       span.time
         i.icon-time
-        != (example.duration / 1000) + "s"
+        span!= (example.duration / 1000) + "s"
       a.refresh(href="/?filter=#{example.description}")
         i.icon-refresh
         span Rerun it!
+
+    header
+      h3!= example.fullDescription
 
     if hasExpectations
       ul.expectations

@@ -1,9 +1,12 @@
 .example.failure
-  .details
-    h3
+  section
     .state
       'failure'
     .time
+    a.refresh
+
+  .details
+    h3
 
   ul.expectations
     li.expectation.failure.active

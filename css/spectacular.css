@@ -33,6 +33,22 @@ body {
 #viewer {
   z-index: 1;
 }
+#progress section,
+#viewer section {
+  padding: 10px;
+  height: 48px;
+  background-image: linear-gradient(to bottom, #0f2935 0%, #0b1d26 100%);
+  margin: -10px -10px 0;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  -ms-box-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  -o-box-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.7);
+}
+#viewer section {
+  margin: -15px -20px 10px;
+  padding: 13px 0px 13px 20px;
+}
 #examples {
   z-index: 2;
 }
@@ -143,6 +159,7 @@ body {
 #progress .time {
   color: #cfe7e6;
   display: inline-block;
+  float: left;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -151,6 +168,12 @@ body {
   line-height: 1em;
   padding: 3px 5px;
   margin-top: 3px;
+  background: #3893c1;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -ms-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -o-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
 }
 #progress .seed .value,
 #progress .time .value {
@@ -163,15 +186,10 @@ body {
 #progress .seed i,
 #progress .time i {
   color: #163a4c;
-  font-size: 0.9em;
   margin-right: 5px;
 }
 #progress .time {
-  margin-left: 8px;
-  background: #64b432;
-}
-#progress .seed {
-  background: #3893c1;
+  margin-left: 10px;
 }
 #progress ul {
   margin: 0;
@@ -310,6 +328,11 @@ body {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
+  -webkit-box-shadow: 0 1px 3px rgba(11,29,38,0.5);
+  -moz-box-shadow: 0 1px 3px rgba(11,29,38,0.5);
+  -ms-box-shadow: 0 1px 3px rgba(11,29,38,0.5);
+  -o-box-shadow: 0 1px 3px rgba(11,29,38,0.5);
+  box-shadow: 0 1px 3px rgba(11,29,38,0.5);
 }
 #examples .header #search {
   position: absolute;
@@ -739,7 +762,8 @@ body {
   color: #497070;
 }
 #viewer .example .time,
-#viewer .example .state {
+#viewer .example .state,
+#viewer .example .refresh {
   display: inline-block;
   color: #cfe7e6;
   -webkit-border-radius: 3px;
@@ -747,25 +771,40 @@ body {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  line-height: 10px;
-  font-size: 12px;
+  font-weight: 300;
+  margin-right: 10px;
+  text-decoration: none;
+  padding: 3px 5px;
+  line-height: 1em;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -ms-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  -o-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0px #163a4c;
+}
+#viewer .example .time i,
+#viewer .example .state i,
+#viewer .example .refresh i {
   margin-right: 5px;
+  color: #163a4c;
+}
+#viewer .example .time span,
+#viewer .example .state span,
+#viewer .example .refresh span {
   -webkit-text-shadow: 0 0 2px rgba(22,58,76,0.7);
   -moz-text-shadow: 0 0 2px rgba(22,58,76,0.7);
   -ms-text-shadow: 0 0 2px rgba(22,58,76,0.7);
   -o-text-shadow: 0 0 2px rgba(22,58,76,0.7);
   text-shadow: 0 0 2px rgba(22,58,76,0.7);
 }
-#viewer .example .time i,
-#viewer .example .state i {
-  margin-right: 5px;
-}
 #viewer .example .time {
-  padding: 3px 5px;
   background: #3893c1;
 }
+#viewer .example .refresh {
+  background: #ff2814;
+  text-transform: uppercase;
+}
 #viewer .example .state {
-  padding: 4px 5px;
   text-transform: uppercase;
 }
 #viewer .example .expectations {
@@ -864,7 +903,48 @@ body {
   #examples .header #search input:focus + button {
     right: 0;
   }
+  #examples .header #search input:focus + button i:after {
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    -ms-opacity: 0;
+    -o-opacity: 0;
+    opacity: 0;
+  }
   #examples .header #search button {
     right: -30px;
+  }
+  #examples .header #search button i:after {
+    content: '\f002';
+    font-family: FontAwesome;
+    color: #aac8c8;
+    position: absolute;
+    display: block;
+    right: 37px;
+    top: 8px;
+    -webkit-opacity: 0.5;
+    -moz-opacity: 0.5;
+    -ms-opacity: 0.5;
+    -o-opacity: 0.5;
+    opacity: 0.5;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    z-index: 2;
+    pointer-events: none;
+  }
+  #viewer .example section .time,
+  #viewer .example section .state {
+    margin-right: 3px;
+  }
+  #viewer .example section .refresh {
+    margin-right: 0;
+  }
+  #viewer .example section .refresh i {
+    margin-right: 0;
+  }
+  #viewer .example section .refresh span {
+    display: none;
   }
 }

@@ -1,5 +1,5 @@
 #progress
-  span
+  section
     span.seed
       i.icon-random
       span.value= seed
@@ -8,15 +8,15 @@
       i.icon-time
       span.value 0s
 
-    span.all
-      span.value 0
-      /
-      span.total 0
+  span.all
+    span.value 0
+    /
+    span.total 0
 
-    ul
-      each chr,state in chars
-        li(class=state, data-state=state)
-          span.value 0
-          span.symbol= ' ' + state
+  ul
+    each chr,state in chars
+      li(class=state, data-state=state)
+        span.value 0
+        span.symbol= ' ' + state
 
 
