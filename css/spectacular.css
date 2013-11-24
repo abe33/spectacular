@@ -272,8 +272,8 @@ body {
   -o-text-shadow: 0 1px 1px #fff;
   text-shadow: 0 1px 1px #fff;
 }
-.snapjs-left #examples:before,
-.snapjs-right #examples:before {
+.snapjs-left #examples .example-group:before,
+.snapjs-right #examples .example-group:before {
   content: '';
   display: block;
   position: absolute;
