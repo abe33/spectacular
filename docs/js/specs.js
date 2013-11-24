@@ -152,6 +152,7 @@
     var env, k, v;
     env = spectacular.env.clone();
     env.options.colors = false;
+    env.options.format = 'documentation';
     env.options.valueOutput = function(str) {
       return str;
     };

@@ -32,7 +32,8 @@ class spectacular.errors.ErrorParser
     @splitLines()
 
   splitLines: ->
-    @lines = @stack.split('\n').filter @format.filter
+    @lines = @stack.split('\n')
+    @lines = @lines.filter(@format.filter) if @format?
     @size = @lines.length
 
   detectFormat: ->
@@ -40,4 +41,4 @@ class spectacular.errors.ErrorParser
 
   find: (query) -> @lines.filter (line) -> ///#{query}///.test line
 
-  details: (line) -> @format.details line
+  details: (line) -> @format?.details line
