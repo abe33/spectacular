@@ -6,6 +6,7 @@ express = require 'express'
 walk = require 'walkdir'
 util = require 'util'
 {spawn} = require 'child_process'
+jade = require 'jade'
 
 exists = fs.exists or path.exists
 
@@ -13,37 +14,17 @@ SPECTACULAR_ROOT = path.resolve __dirname, '..'
 
 colorize = null
 
-findMatchers = (options) ->
+findrequire = (p, options) ->
   defer = Q.defer()
   res = []
 
-  if options.noMatchers
-    defer.resolve()
-  else
-    exists options.matchersRoot, (exist) ->
-      if exist
-        emitter = walk options.matchersRoot
-        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-        emitter.on 'end', -> defer.resolve res
-      else
-        defer.resolve([])
-
-  defer.promise
-
-findHelpers = (options) ->
-  defer = Q.defer()
-  res = []
-
-  if options.noHelpers
-    defer.resolve()
-  else
-    exists options.helpersRoot, (exist) ->
-      if exist
-        emitter = walk options.helpersRoot
-        emitter.on 'file', (p, stat) -> res.push path.relative '.', p
-        emitter.on 'end', -> defer.resolve res
-      else
-        defer.resolve([])
+  exists p, (exist) ->
+    if exist
+      emitter = walk p
+      emitter.on 'file', (p, stat) -> res.push path.relative '.', p
+      emitter.on 'end', -> defer.resolve res
+    else
+      defer.resolve([])
 
   defer.promise
 
@@ -70,14 +51,15 @@ generateSpecRunner = (options) ->
     'assets/js/spectacular.js'
     'assets/js/browser_reporter.js'
   ]
-  findHelpers(options)
-  .then (helpers) ->
-    paths = paths.concat helpers
-    console.log "  #{colorize 'helper', 'grey'} #{h}" for h in helpers if options.verbose
-    findMatchers options
-  .then (matchers) ->
-    console.log "  #{colorize 'matcher', 'grey'} #{m}" for m in matchers if options.verbose
-    paths = paths.concat matchers
+  templates = {}
+  Q.all(findrequire p, options for p in options.requires)
+  .then (requires) ->
+    for collection in requires
+      for f in collection
+        if /(js|coffee)$/.test f
+          paths.push f
+          console.log "  #{colorize 'requires', 'grey'} #{f}" if options.verbose
+
     globPaths options.globs
   .then (specs) ->
     console.log "  #{colorize 'spec', 'grey'} #{f}" for f in specs if options.verbose
@@ -86,43 +68,34 @@ generateSpecRunner = (options) ->
     uniq.push v for v in paths when v not in uniq
     paths = uniq
   .then ->
+    globPaths [path.resolve SPECTACULAR_ROOT, 'templates/formatters/*.jade']
+  .then (tpls) ->
+
+    for p in tpls
+      n = p.split('/')
+      n = n[n.length - 1]
+      n = n.split('.')[0]
+
+      templates[n] = jade.compile(fs.readFileSync(p), client: true, compileDebug: false).toString()
+      templates[n] = "<script type='text/javascript'>\nspectacular.templates['#{n}'] = #{templates[n]}\n</script>"
     globPaths options.sources
   .then (sources) ->
     console.log "  #{colorize 'source', 'grey'} #{f}" for f in sources if options.verbose
 
-    sourceMapMethods = """
-    spectacular.options.hasSourceMap = function(file) {
-      return /\\.coffee$/.test(file);
-    };
-    spectacular.options.getSourceURLFor = function(file) {
-      return file.replace('.coffee', '.coffee.src')
-    };
-    spectacular.options.getSourceMapURLFor = function(file) {
-      return file.replace('.coffee', '.map')
-    };
-    """
+    options.paths = paths[2..]
 
-    """
-      <!doctype html>
-      <html>
-        <head>
-          <script>
-            window.spectacular = {
-              options: #{util.inspect options},
-              paths: #{util.inspect paths[2..]}
-            };
-            #{ if options.sourceMap then sourceMapMethods else '' }
-          </script>
-          <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
-          <link rel="stylesheet" href="assets/css/spectacular.css"/>
-          <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.min.css"/>
-          #{ if options.sourceMap then scriptNode 'vendor/source-map.js' else '' }
-          #{(scriptNode p for p in sources).join '\n'}
-          #{(scriptNode p for p in paths).join '\n'}
-        </head>
-        <body></body>
-      </html>
-    """
+    locals =
+      options: util.inspect options
+      paths: paths
+      sources: sources
+      pretty: true
+      sourceMap: options.sourceMap
+      templates: templates
+
+    tplPath = path.resolve SPECTACULAR_ROOT, 'templates/specs.jade'
+    console.log "  #{colorize 'template', 'grey'} #{tplPath}" if options.verbose
+    tpl = jade.renderFile(tplPath, locals)
+
 
 exports.run = (options) ->
   colorize = (str, color) -> if options.colors then str[color] else str
@@ -130,31 +103,66 @@ exports.run = (options) ->
   app = express()
 
   app.get '/', (req, res) ->
-    generateSpecRunner(options).then (html) ->
+    generateSpecRunner(options)
+    .then (html) ->
       console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} /"
       res.send html
+    .fail (reason) ->
+      console.log "  #{colorize '500', 'red'} #{colorize 'GET', 'cyan'} /"
+      console.log reason.stack
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/500.jade'
+      res.status(500).send jade.renderFile tplPath, error: reason.stack
 
   app.use '/assets/js', express.static path.resolve SPECTACULAR_ROOT, 'lib'
   app.use '/vendor', express.static path.resolve SPECTACULAR_ROOT, 'vendor'
   app.use '/assets/css', express.static path.resolve SPECTACULAR_ROOT, 'css'
   app.use '/', (req, res, next) ->
+    serverError = (reason) ->
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/500.jade'
+      console.log "  #{colorize '500', 'red'} #{colorize 'GET', 'cyan'} #{req.url}"
+      res.status(500).send jade.renderFile tplPath, error: reason.stack
+
+    notFound = (reason) ->
+      tplPath = path.resolve SPECTACULAR_ROOT, 'templates/404.jade'
+      console.log "  #{colorize '404', 'red'} #{colorize 'GET', 'cyan'} #{req.url}"
+      res.status(404).send jade.renderFile tplPath, error: reason.stack
 
     if /\.coffee$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
-      {compile} = require 'coffee-script'
-      content = compile content
+        try
+          content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+        catch reason
+          return notFound reason
+
+        try
+          {compile} = require 'coffee-script'
+        catch reason
+          return serverError notFound
+        content = compile content
 
     else if /\.coffee\.src$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url.replace '.coffee.src', '.coffee'}").toString()
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url.replace '.coffee.src', '.coffee'}").toString()
+      catch reason
+        return notFound reason
 
     else if /\.map$/.test(req.url) and options.coffee
-      content = fs.readFileSync(path.resolve ".#{req.url.replace '.map', '.coffee'}").toString()
-      {compile} = require 'coffee-script'
-      compiled = compile content, sourceMap: true
-      content = compiled.v3SourceMap
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url.replace '.map', '.coffee'}").toString()
+      catch reason
+        return notFound reason
+
+      try
+        {compile} = require 'coffee-script'
+        compiled = compile content, sourceMap: true
+        content = compiled.v3SourceMap
+      catch reason
+        serverError reason
 
     else
-      content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+      try
+        content = fs.readFileSync(path.resolve ".#{req.url}").toString()
+      catch reason
+        return notFound reason
 
     console.log "  #{colorize '200', 'green'} #{colorize 'GET', 'cyan'} #{req.url}"
     res.send content

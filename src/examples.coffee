@@ -54,7 +54,6 @@ class spectacular.Expectation
       if @callstack.stack?
         stack = @callstack.stack.split('\n')
         specIndex = spectacular.env.runner.findSpecFileInStack stack
-        console.log specIndex
         @callstack.stack = stack[specIndex..].join('\n') if specIndex isnt -1
       @trace = @callstack
 
@@ -135,7 +134,13 @@ class spectacular.Example
   skip: ->
     if @examplePromise?.pending
       @result.state = 'skipped'
-      @examplePromise.reject new Error 'Skipped'
+      error = new Error 'Skipped'
+      if error.stack?
+        stack = error.stack.split('\n')
+        specIndex = spectacular.env.runner.findSpecFileInStack stack
+        error.stack = stack[specIndex..].join('\n') if specIndex isnt -1
+
+      @examplePromise.reject error
 
   resolve: =>
     if @examplePromise?.pending
@@ -241,6 +246,7 @@ class spectacular.Example
       if @acceptAsync @block
         async = new spectacular.AsyncPromise
         async.then @executeExpectations, @reject
+        async.fail (reason) => @error reason
         async.run()
         @block.call(@context, async)
       else

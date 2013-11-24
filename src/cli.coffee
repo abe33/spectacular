@@ -20,6 +20,7 @@ requireFile = (file, context) ->
     console.log file, err
 
 exists = fs.exists or path.exists
+existsSync = fs.existsSync or path.existsSync
 
 loadSpectacular = (options) ->
   Q.fcall ->
@@ -33,50 +34,25 @@ loadSpectacular = (options) ->
     spectacular.env.globalize()
 
 handleEmitter = (emitter, defer) ->
-  emitter.on 'end', ->
-    defer.resolve()
-  emitter.on 'error', (err) ->
-    defer.reject(err)
-  emitter.on 'fail', (err) ->
-    defer.reject(err)
+  emitter.on 'end', -> defer.resolve()
+  emitter.on 'error', (err) -> defer.reject(err)
+  emitter.on 'fail', (err) -> defer.reject(err)
 
-loadMatchers = (options) -> ->
+loadRequire = (path, options) ->
   defer = Q.defer()
 
-  if options.noMatchers
-    defer.resolve()
-  else
-    exists options.matchersRoot, (exists) ->
-      if exists
-        emitter = walk options.matchersRoot
-        emitter.on 'file', (path, stat) ->
+  exists path, (exists) ->
+    if exists
+      emitter = walk path
+      emitter.on 'file', (path, stat) ->
+        if /(js|coffee)$/.test path
           if options.verbose
-            console.log "  #{colorize 'load matcher', 'grey', options} #{path}"
+            console.log "  #{colorize 'require', 'grey', options} #{path}"
           requireFile path
 
-        handleEmitter emitter, defer
-      else
-        defer.resolve()
-
-  defer.promise
-
-loadHelpers = (options) -> ->
-  defer = Q.defer()
-
-  if options.noHelpers
-    defer.resolve()
-  else
-     exists options.helpersRoot, (exists) ->
-      if exists
-        emitter = walk options.helpersRoot
-        emitter.on 'file', (path, stat) ->
-          if options.verbose
-            console.log "  #{colorize 'load helper', 'grey', options} #{path}"
-          requireFile path
-
-        handleEmitter emitter, defer
-      else
-        defer.resolve()
+      handleEmitter emitter, defer
+    else
+      defer.resolve()
 
   defer.promise
 
@@ -95,15 +71,16 @@ globPaths= (globs) -> ->
     paths
 
 loadSpecs = (options) -> (paths) ->
-  if options.verbose
-    for p in paths
+  for p in paths
+    if options.verbose
       console.log "  #{colorize 'load spec', 'grey', options} #{p}"
+    require path.resolve('.', p)
 
-  require path.resolve('.', p) for p in paths
   paths
 
 getReporter = (options) ->
-  reporter = new spectacular.ConsoleReporter options
+  reporter = spectacular.ConsoleReporter.getDefault options
+
   reporter.on 'message', (event) -> util.print event.target
   reporter.on 'report', (event) -> util.print event.target
   reporter
@@ -122,10 +99,14 @@ loadDOM = ->
 CliMethods = (options) ->
   fileCache = {}
 
+  options.valueOutput = (value) -> colorize "#{value}", 'bold', spectacular.env.options
   options.isCoffeeScriptFile = (file) -> /\.coffee$/.test file
   options.hasSourceMap = (file) -> @isCoffeeScriptFile file
   options.loadFile = (file) ->
     Q.fcall ->
+      unless existsSync file
+        throw new Error "File doesn't exist: '#{file}'"
+
       return fileCache[file] if file of fileCache
 
       fileSource = fs.readFileSync(file).toString()
@@ -149,12 +130,13 @@ CliMethods = (options) ->
 
     defer.promise
 
-
 exports.run = (options) ->
   loadStartedAt = null
   loadEndedAt = null
 
   console.log colorize('  options','grey',options), options if options.verbose
+
+  options.fixturesRoot = path.resolve options.fixturesRoot
 
   loadSpectacular(options)
   .then(loadDOM)
@@ -167,29 +149,20 @@ exports.run = (options) ->
     spectacular.env.runner.on 'message', reporter.onMessage
     spectacular.env.runner.on 'result', reporter.onResult
     spectacular.env.runner.on 'end', reporter.onEnd
-  .then(loadMatchers options)
-  .then(loadHelpers options)
+
+    Q.all(loadRequire p, options for p in options.requires)
   .then ->
     loadStartedAt = new Date()
   .then(globPaths options.globs)
   .then(loadSpecs options)
   .then (paths) ->
     loadEndedAt = new Date()
+    options.paths = paths
     spectacular.env.runner.loadStartedAt = loadStartedAt
     spectacular.env.runner.loadEndedAt = loadEndedAt
-    spectacular.env.runner.paths = paths
     spectacular.env.run()
   .then (status) ->
     spectacular.env.unglobalize()
     status
   .fail (reason) ->
-    if spectacular.env?
-      reporter = getReporter options
-      console.log reporter.errorBadge "Spectacular failed"
-      reporter.formatError(reason).then (msg) ->
-        console.log msg
-        process.exit 1
-    else
-      console.log reason.stack
-      process.exit 1
-
+    handleError reason

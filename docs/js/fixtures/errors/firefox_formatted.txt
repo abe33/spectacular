@@ -1,0 +1,6 @@
+
+    failingFunction@file.js?body=1:10
+    callingFunction@file.js?body=1:100
+    @unnammed.js:10
+    namespace.Root</Root.prototype.method@root.js:10
+

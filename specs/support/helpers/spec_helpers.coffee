@@ -2,8 +2,9 @@
 spectacular.helper 'createEnv', (block, context, options) ->
   env = spectacular.env.clone()
   env.options.colors = false
+  env.options.format = 'documentation'
+  env.options.valueOutput = (str) -> str
   env.options[k] = v for k,v of options
-  env.runner.paths = spectacular.env.runner.paths
   context.results = ''
 
   spyOn(env, 'globalize').andCallThrough ->
@@ -13,7 +14,7 @@ spectacular.helper 'createEnv', (block, context, options) ->
   env
 
 spectacular.helper 'createReporter', (env, context, async) ->
-  reporter = new spectacular.ConsoleReporter env.options
+  reporter = spectacular.ConsoleReporter.getDefault env.options
   context.results = ''
   reporter.on 'message', (e) -> context.results += e.target
   reporter.on 'report', (e) ->

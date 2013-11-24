@@ -1,5 +1,5 @@
 --profile
 --coffee
 --source-map
---documentation
+--format progress
 --source specs/support/fixtures/*.js

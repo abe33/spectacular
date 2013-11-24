@@ -1,0 +1,35 @@
+result = example.result
+state = result.state
+hasExpectations = result.expectations.length > 0
+
+- icons = { success: 'ok', failure: 'remove', errored: 'remove', pending: 'ellipsis', skipped: 'remove' }
+
+.example(class=state)
+  .details
+    section
+      span.state
+        i(class="icon-#{icons[state]}")
+        span= state
+      span.time
+        i.icon-time
+        span!= (example.duration / 1000) + "s"
+      a.refresh(href="/?filter=#{example.description}")
+        i.icon-refresh
+        span Rerun it!
+
+    header
+      h3!= example.fullDescription
+
+    if hasExpectations
+      ul.expectations
+        each expectation,i in result.expectations
+          if expectation.success
+            li.expectation.success(data-expectation=i)!= expectation.description
+          else
+            li.expectation.failure(data-expectation=i)!= expectation.description
+
+    else if state != 'success' && state != 'pending'
+      .message= example.examplePromise.reason.message
+
+  .expectation-message
+  .stack

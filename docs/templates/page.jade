@@ -51,36 +51,18 @@ html(lang='en', class=slug)
             a(href="http://badge.fury.io/js/spectacular")
               img(src="https://badge.fury.io/js/spectacular.png", alt="NPM version")
 
-      if page.title != 'Online Test Tool'
-        #list.pure-u-1
-          nav#toc
+      #list.pure-u-1
+        nav#toc
 
-        #main.pure-u-1
-          .gutter
-            h1!= page.title
-            != page.html
+      #main.pure-u-1
+        .gutter
+          h1!= page.title
+          != page.html
 
-        script(src='js/caniuse.js', type='text/javascript')
+      script(src='js/caniuse.js', type='text/javascript')
 
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', type='text/javascript')
     script(src='http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js', type='text/javascript')
 
     script(src='js/pages.js', type='text/javascript')
 
-    if page.title == 'Online Test Tool'
-      link(href='build/css/spectacular.css', rel='stylesheet', type='text/css')
-      script.
-        window.spectacular = {
-          options: {
-            verbose: false,
-            trace: true,
-            longTrace: false,
-            showSource: true,
-            documentation: true,
-            fixturesRoot: './js/fixtures',
-          },
-          paths: ['js/specs.js']
-        }
-
-      script(src='build/js/spectacular.js', type='text/javascript')
-      script(src='js/specs.js', type='text/javascript')

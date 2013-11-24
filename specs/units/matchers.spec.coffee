@@ -18,6 +18,18 @@ describe be, ->
     it -> should be @subject
     it -> shouldnt be {}
 
+  context 'when called with a function', ->
+    subject -> {}
+
+    it -> should be Object
+    it -> shouldnt be String
+
+    context 'and that the value is a function', ->
+      subject -> Object
+
+      it -> should be Object
+      it -> shouldnt be String
+
 describe equal, ->
 
   context 'with strings', ->
@@ -83,7 +95,7 @@ describe beWithin, ->
       it -> shouldnt beWithin(1.1).of(13)
 
   context 'with floats', ->
-    subject -> 22.0/7
+    subject -> 22.0 / 7
 
     context 'integer delta', ->
       it -> should beWithin(1).of(3.0)
@@ -105,7 +117,7 @@ describe beWithin, ->
       it -> shouldnt beWithin(0.001).of(10.1)
 
   context 'with float and integer', ->
-    subject -> 22.0/7
+    subject -> 22.0 / 7
 
     context 'integer delta', ->
       it -> should beWithin(1).of(3)
@@ -133,7 +145,7 @@ describe exist, ->
 
 describe match, ->
   given 'fixturesContainer', -> document.querySelector '#fixtures'
-  subject -> 'irrelevant'
+  subject -> 'irrelevant irrelevant'
 
   it -> should match /irrelevant/
   it -> shouldnt match /tnavelerri/
@@ -156,6 +168,10 @@ describe match, ->
       subject -> @fixturesContainer.querySelectorAll 'section'
 
       it -> should match @dom
+
+  context 'with a string', ->
+    it -> should match 'irrelevant'
+    it -> shouldnt match 'tnavelerri'
 
 describe contains, ->
   given 'fixturesContainer', -> document.querySelector '#fixtures'
@@ -229,7 +245,7 @@ describe throwAnError, ->
     it -> should throwAnError().with 'an argument'
     it -> should throwAnError(/message/).with('an argument').inContext({})
 
-describe 'have', ->
+describe have, ->
   context 'on an object with a collection', ->
     subject -> items: [0,1,2,3], foo: 'bar'
 
@@ -264,3 +280,61 @@ describe 'have', ->
     subject -> 10
 
     it -> shouldnt have 10, 'elements'
+
+describe haveProperty, ->
+  context 'on an object', ->
+    subject -> foo: 'bar', baz: 'oof'
+
+    it -> should haveProperty 'foo'
+    it -> shouldnt haveProperty 'bar'
+
+    it -> should haveProperty('foo').to equal 'bar'
+    it -> shouldnt haveProperty('foo').to equal 'baz'
+
+describe haveProperties, ->
+  context 'on an object', ->
+    subject -> foo: 'bar', baz: 'oof'
+
+    it -> should haveProperties 'foo', 'baz'
+    it -> should haveProperties 'baz', foo: match 'bar'
+    it -> should haveProperties foo: equal 'bar'
+    it -> shouldnt haveProperties 'bar', baz: equal 'bar'
+
+describe haveAttribute, ->
+  context 'on a node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'id', 'foo'
+      node
+
+    it -> should haveAttribute 'id'
+    it -> shouldnt haveAttribute 'bar'
+
+    it -> should haveAttribute('id').to equal 'foo'
+    it -> shouldnt haveAttribute('foo').to equal 'baz'
+
+describe haveAttributes, ->
+  context 'on an node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'id', 'foo'
+      node.setAttribute 'class', 'bar'
+      node
+
+    it -> should haveAttributes 'id', 'class'
+    it -> should haveAttributes 'id', class: match 'bar'
+    it -> should haveAttributes id: equal 'foo'
+    it -> shouldnt haveAttributes 'bar', baz: equal 'bar'
+
+describe haveClass, ->
+  context 'on a node', ->
+    subject ->
+      node = document.createElement 'div'
+      node.setAttribute 'class', 'foo bar'
+      node
+
+    it -> should haveClass 'foo'
+    it -> should haveClass 'bar'
+    it -> shouldnt haveClass 'baz'
+
+

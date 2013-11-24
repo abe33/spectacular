@@ -1,0 +1,6 @@
+  Top 10 slowest examples (0.006 seconds, 100% of total time)
+
+    0.003 seconds ProfileFormatter
+    0.002 seconds ProfileFormatter
+    0.001 seconds ProfileFormatter
+

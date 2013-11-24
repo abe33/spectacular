@@ -75,7 +75,7 @@ Then puts Spectacular in your html file:
 <script src="build/js/spectacular.js" type="text/javascript"/>
 ```
 
-You can see the runner live on the [Online Test Tool](/tests.html) page.
+You can see the runner live on the [Online Test Tool](./tests.html) page.
 
 You can pass options to spectacular by defining `spectacular.options` before the spectacular script node :
 

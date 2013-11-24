@@ -73,15 +73,93 @@
     });
   });
 
+  if (typeof module === 'undefined') {
+    fixture('formatters/reporter.html', {
+      as: 'reporterContainer'
+    });
+    spectacular.helper('withWidgetSetup', function(block) {
+      given('reporter', function() {
+        return {
+          container: this.reporterContainer[0],
+          widgets: [],
+          snapper: {
+            open: function() {}
+          }
+        };
+      });
+      given('runner', function() {
+        return {
+          examples: [],
+          options: spectacular.options
+        };
+      });
+      return block.call(this);
+    });
+  }
+
+  sharedExample('match error', function() {
+    return describe('the parser', function() {
+      the(function() {
+        return this.parser.should(exist);
+      });
+      the('size', function() {
+        return this.parser.size.should(equal(4));
+      });
+      describe('::find', function() {
+        return context('with a file path', function() {
+          subject(function() {
+            return this.parser.find('file.js');
+          });
+          return it(function() {
+            return should(have(2, 'lines'));
+          });
+        });
+      });
+      return describe('::details', function() {
+        return context('with a line from the stack', function() {
+          subject(function() {
+            var line;
+            line = this.parser.find('file.js')[0];
+            return this.parser.details(line);
+          });
+          its('line', function() {
+            return should(equal('10'));
+          });
+          its('file', function() {
+            return should(equal('file.js'));
+          });
+          return its('method', function() {
+            return should(equal('failingFunction'));
+          });
+        });
+      });
+    });
+  });
+
+  sharedExample('a formatter', function() {
+    return specify('the returned promise value', function(async) {
+      var _this = this;
+      return this.subject.then(function(result) {
+        expect(result).to(equal(_this.expected));
+        return async.resolve();
+      }).fail(function(reason) {
+        return async.reject(reason);
+      });
+    });
+  });
+
   spectacular.helper('createEnv', function(block, context, options) {
     var env, k, v;
     env = spectacular.env.clone();
     env.options.colors = false;
+    env.options.format = 'documentation';
+    env.options.valueOutput = function(str) {
+      return str;
+    };
     for (k in options) {
       v = options[k];
       env.options[k] = v;
     }
-    env.runner.paths = spectacular.env.runner.paths;
     context.results = '';
     spyOn(env, 'globalize').andCallThrough(function() {
       var promise;
@@ -95,7 +173,7 @@
 
   spectacular.helper('createReporter', function(env, context, async) {
     var reporter;
-    reporter = new spectacular.ConsoleReporter(env.options);
+    reporter = spectacular.ConsoleReporter.getDefault(env.options);
     context.results = '';
     reporter.on('message', function(e) {
       return context.results += e.target;
@@ -258,6 +336,8 @@
       }
     };
   });
+
+  runningSpecs('without examples').shouldSucceedWith(/0 success, 0 assertions, 0 failures/, function() {});
 
   runningSpecs('an error raised in spec file').shouldStopWith(/message/, function() {
     throw new Error('message');
@@ -1237,6 +1317,39 @@
     });
   });
 
+  describe(spectacular.errors.ErrorParser, function() {
+    fixture('errors/firefox.txt', {
+      as: 'firefox'
+    });
+    fixture('errors/chrome.txt', {
+      as: 'chrome'
+    });
+    fixture('errors/node.txt', {
+      as: 'node'
+    });
+    given('parser', function() {
+      return new spectacular.errors.ErrorParser(this.stack);
+    });
+    context('for a chrome stack', function() {
+      given('stack', function() {
+        return this.chrome;
+      });
+      return itShould('match error');
+    });
+    context('for a node stack', function() {
+      given('stack', function() {
+        return this.node;
+      });
+      return itShould('match error');
+    });
+    return context('for a firefox stack', function() {
+      given('stack', function() {
+        return this.firefox;
+      });
+      return itShould('match error');
+    });
+  });
+
   MixinWithIncludedHook = (function() {
     function MixinWithIncludedHook() {}
 
@@ -1890,6 +2003,41 @@
     });
   });
 
+  except(describe('Some test', function() {
+    describe('Success', function() {
+      return specify(function() {
+        return true.should(be(true));
+      });
+    });
+    describe('Error', function() {
+      return it(function() {
+        throw new Error('This is the error message');
+      });
+    });
+    describe('Failure', function() {
+      it(function() {
+        return fail();
+      });
+      return specify(function() {
+        true.should(be(true));
+        true.should(be(true));
+        true.should(be(false));
+        true.should(be(true));
+        return true.should(be(false));
+      });
+    });
+    describe('Skipped', function() {
+      return it(function() {
+        return skip();
+      });
+    });
+    return describe('Pending', function() {
+      return it(function() {
+        return pending();
+      });
+    });
+  }));
+
   describe(fixture, function() {
     it(function() {
       return should(exist);
@@ -2027,7 +2175,7 @@
         return should(be('fulfilled'));
       });
     });
-    return context('when called with an object', function() {
+    context('when called with an object', function() {
       subject(function() {
         return {};
       });
@@ -2036,6 +2184,28 @@
       });
       return it(function() {
         return shouldnt(be({}));
+      });
+    });
+    return context('when called with a function', function() {
+      subject(function() {
+        return {};
+      });
+      it(function() {
+        return should(be(Object));
+      });
+      it(function() {
+        return shouldnt(be(String));
+      });
+      return context('and that the value is a function', function() {
+        subject(function() {
+          return Object;
+        });
+        it(function() {
+          return should(be(Object));
+        });
+        return it(function() {
+          return shouldnt(be(String));
+        });
       });
     });
   });
@@ -2272,7 +2442,7 @@
       return document.querySelector('#fixtures');
     });
     subject(function() {
-      return 'irrelevant';
+      return 'irrelevant irrelevant';
     });
     it(function() {
       return should(match(/irrelevant/));
@@ -2280,7 +2450,7 @@
     it(function() {
       return shouldnt(match(/tnavelerri/));
     });
-    return context('with a dom object', function() {
+    context('with a dom object', function() {
       fixture('sample.html');
       fixture('sample.dom', {
         as: 'dom'
@@ -2308,6 +2478,14 @@
         return it(function() {
           return should(match(this.dom));
         });
+      });
+    });
+    return context('with a string', function() {
+      it(function() {
+        return should(match('irrelevant'));
+      });
+      return it(function() {
+        return shouldnt(match('tnavelerri'));
       });
     });
   });
@@ -2448,7 +2626,7 @@
     });
   });
 
-  describe('have', function() {
+  describe(have, function() {
     context('on an object with a collection', function() {
       subject(function() {
         return {
@@ -2520,6 +2698,131 @@
       });
       return it(function() {
         return shouldnt(have(10, 'elements'));
+      });
+    });
+  });
+
+  describe(haveProperty, function() {
+    return context('on an object', function() {
+      subject(function() {
+        return {
+          foo: 'bar',
+          baz: 'oof'
+        };
+      });
+      it(function() {
+        return should(haveProperty('foo'));
+      });
+      it(function() {
+        return shouldnt(haveProperty('bar'));
+      });
+      it(function() {
+        return should(haveProperty('foo').to(equal('bar')));
+      });
+      return it(function() {
+        return shouldnt(haveProperty('foo').to(equal('baz')));
+      });
+    });
+  });
+
+  describe(haveProperties, function() {
+    return context('on an object', function() {
+      subject(function() {
+        return {
+          foo: 'bar',
+          baz: 'oof'
+        };
+      });
+      it(function() {
+        return should(haveProperties('foo', 'baz'));
+      });
+      it(function() {
+        return should(haveProperties('baz', {
+          foo: match('bar')
+        }));
+      });
+      it(function() {
+        return should(haveProperties({
+          foo: equal('bar')
+        }));
+      });
+      return it(function() {
+        return shouldnt(haveProperties('bar', {
+          baz: equal('bar')
+        }));
+      });
+    });
+  });
+
+  describe(haveAttribute, function() {
+    return context('on a node', function() {
+      subject(function() {
+        var node;
+        node = document.createElement('div');
+        node.setAttribute('id', 'foo');
+        return node;
+      });
+      it(function() {
+        return should(haveAttribute('id'));
+      });
+      it(function() {
+        return shouldnt(haveAttribute('bar'));
+      });
+      it(function() {
+        return should(haveAttribute('id').to(equal('foo')));
+      });
+      return it(function() {
+        return shouldnt(haveAttribute('foo').to(equal('baz')));
+      });
+    });
+  });
+
+  describe(haveAttributes, function() {
+    return context('on an node', function() {
+      subject(function() {
+        var node;
+        node = document.createElement('div');
+        node.setAttribute('id', 'foo');
+        node.setAttribute('class', 'bar');
+        return node;
+      });
+      it(function() {
+        return should(haveAttributes('id', 'class'));
+      });
+      it(function() {
+        return should(haveAttributes('id', {
+          "class": match('bar')
+        }));
+      });
+      it(function() {
+        return should(haveAttributes({
+          id: equal('foo')
+        }));
+      });
+      return it(function() {
+        return shouldnt(haveAttributes('bar', {
+          baz: equal('bar')
+        }));
+      });
+    });
+  });
+
+  describe(haveClass, function() {
+    return context('on a node', function() {
+      subject(function() {
+        var node;
+        node = document.createElement('div');
+        node.setAttribute('class', 'foo bar');
+        return node;
+      });
+      it(function() {
+        return should(haveClass('foo'));
+      });
+      it(function() {
+        return should(haveClass('bar'));
+      });
+      return it(function() {
+        return shouldnt(haveClass('baz'));
       });
     });
   });
