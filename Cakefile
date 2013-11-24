@@ -132,9 +132,12 @@ compileTests = ->
     "docs/js/"
     "--join"
     "docs/js/specs.js"
+    "specs/support/factories/*.coffee"
     "specs/support/matchers/*.coffee"
     "specs/support/helpers/*.coffee"
     "specs/units/*.coffee"
+    "specs/units/formatters/console/*.coffee"
+    "specs/units/formatters/browser/*.coffee"
   ]
 
   run("./node_modules/.bin/coffee #{options.join ' '}")()

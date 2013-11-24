@@ -66,13 +66,16 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 
 First download Spectacular:
 
-<div id="download"><a href='spectacular-1.4.0.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
+<div id="download"><a href='spectacular-1.5.0.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
 
 Then puts Spectacular in your html file:
 
 ```xml
 <link href="build/css/spectacular.css" rel="stylesheet" type="text/css"/>
+<script src="build/vendor/snap.js" type="text/javascript"/>
+<script src="build/vendor/jade.js" type="text/javascript"/>
 <script src="build/js/spectacular.js" type="text/javascript"/>
+<script src="build/js/templates.js" type="text/javascript"/>
 ```
 
 You can see the runner live on the [Online Test Tool](./tests.html) page.
@@ -211,6 +214,14 @@ spectacular test specs/**/*.spec.js
     <td>Add support for CoffeeScript files. You can now run your specs with: `spectacular --coffee specs/**/*.coffee`.</td>
   </tr>
   <tr>
+    <td>`-f, --format`</td>
+    <td>Select the console output format (progress|documentation).</td>
+  </tr>
+  <tr>
+    <td>`-r, --require PATH`</td>
+    <td>Adds `PATH` to the array of paths to includes.</td>
+  </tr>
+  <tr>
     <td>`-v, --verbose`</td>
     <td>Enable verbose output.</td>
   </tr>
@@ -227,8 +238,8 @@ spectacular test specs/**/*.spec.js
     <td>Add a report with the 10 slowest examples at the end of the output.</td>
   </tr>
   <tr>
-    <td>`-d, --documentation`</td>
-    <td>Enable the documentation format in the output.</td>
+    <td class="deprecated">`-d, --documentation`</td>
+    <td>Use `--format=documentation` option instead.</td>
   </tr>
   <tr class='deprecated'>
     <td>`-s, --server`</td>
@@ -255,12 +266,12 @@ spectacular test specs/**/*.spec.js
     <td>Enable the support for CoffeeScript source map on both node and browsers. When using this mode with the browser without relying on the Spectacular server additional setup is required, please see the [Source Map Support](#Source-Map-Support) section for details.</td>
   </tr>
   <tr>
-    <td>`-m, --matchers PATH`</td>
-    <td>Specify the path where project matchers can be found, by default matchers are loaded from `./specs/support/matchers`.</td>
+    <td class='deprecated'>`-m, --matchers PATH`</td>
+    <td>Use `--require PATH` instead.</td>
   </tr>
   <tr>
-    <td>`--helpers PATH`</td>
-    <td>Specify the path where project helpers can be found, by default helpers are loaded from `./specs/support/helpers`.</td>
+    <td class="deprecated">`--helpers PATH`</td>
+    <td>Use `--require PATH` instead.</td>
   </tr>
   <tr>
     <td>`--fixtures PATH`</td>
@@ -291,12 +302,12 @@ spectacular test specs/**/*.spec.js
     <td>Disable coloring of the output.</td>
   </tr>
   <tr>
-    <td>`--no-matchers`</td>
-    <td>Disable the loading of project matchers.</td>
+    <td class="deprecated">`--no-matchers`</td>
+    <td>Don't require your matchers instead.</td>
   </tr>
   <tr>
-    <td>`--no-helpers`</td>
-    <td>Disable the loading of project helpers.</td>
+    <td class="deprecated">`--no-helpers`</td>
+    <td>Don't require your helpers instead.</td>
   </tr>
 </table>
 

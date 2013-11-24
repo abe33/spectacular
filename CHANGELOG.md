@@ -1,3 +1,114 @@
+<a name="1.5.0"></a>
+# 1.5.0 (2013-11-24)
+
+
+## Bug Fixes
+
+- **$travis:**
+  - fix slimerjs download on travis
+  ([2bfd58f0](https://github.com/abe33/spectacular/commit/2bfd58f0def471bfa6086c20021392d3ad3c4b25))
+  - fix broken phantomjs run
+  ([eabb7965](https://github.com/abe33/spectacular/commit/eabb7965da9c77c25c3100239a0059aac1635fa2))
+  - fix error in travis phantomjs with error stack
+  ([8fd28569](https://github.com/abe33/spectacular/commit/8fd28569d9802ab9f17d69e059640b56f21c7611))
+- **browser:** handle properly server errors response
+  ([c63b9908](https://github.com/abe33/spectacular/commit/c63b9908ccd898a3cfbfc9578f30162b2090f489))
+- **fixtures:** raise exception early when file doesn't exist
+  ([9f69731d](https://github.com/abe33/spectacular/commit/9f69731df0128f91fb284bf7c3101bb91e154079))
+- **formatters:** column default should be one for source map
+  ([19a72563](https://github.com/abe33/spectacular/commit/19a725637516612495b2b58e0c084d2904c950fe))
+- **matchers:** fix match with string behaving like equal
+  ([e0e6f751](https://github.com/abe33/spectacular/commit/e0e6f7511f6a358d24a6763d788e0861c1f7303a))
+- **pages:**
+  - fix dead link to live runner
+  ([274e95a0](https://github.com/abe33/spectacular/commit/274e95a0cfdc77dedb69df5ca6e613eddb722805),
+   [#13](https://github.com/abe33/spectacular/issues/13))
+  - fix error in factory example
+  ([b269cd0f](https://github.com/abe33/spectacular/commit/b269cd0ff2e146b4fe1359ae28e4379415419469),
+   [#11](https://github.com/abe33/spectacular/issues/11))
+- **tests:**
+  - fix broken stack crop if no known path is found in stack
+  ([f0bd9592](https://github.com/abe33/spectacular/commit/f0bd9592aa60f8903cf3819a4e252beabbd86ca7))
+- **utils:** fix broken diff when text contains object extension
+  ([7533e0a3](https://github.com/abe33/spectacular/commit/7533e0a367a7daa2a199fa6f9359752912966c8a))
+
+
+## Features
+
+- **$browser:** add the tests seed in the counters div
+  ([b80c61d3](https://github.com/abe33/spectacular/commit/b80c61d3e7a1105faf7b3df9e759834a64616b82))
+- **Cakefile:** add templates generation as part of the cake tasks
+  ([f0bfc99c](https://github.com/abe33/spectacular/commit/f0bfc99c9c8d8b6b4e40483bff90910e8f5f460c))
+- **browser:**
+  - add a button in spec details to rerun only this test
+  ([3c8e9151](https://github.com/abe33/spectacular/commit/3c8e9151dc87eb40f6cdd0fcb30e3600848cb691))
+  - implements an example filter using the filter parameter
+  ([1ed5a40a](https://github.com/abe33/spectacular/commit/1ed5a40a69a9838001dee95d82f719c8e211386a))
+  - add support for url parameters in browser bootstrap
+  ([3150a433](https://github.com/abe33/spectacular/commit/3150a433febc0353556bddeea05ef79a9a9fd7f9))
+  - add type parsing in url parameters parser
+  ([2f8c9163](https://github.com/abe33/spectacular/commit/2f8c9163ff39896573cb4e87de0ec4dcd5e2808c))
+  - add parameters parser first implementation
+  ([d4287ecf](https://github.com/abe33/spectacular/commit/d4287ecf5e24466d1b9b0163b582a31882b6a2aa))
+  - add a search box in the the list header
+  ([9f45e382](https://github.com/abe33/spectacular/commit/9f45e382262715b9002c730bdf24801f34d988ef))
+  - prevent errors in tests declarations from running tests
+  ([9e8e8f42](https://github.com/abe33/spectacular/commit/9e8e8f42a228c25b907e9048db1188b38ca00731))
+  - new mobile friendly UI for browser tests
+  ([42f0c7eb](https://github.com/abe33/spectacular/commit/42f0c7eb189f3b123cf7e6635f44fc0c434eadf1))
+  - changes browser reporter for a widget based one
+  ([cc00840e](https://github.com/abe33/spectacular/commit/cc00840ea5ffec0248ec8611ec721bd553b47793))
+- **cli:** add format option to select the prorgess formatter
+  ([9b0f8947](https://github.com/abe33/spectacular/commit/9b0f8947f987cc4469f0a1ce049f7e78627ac541))
+- **environment:** add fixturePath helper function
+  ([5ab77931](https://github.com/abe33/spectacular/commit/5ab779317eb15035a7f7740112f79b4d9c02dbb0))
+- **errors:** add extensible error's stack parser
+  ([82ffa53e](https://github.com/abe33/spectacular/commit/82ffa53e17df37719957b6776cc977b319895a00))
+- **formatters:**
+  - add console progress style formatter
+  ([2da8cca3](https://github.com/abe33/spectacular/commit/2da8cca3e05014ad9497719afd051355b1ad48bf))
+  - add example results formatter
+  ([bbd6a233](https://github.com/abe33/spectacular/commit/bbd6a233313e11555a1c23e47080e46f60b7a3fe))
+  - add console results formatter
+  ([1d8ce45f](https://github.com/abe33/spectacular/commit/1d8ce45fe39c7fcef3d294b762f5deb8243ef361))
+  - add console resume formatter
+  ([42f6e8e0](https://github.com/abe33/spectacular/commit/42f6e8e068367f291753836dc552e9002696b19d))
+  - add console profile formatter
+  ([690418af](https://github.com/abe33/spectacular/commit/690418afe4659c6dcf9296dff07ad1c14dbafe10))
+  - add console duration formatter
+  ([429146b9](https://github.com/abe33/spectacular/commit/429146b9759a39e28152d3c4f15732e201fa9391))
+  - add console seed formatter
+  ([18431721](https://github.com/abe33/spectacular/commit/184317218bba88a441661ea44b54a15fb4abce63))
+  - add errors stack and source file formatters
+  ([13d242fc](https://github.com/abe33/spectacular/commit/13d242fc74a9711769e8418270114036434cbb81))
+- **matchers:**
+  - add haveClass matcher to test node classes
+  ([2cea1829](https://github.com/abe33/spectacular/commit/2cea1829df0fe2ef6a5ac005cc2207d89da7a2cd))
+  - add haveAttribute and haveAttribtues matchers
+  ([8b2d7c00](https://github.com/abe33/spectacular/commit/8b2d7c00d3a16a627189e5ad88fc1f029adeba92))
+  - add haveProperty and haveProperties matcher
+  ([e1bad8fb](https://github.com/abe33/spectacular/commit/e1bad8fb5188f5891ccfa2d209af1cfc0d2325b7))
+  - add support for string in match
+  ([1ba8c3e4](https://github.com/abe33/spectacular/commit/1ba8c3e44f98a46d1ca61c84c3f176c4f8f03916))
+  - allow value decoration in matchers
+  ([9e39fb56](https://github.com/abe33/spectacular/commit/9e39fb56be6fa7a342fb8f5267981f8d337ef9bc))
+  - be matcher handle simple constructor type check
+  ([dcc42d00](https://github.com/abe33/spectacular/commit/dcc42d0086485f76312bccd5b7c4839205b87031))
+- **reporters:** replace old results with formatter based ones
+  ([84e46df6](https://github.com/abe33/spectacular/commit/84e46df6cad4ab74de182f4ce465c8f62f11073f))
+- **runner:** add a start event after examples registering
+  ([91859abe](https://github.com/abe33/spectacular/commit/91859abe2e8ea1c1c08110def66b88bcfc4d8f2a))
+- **server:** extract server response content into jade templates
+  ([415fb9c1](https://github.com/abe33/spectacular/commit/415fb9c127d232a735fa529f409c7887cda8dfa8))
+- **utils:**
+  - wrap diffs in a span in browers
+  ([5360f6ea](https://github.com/abe33/spectacular/commit/5360f6eacf789cac24888b5a69d8ca46aa61db7e))
+  - add colorize method in spectacular.utils
+  ([c73ab127](https://github.com/abe33/spectacular/commit/c73ab1270c90c97fbe6680b1e2acf822161b0e1a))
+- **widgets:** add pluralizationof states in progress widget
+  ([4a3017d2](https://github.com/abe33/spectacular/commit/4a3017d224ac8f38a6617f1c8ec843509d1d552b))
+
+
 <a name="1.4.0"></a>
 # 1.4.0 (2013-08-25)
 

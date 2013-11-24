@@ -10,7 +10,7 @@ class spectacular.Environment
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
       dependsOn spyOn whenPass fixture except only sharedExample
-      itBehavesLike fixturePath'.split(/\s+/g)
+      itBehavesLike fixturePath registerFixtureHandler'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup null, ''
     @currentExampleGroup = @rootExampleGroup

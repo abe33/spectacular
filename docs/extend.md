@@ -35,6 +35,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`fail`</td><td>No differences</td></tr>
     <tr><td>`failureMessageForShould`</td><td>`failure_message_for_should`</td></tr>
     <tr><td>`failureMessageForShouldnt`</td><td>`failure_message_for_shouldnt`</td></tr>
+    <tr><td>`fixturePath`</td><td>`fixture_path`</td></tr>
     <tr><td>`fixtures`</td><td>No differences</td></tr>
     <tr><td>`given`</td><td>No differences</td></tr>
     <tr><td>`have.selector`</td><td>No differences</td></tr>
@@ -50,6 +51,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`match`</td><td>No differences</td></tr>
     <tr><td>`pending`</td><td>No differences</td></tr>
+    <tr><td>`registerFixtureHandler`</td><td>`register_fixture_handler`</td></tr>
     <tr><td>`set`</td><td>No differences</td></tr>
     <tr><td>`should`</td><td>No differences</td></tr>
     <tr><td>`shouldnt`</td><td>No differences</td></tr>
@@ -76,7 +78,7 @@ You can find below a table with all the snake case equivalent:
     <tr><td>`xit`</td><td>No differences</td></tr>
 </table>
 
-You can also snakify your own objects using the `utils.snakify` method:
+You can also snakify/camelize your own objects using the `utils.snakify` or `utils.camelize` methods:
 
 ```coffeescript
 myObject =
@@ -208,3 +210,16 @@ If the promise is rejected, the example is marked as `errored`.
 
   <p>In that case the object property's value may have changed when the test is performed by the matcher.</p>
 </aside>
+
+## Fixtures Handlers
+
+Spectacular support by default 3 fixtures format: `json`, `html` and `dom`.
+
+However you can quickly extend Spectacular with new fixtures handlers using the `registerFixtureHandler`:
+
+```coffeescript
+registerFixtureHandler 'ext', (content) ->
+  # do something with the content
+```
+
+The value returned by the handler block will be used as the fixture in specs.

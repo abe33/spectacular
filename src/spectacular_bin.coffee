@@ -147,6 +147,7 @@ while args.length
   Options:
 
     -c, --coffee          Add support for CoffeeScript files.
+    -f, --format          Select the console output format (progress|documentation)
     -h, --help            Display this message.
     -p, --profile         Add a report with the 10 slowest examples.
     -t, --trace           Enable stack trace report for failures.

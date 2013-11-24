@@ -249,15 +249,32 @@ The following matchers are provided by Spectacular:
     </ul>
     </td>
   </tr>
+
+   <tr>
+    <td>`haveProperty(property, value)`</td>
+    <td>Test if the current subject have a `property` whose value match `value`, the `value` can be a matcher such as `object.should haveProperty 'foo', equal 20`.</td>
+  </tr>
+
+  <tr>
+    <td>`haveAttribute(attribute, value)`</td>
+    <td>Test if the current subject have an `attribute` whose value match `value`, the `value can be a matcher such as `node.should haveAttribute 'foo', equal 20`.</td>
+  </tr>
+
+  <tr>
+    <td>`haveClass(cls)`</td>
+    <td>Test if the current subject have the given `cls` in its `class`attribute.</td>
+  </tr>
+
   <tr>
     <td>`haveSelector(selector)`</td>
     <td>Will test a `Node` or a `NodeList` with the given CSS query.</td>
   </tr>
   <tr>
     <td>`match(expression)`</td>
-    <td>Will either test a regexp against a string or a DOM expression against a node or a node list.
+    <td>Will either test a regexp or a string against a string or a DOM expression against a node or a node list.
       <ul>
         <li>`'string'.should match /string/`</li>
+        <li>`'string'.should match 'string'`</li>
         <li>`node.should match @domExpression`</li>
       </ul>
     </td>

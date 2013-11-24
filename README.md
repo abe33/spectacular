@@ -100,6 +100,14 @@ spectacular test specs/**/*.spec.js
     <td>Add support for CoffeeScript files. You can now run your specs with: `spectacular --coffee specs/**/*.coffee`.</td>
   </tr>
   <tr>
+    <td>`-f, --format`</td>
+    <td>Select the console output format (progress|documentation).</td>
+  </tr>
+  <tr>
+    <td>`-r, --require PATH`</td>
+    <td>Adds `PATH` to the array of paths to includes.</td>
+  </tr>
+  <tr>
     <td>`-v, --verbose`</td>
     <td>Enable verbose output.</td>
   </tr>
@@ -117,7 +125,7 @@ spectacular test specs/**/*.spec.js
   </tr>
   <tr>
     <td>`-d, --documentation`</td>
-    <td>Enable the documentation format in the output.</td>
+    <td><strong>deprecated</strong> Use the format option instead</td>
   </tr>
   <tr>
     <td>`-s, --server`</td>
@@ -137,7 +145,7 @@ spectacular test specs/**/*.spec.js
   </tr>
   <tr>
     <td>`--source GLOB`</td>
-    <td>When using the server, it allow to add files that matches the patterns as served files in the html runner. You can use this option as many times as you need.</td>
+    <td></td>
   </tr>
   <tr>
     <td>`--map, --source-map`</td>
@@ -145,11 +153,11 @@ spectacular test specs/**/*.spec.js
   </tr>
   <tr>
     <td>`-m, --matchers PATH`</td>
-    <td>Specify the path where project matchers can be found, by default matchers are loaded from `./specs/support/matchers`.</td>
+    <td><strong>deprecated</strong> Use `--require PATH` instead.</td>
   </tr>
   <tr>
     <td>`--helpers PATH`</td>
-    <td>Specify the path where project helpers can be found, by default helpers are loaded from `./specs/support/helpers`.</td>
+    <td><strong>deprecated</strong> Use `--require PATH` instead.</td>
   </tr>
   <tr>
     <td>`--fixtures PATH`</td>
@@ -181,11 +189,11 @@ spectacular test specs/**/*.spec.js
   </tr>
   <tr>
     <td>`--no-matchers`</td>
-    <td>Disable the loading of project matchers.</td>
+    <td><strong>deprecated</strong> Don't require you matchers instead.</td>
   </tr>
   <tr>
     <td>`--no-helpers`</td>
-    <td>Disable the loading of project helpers.</td>
+    <td><strong>deprecated</strong> Don't require your helpers instead.</td>
   </tr>
 </table>
 
