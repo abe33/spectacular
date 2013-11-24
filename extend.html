@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="extending-spectacular"><head><meta charset="utf-8"><title>Spectacular - Extending Spectacular</title><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="css/page.css" rel="stylesheet" type="text/css"><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script></head><body><div id="layout" class="pure-g-r content"><div id="nav" class="pure-u"><a href="#" class="nav-menu-button">Menu</a><header><h1>Spectacular</h1><h2>1.4.0</h2></header><div class="nav-inner"><div class="pure-menu pure-menu-open"><ul><li><a href=".">Home</a></li><li><a href=".#download">Download</a></li><li><a href="./examples.html">Writing Tests</a></li><li><a href="./tools.html">Tests Tools</a></li><li><a href="./extend.html">Extend Spectacular</a></li><li><a href="./tests.html">Online Test Tool</a></li><li><a href="./changelog.html">ChangeLog</a></li><li><a href="./previous.html">Archives</a></li></ul></div><hr><a href="https://github.com/abe33/spectacular" class="fork"><i class="icon-github"></i>Fork me on GitHub</a><div class="badges"><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a><a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a><a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a><a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></div></div></div><div id="list" class="pure-u-1"><nav id="toc"></nav></div><div id="main" class="pure-u-1"><div class="gutter"><h1>Extending Spectacular</h1><h2>Snake Case Syntax</h2>
+<!DOCTYPE html><html lang="en" class="extending-spectacular"><head><meta charset="utf-8"><title>Spectacular - Extending Spectacular</title><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="css/page.css" rel="stylesheet" type="text/css"><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script></head><body><div id="layout" class="pure-g-r content"><div id="nav" class="pure-u"><a href="#" class="nav-menu-button">Menu</a><header><h1>Spectacular</h1><h2>1.5.0</h2></header><div class="nav-inner"><div class="pure-menu pure-menu-open"><ul><li><a href=".">Home</a></li><li><a href=".#download">Download</a></li><li><a href="./examples.html">Writing Tests</a></li><li><a href="./tools.html">Tests Tools</a></li><li><a href="./extend.html">Extend Spectacular</a></li><li><a href="./tests.html">Online Test Tool</a></li><li><a href="./changelog.html">ChangeLog</a></li><li><a href="./previous.html">Archives</a></li></ul></div><hr><a href="https://github.com/abe33/spectacular" class="fork"><i class="icon-github"></i>Fork me on GitHub</a><div class="badges"><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a><a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a><a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a><a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></div></div></div><div id="list" class="pure-u-1"><nav id="toc"></nav></div><div id="main" class="pure-u-1"><div class="gutter"><h1>Extending Spectacular</h1><h2>Snake Case Syntax</h2>
 <p>All the exposed methods are provided both with <code>camelCase</code> and <code>snake_case</code> syntax. By convention, JavaScript use the camel case form, but some people writing CoffeeScript for nodejs often use the snake case form. Spectacular support both.</p>
 <p>You can define any matcher, or helper, or aliases, with either the snake case
 or camel case form, the alternative will be also added to the global object.</p>
@@ -23,6 +23,7 @@ or camel case form, the alternative will be also added to the global object.</p>
     <tr><td><code>fail</code></td><td>No differences</td></tr>
     <tr><td><code>failureMessageForShould</code></td><td><code>failure_message_for_should</code></td></tr>
     <tr><td><code>failureMessageForShouldnt</code></td><td><code>failure_message_for_shouldnt</code></td></tr>
+    <tr><td><code>fixturePath</code></td><td><code>fixture_path</code></td></tr>
     <tr><td><code>fixtures</code></td><td>No differences</td></tr>
     <tr><td><code>given</code></td><td>No differences</td></tr>
     <tr><td><code>have.selector</code></td><td>No differences</td></tr>
@@ -38,6 +39,7 @@ or camel case form, the alternative will be also added to the global object.</p>
     <tr><td><code>match</code></td><td>No differences</td></tr>
     <tr><td><code>match</code></td><td>No differences</td></tr>
     <tr><td><code>pending</code></td><td>No differences</td></tr>
+    <tr><td><code>registerFixtureHandler</code></td><td><code>register_fixture_handler</code></td></tr>
     <tr><td><code>set</code></td><td>No differences</td></tr>
     <tr><td><code>should</code></td><td>No differences</td></tr>
     <tr><td><code>shouldnt</code></td><td>No differences</td></tr>
@@ -64,47 +66,47 @@ or camel case form, the alternative will be also added to the global object.</p>
     <tr><td><code>xit</code></td><td>No differences</td></tr>
 </table>
 
-<p>You can also snakify your own objects using the <code>utils.snakify</code> method:</p>
-<pre><code class="lang-coffeescript">myObject <span class="operators">=</span>
-  <span class="property">someMethod<span class='punctuation'>:</span></span> <span class="function">-></span>
-  <span class="property">someOtherMethod<span class='punctuation'>:</span></span> <span class="function">-></span>
+<p>You can also snakify/camelize your own objects using the <code>utils.snakify</code> or <code>utils.camelize</code> methods:</p>
+<pre><code class="lang-coffeescript">myObject =
+  someMethod: -&gt;
+  someOtherMethod: -&gt;
 
-utils<span class="punctuation">.</span>snakify myObject</code></pre>
+utils.snakify myObject</code></pre>
 <p>Will gives you an object such as:</p>
-<pre><code class="lang-coffeescript">myObject <span class="operators">=</span>
-  <span class="property">someMethod<span class='punctuation'>:</span></span> <span class="function">-></span>
-  <span class="property">someOtherMethod<span class='punctuation'>:</span></span> <span class="function">-></span>
-  <span class="property">some_method<span class='punctuation'>:</span></span> <span class="function">-></span>
-  <span class="property">some_other_method<span class='punctuation'>:</span></span> <span class="function">-></span></code></pre>
+<pre><code class="lang-coffeescript">myObject =
+  someMethod: -&gt;
+  someOtherMethod: -&gt;
+  some_method: -&gt;
+  some_other_method: -&gt;</code></pre>
 <aside>
   <p>Note that when using the <code>spectacular.matcher</code> and <code>spectacular.helper</code> methods the defined matcher/helper is automatically converted to either its camel or snake case alternative.</p>
 </aside>
 
 <h2>Matchers</h2>
 <p>Matchers are defined with the <code>spectacular.matcher</code> function. It generates an object with a <code>match</code> method that should return a boolean value corresponding to the assertion result.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>returnSomething<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  match <span class="group"><span class="group_begin">(</span>actual<span class="group_end">)</span></span> <span class="function">-></span> actual<span class="group"><span class="group_begin">(</span><span class="group_end">)</span></span> <span class="keyword">isnt</span> <span class="literal">null</span>
+<pre><code class="lang-coffeescript">spectacular.matcher <span class="string">'returnSomething'</span>, -&gt;
+  match (actual) -&gt; actual() <span class="keyword">isnt</span> <span class="literal">null</span>
 
-  description <span class="function">-></span> <span class="string"><span class="string_begin">"</span>return something<span class="string_end">"</span></span>
+  description -&gt; <span class="string">"return something"</span>
 
-  failureMessageForShould message <span class="operators">=</span> <span class="string"><span class="string_begin">"</span>Expected <span class="subst"><span class="subst_begin">#{</span><span class="property">@actual</span><span class="subst_end">}</span></span> to <span class="subst"><span class="subst_begin">#{</span><span class="property">@description</span><span class="subst_end">}</span></span><span class="string_end">"</span></span>
+  failureMessageForShould message = <span class="string">"Expected <span class="subst">#{@actual}</span> to <span class="subst">#{@description}</span>"</span>
 
 <span class="comment"># Usage:</span>
-it <span class="function">-></span> should returnSomething</code></pre>
+it -&gt; should returnSomething</code></pre>
 <p>The matcher receive a string containing <code>&#39; not&#39;</code> if the matcher was passed to <code>shouldnt</code> or <code>expect(...).not.to</code>.</p>
 <p>If an exception is raised during the matcher execution, the example will be marked as <code>errored</code> instead of <code>failure</code>.</p>
 <p>You can create parameterizable matcher by calling the <code>takes</code> function in the matcher definition block.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>parameterizableMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  takes <span class="string"><span class="string_begin">'</span>value1<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="string"><span class="string_begin">'</span>value2<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">spectacular.matcher <span class="string">'parameterizableMatcher'</span>, -&gt;
+  takes <span class="string">'value1'</span>, <span class="string">'value2'</span>
 
-  match <span class="function">-></span> <span class="property">@value1</span> <span class="keyword">and</span> <span class="property">@value2</span>
+  match -&gt; <span class="property">@value1</span> <span class="keyword">and</span> <span class="property">@value2</span>
 
-  description <span class="function">-></span> <span class="string"><span class="string_begin">'</span>parameterizableMatcher description<span class="string_end">'</span></span>
+  description -&gt; <span class="string">'parameterizableMatcher description'</span>
 
-  failureMessageForShould <span class="function">-></span> <span class="string"><span class="string_begin">'</span>parameterizableMatcher message<span class="string_end">'</span></span>
+  failureMessageForShould -&gt; <span class="string">'parameterizableMatcher message'</span>
 
 <span class="comment"># Usage:</span>
-it <span class="function">-></span> should parameterizableMatcher<span class="group"><span class="group_begin">(</span>value1<span class="punctuation">,</span> value2<span class="group_end">)</span></span></code></pre>
+it -&gt; should parameterizableMatcher(value1, value2)</code></pre>
 <p>The parameters defined with takes are then stored in the matcher instance with the provided names. The <code>takes</code> function accept a slat argument such as <code>values...</code>. In that case, the splat must be the sole argument.</p>
 <aside>
   <p><strong>Note:</strong> Matchers that doesn&#39;t takes arguments are created only once and
@@ -113,45 +115,45 @@ it <span class="function">-></span> should parameterizableMatcher<span class="gr
 </aside>
 
 <p>It&#39;s possible to run code on the initialization of a matcher:</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>matcherWithInit<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  init <span class="function">-></span> <span class="comment"># do some setup such creating composed objects</span>
+<pre><code class="lang-coffeescript">spectacular.matcher <span class="string">'matcherWithInit'</span>, -&gt;
+  init -&gt; <span class="comment"># do some setup such creating composed objects</span>
 
-  match <span class="group"><span class="group_begin">(</span>actual<span class="group_end">)</span></span> <span class="function">-></span> <span class="property">@composedObject</span><span class="punctuation">.</span>match actual
+  match (actual) -&gt; <span class="property">@composedObject</span>.match actual
 
-  description <span class="function">-></span> <span class="string"><span class="string_begin">'</span>matcher with init description<span class="string_end">'</span></span>
+  description -&gt; <span class="string">'matcher with init description'</span>
 
-  failureMessageForShould <span class="function">-></span> <span class="string"><span class="string_begin">'</span>matcher with init message<span class="string_end">'</span></span>
+  failureMessageForShould -&gt; <span class="string">'matcher with init message'</span>
 
 <span class="comment"># Usage:</span>
-it <span class="function">-></span> should matcherWithInit<span class="group"><span class="group_begin">(</span>value1<span class="punctuation">,</span> value2<span class="group_end">)</span></span></code></pre>
+it -&gt; should matcherWithInit(value1, value2)</code></pre>
 <p>You can also add chaining methods with the <code>chain</code> function:</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>chainableMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
-  takes <span class="string"><span class="string_begin">'</span>value1<span class="string_end">'</span></span>
+<pre><code class="lang-coffeescript">spectacular.matcher <span class="string">'chainableMatcher'</span>, -&gt;
+  takes <span class="string">'value1'</span>
 
-  chain <span class="string"><span class="string_begin">'</span>with<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="group"><span class="group_begin">(</span><span class="property">@value2</span><span class="group_end">)</span></span> <span class="function">-></span>
+  chain <span class="string">'with'</span>, (<span class="property">@value2</span>) -&gt;
 
-  match <span class="function">-></span> <span class="property">@value1</span> <span class="keyword">and</span> <span class="property">@value2</span>
+  match -&gt; <span class="property">@value1</span> <span class="keyword">and</span> <span class="property">@value2</span>
 
-  description <span class="function">-></span> <span class="string"><span class="string_begin">'</span>chainableMatcher description<span class="string_end">'</span></span>
+  description -&gt; <span class="string">'chainableMatcher description'</span>
 
-  failureMessageForShould <span class="function">-></span> <span class="string"><span class="string_begin">'</span>chainableMatcher message<span class="string_end">'</span></span>
+  failureMessageForShould -&gt; <span class="string">'chainableMatcher message'</span>
 
 <span class="comment"># Usage:</span>
-it <span class="function">-></span> should chainableMatcher<span class="group"><span class="group_begin">(</span>value1<span class="group_end">)</span></span><span class="punctuation">.</span><span class="reserved">with</span><span class="group"><span class="group_begin">(</span>value2<span class="group_end">)</span></span></code></pre>
+it -&gt; should chainableMatcher(value1).<span class="reserved">with</span>(value2)</code></pre>
 <h2>Asynchronous Matchers</h2>
 <p>Matchers can be asynchronous, in that case they should return a promise instead of a boolean value. The default timeout for asynchronous matchers is 5000ms, it can be changed by setting the <code>timeout</code> in the matcher block.</p>
-<pre><code class="lang-coffeescript">spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>asyncMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+<pre><code class="lang-coffeescript">spectacular.matcher <span class="string">'asyncMatcher'</span>, -&gt;
   timeout <span class="number">1000</span>
-  match <span class="group"><span class="group_begin">(</span>actual<span class="punctuation">,</span> notText<span class="group_end">)</span></span> <span class="function">-></span>
+  match (actual, notText) -&gt;
 
-    promise <span class="operators">=</span> <span class="keyword">new</span> spectacular<span class="punctuation">.</span><span class="constant">Promise</span>
+    promise = <span class="keyword">new</span> spectacular.Promise
 
-    setTimeout <span class="group"><span class="group_begin">(</span><span class="function">-></span> promise<span class="punctuation">.</span>resolve actual <span class="keyword">isnt</span> <span class="literal">null</span><span class="group_end">)</span></span><span class="punctuation">,</span> <span class="number">100</span>
+    setTimeout (-&gt; promise.resolve actual <span class="keyword">isnt</span> <span class="literal">null</span>), <span class="number">100</span>
 
     promise
 
-  description <span class="function">-></span> <span class="string"><span class="string_begin">'</span>should match asynchronously<span class="string_end">'</span></span>
-  failureMessageForShould <span class="function">-></span> <span class="string"><span class="string_begin">'</span>Expected to match asynchronously<span class="string_end">'</span></span></code></pre>
+  description -&gt; <span class="string">'should match asynchronously'</span>
+  failureMessageForShould -&gt; <span class="string">'Expected to match asynchronously'</span></code></pre>
 <p>If the promise is rejected, the example is marked as <code>errored</code>.</p>
 <aside>
   <p><strong>Note:</strong> Asynchronous matcher should be used carefully and never meddled with synchronous code, a good example of case to avoid can be found below</p>
@@ -163,4 +165,11 @@ it <span class="function">-></span> should chainableMatcher<span class="group"><
 
   <p>In that case the object property&#39;s value may have changed when the test is performed by the matcher.</p>
 </aside>
+
+<h2>Fixtures Handlers</h2>
+<p>Spectacular support by default 3 fixtures format: <code>json</code>, <code>html</code> and <code>dom</code>.</p>
+<p>However you can quickly extend Spectacular with new fixtures handlers using the <code>registerFixtureHandler</code>:</p>
+<pre><code class="lang-coffeescript">registerFixtureHandler <span class="string">'ext'</span>, (content) -&gt;
+  <span class="comment"># do something with the content</span></code></pre>
+<p>The value returned by the handler block will be used as the fixture in specs.</p>
 </div></div><script src="js/caniuse.js" type="text/javascript"></script></div><script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script><script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js" type="text/javascript"></script><script src="js/pages.js" type="text/javascript"></script></body></html>

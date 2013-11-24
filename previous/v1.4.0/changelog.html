@@ -1,125 +1,4 @@
-<!DOCTYPE html><html lang="en" class="changelog"><head><meta charset="utf-8"><title>Spectacular - ChangeLog</title><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="css/page.css" rel="stylesheet" type="text/css"><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script></head><body><div id="layout" class="pure-g-r content"><div id="nav" class="pure-u"><a href="#" class="nav-menu-button">Menu</a><header><h1>Spectacular</h1><h2>1.5.0</h2></header><div class="nav-inner"><div class="pure-menu pure-menu-open"><ul><li><a href=".">Home</a></li><li><a href=".#download">Download</a></li><li><a href="./examples.html">Writing Tests</a></li><li><a href="./tools.html">Tests Tools</a></li><li><a href="./extend.html">Extend Spectacular</a></li><li><a href="./tests.html">Online Test Tool</a></li><li><a href="./changelog.html">ChangeLog</a></li><li><a href="./previous.html">Archives</a></li></ul></div><hr><a href="https://github.com/abe33/spectacular" class="fork"><i class="icon-github"></i>Fork me on GitHub</a><div class="badges"><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a><a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a><a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a><a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></div></div></div><div id="list" class="pure-u-1"><nav id="toc"></nav></div><div id="main" class="pure-u-1"><div class="gutter"><h1>ChangeLog</h1><p><a name="1.5.0"></a></p>
-<h2>1.5.0 (2013-11-24)</h2>
-<h3>Bug Fixes</h3>
-<ul>
-<li><strong>$travis:</strong><ul>
-<li>fix slimerjs download on travis
-(<a href="https://github.com/abe33/spectacular/commit/2bfd58f0def471bfa6086c20021392d3ad3c4b25">2bfd58f0</a>)</li>
-<li>fix broken phantomjs run
-(<a href="https://github.com/abe33/spectacular/commit/eabb7965da9c77c25c3100239a0059aac1635fa2">eabb7965</a>)</li>
-<li>fix error in travis phantomjs with error stack
-(<a href="https://github.com/abe33/spectacular/commit/8fd28569d9802ab9f17d69e059640b56f21c7611">8fd28569</a>)</li>
-</ul>
-</li>
-<li><strong>browser:</strong> handle properly server errors response
-(<a href="https://github.com/abe33/spectacular/commit/c63b9908ccd898a3cfbfc9578f30162b2090f489">c63b9908</a>)</li>
-<li><strong>fixtures:</strong> raise exception early when file doesn&#39;t exist
-(<a href="https://github.com/abe33/spectacular/commit/9f69731df0128f91fb284bf7c3101bb91e154079">9f69731d</a>)</li>
-<li><strong>formatters:</strong> column default should be one for source map
-(<a href="https://github.com/abe33/spectacular/commit/19a725637516612495b2b58e0c084d2904c950fe">19a72563</a>)</li>
-<li><strong>matchers:</strong> fix match with string behaving like equal
-(<a href="https://github.com/abe33/spectacular/commit/e0e6f7511f6a358d24a6763d788e0861c1f7303a">e0e6f751</a>)</li>
-<li><strong>pages:</strong><ul>
-<li>fix dead link to live runner
-(<a href="https://github.com/abe33/spectacular/commit/274e95a0cfdc77dedb69df5ca6e613eddb722805">274e95a0</a>,
-<a href="https://github.com/abe33/spectacular/issues/13">#13</a>)</li>
-<li>fix error in factory example
-(<a href="https://github.com/abe33/spectacular/commit/b269cd0ff2e146b4fe1359ae28e4379415419469">b269cd0f</a>,
-<a href="https://github.com/abe33/spectacular/issues/11">#11</a>)</li>
-</ul>
-</li>
-<li><strong>tests:</strong><ul>
-<li>fix broken stack crop if no known path is found in stack
-(<a href="https://github.com/abe33/spectacular/commit/f0bd9592aa60f8903cf3819a4e252beabbd86ca7">f0bd9592</a>)</li>
-</ul>
-</li>
-<li><strong>utils:</strong> fix broken diff when text contains object extension
-(<a href="https://github.com/abe33/spectacular/commit/7533e0a367a7daa2a199fa6f9359752912966c8a">7533e0a3</a>)</li>
-</ul>
-<h3>Features</h3>
-<ul>
-<li><strong>$browser:</strong> add the tests seed in the counters div
-(<a href="https://github.com/abe33/spectacular/commit/b80c61d3e7a1105faf7b3df9e759834a64616b82">b80c61d3</a>)</li>
-<li><strong>Cakefile:</strong> add templates generation as part of the cake tasks
-(<a href="https://github.com/abe33/spectacular/commit/f0bfc99c9c8d8b6b4e40483bff90910e8f5f460c">f0bfc99c</a>)</li>
-<li><strong>browser:</strong><ul>
-<li>add a button in spec details to rerun only this test
-(<a href="https://github.com/abe33/spectacular/commit/3c8e9151dc87eb40f6cdd0fcb30e3600848cb691">3c8e9151</a>)</li>
-<li>implements an example filter using the filter parameter
-(<a href="https://github.com/abe33/spectacular/commit/1ed5a40a69a9838001dee95d82f719c8e211386a">1ed5a40a</a>)</li>
-<li>add support for url parameters in browser bootstrap
-(<a href="https://github.com/abe33/spectacular/commit/3150a433febc0353556bddeea05ef79a9a9fd7f9">3150a433</a>)</li>
-<li>add type parsing in url parameters parser
-(<a href="https://github.com/abe33/spectacular/commit/2f8c9163ff39896573cb4e87de0ec4dcd5e2808c">2f8c9163</a>)</li>
-<li>add parameters parser first implementation
-(<a href="https://github.com/abe33/spectacular/commit/d4287ecf5e24466d1b9b0163b582a31882b6a2aa">d4287ecf</a>)</li>
-<li>add a search box in the the list header
-(<a href="https://github.com/abe33/spectacular/commit/9f45e382262715b9002c730bdf24801f34d988ef">9f45e382</a>)</li>
-<li>prevent errors in tests declarations from running tests
-(<a href="https://github.com/abe33/spectacular/commit/9e8e8f42a228c25b907e9048db1188b38ca00731">9e8e8f42</a>)</li>
-<li>new mobile friendly UI for browser tests
-(<a href="https://github.com/abe33/spectacular/commit/42f0c7eb189f3b123cf7e6635f44fc0c434eadf1">42f0c7eb</a>)</li>
-<li>changes browser reporter for a widget based one
-(<a href="https://github.com/abe33/spectacular/commit/cc00840ea5ffec0248ec8611ec721bd553b47793">cc00840e</a>)</li>
-</ul>
-</li>
-<li><strong>cli:</strong> add format option to select the prorgess formatter
-(<a href="https://github.com/abe33/spectacular/commit/9b0f8947f987cc4469f0a1ce049f7e78627ac541">9b0f8947</a>)</li>
-<li><strong>environment:</strong> add fixturePath helper function
-(<a href="https://github.com/abe33/spectacular/commit/5ab779317eb15035a7f7740112f79b4d9c02dbb0">5ab77931</a>)</li>
-<li><strong>errors:</strong> add extensible error&#39;s stack parser
-(<a href="https://github.com/abe33/spectacular/commit/82ffa53e17df37719957b6776cc977b319895a00">82ffa53e</a>)</li>
-<li><strong>formatters:</strong><ul>
-<li>add console progress style formatter
-(<a href="https://github.com/abe33/spectacular/commit/2da8cca3e05014ad9497719afd051355b1ad48bf">2da8cca3</a>)</li>
-<li>add example results formatter
-(<a href="https://github.com/abe33/spectacular/commit/bbd6a233313e11555a1c23e47080e46f60b7a3fe">bbd6a233</a>)</li>
-<li>add console results formatter
-(<a href="https://github.com/abe33/spectacular/commit/1d8ce45fe39c7fcef3d294b762f5deb8243ef361">1d8ce45f</a>)</li>
-<li>add console resume formatter
-(<a href="https://github.com/abe33/spectacular/commit/42f6e8e068367f291753836dc552e9002696b19d">42f6e8e0</a>)</li>
-<li>add console profile formatter
-(<a href="https://github.com/abe33/spectacular/commit/690418afe4659c6dcf9296dff07ad1c14dbafe10">690418af</a>)</li>
-<li>add console duration formatter
-(<a href="https://github.com/abe33/spectacular/commit/429146b9759a39e28152d3c4f15732e201fa9391">429146b9</a>)</li>
-<li>add console seed formatter
-(<a href="https://github.com/abe33/spectacular/commit/184317218bba88a441661ea44b54a15fb4abce63">18431721</a>)</li>
-<li>add errors stack and source file formatters
-(<a href="https://github.com/abe33/spectacular/commit/13d242fc74a9711769e8418270114036434cbb81">13d242fc</a>)</li>
-</ul>
-</li>
-<li><strong>matchers:</strong><ul>
-<li>add haveClass matcher to test node classes
-(<a href="https://github.com/abe33/spectacular/commit/2cea1829df0fe2ef6a5ac005cc2207d89da7a2cd">2cea1829</a>)</li>
-<li>add haveAttribute and haveAttribtues matchers
-(<a href="https://github.com/abe33/spectacular/commit/8b2d7c00d3a16a627189e5ad88fc1f029adeba92">8b2d7c00</a>)</li>
-<li>add haveProperty and haveProperties matcher
-(<a href="https://github.com/abe33/spectacular/commit/e1bad8fb5188f5891ccfa2d209af1cfc0d2325b7">e1bad8fb</a>)</li>
-<li>add support for string in match
-(<a href="https://github.com/abe33/spectacular/commit/1ba8c3e44f98a46d1ca61c84c3f176c4f8f03916">1ba8c3e4</a>)</li>
-<li>allow value decoration in matchers
-(<a href="https://github.com/abe33/spectacular/commit/9e39fb56be6fa7a342fb8f5267981f8d337ef9bc">9e39fb56</a>)</li>
-<li>be matcher handle simple constructor type check
-(<a href="https://github.com/abe33/spectacular/commit/dcc42d0086485f76312bccd5b7c4839205b87031">dcc42d00</a>)</li>
-</ul>
-</li>
-<li><strong>reporters:</strong> replace old results with formatter based ones
-(<a href="https://github.com/abe33/spectacular/commit/84e46df6cad4ab74de182f4ce465c8f62f11073f">84e46df6</a>)</li>
-<li><strong>runner:</strong> add a start event after examples registering
-(<a href="https://github.com/abe33/spectacular/commit/91859abe2e8ea1c1c08110def66b88bcfc4d8f2a">91859abe</a>)</li>
-<li><strong>server:</strong> extract server response content into jade templates
-(<a href="https://github.com/abe33/spectacular/commit/415fb9c127d232a735fa529f409c7887cda8dfa8">415fb9c1</a>)</li>
-<li><strong>utils:</strong><ul>
-<li>wrap diffs in a span in browers
-(<a href="https://github.com/abe33/spectacular/commit/5360f6eacf789cac24888b5a69d8ca46aa61db7e">5360f6ea</a>)</li>
-<li>add colorize method in spectacular.utils
-(<a href="https://github.com/abe33/spectacular/commit/c73ab1270c90c97fbe6680b1e2acf822161b0e1a">c73ab127</a>)</li>
-</ul>
-</li>
-<li><strong>widgets:</strong> add pluralizationof states in progress widget
-(<a href="https://github.com/abe33/spectacular/commit/4a3017d224ac8f38a6617f1c8ec843509d1d552b">4a3017d2</a>)</li>
-</ul>
-<p><a name="1.4.0"></a></p>
+<!DOCTYPE html><html lang="en" class="changelog"><head><meta charset="utf-8"><title>Spectacular - ChangeLog</title><link href="http://fonts.googleapis.com/css?family=Roboto:400,100,300" rel="stylesheet" type="text/css"><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css"><link href="css/caniuse.css" rel="stylesheet" type="text/css"><link href="css/page.css" rel="stylesheet" type="text/css"><script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.2/coffee-script.min.js" type="text/javascript"></script></head><body><div id="layout" class="pure-g-r content"><div id="nav" class="pure-u"><a href="#" class="nav-menu-button">Menu</a><header><h1>Spectacular</h1><h2>1.4.0</h2></header><div class="nav-inner"><div class="pure-menu pure-menu-open"><ul><li><a href=".">Home</a></li><li><a href=".#download">Download</a></li><li><a href="./examples.html">Writing Tests</a></li><li><a href="./tools.html">Tests Tools</a></li><li><a href="./extend.html">Extend Spectacular</a></li><li><a href="./tests.html">Online Test Tool</a></li><li><a href="./changelog.html">ChangeLog</a></li><li><a href="./previous.html">Archives</a></li></ul></div><hr><a href="https://github.com/abe33/spectacular" class="fork"><i class="icon-github"></i>Fork me on GitHub</a><div class="badges"><a href="https://travis-ci.org/abe33/spectacular"><img src="https://travis-ci.org/abe33/spectacular.png" alt="Build Status"></a><a href="https://coveralls.io/r/abe33/spectacular?branch=master"><img src="https://coveralls.io/repos/abe33/spectacular/badge.png?branch=master" alt="Coverage Status"></a><a href="https://gemnasium.com/abe33/spectacular"><img src="https://gemnasium.com/abe33/spectacular.png" alt="Dependency Status"></a><a href="http://badge.fury.io/js/spectacular"><img src="https://badge.fury.io/js/spectacular.png" alt="NPM version"></a></div></div></div><div id="list" class="pure-u-1"><nav id="toc"></nav></div><div id="main" class="pure-u-1"><div class="gutter"><h1>ChangeLog</h1><p><a name="1.4.0"></a></p>
 <h2>1.4.0 (2013-08-25)</h2>
 <h3>Bug Fixes</h3>
 <ul>
@@ -190,9 +69,9 @@
 the options and paths are now retrieved from the
 spectacular object, it&#39;s no longer effective to set it on window.</p>
 <p>  To migrate the code simply replace :</p>
-<pre><code class="lang-coffeescript">  window.options = <span class="comment"># ...</span></code></pre>
+<pre><code class="lang-coffeescript">  <span class="global">window</span><span class="punctuation">.</span>options <span class="operators">=</span> <span class="comment"># ...</span></code></pre>
 <p>  With:</p>
-<pre><code class="lang-coffeescript">  spectacular.options = <span class="comment"># ...</span></code></pre>
+<pre><code class="lang-coffeescript">  spectacular<span class="punctuation">.</span>options <span class="operators">=</span> <span class="comment"># ...</span></code></pre>
 </li>
 </ul>
 <p><a name="1.2.1"></a></p>
@@ -374,17 +253,17 @@ an <code>excluded</code> static property, then it was renamed as <code>unglobali
 <li><p><strong>matchers:</strong> due to <a href="https://github.com/abe33/spectacular/commit/62460189bb9772917a0551260ea389eb28fff32c">62460189</a>,
 matchers no longer can be defined as an object, the use of the spectacular helper is mandatory.</p>
 <p>  To migrate the code follow the example below:</p>
-<pre><code class="lang-coffeescript">  exports.<span class="function"><span class="title">myMatcher</span></span> = (value) -&gt;
-    match: (actual) -&gt;
-      <span class="property">@description</span> = <span class="string">'...'</span>
-      <span class="property">@message</span> = <span class="string">'...'</span>
+<pre><code class="lang-coffeescript">  <span class="global">exports</span><span class="punctuation">.</span>myMatcher <span class="operators">=</span> <span class="group"><span class="group_begin">(</span>value<span class="group_end">)</span></span> <span class="function">-></span>
+    <span class="property">match<span class='punctuation'>:</span></span> <span class="group"><span class="group_begin">(</span>actual<span class="group_end">)</span></span> <span class="function">-></span>
+      <span class="property">@description</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>...<span class="string_end">'</span></span>
+      <span class="property">@message</span> <span class="operators">=</span> <span class="string"><span class="string_begin">'</span>...<span class="string_end">'</span></span>
       actual <span class="keyword">is</span> value</code></pre>
 <p>  After:</p>
-<pre><code class="lang-coffeescript">  spectacular.matcher <span class="string">'myMatcher'</span>, -&gt;
-    takes <span class="string">'value'</span>
-    description -&gt; <span class="string">'...'</span>
-    failureMessageForShould -&gt; <span class="string">'...'</span>
-    match (actual) -&gt; actual <span class="keyword">is</span> <span class="property">@value</span></code></pre>
+<pre><code class="lang-coffeescript">  spectacular<span class="punctuation">.</span>matcher <span class="string"><span class="string_begin">'</span>myMatcher<span class="string_end">'</span></span><span class="punctuation">,</span> <span class="function">-></span>
+    takes <span class="string"><span class="string_begin">'</span>value<span class="string_end">'</span></span>
+    description <span class="function">-></span> <span class="string"><span class="string_begin">'</span>...<span class="string_end">'</span></span>
+    failureMessageForShould <span class="function">-></span> <span class="string"><span class="string_begin">'</span>...<span class="string_end">'</span></span>
+    match <span class="group"><span class="group_begin">(</span>actual<span class="group_end">)</span></span> <span class="function">-></span> actual <span class="keyword">is</span> <span class="property">@value</span></code></pre>
 </li>
 </ul>
 <p><a name="0.0.4"></a></p>
