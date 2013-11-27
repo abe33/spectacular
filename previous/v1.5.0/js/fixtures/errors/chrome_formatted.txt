@@ -1,0 +1,6 @@
+
+    at failingFunction (file.js?body=1:10:1)
+    at callingFunction (file.js:100:10)
+    at unnamed.js
+    at Root.namespace.Root.Root.method (root.js:10:1)
+

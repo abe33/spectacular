@@ -5,7 +5,7 @@ var locals_ = (locals || {}),example = locals_.example,icons = locals_.icons;var
 var state = (result.state);
 var hasExpectations = (result.expectations.length > 0);
 icons = { success: 'ok', failure: 'remove', errored: 'remove', pending: 'ellipsis', skipped: 'remove' }
-buf.push("<div" + (jade.attrs({ "class": [('example'),(state)] }, {"class":true})) + "><div class=\"details\"><section><span class=\"state\"><i" + (jade.attrs({ "class": [("icon-" + (icons[state]) + "")] }, {"class":true})) + "></i><span>" + (jade.escape(null == (jade.interp = state) ? "" : jade.interp)) + "</span></span><span class=\"time\"><i class=\"icon-time\"></i><span>" + (null == (jade.interp = (example.duration / 1000) + "s") ? "" : jade.interp) + "</span></span><a" + (jade.attrs({ 'href':("?filter=" + (example.description) + ""), "class": [('refresh')] }, {"href":true})) + "><i class=\"icon-refresh\"></i><span>Rerun it!</span></a></section><header><h3>" + (null == (jade.interp = example.fullDescription) ? "" : jade.interp) + "</h3></header>");
+buf.push("<div" + (jade.attrs({ "class": [('example'),(state)] }, {"class":true})) + "><div class=\"details\"><section><span class=\"state\"><i" + (jade.attrs({ "class": [("icon-" + (icons[state]) + "")] }, {"class":true})) + "></i><span>" + (jade.escape(null == (jade.interp = state) ? "" : jade.interp)) + "</span></span><span class=\"time\"><i class=\"icon-time\"></i><span>" + (null == (jade.interp = (example.duration / 1000) + "s") ? "" : jade.interp) + "</span></span><a" + (jade.attrs({ 'href':("/?filter=" + (example.description) + ""), "class": [('refresh')] }, {"href":true})) + "><i class=\"icon-refresh\"></i><span>Rerun it!</span></a></section><header><h3>" + (null == (jade.interp = example.fullDescription) ? "" : jade.interp) + "</h3></header>");
 if ( hasExpectations)
 {
 buf.push("<ul class=\"expectations\">");
@@ -89,7 +89,7 @@ buf.push("<li" + (jade.attrs({ 'data-state':(state), "class": [(state)] }, {"cla
   }
 }).call(this);
 
-buf.push("</ul><div class=\"credits\"><div class=\"version\">Spectacular 1.5.1</div><a href=\"http://abe33.github.io/spectacular/\" class=\"documentation\">Documentation</a><a href=\"https://github.com/abe33/spectacular\" class=\"github\">Github</a></div></div>");;return buf.join("");
+buf.push("</ul></div>");;return buf.join("");
 }
 
 spectacular.templates['search'] = function anonymous(locals) {
