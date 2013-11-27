@@ -13,7 +13,7 @@ hasExpectations = result.expectations.length > 0
       span.time
         i.icon-time
         span!= (example.duration / 1000) + "s"
-      a.refresh(href="/?filter=#{example.description}")
+      a.refresh(href="?filter=#{example.description}")
         i.icon-refresh
         span Rerun it!
 
