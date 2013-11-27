@@ -1,3 +1,25 @@
+<a name="1.5.1"></a>
+# 1.5.1 (2013-11-27)
+
+
+## Bug Fixes
+
+- **browser:**
+  - fix drawers button not working when drawers are open
+  ([b974d3b5](https://github.com/abe33/spectacular/commit/b974d3b5c844471f993bb21519b348e78c153cec))
+  - remove leading slash from rerun url
+  ([7886d9db](https://github.com/abe33/spectacular/commit/7886d9db748d1cbe71b1daa14f85f50c387221a3))
+- **extensions:** add existence check before decorating native classes
+  ([934f11a0](https://github.com/abe33/spectacular/commit/934f11a06ca9733a286fd027ca597a2400f797b8))
+- **utils:** limit utils.inspect to owned properties
+  ([9e0ab20f](https://github.com/abe33/spectacular/commit/9e0ab20f9c0a9960d1a1c2152bacc935a9811534))
+
+
+## Features
+
+- **browser:** add documentation and github links to the runner
+  ([d283a4de](https://github.com/abe33/spectacular/commit/d283a4de9b3b66f33bbc654f1f30a5a92dc00e58))
+
 <a name="1.5.0"></a>
 # 1.5.0 (2013-11-24)
 
