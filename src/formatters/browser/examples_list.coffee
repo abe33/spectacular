@@ -15,17 +15,17 @@ class spectacular.widgets.ExamplesList
       else
         Array::forEach.call @list.children, (el) -> removeClass el, 'collapse'
 
-    html = document.querySelector 'html'
+    body = document.body
     openLeft = @container.querySelector '.btn-open-left'
     openLeft.onclick = =>
-      if hasClass html, 'snapjs-left'
+      if hasClass body, 'snapjs-left'
         @reporter.snapper.close()
       else
         @reporter.snapper.open('left')
 
     openRight = @container.querySelector '.btn-open-right'
     openRight.onclick = =>
-      if hasClass html, 'snapjs-right'
+      if hasClass body, 'snapjs-right'
         @reporter.snapper.close()
       else
         @reporter.snapper.open('right')

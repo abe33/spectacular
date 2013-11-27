@@ -255,7 +255,7 @@ spectacular.utils.inspect = (obj, depth=1, lookup=[]) ->
       else
         return '{}' if utils.keys(obj).length is 0
         "{\n#{
-          ("#{ind}#{k}: #{utils.inspect v, depth+1, lookup}" for k,v of obj).join ',\n'
+          ("#{ind}#{k}: #{utils.inspect v, depth+1, lookup}" for k,v of obj when obj.hasOwnProperty k).join ',\n'
         }\n#{ind[0..-3]}}"
     when 'function'
       if obj.name

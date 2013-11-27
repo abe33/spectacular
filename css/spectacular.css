@@ -225,6 +225,22 @@ body {
   position: absolute;
   right: 20px;
 }
+#progress .credits {
+  position: absolute;
+  bottom: 10px;
+  font-size: 0.8em;
+  color: #aac8c8;
+}
+#progress .credits .version {
+  display: inline-block;
+}
+#progress .credits a {
+  color: #3893c1;
+  display: inline-block;
+  margin-left: 5px;
+  padding-left: 5px;
+  border-left: 1px solid rgba(170,200,200,0.4);
+}
 #viewer {
   width: 50%;
   top: 0;
