@@ -15,19 +15,31 @@ class spectacular.formatters.console.ErrorFormatter
 
       if @options.showSource
         {file, line, column} = stackFormatter.parser.details(stackFormatter.parser.lines[0])
-        fileFormatter = new formatters.ErrorSourceFormatter @options, file, line, column
 
-        fileFormatter
-        .format()
-        .then (result) =>
-          res += spectacular.utils.colorize result, 'grey', @options.colors
-          stackFormatter.format()
-        .then (result) ->
-          res += result
-          promise.resolve res
-        .fail (reason) ->
-          console.log reason
-          promise.resolve res
+        if file?
+          fileFormatter = new formatters.ErrorSourceFormatter @options, file, line, column
+
+          fileFormatter
+          .format()
+          .then (result) =>
+            res += spectacular.utils.colorize result, 'grey', @options.colors
+            stackFormatter.format()
+          .then (result) ->
+            res += result
+            promise.resolve res
+          .fail (reason) ->
+            console.log reason
+            promise.resolve res
+        else
+          stackFormatter
+          .format()
+          .then (result) ->
+            res += result
+            promise.resolve res
+          .fail (reason) ->
+            console.log reason
+            promise.resolve res
+
       else
         res += stackFormatter.format()
         promise.resolve res

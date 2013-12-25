@@ -1,0 +1,12 @@
+TypeError: Array.prototype.indexOf called on null or undefined
+    at indexOf (native)
+    at Object.<anonymous> (http://localhost:5000/specs/units/errors.spec.coffee:37:42)
+    at Example.spectacular.Example.Example.executeHook (http://localhost:5000/assets/js/spectacular.js:2040:14)
+    at next (http://localhost:5000/assets/js/spectacular.js:2019:22)
+    at Example.spectacular.Example.Example.executeHook (http://localhost:5000/assets/js/spectacular.js:2041:16)
+    at next (http://localhost:5000/assets/js/spectacular.js:2019:22)
+    at http://localhost:5000/assets/js/spectacular.js:2032:18
+    at f (http://localhost:5000/assets/js/spectacular.js:1541:56)
+    at AsyncPromise.spectacular.Promise.Promise.notifyHandlers (http://localhost:5000/assets/js/spectacular.js:1612:9)
+    at AsyncPromise.spectacular.Promise.Promise.resolve (http://localhost:5000/assets/js/spectacular.js:1589:10)
+    at AsyncPromise.spectacular.AsyncPromise.AsyncPromise.resolve (http://localhost:5000/assets/js/spectacular.js:1657:43)

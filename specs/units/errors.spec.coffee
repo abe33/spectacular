@@ -19,3 +19,26 @@ describe spectacular.errors.ErrorParser, ->
     given 'stack', -> @firefox
 
     itShould 'match error'
+
+  context 'for a native error', ->
+    fixture 'errors/firefox_native.txt', as: 'firefox'
+    fixture 'errors/chrome_native.txt', as: 'chrome'
+    fixture 'errors/node_native.txt', as: 'node'
+
+    context 'for a chrome stack', ->
+      given 'stack', -> @chrome
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).native.should be true
+
+    context 'for a node stack', ->
+      given 'stack', -> @node
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).native.should be true
+
+    context 'for a firefox stack', ->
+      given 'stack', -> @firefox
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).line.should equal '37'

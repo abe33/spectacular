@@ -8,7 +8,11 @@ class spectacular.errors.GeckoParser
   filter: (line) -> /@/.test line
   details: (line) ->
     re = ///\s*([^\s]*)(@)#{URI_RE}#{LINE_RE}///
-    [match, method, p, file, h, e, q, line, c, column] = re.exec line
+
+    if re.test line
+      [match, method, p, file, h, e, q, line, c, column] = re.exec line
+    else
+      return {native: true}
 
     {file, line, column, method}
 
@@ -17,7 +21,11 @@ class spectacular.errors.V8Parser
   filter: (line) -> /\s+at\s+/.test line
   details: (line) ->
     re = ///at\s*(([^\s]*)\s*\(|\()*#{URI_RE}#{LINE_RE}///
-    [match, p, method, file, h, e, q, line, c, column] = re.exec line
+
+    if re.test line
+      [match, p, method, file, h, e, q, line, c, column] = re.exec line
+    else
+      return {native: true}
 
     {file, line, column, method, params: q}
 
