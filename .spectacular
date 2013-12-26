@@ -2,4 +2,5 @@
 --coffee
 --source-map
 --format progress
+--require ./specs/support
 --source specs/support/fixtures/*.js

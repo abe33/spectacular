@@ -34,7 +34,7 @@ options =
   format: 'progress'
   longTrace: false
   showSource: true
-  requires: [ './specs/support' ]
+  requires: []
   fixturesRoot: './specs/support/fixtures'
   phantomjsExecutable: 'phantomjs'
   slimerjsExecutable: 'slimerjs'
