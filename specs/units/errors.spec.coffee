@@ -42,3 +42,29 @@ describe spectacular.errors.ErrorParser, ->
 
       the -> @parser.should exist
       the -> @parser.details(@parser.lines[0]).line.should equal '37'
+
+
+  context 'with an error raised in an accessor', ->
+
+    fixture 'errors/firefox_accessor.txt', as: 'firefox'
+    fixture 'errors/chrome_accessor.txt', as: 'chrome'
+    fixture 'errors/node_accessor.txt', as: 'node'
+
+    context 'for a chrome stack', ->
+      given 'stack', -> @chrome
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).line.should equal '83'
+    context 'for a node stack', ->
+      given 'stack', -> @node
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).line.should equal '83'
+
+    context 'for a firefox stack', ->
+      given 'stack', -> @firefox
+
+      the -> @parser.should exist
+      the -> @parser.details(@parser.lines[0]).line.should equal '83'
+
+
