@@ -416,6 +416,11 @@
 #viewer .example .diff ins {
   background: rgba(100,180,50,0.5);
 }
+@media screen and (max-width: 480px) {
+  #viewer .example .refresh span {
+    display: none;
+  }
+}
 #examples {
   position: absolute;
   z-index: 2;

@@ -1,0 +1,37 @@
+lower_than(max)
+  media = 'screen and (max-width: %s)' % max
+
+  @media media
+    {block}
+
+greater_than(min)
+  media = 'screen and (min-width: %s)' % min
+
+  @media media
+    {block}
+
+between(min, max)
+  media = 'screen and (min-width: %s) and (max-width: %s)' % (min max)
+
+  @media media
+    {block}
+
+for_small_phone()
+  +lower_than(breakpoint_small_phone -1px)
+    {block}
+
+for_large_phone()
+  +between(breakpoint_small_phone, breakpoint_large_phone - 1px)
+    {block}
+
+for_tablet()
+  +between(breakpoint_large_phone, breakpoint_tablet - 1px)
+    {block}
+
+for_small_desktop()
+  +between(breakpoint_tablet, breakpoint_small_desktop - 1px)
+    {block}
+
+for_large_desktop()
+  +greater_than(breakpoint_small_desktop)
+    {block}
