@@ -1,0 +1,149 @@
+#viewer
+  position absolute
+  z-index 1
+  width 50%
+  top 0
+  bottom 0
+  right 0
+  margin-top -5px
+  background very_dark_blue
+  padding 10px 20px
+  overflow auto
+
+
+  inner-div()
+
+  section
+    sidebar-gradient-bar()
+    margin -15px -20px 10px
+    padding 13px 0px 13px 20px
+
+  .example
+    width 100%
+    color light_gray
+
+    for state in states
+      &.{state[0]}
+        .state
+          background state[1]
+
+        .message
+          color state[1]
+
+    h3
+      margin 0
+      font-weight 300
+
+    .details
+    .message
+    .stack
+      margin 10px 0
+
+    .message
+      white-space pre-wrap
+
+    .stack
+      font-size 12px
+      font-family monospace
+      white-space nowrap
+
+      a
+        color light_blue
+        cursor pointer
+        &:hover
+          text-decoration none
+
+      pre
+        color darken(medium_gray, 20%)
+
+        .line-number
+          color darken(medium_gray, 50%)
+
+    .time
+    .state
+    .refresh
+      display inline-block
+      color light_gray
+      border-radius 3px
+      font-weight 300
+      margin-right 10px
+      text-decoration none
+      padding 3px 5px
+      line-height 1em
+      box-shadow inset 0 1px 2px rgba(0, 0, 0, .3), 0 1px 0px dark_blue
+
+
+      i
+        margin-right 5px
+        color dark_blue
+
+      span
+        text-shadow 0 0 2px transparentize(dark_blue, 0.3)
+
+    .time
+      background light_blue
+
+    .refresh
+      background failure
+      text-transform uppercase
+
+    .state
+      text-transform uppercase
+
+    .expectations
+      padding 0
+      margin 10px 0
+
+      .expectation
+        list-style none
+        cursor pointer
+        padding 5px
+        margin 0 -5px
+        border-radius 3px
+
+        &.active
+          background dark_blue
+
+        &.success
+          color success
+
+        &.failure
+          color failure
+
+    .expectation-message
+      border-top 1px solid dark_blue
+      padding-top 5px
+      white-space pre-wrap
+      font-family Menlo, Consolas, monospace
+      font-size 0.8em
+
+      &.success
+        color success
+
+      &.failure
+        color failure
+
+      .value
+        background dark_blue
+        border-radius 3px
+        padding 1px 3px
+
+    .diff
+      display block
+      background dark_blue
+      padding 5px
+      border-radius 4px
+      color medium_gray
+
+      del, ins
+        padding 2px
+        text-decoration none
+
+      del
+        background transparentize(failure, 0.5)
+
+      ins
+        background transparentize(success, 0.5)
+
+
+
