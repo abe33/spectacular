@@ -38,7 +38,7 @@
     "walkdir": "0.0.7",
     "istanbul": "~0.1.35",
     "express": "~3.4.0",
-    "stylus": "~0.40.0",
+    "stylus": "~0.41.0",
     "jsdom": "~0.8.1",
     "wintersmith": "~2.0.5",
     "wintersmith-stylus": "~0.4.0",
