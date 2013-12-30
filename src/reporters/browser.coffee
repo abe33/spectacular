@@ -1,4 +1,6 @@
 
+breakPointTablet = 1024
+
 class spectacular.BrowserReporter
   constructor: (@runner, @widgets) ->
     {@options} = @runner
@@ -28,14 +30,29 @@ class spectacular.BrowserReporter
       element: @container.querySelector('#examples')
       minPosition: -viewerSize()
 
-    @container.querySelector('#viewer').setAttribute 'style', "width: #{viewerSize()}px;"
-    @snapper.open 'left'
+    if window.innerWidth < breakPointTablet
+      @container.querySelector('#viewer').setAttribute 'style', "width: #{viewerSize()}px;"
+      @snapper.open 'left'
+    else
+      @snapper.disable()
 
     previousOnResize = document.body.onresize
-    document.body.onresize = =>
+    document.body.onresize = (e) =>
+      previousOnResize?(e)
+      @onResize(e)
+
+  openDetails: ->
+    @snapper.open('right') if window.innerWidth < breakPointTablet
+
+
+  onResize: ->
+    if window.innerWidth < breakPointTablet
+      @snapper.enable()
       @snapper.close()
       @snapper.settings minPosition: -viewerSize()
       @container.querySelector('#viewer').setAttribute 'style', "width: #{viewerSize()}px;"
+    else
+      @snapper.disable()
 
   onStart: (e) => @widgets.forEach (w) => w.onStart(e)
   onResult: (e) => @widgets.forEach (w) -> w.onResult e

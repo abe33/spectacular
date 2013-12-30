@@ -41,8 +41,8 @@ class spectacular.widgets.ExamplesList
     if state in ['failure', 'errored'] and not hasClass @reporter.container, 'hide-success'
       addClass @container, 'fail'
       addClass @reporter.container, 'hide-success'
-      @reporter.snapper.open('right')
       @viewer?.displayCard example
+      @reporter.openDetails()
 
     @buildExample example
     @examples.push example
@@ -71,7 +71,7 @@ class spectacular.widgets.ExamplesList
 
     node.onclick = =>
       @viewer.displayCard @examples[node.attributes.id.value]
-      @reporter.snapper.open 'right'
+      @reporter.openDetails()
 
     node
 

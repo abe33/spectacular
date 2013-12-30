@@ -5,8 +5,7 @@ if typeof module is 'undefined'
     given 'reporter', ->
       container: @reporterContainer[0]
       widgets: []
-      snapper:
-        open: ->
+      openDetails: ->
 
     given 'runner', ->
       examples: []
