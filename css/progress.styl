@@ -1,12 +1,8 @@
 #progress
   z-index 1
-  position absolute
   color medium_gray
   padding 10px
-  width 266px
-  left 0
-  top 0
-  bottom 0
+  transition all 0.3s
 
   inner-div()
   counters()
@@ -14,7 +10,7 @@
   .all
     font-size 40px
     line-height 43px
-    margin 8px 0
+    margin 8px 0 8px 10px
 
   for state in states
     .{state[0]} .symbol
@@ -65,7 +61,11 @@
       border-left 1px solid transparentize(medium_gray, 0.6)
 
   section
-    sidebar-gradient-bar()
+    padding 10px
+    height 48px
+    background-image linear-gradient(to bottom, darken(dark_blue, 30%) 0%, very_dark_blue 100%)
+    margin -10px -10px 0
+    box-shadow 0 1px 4px rgba(0, 0, 0, .7)
 
   ul
     margin 0
@@ -73,10 +73,9 @@
 
   li
     margin 0 -10px
-    padding 0
     position relative
     list-style none
-    padding 10px
+    padding 10px 10px 10px 20px
     border-top 1px solid dark_blue
     cursor pointer
     transition all 0.3s
@@ -90,18 +89,77 @@
       & + li
         border-color very_dark_blue
 
+    &:before
     &:after
-      content '\f06e'
-      font-family FontAwesome
-      color medium_gray
+      display block
       position absolute
+      content ''
+
+    &:before
+      content '\f06e'
+      top 10px
+      height 22px
+      width 42px
       right 20px
+      background success
+      box-shadow inset 0 1px 3px rgba(0, 0, 0, .75), 0 1px 1px dark_blue
+      font-family FontAwesome
+      color very_dark_blue
+      border-radius 3px
+      transition all 0.2s
+      box-sizing border-box
+      padding-left 3px
+      line-height 1.4em
+
+    &:after
+      width: 20px
+      height: 20px
+      background very_dark_blue
+      box-shadow inset 0 0px 14px dark_blue, 0 1px 3px rgba(0, 0, 0, .75)
+      right 21px
+      top 11px
+      border-radius 2px
+      transition all 0.35s
 
 for state in states
   .hide-{state[0]}
     #progress li.{state[0]}
+      &:before
+        background very_dark_blue
       &:after
-        color black
-        text-shadow 0 1px 1px white
+        right 41px
+
++lower_than(breakpoint_tablet - 1px)
+  #progress
+    width 266px
+    left 0
+    top 0
+    bottom 0
+    position absolute
+
++greater_than(breakpoint_tablet)
+  #progress
+    position absolute
+    width 34%
+    top 0
+    bottom 50%
+    right 0
+
+    section
+      text-align right
+
+      .seed, .time
+        float none
+
+    .all
+      text-shadow -1.5px -1.5px 0px very_dark_blue, 1.5px 1.5px 0px lighten(dark_blue, 5)
+      position absolute
+      font-size 30px
+      left 10px
+      top -7px
+
+  .view-expanded
+    #progress
+      width 66%
 
 

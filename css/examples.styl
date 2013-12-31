@@ -8,7 +8,7 @@
   bottom 0
   box-shadow 0 0 5px 4px black
   border-radius 5px
-
+  transition all 0.3s
 
   inner-div()
   counters()
@@ -53,7 +53,7 @@
       position absolute
       height 36px
       top 4px
-      left 48px
+      left 54px
       text-align right
       right 102px
 
@@ -230,12 +230,14 @@ for state in states
           min-width 0px
           width 0px
           padding-right 20px
+          &:focus
+            min-width 100%
 
-          &:focus + button
-            right 0
+            & + button
+              right 0
 
-            i:after
-              opacity 0
+              i:after
+                opacity 0
 
         button
           right -30px
@@ -254,7 +256,31 @@ for state in states
             z-index 2
             pointer-events: none
 
++greater_than(breakpoint_tablet)
+  #examples
+    width 66%
 
+    .all
+      display none
+
+    .header
+      button.btn-open-left
+      button.btn-open-right
+        display none
+
+      button.btn-collapse
+        right 0px
+
+      #search
+        right 54px
+        left 6px
+
+        input:focus
+          width 100%
+
+
+  .view-expanded #examples
+    width 34%
 
 
 

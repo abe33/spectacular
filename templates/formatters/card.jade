@@ -17,6 +17,9 @@ hasExpectations = result.expectations.length > 0
         i.icon-refresh
         span Rerun it!
 
+
+  .card
+
     header
       h3!= example.fullDescription
 
@@ -30,6 +33,5 @@ hasExpectations = result.expectations.length > 0
 
     else if state != 'success' && state != 'pending'
       .message= example.examplePromise.reason.message
-
-  .expectation-message
-  .stack
+    .expectation-message
+    .stack

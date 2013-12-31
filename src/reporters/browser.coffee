@@ -44,7 +44,6 @@ class spectacular.BrowserReporter
   openDetails: ->
     @snapper.open('right') if window.innerWidth < breakPointTablet
 
-
   onResize: ->
     if window.innerWidth < breakPointTablet
       @snapper.enable()
@@ -52,6 +51,8 @@ class spectacular.BrowserReporter
       @snapper.settings minPosition: -viewerSize()
       @container.querySelector('#viewer').setAttribute 'style', "width: #{viewerSize()}px;"
     else
+      @container.querySelector('#viewer').setAttribute 'style', ''
+      @snapper.close()
       @snapper.disable()
 
   onStart: (e) => @widgets.forEach (w) => w.onStart(e)

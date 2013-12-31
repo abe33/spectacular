@@ -1,13 +1,14 @@
 .example.failure
   .details
-    h3
+    .time
     .state
       'failure'
-    .time
 
-  ul.expectations
-    li.expectation.failure.active
+  .card
+    h3
+    ul.expectations
+      li.expectation.failure.active
 
-  .expectation-message
-    'failed'
-  .stack
+    .expectation-message
+      'failed'
+    .stack

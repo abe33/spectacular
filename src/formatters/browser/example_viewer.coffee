@@ -3,10 +3,15 @@ class spectacular.widgets.ExampleViewer
   init: (@runner, @reporter) ->
     @container = buildHTML spectacular.templates.viewer()
     @view = @container.querySelector 'div'
+    @expand = @container.querySelector 'button'
     @reporter.container.appendChild @container
+
+    @expand.onclick = ->
+      toggleClass document.querySelector('body'), 'view-expanded'
 
   displayCard: (example) ->
     @view.innerHTML = @getCard example
+    addClass(@container, 'card-visible') unless hasClass(@container, 'card-visible')
 
     @stack = @view.querySelector '.stack'
     @expectationMessage = @view.querySelector '.expectation-message'

@@ -9,13 +9,23 @@
   background very_dark_blue
   padding 10px 20px
   overflow auto
+  transition all 0.3s
 
   inner-div()
 
+  .btn-expand
+    display none
+
   section
-    sidebar-gradient-bar()
+    padding 10px
+    height 48px
+    background-image linear-gradient(to bottom, darken(dark_blue, 30%) 0%, very_dark_blue 100%)
+    margin -10px -10px 0
+    box-shadow 0 1px 4px rgba(0, 0, 0, .7)
+
     margin -15px -20px 10px
     padding 13px 0px 13px 20px
+
 
   .example
     width 100%
@@ -147,5 +157,61 @@
 +for_small_phone()
   #viewer .example .refresh span
     display none
+
++greater_than(breakpoint_tablet)
+  #viewer
+    width 34%
+    top 50%
+
+    .card
+      position absolute
+      padding 13px 0px 13px 20px
+      top 48px
+      bottom 0
+      left 0
+      right 0
+      overflow auto
+
+    .details section
+      padding-left 56px
+
+    .btn-expand
+      display none
+
+    &.card-visible .btn-expand
+      display block
+      cursor pointer
+      position absolute
+      top 13px
+      left 12px
+      width 34px
+      height 34px
+      background-image linear-gradient(to bottom, darken(dark_blue, 30%) 0%, very_dark_blue 100%)
+      border 1px solid dark_blue
+      border-bottom 1px solid very_dark_blue
+      border-right 1px solid very_dark_blue
+      box-shadow 0 1px 3px rgba(0, 0, 0, .75)
+      border-radius 4px
+      color light_gray
+
+      i
+        font-size 1.6em
+        margin-top 2px
+
+  .view-expanded
+    #viewer
+      top 48px
+      width 66%
+
+      &.card-visible .btn-expand
+        background success
+        border 1px solid very_dark_blue
+        border-bottom 1px solid dark_blue
+        border-right 1px solid dark_blue
+        box-shadow inset 0 1px 3px rgba(0, 0, 0, .75)
+        color very_dark_blue
+
+
+
 
 
