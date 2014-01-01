@@ -40,7 +40,7 @@ class spectacular.widgets.ExamplesList
     state = example.result.state
     if state in ['failure', 'errored'] and not hasClass @reporter.container, 'hide-success'
       addClass @container, 'fail'
-      addClass @reporter.container, 'hide-success'
+      addClass document.querySelector('body'), 'hide-success'
       @viewer?.displayCard example
       @reporter.openDetails()
 
