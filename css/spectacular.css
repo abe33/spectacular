@@ -281,7 +281,12 @@
     width: 34%;
     top: 0;
     bottom: 50%;
+    overflow: auto;
     right: 0;
+  }
+  #progress .credits {
+    position: static;
+    margin: 10px 0;
   }
   #progress section {
     text-align: right;
