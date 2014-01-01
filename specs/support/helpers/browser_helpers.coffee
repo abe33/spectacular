@@ -6,6 +6,7 @@ if typeof module is 'undefined'
       container: @reporterContainer[0]
       widgets: []
       openDetails: ->
+      errorOccured: ->
 
     given 'runner', ->
       examples: []

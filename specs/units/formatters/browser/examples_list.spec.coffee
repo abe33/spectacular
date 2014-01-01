@@ -7,8 +7,10 @@ if typeof module is 'undefined'
 
     withWidgetSetup ->
       before ->
+      spyOn(@reporter, 'errorOccured')
         @list.init @runner, @reporter
         @list.onStart(target: @reporter)
+
 
       given 'container', -> @list.container
       given 'all', -> @container.querySelector '.all .value'
@@ -39,5 +41,4 @@ if typeof module is 'undefined'
 
             the 'tests counter', -> @all.textContent.should equal '1'
             the -> @listContainer.should contains @itemDOM
-            the 'container', -> @reporter.container.getAttribute('class').should match 'hide-success'
-
+            the 'container', -> @reporter.errorOccured.should haveBeenCalled

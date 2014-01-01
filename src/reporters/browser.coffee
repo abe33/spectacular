@@ -41,6 +41,10 @@ class spectacular.BrowserReporter
       previousOnResize?(e)
       @onResize(e)
 
+  errorOccured:->
+    addClass document.querySelector('body'), 'hide-success'
+    @openDetails()
+
   openDetails: ->
     @snapper.open('right') if window.innerWidth < breakPointTablet
 
