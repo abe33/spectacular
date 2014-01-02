@@ -1036,11 +1036,17 @@
 #examples .example.errored {
   background: rgba(255,150,20,0.2);
 }
+#examples .example.errored.active {
+  background: rgba(56,147,193,0.3);
+}
 .hide-skipped #examples .skipped {
   display: none;
 }
 #examples .example.skipped {
   background: rgba(255,20,220,0.2);
+}
+#examples .example.skipped.active {
+  background: rgba(56,147,193,0.3);
 }
 .hide-pending #examples .pending {
   display: none;
@@ -1048,17 +1054,26 @@
 #examples .example.pending {
   background: rgba(255,200,90,0.2);
 }
+#examples .example.pending.active {
+  background: rgba(56,147,193,0.3);
+}
 .hide-failure #examples .failure {
   display: none;
 }
 #examples .example.failure {
   background: rgba(255,40,20,0.2);
 }
+#examples .example.failure.active {
+  background: rgba(56,147,193,0.3);
+}
 .hide-success #examples .success {
   display: none;
 }
 #examples .example.success {
   background: rgba(100,180,50,0.2);
+}
+#examples .example.success.active {
+  background: rgba(56,147,193,0.3);
 }
 @media screen and (max-width: 480px) {
   #examples .header #search {

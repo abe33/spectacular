@@ -64,13 +64,20 @@ class spectacular.widgets.ExamplesList
 
     node.appendChild @getExample example
 
+  selectExample: (example, node) ->
+    previous = @list.querySelector('.active')
+    removeClass previous, 'active' if previous?
+
+    addClass node, 'active'
+    @viewer.displayCard example
+    @reporter.openDetails()
+
   getExample: (example) ->
     state = example.result.state
     node = tag 'article', example.ownDescriptionWithExpectations, class: "example #{state}", id: @examples.length, title: example.fullDescription, 'data-index': stripHTML example.fullDescription.toLowerCase()
 
     node.onclick = =>
-      @viewer.displayCard @examples[node.attributes.id.value]
-      @reporter.openDetails()
+      @selectExample @examples[node.attributes.id.value], node
 
     node
 

@@ -219,6 +219,9 @@ for state in states
   #examples .example.{state[0]}
     background transparentize(state[1], 0.8)
 
+    &.active
+      background transparentize(light_blue, 0.7)
+
 +for_small_phone()
   #examples
     .header

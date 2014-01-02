@@ -7,10 +7,10 @@ if typeof module is 'undefined'
 
     withWidgetSetup ->
       before ->
-      spyOn(@reporter, 'errorOccured')
+        spyOn(@reporter, 'errorOccured')
+
         @list.init @runner, @reporter
         @list.onStart(target: @reporter)
-
 
       given 'container', -> @list.container
       given 'all', -> @container.querySelector '.all .value'
@@ -23,7 +23,6 @@ if typeof module is 'undefined'
         context 'when a result event is propagated', ->
           fixture 'formatters/list_item.dom', as: 'itemDOM'
 
-
           context 'for a successful example', ->
             given 'example', -> create 'example', 'successful'
 
@@ -32,7 +31,21 @@ if typeof module is 'undefined'
             the 'tests counter', -> @all.textContent.should equal '1'
             the -> @listContainer.should contains @itemDOM
 
-            context
+            context 'clicking on an element of the list', ->
+              given 'item', -> @listContainer.querySelector '.example'
+
+              before ->
+                @list.viewer = displayCard: ->
+
+                spyOn(@list.viewer, 'displayCard')
+                spyOn(@list.reporter, 'openDetails')
+
+                @item.onclick?()
+
+              the -> @list.viewer.displayCard.should haveBeenCalled
+              the -> @list.reporter.openDetails.should haveBeenCalled
+              the -> @item.should haveClass 'active'
+
 
           context 'for a failing example', ->
             given 'example', -> create 'example', 'failure'
