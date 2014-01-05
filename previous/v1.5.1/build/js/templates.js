@@ -5,7 +5,7 @@ var locals_ = (locals || {}),example = locals_.example,icons = locals_.icons;var
 var state = (result.state);
 var hasExpectations = (result.expectations.length > 0);
 icons = { success: 'ok', failure: 'remove', errored: 'remove', pending: 'ellipsis', skipped: 'remove' }
-buf.push("<div" + (jade.attrs({ "class": [('example'),(state)] }, {"class":true})) + "><div class=\"details\"><section><span class=\"state\"><i" + (jade.attrs({ "class": [("icon-" + (icons[state]) + "")] }, {"class":true})) + "></i><span>" + (jade.escape(null == (jade.interp = state) ? "" : jade.interp)) + "</span></span><span class=\"time\"><i class=\"icon-time\"></i><span>" + (null == (jade.interp = (example.duration / 1000) + "s") ? "" : jade.interp) + "</span></span><a" + (jade.attrs({ 'href':("?filter=" + (example.description) + ""), "class": [('refresh')] }, {"href":true})) + "><i class=\"icon-refresh\"></i><span>Rerun it!</span></a></section></div><div class=\"card\"><header><h3>" + (null == (jade.interp = example.fullDescription) ? "" : jade.interp) + "</h3></header>");
+buf.push("<div" + (jade.attrs({ "class": [('example'),(state)] }, {"class":true})) + "><div class=\"details\"><section><span class=\"state\"><i" + (jade.attrs({ "class": [("icon-" + (icons[state]) + "")] }, {"class":true})) + "></i><span>" + (jade.escape(null == (jade.interp = state) ? "" : jade.interp)) + "</span></span><span class=\"time\"><i class=\"icon-time\"></i><span>" + (null == (jade.interp = (example.duration / 1000) + "s") ? "" : jade.interp) + "</span></span><a" + (jade.attrs({ 'href':("?filter=" + (example.description) + ""), "class": [('refresh')] }, {"href":true})) + "><i class=\"icon-refresh\"></i><span>Rerun it!</span></a></section><header><h3>" + (null == (jade.interp = example.fullDescription) ? "" : jade.interp) + "</h3></header>");
 if ( hasExpectations)
 {
 buf.push("<ul class=\"expectations\">");
@@ -51,7 +51,7 @@ else if ( state != 'success' && state != 'pending')
 {
 buf.push("<div class=\"message\">" + (jade.escape(null == (jade.interp = example.examplePromise.reason.message) ? "" : jade.interp)) + "</div>");
 }
-buf.push("<div class=\"expectation-message\"></div><div class=\"stack\"></div></div></div>");;return buf.join("");
+buf.push("</div><div class=\"expectation-message\"></div><div class=\"stack\"></div></div>");;return buf.join("");
 }
 
 spectacular.templates['error'] = function anonymous(locals) {
@@ -99,5 +99,5 @@ buf.push("<div id=\"search\"><form action=\"/\" method=\"get\"><input id=\"searc
 
 spectacular.templates['viewer'] = function anonymous(locals) {
 var buf = [];
-buf.push("<div id=\"viewer\"><button class=\"btn-expand\"><i class=\"icon-fullscreen\"></i></button><div></div></div>");;return buf.join("");
+buf.push("<div id=\"viewer\"><div></div></div>");;return buf.join("");
 }
