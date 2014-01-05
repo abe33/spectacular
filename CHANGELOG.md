@@ -1,3 +1,37 @@
+<a name="1.6.0"></a>
+# 1.6.0 (2014-01-05)
+
+
+## Bug Fixes
+
+- **browser:** fix hide success class added on list and not on body
+  ([11c9dfbb](https://github.com/abe33/spectacular/commit/11c9dfbbceb9ced8541b0f5ec5a4d0530ab78b9f))
+- **default:** there's no more default path in requires
+  ([00217db1](https://github.com/abe33/spectacular/commit/00217db1e054ad63e293372e9b0fab33b05f133b))
+- **errors:** handle lines in stack trace that doesn't point a file
+  ([c8b8ef38](https://github.com/abe33/spectacular/commit/c8b8ef3895e5ddd9d32777371024dc6c0dc58d01))
+
+
+## Features
+
+- **browser:**
+  - add a selection state on examples in the list
+  ([5a106667](https://github.com/abe33/spectacular/commit/5a10666721a8db7b5109727cac1381933a20767b))
+  - add desktop version of the test runner
+  ([24374373](https://github.com/abe33/spectacular/commit/24374373e94849e0f03970847b714899e67cced2))
+  - disable snap.js on desktop
+  ([a0bc85cf](https://github.com/abe33/spectacular/commit/a0bc85cfa49bcc31d2f558a2f45cabbce3709c05))
+
+
+## Breaking Changes
+
+- **default:** due to [00217db1](https://github.com/abe33/spectacular/commit/00217db1e054ad63e293372e9b0fab33b05f133b), the support directory is no longer required by default.
+
+    In order to fix it you can simply add the following option when
+running you tests or in your `.spectacular` config:
+
+    `—require spec/support`
+
 <a name="1.5.1"></a>
 # 1.5.1 (2013-11-27)
 

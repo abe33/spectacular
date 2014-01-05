@@ -156,9 +156,8 @@
         return {
           container: this.reporterContainer[0],
           widgets: [],
-          snapper: {
-            open: function() {}
-          }
+          openDetails: function() {},
+          errorOccured: function() {}
         };
       });
       given('runner', function() {
@@ -1416,11 +1415,99 @@
       });
       return itShould('match error');
     });
-    return context('for a firefox stack', function() {
+    context('for a firefox stack', function() {
       given('stack', function() {
         return this.firefox;
       });
       return itShould('match error');
+    });
+    context('for a native error', function() {
+      fixture('errors/firefox_native.txt', {
+        as: 'firefox'
+      });
+      fixture('errors/chrome_native.txt', {
+        as: 'chrome'
+      });
+      fixture('errors/node_native.txt', {
+        as: 'node'
+      });
+      context('for a chrome stack', function() {
+        given('stack', function() {
+          return this.chrome;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0])["native"].should(be(true));
+        });
+      });
+      context('for a node stack', function() {
+        given('stack', function() {
+          return this.node;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0])["native"].should(be(true));
+        });
+      });
+      return context('for a firefox stack', function() {
+        given('stack', function() {
+          return this.firefox;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0]).line.should(equal('37'));
+        });
+      });
+    });
+    return context('with an error raised in an accessor', function() {
+      fixture('errors/firefox_accessor.txt', {
+        as: 'firefox'
+      });
+      fixture('errors/chrome_accessor.txt', {
+        as: 'chrome'
+      });
+      fixture('errors/node_accessor.txt', {
+        as: 'node'
+      });
+      context('for a chrome stack', function() {
+        given('stack', function() {
+          return this.chrome;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0]).line.should(equal('83'));
+        });
+      });
+      context('for a node stack', function() {
+        given('stack', function() {
+          return this.node;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0]).line.should(equal('83'));
+        });
+      });
+      return context('for a firefox stack', function() {
+        given('stack', function() {
+          return this.firefox;
+        });
+        the(function() {
+          return this.parser.should(exist);
+        });
+        return the(function() {
+          return this.parser.details(this.parser.lines[0]).line.should(equal('83'));
+        });
+      });
     });
   });
 
@@ -4214,6 +4301,7 @@
       });
       return withWidgetSetup(function() {
         before(function() {
+          spyOn(this.reporter, 'errorOccured');
           this.list.init(this.runner, this.reporter);
           return this.list.onStart({
             target: this.reporter
@@ -4254,7 +4342,29 @@
               the(function() {
                 return this.listContainer.should(contains(this.itemDOM));
               });
-              return context;
+              return context('clicking on an element of the list', function() {
+                given('item', function() {
+                  return this.listContainer.querySelector('.example');
+                });
+                before(function() {
+                  var _base;
+                  this.list.viewer = {
+                    displayCard: function() {}
+                  };
+                  spyOn(this.list.viewer, 'displayCard');
+                  spyOn(this.list.reporter, 'openDetails');
+                  return typeof (_base = this.item).onclick === "function" ? _base.onclick() : void 0;
+                });
+                the(function() {
+                  return this.list.viewer.displayCard.should(haveBeenCalled);
+                });
+                the(function() {
+                  return this.list.reporter.openDetails.should(haveBeenCalled);
+                });
+                return the(function() {
+                  return this.item.should(haveClass('active'));
+                });
+              });
             });
             return context('for a failing example', function() {
               given('example', function() {
@@ -4272,7 +4382,7 @@
                 return this.listContainer.should(contains(this.itemDOM));
               });
               return the('container', function() {
-                return this.reporter.container.getAttribute('class').should(match('hide-success'));
+                return this.reporter.errorOccured.should(haveBeenCalled);
               });
             });
           });

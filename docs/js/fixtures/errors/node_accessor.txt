@@ -1,0 +1,24 @@
+Error
+    at Object.defineProperty.get (/Users/cedric/Development/coffeescript/spectacular/specs/units/errors.spec.coffee:83:32)
+    at Object.<anonymous> (/Users/cedric/Development/coffeescript/spectacular/specs/units/errors.spec.coffee:89:27)
+    at Example.spectacular.Example.Example.executeHook (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2052:14)
+    at next (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2031:22)
+    at Example.spectacular.Example.Example.executeHook (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2053:16)
+    at next (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2031:22)
+    at Example.spectacular.Example.Example.executeHook (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2053:16)
+    at next (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2031:22)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2044:18
+    at f (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1553:56)
+    at AsyncPromise.spectacular.Promise.Promise.notifyHandlers (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1624:9)
+    at AsyncPromise.spectacular.Promise.Promise.resolve (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1601:10)
+    at AsyncPromise.spectacular.AsyncPromise.AsyncPromise.resolve (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1669:43)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:3293:24
+    at f (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1553:56)
+    at Promise.spectacular.Promise.Promise.then (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1583:9)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:3291:52
+    at _fulfilled (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:798:54)
+    at self.promiseDispatch.done (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:827:30)
+    at Promise.promise.promiseDispatch (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:760:13)
+    at /Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:526:49
+    at flush (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:108:17)
+    at process._tickCallback (node.js:415:13)

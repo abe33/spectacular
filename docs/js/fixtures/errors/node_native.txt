@@ -1,0 +1,22 @@
+TypeError: Array.prototype.indexOf called on null or undefined
+    at indexOf (native)
+    at Object.<anonymous> (/Users/cedric/Development/coffeescript/spectacular/specs/units/errors.spec.coffee:37:42)
+    at Example.spectacular.Example.Example.executeHook (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2040:14)
+    at next (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2019:22)
+    at Example.spectacular.Example.Example.executeHook (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2041:16)
+    at next (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2019:22)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:2032:18
+    at f (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1541:56)
+    at AsyncPromise.spectacular.Promise.Promise.notifyHandlers (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1612:9)
+    at AsyncPromise.spectacular.Promise.Promise.resolve (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1589:10)
+    at AsyncPromise.spectacular.AsyncPromise.AsyncPromise.resolve (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1657:43)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:3281:24
+    at f (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1541:56)
+    at Promise.spectacular.Promise.Promise.then (/Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:1571:9)
+    at /Users/cedric/Development/coffeescript/spectacular/lib/spectacular.js:3279:52
+    at _fulfilled (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:798:54)
+    at self.promiseDispatch.done (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:827:30)
+    at Promise.promise.promiseDispatch (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:760:13)
+    at /Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:526:49
+    at flush (/Users/cedric/Development/coffeescript/spectacular/node_modules/q/q.js:108:17)
+    at process._tickCallback (node.js:415:13)

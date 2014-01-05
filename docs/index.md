@@ -66,7 +66,7 @@ This will install Spectacular globally and allow you to use the Spectacular comm
 
 First download Spectacular:
 
-<div id="download"><a href='spectacular-1.5.1.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
+<div id="download"><a href='spectacular-1.6.0.zip' class='download' target='_blank'><i class='icon-download'></i>Download</a></div>
 
 Then puts Spectacular in your html file:
 

@@ -8,7 +8,7 @@ else
 exports.spectacular = exports.spectacular or {}
 spectacular = exports.spectacular
 
-spectacular.version = '1.5.1'
+spectacular.version = '1.6.0'
 spectacular.global = (->
   return window unless typeof window is 'undefined'
   return global unless typeof global is 'undefined'
