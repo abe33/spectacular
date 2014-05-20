@@ -40,12 +40,14 @@
     "express": "~3.4.0",
     "stylus": "~0.41.0",
     "jsdom": "~0.8.1",
-    "wintersmith": "~2.0.5",
-    "wintersmith-stylus": "~0.4.0",
-    "wintersmith-coffee": "~0.2.0",
     "qq": "~0.3.5",
     "uglify-js": "~2.4.0",
     "source-map": "~0.1.27",
     "jade": "~0.35.0"
+  },
+  "devDependencies": {
+    "wintersmith": "~2.0.5",
+    "wintersmith-stylus": "~0.4.0",
+    "wintersmith-coffee": "~0.2.0"
   }
 }
