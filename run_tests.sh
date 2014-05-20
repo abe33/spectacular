@@ -9,6 +9,9 @@ if [ $TRAVIS ]
     echo "  Send coverage to coveralls.io\n"
     (cat coverage/lcov.info | node_modules/.bin/coveralls) > /dev/null 2>&1
 
+    echo "  Send coverage to codeclimate.com\n"
+    CODECLIMATE_REPO_TOKEN=4b5c44628063dc2a5c65e0169bc3c7accee4b570aed71d9a8599f2654c87c861 codeclimate < coverage/lcov.info 
+
     echo "  PhantomJS Tests\n"
     bin/spectacular phantomjs 'specs/**/*.coffee'
     phantomjs_result=$?
