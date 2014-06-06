@@ -9,7 +9,7 @@ class spectacular.Environment
     @globalizable = 'it xit describe xdescribe expect
       before after given subject its itsInstance itsReturn
       withParameters fail pending success skip should shouldnt
-      dependsOn spyOn whenPass fixture except only sharedExample
+      dependsOn spyOn createSpy whenPass fixture except only sharedExample
       itBehavesLike fixturePath registerFixtureHandler'.split(/\s+/g)
 
     @rootExampleGroup = new spectacular.ExampleGroup null, ''
@@ -297,29 +297,39 @@ class spectacular.Environment
       @currentExampleGroup.ownCascading = previousContext
       block()
 
-  spyOn: (obj, method) ->
-    @notOutsideIt 'spyOn'
-
-    oldMethod = obj[method]
+  createSpy: (name, obj, method) ->
     context = @currentExample.context
+    oldMethod = obj?[method]
 
     spy = (args...) ->
       spy.argsForCall.push args
       if spy.mock?
         spy.mock.apply(obj, args)
       else
-        oldMethod.apply(obj, args)
+        oldMethod.apply(obj, args) if obj? and method?
 
-    spy.spied = oldMethod
+    spy.name = name
     spy.argsForCall = []
     spy.andCallFake = (@mock) -> this
     spy.andReturns = (value) -> spy.andCallFake -> value
-    spy.andCallThrough = (block) ->
-      @mock = ->
-        block.call context, oldMethod.apply this, arguments
-      this
+
+    if obj? and method?
+      spy.spied = oldMethod
+      spy.andCallThrough = (block) ->
+        @mock = ->
+          block.call context, oldMethod.apply this, arguments
+        this
 
     utils.snakify spy
+
+    spy
+
+  spyOn: (obj, method) ->
+    @notOutsideIt 'spyOn'
+
+    oldMethod = obj[method]
+
+    spy = @createSpy(method, obj, method)
 
     @currentExample.ownAfterHooks.push ->
       obj[method] = oldMethod

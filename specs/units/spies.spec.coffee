@@ -87,8 +87,9 @@ describe 'spyOn', ->
         it 'should have called the spied method and the block', ->
           @result.should be 84
 
+describe 'createSpy', ->
+  subject 'spy', -> createSpy('foo')
 
-
-
-
-
+  context 'when called', ->
+    before -> @spy()
+    it -> should haveBeenCalled

@@ -299,7 +299,7 @@ spectacular.matcher 'haveBeenCalled', ->
   chain 'with', (@arguments...) ->
 
   match (actual, notText) ->
-    if typeof actual?.spied is 'function'
+    if actual?.argsForCall?
       if @arguments?
         actual.argsForCall.length > 0 and actual.argsForCall.some (a) =>
           equal(a).match(@arguments, '')
@@ -309,20 +309,20 @@ spectacular.matcher 'haveBeenCalled', ->
       false
 
   failureMessageForShould ->
-    if typeof @actual?.spied is 'function'
+    if @actual?.argsForCall?
       if @arguments?
-        "Expected #{@formatValue @actual.spied} to #{@description} but was called with #{@formatValue @actual.argsForCall}"
+        "Expected #{@formatValue @actual} to #{@description} but was called with #{@formatValue @actual.argsForCall}"
       else
-        "Expected #{@formatValue @actual.spied} to have been called"
+        "Expected #{@formatValue @actual} to have been called"
     else
       @message = "Expected a spy but it was #{@formatValue @actual}"
 
   failureMessageForShouldnt ->
-    if typeof @actual?.spied is 'function'
+    if @actual?.argsForCall?
       if @arguments?
-        "Expected #{@formatValue @actual.spied} not to #{@description} but was called with #{@actual.argsForCall}"
+        "Expected #{@formatValue @actual} not to #{@description} but was called with #{@actual.argsForCall}"
       else
-        "Expected #{@formatValue @actual.spied} not to have been called"
+        "Expected #{@formatValue @actual} not to have been called"
     else
       @message = "Expected a spy but it was #{@formatValue @actual}"
 
@@ -574,4 +574,3 @@ spectacular.matcher 'haveSelector', ->
 
   failureMessageForShouldnt ->
     "Expected #{@formatValue utils.descOfNode @actual} not to have selector #{@formatValue @selector}"
-
