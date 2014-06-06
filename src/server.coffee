@@ -52,7 +52,12 @@ generateSpecRunner = (options) ->
     'assets/js/browser_reporter.js'
   ]
   templates = {}
-  Q.all(findrequire p, options for p in options.requires)
+  relativeRequires = options.requires.filter (p) -> p.indexOf('http') isnt 0
+  absoluteRequires = options.requires
+  .filter((p) -> p.indexOf('http') is 0)
+  .map((p) -> [p] )
+
+  Q.all((findrequire p, options for p in relativeRequires).concat(absoluteRequires))
   .then (requires) ->
     for collection in requires
       for f in collection
@@ -188,4 +193,3 @@ exports.run = (options) ->
       process.exit status
 
   defer.promise
-
